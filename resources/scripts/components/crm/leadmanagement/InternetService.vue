@@ -46,9 +46,10 @@
                                     <span>Customer need home phone service?*</span>
                                 </div>
                                 <div class="text-field flex-basis-20 d-flex justify-end">
-                                    <v-switch
-                                        inset
-                                        class="mt-0"
+                                    <v-switch v-model="internetServiceInfo.is_need_home_phone"
+                                              inset
+                                              class="mt-0"
+                                              @change="updateInternetServiceInfo"
                                     ></v-switch>
                                 </div>
                             </div>
@@ -64,8 +65,9 @@
                             </div>
 
                             <div>
-                                <v-checkbox
-                                    :label="`Do you have an existing landline phone number you'd like to bring to your new service? *`">
+                                <v-checkbox v-model="internetServiceInfo.is_existing_landline"
+                                            @change="updateInternetServiceInfo"
+                                            :label="`Do you have an existing landline phone number you'd like to bring to your new service? *`">
                                 </v-checkbox>
                             </div>
 
@@ -80,6 +82,8 @@
                                             dense
                                             hide-details="auto"
                                             placeholder="Home Phone No"
+                                            v-model="internetServiceInfo.home_phone_number"
+                                            @blur="updateInternetServiceInfo"
                                         ></v-text-field>
                                     </div>
                                 </div>
@@ -94,6 +98,8 @@
                                             dense
                                             hide-details="auto"
                                             placeholder="Current Provider"
+                                            v-model="internetServiceInfo.current_provider"
+                                            @blur="updateInternetServiceInfo"
                                         ></v-text-field>
                                     </div>
                                 </div>
@@ -108,6 +114,8 @@
                                             dense
                                             hide-details="auto"
                                             placeholder="Account Number"
+                                            v-model="internetServiceInfo.account_number"
+                                            @blur="updateInternetServiceInfo"
                                         ></v-text-field>
                                     </div>
                                 </div>
@@ -133,6 +141,8 @@
                                             dense
                                             hide-details="auto"
                                             placeholder="One Time Password"
+                                            v-model="internetServiceInfo.otp"
+                                            @blur="updateInternetServiceInfo"
                                         ></v-text-field>
                                     </div>
                                 </div>
@@ -148,6 +158,8 @@
                                             hide-details="auto"
                                             :items="modemTypesItems"
                                             placeholder="Choose Modem Type"
+                                            v-model="internetServiceInfo.modem_type"
+                                            @blur="updateInternetServiceInfo"
                                         >
                                         </v-select>
                                     </div>
@@ -164,6 +176,8 @@
                                             hide-details="auto"
                                             :items="charityItems"
                                             placeholder="Please select"
+                                            v-model="internetServiceInfo.charity"
+                                            @blur="updateInternetServiceInfo"
                                         >
                                         </v-select>
                                     </div>
@@ -177,6 +191,8 @@
                                         <v-switch
                                             inset
                                             class="mt-0"
+                                            v-model="internetServiceInfo.is_back_to_base"
+                                            @change="updateInternetServiceInfo"
                                         ></v-switch>
                                     </div>
                                 </div>
@@ -189,6 +205,8 @@
                                         <v-switch
                                             inset
                                             class="mt-0"
+                                            v-model="internetServiceInfo.is_security_alarm"
+                                            @change="updateInternetServiceInfo"
                                         ></v-switch>
                                     </div>
                                 </div>
@@ -312,6 +330,14 @@ export default {
                 InternetService.setInternetPlan(value);
             }
         },
+        internetServiceInfo: {
+            get() {
+                return InternetService.loadInternetServiceInfo();
+            },
+            async set(value) {
+                return await InternetService.updateInternetServiceInfo(value, this.leadSummary.id);
+            }
+        },
     },
     mounted() {
     },
@@ -339,6 +365,9 @@ export default {
         },
         confirmSubmit() {
             this.showInternetSubmitModal = false;
+        },
+        updateInternetServiceInfo() {
+            ({internetServiceInfo: this.internetServiceInfo} = this);
         }
     }
 }

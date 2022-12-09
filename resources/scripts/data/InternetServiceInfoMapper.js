@@ -23,13 +23,14 @@ export default {
             is_existing_landline: data.is_existing_landline ?? false,
             otp: data.otp ?? null,
             modem_type: data.modem_type ?? null,
-            charity_state: data.charity_state ?? null,
+            charity: data.charity ?? null,
             home_phone_number: data.home_phone_number ?? null,
             current_provider: data.current_provider ?? null,
             account_number: data.account_number ?? null,
-            home_plan_provder: data.home_plan_provder ?? null,
-            home_plan_type: data.home_plan_type ?? null,
+            home_phone_provider: data.home_phone_provider ?? null,
+            home_phone_plan: data.home_phone_plan ?? null,
             address: address,
+            connection_service: data.connection_service ?? {},
         })
     },
 }

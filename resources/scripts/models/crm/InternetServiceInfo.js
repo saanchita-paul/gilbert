@@ -1,4 +1,5 @@
 import Address from "@scripts/models/crm/Address";
+import ConnectionService from "@scripts/modules/internet/models/ConnectionService";
 
 export default class InternetServiceInfo {
     is_need_home_phone = false;
@@ -7,14 +8,16 @@ export default class InternetServiceInfo {
     is_existing_landline = false;
     otp = null;
     modem_type = null;
-    charity_state = null;
+    charity = null;
     home_phone_number = null;
     current_provider = null;
     account_number = null;
-    home_plan_provder = null;
-    home_plan_type = null;
+    home_phone_provider = null;
+    home_phone_plan = null;
     is_shipping_same = true;
     address = new Address();
+
+    connection_service = new ConnectionService();
 
     /**
      * Internet service info constructor
@@ -29,8 +32,8 @@ export default class InternetServiceInfo {
      * @param home_phone_number
      * @param current_provider
      * @param account_number
-     * @param home_plan_provder
-     * @param home_plan_type
+     * @param home_phone_provider
+     * @param home_phone_plan
      * @param is_shipping_same
      * @param address
      *
@@ -42,14 +45,15 @@ export default class InternetServiceInfo {
                     is_existing_landline = false,
                     otp = null,
                     modem_type = null,
-                    charity_state = null,
+                    charity = null,
                     home_phone_number = null,
                     current_provider = null,
                     account_number = null,
-                    home_plan_provder = null,
-                    home_plan_type = null,
+                    home_phone_provider = null,
+                    home_phone_plan = null,
                     is_shipping_same = true,
                     address = new Address(),
+                    connection_service = new ConnectionService()
                 } = {}) {
         this.is_need_home_phone = is_need_home_phone;
         this.is_back_to_base = is_back_to_base;
@@ -57,13 +61,14 @@ export default class InternetServiceInfo {
         this.is_existing_landline = is_existing_landline;
         this.otp = otp;
         this.modem_type = modem_type;
-        this.charity_state = charity_state;
+        this.charity = charity;
         this.home_phone_number = home_phone_number;
         this.current_provider = current_provider;
         this.account_number = account_number;
-        this.home_plan_provder = home_plan_provder;
-        this.home_plan_type = home_plan_type;
+        this.home_phone_provider = home_phone_provider;
+        this.home_phone_plan = home_phone_plan;
         this.is_shipping_same = is_shipping_same;
         this.address = address;
+        this.connection_service = connection_service;
     }
 }

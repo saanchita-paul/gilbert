@@ -145,7 +145,10 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_CLOSE_APPLICATION);
     Route::put('/applications/{applicationId}/update-address', [ApplicationController::class, 'updateAddress'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_ADDRESS);
-    Route::put('/applications/{applicationId}/update-internet-service-info', [ApplicationController::class, 'updateInternetServiceInfo'])
+    Route::put(
+        '/applications/{applicationId}/update-internet-service-info',
+        [ApplicationController::class, 'updateInternetServiceInfo']
+    )
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_ADDRESS);
     Route::post('/applications/{applicationId}/draft', [ApplicationController::class, 'saveDraft'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);

@@ -175,8 +175,12 @@ class ApplicationService
     public function updateInternetServiceInfo(array $data, int $applicationId)
     {
         $existingApplication = ConnectionApplication::find($applicationId);
+        $connectionService = $existingApplication->connectionServices()->where('service_type', 'internet')->first();
 
         $existingApplication->internetServiceInfo()->updateOrCreate([
+            'connection_application_id' => $applicationId,
+        ], [
+            'connection_service_id' => $connectionService->id ?? null,
             'is_shipping_same' => $data['address']['is_same'],
             'unit_number' => $data['address']['unit_number'],
             'street_number' => $data['address']['street_number'],
@@ -192,6 +196,11 @@ class ApplicationService
             'is_security_alarm' => $data['is_security_alarm'],
             'is_existing_landline' => $data['is_existing_landline'],
             'home_phone_number' => $data['home_phone_number'],
+            'current_provider' => $data['current_provider'],
+            'account_number' => $data['account_number'],
+            'otp' => $data['otp'],
+            'modem_type' => $data['modem_type'],
+            'charity' => $data['charity']
         ]);
 
         return $existingApplication;

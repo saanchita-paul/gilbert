@@ -14,4 +14,9 @@ class InternetServiceInfo extends Model
     {
         return $this->belongsTo(ConnectionApplication::class);
     }
+
+    public function connectionService(): BelongsTo
+    {
+        return $this->belongsTo(ConnectionService::class);
+    }
 }

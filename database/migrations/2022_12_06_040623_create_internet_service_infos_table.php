@@ -35,6 +35,11 @@ class CreateInternetServiceInfosTable extends Migration
             $table->boolean('is_security_alarm')->default(false);
             $table->boolean('is_existing_landline')->default(false);
             $table->string('home_phone_number')->nullable();
+            $table->string('current_provider')->nullable();
+            $table->string('account_number')->nullable();
+            $table->string('otp')->nullable();
+            $table->string('modem_type')->nullable();
+            $table->string('charity')->nullable();
             $table->timestamps();
         });
     }

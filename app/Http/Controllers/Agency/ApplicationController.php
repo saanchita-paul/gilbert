@@ -210,7 +210,8 @@ class ApplicationController extends Controller
     {
         try {
             $service = new ApplicationService();
-            return ApplicationResource::make($service->updateInternetServiceInfo($request->toArray(), $applicationId));
+            $data = ApplicationResource::make($service->updateInternetServiceInfo($request->toArray(), $applicationId));
+            return $data;
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Agency;
 
+use App\Http\Resources\InternetServiceInfoResource;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\User;
@@ -147,7 +148,7 @@ class ApplicationResource extends JsonResource
             'chatbot_id' => $this->chatbot_id,
 
             // Internet service info
-            'internet_service_info' => $this->internetServiceInfo,
+            'internet_service_info' => new InternetServiceInfoResource($this->internetServiceInfo),
         ];
     }
 
