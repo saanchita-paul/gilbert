@@ -165,7 +165,7 @@ export default {
         let commissions = mapCommissions(data.commissions);
         let agent = mapAgent(data.agent);
         let hood_users = mapHoodProfile(data?.hood_users);
-        let time_slots = mapTimeSlots(data?.time_slots);
+        let time_slots = data?.time_slots;
         return {
             office: office,
             commissions: commissions,

@@ -76,10 +76,13 @@ class AutoAssignApplicationService
         $timeSlot = $application->office->timeSlots()
             ->where('day', strtolower(date('l')))
             ->first();
+
         $allowableTime = Carbon::now()->timezone(TimeZoneService::getTimeZoneArea())
-        ->isBetween($timeSlot->start_time, $timeSlot->end_time);
-//        dd($allowableTime);
-        return $application->office->is_chatbot_office && $this->getAutoAssignGlobalSetting()->setting_value;
+            ->isBetween($timeSlot->start_time, $timeSlot->end_time);
+
+        return $application->office->is_chatbot_office
+            && $this->getAutoAssignGlobalSetting()->setting_value
+            && $allowableTime;
     }
 
     private function fetchMirnNmi($application)

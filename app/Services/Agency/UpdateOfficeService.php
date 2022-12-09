@@ -34,11 +34,11 @@ class UpdateOfficeService
         $office = $office->refresh()->toArray();
         $office['commissions'] = $this->updateCommissions($data['commissions'], $office);
         $office['agent'] = $this->updateAgent($data['agent']);
-        $office['time_slots'] = $this->updateTimeSlots($data['time_slots']);
+        $office['time_slots'] = $this->updateTimeSlots($data['time_slots'], $data['office']['is_chatbot_office']);
         return $office;
     }
 
-    public function updateTimeSlots($timeSlots)
+    public function updateTimeSlots($timeSlots, $isChatbotOffice)
     {
         $weekDays = [
             'monday' => 1,
@@ -50,13 +50,18 @@ class UpdateOfficeService
             'sunday' => 7,
         ];
 
-        foreach ($weekDays as $weekDayName => $weekDay) {
-            OfficeAutoAssignTimeSlot::updateOrCreate([
-                'office_id' => $this->id,
-                'day' => $weekDayName,
-                'start_time' => Carbon::parse($timeSlots[0]['start_time'])->format('H:i:s'),
-                'end_time' => Carbon::parse($timeSlots[0]['end_time'])->format('H:i:s'),
-            ]);
+        if ($isChatbotOffice && count($timeSlots) > 0) {
+            foreach ($weekDays as $weekDayName => $weekDay) {
+                OfficeAutoAssignTimeSlot::updateOrCreate([
+                    'office_id' => $this->id,
+                    'day' => $weekDayName,
+                ], [
+                    'start_time' => Carbon::parse($timeSlots[0]['start_time'])->format('H:i:s'),
+                    'end_time' => Carbon::parse($timeSlots[0]['end_time'])->format('H:i:s'),
+                ]);
+            }
+        } else {
+            OfficeAutoAssignTimeSlot::query()->where('office_id', $this->id)->delete();
         }
 
         return OfficeAutoAssignTimeSlot::query()->where('office_id', $this->id)->get();

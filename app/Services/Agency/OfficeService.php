@@ -28,7 +28,7 @@ class OfficeService
         $office['commissions'] = $this->getOfficeCommistion();
         $office['agent'] = $this->getAgent();
         $office['hood_users'] = $this->getHoodUser();
-        $office['time_slots'] = $this->getOfficeTimeSlots();
+        $office['time_slots'] = [$this->getOfficeTimeSlots()];
         return $office;
     }
 
