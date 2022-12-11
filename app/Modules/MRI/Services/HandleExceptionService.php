@@ -17,54 +17,57 @@ class HandleExceptionService
         $this->exceptionData = [];
     }
 
-    public function addException($exception, $data = [])
+    public function addException($exception, $extraData)
     {
-        $data['trace'] = $exception->getTraceAsString();
-        if (str_contains(get_class($exception), 'GuzzleHttp')) {
-            if ($exception->hasResponse()) {
-                $message = Psr7\Message::toString($exception->getResponse());
-                $data['uri'] = $exception->getRequest()->getUri();
-                $this->exceptionData[] = [
-                    'message' => $message,
-                    'data' => json_encode($data)
-                ];
-            }
-            else {
-                $this->exceptionData[] = [
-                    'message' => $exception->getMessage(),
-                    'data' => json_encode($data)
-                ];
-            }
-        }
-        else {
-            $this->exceptionData[] = [
-                'message' => $exception->getMessage(),
-                'data' => json_encode($data)
-            ];
-        }
+        $this->exceptionData[] = [
+            'exception' => $exception,
+            'extraData' => $extraData
+        ];
     }
 
-    public function run ()
+    private function formatException()
+    {
+        $exceptionsFormatted = [];
+        foreach ($this->exceptionData as $ed) {
+            $exception = $ed['exception'];
+            $extraData = $ed['extraData'];
+
+            $exceptionMessage = $exception->getMessage();
+            $extraData['trace'] = $exception->getTraceAsString();
+            if (str_contains(get_class($exception), 'GuzzleHttp') && $exception->hasResponse()) {
+                $exceptionMessage = Psr7\Message::toString($exception->getResponse());
+                $extraData['uri'] = $exception->getRequest()->getUri();
+            }
+
+            $exceptionsFormatted[] = [
+                'message' => $exceptionMessage,
+                'data' => json_encode($extraData),
+            ];
+        }
+        return $exceptionsFormatted;
+    }
+
+    public function run()
     {
         if (!$this->hasExceptions()) {
             \Log::error($this->fileName . ' throw exception attempted with no exceptions');
             return;
         };
 
+        $formattedExceptions = $this->formatException();
+
         $emails = explode(',', config('support_email.tech'));
         foreach ($emails as $recipient) {
             if (!empty($recipient)) {
-                Mail::to($recipient)->queue(new NotifyFetchFailMail($this->fileName, $this->exceptionData));
+                Mail::to($recipient)->queue(new NotifyFetchFailMail($this->fileName, $formattedExceptions));
             }
         }
-        // dump('Error in '. $this->fileName);
-        // foreach($this->exceptionData as $e){
-        //     dump($e['message']);
-        // }
 
         \Log::error($this->fileName . ' FAILED (Refer Context)', $this->exceptionData);
 
-        throw new \Exception($this->fileName . ' FAILED (Refer Logs)');
+        $firstException = $this->exceptionData[0]['exception'];
+        throw $firstException;
+        // throw new \Exception($this->fileName . ' FAILED (Refer Logs)');
     }
 
     public function hasExceptions()
