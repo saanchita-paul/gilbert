@@ -17,7 +17,7 @@ class HandleExceptionService
         $this->exceptionData = [];
     }
 
-    public function addException($exception, $extraData)
+    public function addException($exception, $extraData = [])
     {
         $this->exceptionData[] = [
             'exception' => $exception,
