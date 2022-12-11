@@ -83,7 +83,9 @@ class GetOfficeService
     {
         $emails = explode(',', config('support_email.agent_not_found')); // default to Georgie
         foreach ($emails as $recipient) {
-            Mail::to($recipient)->queue(new NotifyNewOfficeMail($newOffices));
+            if (!empty($recipient)) {
+                Mail::to($recipient)->queue(new NotifyNewOfficeMail($newOffices));
+            }
         }
     }
 

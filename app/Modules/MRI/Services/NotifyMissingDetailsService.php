@@ -55,7 +55,9 @@ class NotifyMissingDetailsService
         if (count($this->incompleteApps) > 0) {
             $emails = explode(',', config('support_email.agent_not_found'));
             foreach ($emails as $recipient) {
-                Mail::to($recipient)->queue(new NotifyMissingDetailsMail($this->incompleteApps));
+                if (!empty($recipient)) {
+                    Mail::to($recipient)->queue(new NotifyMissingDetailsMail($this->incompleteApps));
+                }
             }
             return true;
         }
