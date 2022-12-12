@@ -139,19 +139,34 @@
                                 <div v-if="office.is_chatbot_office">
                                     <div class="d-flex" v-for="(item, index) in time_slots" :key="index">
                                         <div>
-                                            <v-text-field
-                                                type="time"
-                                                v-model="item.start_time"
-                                                label="Start Time"
-                                            ></v-text-field>
+                                            <ValidationProvider name="Start time" rules="required" v-slot="{ errors }">
+                                                <v-text-field
+                                                    type="time"
+                                                    v-model="item.start_time"
+                                                    @input="onStartTimeChange(index, item)"
+                                                    label="Start Time"
+                                                    :error-messages="errors[0]"
+                                                ></v-text-field>
+                                            </ValidationProvider>
                                         </div>
 
                                         <div class="ml-8">
-                                            <v-text-field
-                                                type="time"
-                                                v-model="item.end_time"
-                                                label="End Time"
-                                            ></v-text-field>
+                                            <ValidationProvider name="End time" rules="required" v-slot="{ errors }">
+                                                <v-text-field
+                                                    type="time"
+                                                    v-model="item.end_time"
+                                                    @input="onEndTimeChange(index, item)"
+                                                    label="End Time"
+                                                    :error-messages="errors[0]"
+                                                ></v-text-field>
+                                            </ValidationProvider>
+                                        </div>
+
+                                        <div class="ml-4">
+                                            <v-checkbox
+                                                :input-value="item.all_day"
+                                                @change="onChangeTimeSlot(item, $event)">
+                                            </v-checkbox>
                                         </div>
                                     </div>
                                 </div>
@@ -368,6 +383,7 @@
 import OfficeService from "@scripts/services/crm/OfficeService";
 import CreateSuccessfulModal from "@scripts/components/crm/modals/CreateSuccessfulModal";
 import HoodAgentDropdown from "@scripts/components/crm/office/HoodAgentDropdown";
+import TimeSlotsService from "@scripts/services/crm/TimeSlotsService";
 
 export default {
     name: "OfficeProfile",
@@ -419,7 +435,8 @@ export default {
                 {
                     day: null,
                     start_time: null,
-                    end_time: null
+                    end_time: null,
+                    all_day: true
                 }
             ],
         }
@@ -434,6 +451,19 @@ export default {
         toggleTextAssignToChatbot() {
             return this.office.is_chatbot_office ? 'On' : 'Off';
         },
+    },
+    watch: {
+        'office.is_chatbot_office': function (value) {
+            if (value) {
+                this.time_slots = this.data.time_slots;
+            } else {
+                this.time_slots = [];
+            }
+        }
+    },
+    mounted() {
+        this.activeOffice = this.$route.params.officeId;
+        this.loadOffice();
     },
     methods: {
         onChangeAgent(agent) {
@@ -584,21 +614,21 @@ export default {
                 params: {id: this.$route.params.id, officeId: this.$route.params.officeId}
             });
 
-        }
-    },
-    mounted() {
-        this.activeOffice = this.$route.params.officeId;
-        this.loadOffice();
-    },
-    watch: {
-        'office.is_chatbot_office': function (value) {
+        },
+        onChangeTimeSlot(timeSlot, value) {
             if (value) {
-                this.time_slots = this.data.time_slots;
-            } else {
-                this.time_slots = [];
+                let data = this.data.time_slots.find(item => item === timeSlot);
+                data.start_time = '00:00';
+                data.end_time = '23:59';
             }
-        }
-    },
+        },
+        onStartTimeChange(index, item) {
+            this.time_slots[index].all_day = TimeSlotsService.getFullDayTime(item);
+        },
+        onEndTimeChange(index, item) {
+            this.time_slots[index].all_day = TimeSlotsService.getFullDayTime(item);
+        },
+    }
 };
 </script>
 

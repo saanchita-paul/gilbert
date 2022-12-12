@@ -1,6 +1,7 @@
 import Office from "@scripts/models/crm/Office";
 import PaginationMapper from "@scripts/api/mappers/crm/PaginationMapper";
 import COMMISSION from "@scripts/data/constants/COMMISSION";
+import TimeSlotsService from "@scripts/services/crm/TimeSlotsService";
 
 function mapOffice(office) {
     return new Office({...office});
@@ -60,6 +61,19 @@ function mapHoodProfile(hoodUsers) {
             name: userProfile.first_name + ' ' + userProfile.last_name
         };
     })
+}
+
+function mapTimeSlots(timeSlots) {
+    return timeSlots.map(item => {
+        return {
+            ...item,
+            all_day: mapAllDay(item)
+        }
+    });
+}
+
+function mapAllDay(item) {
+    return TimeSlotsService.getFullDayTime(item);
 }
 
 
@@ -159,7 +173,7 @@ export default {
         let commissions = mapCommissions(data.commissions);
         let agent = mapAgent(data.agent);
         let hood_users = mapHoodProfile(data?.hood_users);
-        let time_slots = data?.time_slots;
+        let time_slots = mapTimeSlots(data?.time_slots);
         return {
             office: office,
             commissions: commissions,
