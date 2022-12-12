@@ -35,6 +35,8 @@ class InternetServiceInfoResource extends JsonResource
             'home_phone_number' => $this->home_phone_number,
             'current_provider' => $this->current_provider,
             'account_number' => $this->account_number,
+            'home_phone_provider' => $this->home_phone_provider,
+            'home_phone_plan' => $this->home_phone_plan,
             'otp' => $this->otp,
             'modem_type' => $this->modem_type,
             'charity' => $this->charity,

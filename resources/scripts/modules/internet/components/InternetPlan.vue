@@ -1,5 +1,5 @@
 <template>
-    <div class="internet-plan" style="cursor: pointer" :class="{'selected' : plan.name === selectedPlan}">
+    <div class="internet-plan" style="cursor: pointer" :class="{'selected' : plan.value === selectedPlan}">
 
         <div class="plan-title-header">
             <div class="d-flex align-center">
@@ -84,6 +84,7 @@ export default {
     padding: 0 15px;
     margin-bottom: 10px
 }
+
 .text-internet {
     color: #85639A;
     font-weight: 700;

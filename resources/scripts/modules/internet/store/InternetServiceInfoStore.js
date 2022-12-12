@@ -12,9 +12,9 @@ export default {
 
     getters: {
         getInternetServiceInfo: state => state.internetServiceInfo,
-        internetStatus: state => state.internetStatus,
-        internetProvider: state => state.internetProvider,
-        internetPlan: state => state.internetPlan,
+        internetStatus: state => state.internetStatus ?? state.internetServiceInfo.connection_service.status,
+        internetProvider: state => state.internetProvider ?? state.internetServiceInfo.connection_service.provider_name,
+        internetPlan: state => state.internetPlan ?? state.internetServiceInfo.connection_service.plan_type,
     },
 
     mutations: {
