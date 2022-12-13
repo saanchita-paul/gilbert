@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
-use App\Services\Application\ServiceStatusFilterMapper;
 use Powershop\Http\Controllers\PxPayController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +28,12 @@ Route::get('/powershop/payment/callback', [PxPayController::class, 'handleCallba
 
 Route::get('/email', function () {
     return response('hello world');
+});
+
+Route::get('/mi-test', function () {
+    $svcUtilities = new \App\Services\Agency\MirnNmiService();
+    $result = $svcUtilities->fetchIsEmbedded(\App\Models\ConnectionApplication::find(5099));
+    dd($result);
 });
 
 Route::get('/{vue_capture?}', fn() => view('app'))

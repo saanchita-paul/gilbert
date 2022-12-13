@@ -444,6 +444,12 @@
               placeholder="This is an extra long address, 398 Bourke Road, Camberwell 3124 VIC"
             ></v-textarea>
           </ValidationProvider>
+            <span class="error--text">
+              <v-icon color="error">
+                  info
+              </v-icon>
+              This address is in an <strong>Embedded network.</strong>
+          </span>
         </div>
       </div>
       <div class="crm-text-field">

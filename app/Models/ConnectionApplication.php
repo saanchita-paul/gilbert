@@ -235,6 +235,7 @@ class ConnectionApplication extends Model
         'app_close_reason_id',
         'chatbot_id',
         'status_log_id',
+        'is_embedded',
     ];
 
 
