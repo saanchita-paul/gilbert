@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\hubspot;
 
 use App\Models\ConnectionApplication;
 use App\Services\hubspot\HubspotHandlerService;
