@@ -9,6 +9,7 @@ import dayJs from "dayjs";
 import AgencyService from '@scripts/services/crm/AgencyService';
 import dayjs from "dayjs";
 import {now} from "lodash-es";
+import debounce from "lodash-es/debounce";
 
 Object.keys(rules).forEach(rule => {
     extend(rule, rules[rule]);
@@ -223,7 +224,7 @@ extend('required-issuing-country', {
 extend('gbg-email-validate', {
     message: field => `Email could not be verified. Please confirm it’s valid email.`,
 
-    validate: async (value) =>  {
+    validate: debounce(async (value) =>  {
         return new Promise(resolve => {
             GBGService.validateEmail(value)
                 .then( valid => {
@@ -231,7 +232,7 @@ extend('gbg-email-validate', {
                     resolve({ valid })
                 })
         })
-    }
+    }, 300)
 });
 
 export { medicareRules , mediExpireDate }

@@ -1,9 +1,15 @@
 <template>
     <v-card class="hood-card mb-5 pt-0">
-        <LeadDetailsHeader @closeApplicationWithReason="closeApplicationWithReason" :leadSummary="leadSummary"
-                           @closeApplication="closeApplication" @eacalate="eacalate" @duplicateLead="duplicateLead"
+        <LeadDetailsHeader @closeApplicationWithReason="closeApplicationWithReason"
+                           :leadSummary="leadSummary"
+                           @closeApplication="closeApplication"
+                           @eacalate="eacalate"
+                           @duplicateLead="duplicateLead"
                            @sendToChatBotConfirmModal="sendToChatBotConfirmModal"
-                           :isLocked="isLocked"></LeadDetailsHeader>
+                           @sendToChatBot="sendToChatBot"
+                           @reloadPlanNoteAndLead="reloadPlanNoteAndLead"
+                           :isLocked="isLocked"
+        ></LeadDetailsHeader>
         <InfoField v-bind="$attrs" :services="services" @updateLead="updateLead" :nmiMernFlag="nmiMernFlag"
                    :lead="leadSummary" @updateDraft="updateDraft" @readMore="readMore"
                    @updateAddress="updateAddress"></InfoField>
@@ -58,9 +64,16 @@ export default {
         sendToChatBotConfirmModal() {
             this.$emit('sendToChatBotConfirmModal');
         },
+        sendToChatBot(lead) {
+            this.$emit('sendToChatBot', lead);
+        },
         duplicateLead() {
             this.$emit('duplicateLead');
         },
+
+        reloadPlanNoteAndLead() {
+            this.$emit('loadPlanNoteAndLead');
+        }
 
         // updateEmail(field, value) {
         //     this.$emit('updateEmail', field, value);

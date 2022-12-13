@@ -119,7 +119,7 @@ class SubmitOrderAPI extends BaseOriginAPI
             "residentialCustomerInfo.dob" => 'required',
             "residentialCustomerInfo.phone" => 'required',
             "residentialCustomerInfo.phonetype" => 'required|in:' . implode(',', array_keys(self::MAP_PHONE_TYPE)),
-            "residentialCustomerInfo.email" => 'required|email:rfc,dns',
+            "residentialCustomerInfo.email" => 'required',
             "concessionCardInfo" => 'array',
             "concessionCardInfo.type" => 'required_with:concessionCardInfo|in:'. implode(',', array_keys(self::MAP_CONCESSION_TYPE)),
             "concessionCardInfo.number" => 'required_with:concessionCardInfo',

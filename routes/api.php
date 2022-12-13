@@ -23,22 +23,8 @@ use OurProperty\Http\Controllers\OurPropertyController;
 use Powershop\Http\Controllers\PaymentInfoController;
 use PropertyMe\services\FetchContacts;
 use Reporting\Http\Controllers\ReportController;
-use TSA\Services\TsaCallHistoryService;
 use App\Http\Controllers\GilbertLeadAPIController;
-use App\Jobs\ApplicationFromGilbertJob;
-
-use App\Models\ConnectionService;
-use App\Observers\ConnectionApplicationObserver;
-use App\Services\Agency\TriageFlagService;
-use App\Services\GilbertToCB\ChatbotToGilbertSyncService;
-use App\Services\GilbertToCB\GilbertToChatbotService;
-use App\Services\GilbertToCB\UpdateApplicationFromGilbertService;
-use GuzzleHttp\Client;
-use App\Services\Address\GBGServices;
-use App\Services\Address\AddressModel;
-use TSA\Services\TsaSendAppliationService;
 use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
-use App\Services\GBGEmailValidationService;
 
 /*
 |--------------------------------------------------------------------------

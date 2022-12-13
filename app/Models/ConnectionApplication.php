@@ -236,6 +236,7 @@ class ConnectionApplication extends Model
         'app_close_reason_id',
         'chatbot_id',
         'is_locked',
+        'status_log_id',
     ];
 
 
@@ -565,7 +566,7 @@ class ConnectionApplication extends Model
     }
 
     /**
-     * @return BelongsTo
+     * @return HasOne
      */
     public function appCloseReason()
     {
@@ -603,11 +604,11 @@ class ConnectionApplication extends Model
     {
         return match ($this->source) {
             ConnectionApplication::SOURCE_HOOD,
-            ConnectionApplication::SOURCE_PROPERTY_ME => $this->createdBy?->first_name . ' ' . $this->createdBy?->last_name,
+            ConnectionApplication::SOURCE_PROPERTY_ME, ConnectionApplication::SOURCE_T_APP =>
+                $this->createdBy?->first_name . ' ' . $this->createdBy?->last_name,
             ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agent_name,
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agent_name,
             ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agent_name,
-            ConnectionApplication::SOURCE_T_APP => $this->createdBy?->first_name . ' ' . $this->createdBy?->last_name,
             default => ''
         };
     }
@@ -645,8 +646,10 @@ class ConnectionApplication extends Model
 
             for ($i = count($arr) - 1; $i >= 0; $i--) {
                 $asciiVal = intval(ord($arr[$i]));
-                if ($isDouble)
+
+                if ($isDouble) {
                     $asciiVal *= 2;
+                }
                 $isDouble = !$isDouble;
                 $split = array_map('intval', str_split($asciiVal));
                 $sum = 0;
@@ -663,7 +666,6 @@ class ConnectionApplication extends Model
         }
 
         return $this->mirn ?? '';
-
     }
 
     public function getLifeSupportAcceptedAtAttribute()
@@ -673,14 +675,17 @@ class ConnectionApplication extends Model
 
         if (empty($gas) && empty($power)) {
             return '';
-        } else if (empty($gas)) {
+        } elseif (empty($gas)) {
             return $power;
-        } else if (empty($power)) {
+        } elseif (empty($power)) {
             return $gas;
         } else {
             $isPowerLater = Carbon::parse($power)->gt(Carbon::parse($gas));
-            if ($isPowerLater) return $power;
-            else return $gas;
+            if ($isPowerLater) {
+                return $power;
+            } else {
+                return $gas;
+            }
         }
     }
 }

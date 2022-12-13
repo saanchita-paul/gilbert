@@ -16,6 +16,7 @@
                 @updateDraft="updateDraft"
                 @duplicateLead="duplicatedLead"
                 :isLocked="isLocked"
+                @loadPlanNoteAndLead="loadPlanNoteAndLead"
             ></LeadUserDetails>
         </ValidationObserver>
 

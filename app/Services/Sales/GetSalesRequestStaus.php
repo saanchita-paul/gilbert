@@ -9,6 +9,7 @@ use App\Models\APILog;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\Office;
+use App\Services\Application\ApplicationServiceStatusService;
 use App\Services\Logger\LogSalesService;
 use Carbon\Carbon;
 use GraphQL\Client;
@@ -175,7 +176,7 @@ class GetSalesRequestStaus
         //     json_encode($da),
         //     json_encode($header)
         // );
-        
+
         $results = $client->runQuery($gql, true, $da);
 
         //update logger after response from graghql
@@ -215,6 +216,7 @@ class GetSalesRequestStaus
             ->where('provider_name', '=', ConnectionService::PROVIDER_EA)
             ->whereIn('service_type', [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY])
             ->whereNotNull('lead_reference')
+            ->where('lead_reference', '!=', ApplicationServiceStatusService::QUOTE_REFERENCE)
             ->distinct()
             ->get()
             ->unique('lead_reference');

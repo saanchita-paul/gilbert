@@ -2,8 +2,6 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Models\ConnectionApplication;
-use App\Services\Agency\ApplicationService;
-use App\Services\FastConnectService;
 use Powershop\Http\Controllers\PxPayController;
 use Illuminate\Support\Facades\Route;
 
