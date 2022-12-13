@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\ConnectionApplication;
-use App\Services\Agency\HubspotHandlerService;
+use App\Services\hubspot\HubspotHandlerService;
 use Illuminate\Console\Command;
 
 /**
