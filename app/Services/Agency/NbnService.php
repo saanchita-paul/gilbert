@@ -84,6 +84,14 @@ class NbnService
 
     public function submitNBN(array $data, $applicationId)
     {
-        dd($data, $applicationId);
+        $connectionApplication = ConnectionApplication::find($applicationId);
+        $connectionService = $connectionApplication->connectionServices()
+            ->where('service_type', 'internet')
+            ->first();
+        $connectionService->update([
+            'status' => ConnectionService::STATUS_SUBMITTED,
+            'submitted_at' => now(),
+        ]);
+        return $connectionApplication;
     }
 }

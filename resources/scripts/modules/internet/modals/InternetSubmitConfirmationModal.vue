@@ -101,7 +101,7 @@
                                             <span>Shipping Address</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>{{ leadSummary.internet_service_info.address.address_text }}</span>
+                                            <span>{{ internetServiceInfo.address.address_text }}</span>
                                         </div>
                                     </div>
                                 </v-col>
@@ -122,7 +122,7 @@
                                             <span>Modem Type</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>{{ leadSummary.internet_service_info.modem_type }}</span>
+                                            <span>{{ internetServiceInfo.modem_type }}</span>
                                         </div>
                                     </div>
 
@@ -131,7 +131,7 @@
                                             <span>Charity</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>{{ leadSummary.internet_service_info.charity }}</span>
+                                            <span>{{ internetServiceInfo.charity }}</span>
                                         </div>
                                     </div>
 
@@ -196,7 +196,8 @@
                                         </div>
                                         <div class="text-field d-flex justify-end">
                                             <v-switch inset class="mt-0 p-0"
-                                                      v-model="leadSummary.internet_service_info.is_need_home_phone">
+                                                      v-model="internetServiceInfo.is_need_home_phone"
+                                                      @change="isNeedPhonePlanHandler">
                                             </v-switch>
                                         </div>
                                     </div>
@@ -206,7 +207,7 @@
                                             <span>Selected Phone Plan</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>{{ leadSummary.internet_service_info.home_phone_plan }}</span>
+                                            <span>{{ internetServiceInfo.home_phone_plan }}</span>
                                         </div>
                                     </div>
 
@@ -215,7 +216,7 @@
                                             <span>Homephone #</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>{{ leadSummary.internet_service_info.home_phone_number }}</span>
+                                            <span>{{ internetServiceInfo.home_phone_number }}</span>
                                         </div>
                                     </div>
 
@@ -224,7 +225,7 @@
                                             <span>Current Provider</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>{{ leadSummary.internet_service_info.current_provider }}</span>
+                                            <span>{{ internetServiceInfo.current_provider }}</span>
                                         </div>
                                     </div>
 
@@ -243,7 +244,8 @@
                                         </div>
                                         <div class="text-field d-flex justify-end">
                                             <v-switch inset class="mt-0 p-0"
-                                                      v-model="leadSummary.internet_service_info.is_back_to_base">
+                                                      v-model="internetServiceInfo.is_back_to_base"
+                                                      @change="updateInternetServiceInfo">
                                             </v-switch>
                                         </div>
                                     </div>
@@ -254,7 +256,8 @@
                                         </div>
                                         <div class="text-field d-flex justify-end">
                                             <v-switch inset class="mt-0 p-0"
-                                                      v-model="leadSummary.internet_service_info.is_security_alarm">
+                                                      v-model="internetServiceInfo.is_security_alarm"
+                                                      @change="updateInternetServiceInfo">
                                             </v-switch>
                                         </div>
                                     </div>
@@ -290,33 +293,67 @@
 
 <script>
 import DayJs from "dayjs";
+import ApplicationSummary from "@scripts/models/crm/ApplicationSummary";
+import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import InternetService from "@scripts/modules/internet/services/InternetService";
+import InternetServiceInfo from "@scripts/models/crm/InternetServiceInfo";
 
 export default {
     name: "InternetSubmitConfirmationModal",
-    components: {},
     props: {
         dialog: {
-            required: true
-        },
-        leadSummary: {
             required: true
         },
         activePlan: {
             required: true
         }
     },
+    data() {
+        return {
+            leadSummary: new ApplicationSummary(),
+        };
+    },
     computed: {
         date_of_birth() {
             return DayJs(this.leadSummary.date_of_birth).format("DD/MM/YYYY");
         },
+        loadApplicationSummary() {
+            return LeadApplicationService.loadApplicationSummary();
+        },
+        internetServiceInfo: {
+            get() {
+                return InternetService.loadInternetServiceInfo();
+            },
+            async set(value) {
+                return await InternetService.updateInternetServiceInfo(value, this.leadSummary.id);
+            }
+        },
+    },
+    async mounted() {
+        this.leadSummary = await this.loadApplicationSummary;
+        this.internetServiceInfo = await this.internetServiceInfo;
     },
     methods: {
         backToEdit() {
             this.$emit('backToEdit');
         },
         confirmSubmit() {
-            this.$emit('confirmSubmit');
-        }
+            this.$eventBus.$emit("nbn_submitted");
+        },
+        updateInternetServiceInfo() {
+            ({internetServiceInfo: this.internetServiceInfo} = this);
+        },
+        isNeedPhonePlanHandler() {
+            if (!this.internetServiceInfo.is_need_home_phone) {
+                this.internetServiceInfo.home_phone_provider = null;
+                this.internetServiceInfo.home_phone_plan = null;
+                this.internetServiceInfo.is_existing_landline = false;
+                this.internetServiceInfo.home_phone_number = null;
+                this.internetServiceInfo.current_provider = null;
+                this.internetServiceInfo.account_number = null;
+            }
+            this.updateInternetServiceInfo();
+        },
     }
 }
 </script>

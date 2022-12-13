@@ -159,8 +159,6 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/applications/{applicationId}/duplicate', [DuplicationApplicationController::class, 'getDuplicateLeads'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 
-
-    //todo: make a  separate controller for notes
     Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_NOTES);
     Route::post('/applications/{id}/notes', [NoteController::class, 'createConnectionNotes'])

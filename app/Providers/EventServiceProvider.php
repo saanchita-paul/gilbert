@@ -52,7 +52,6 @@ class EventServiceProvider extends ServiceProvider
             WaterServiceListener::class,
             EnergySubmitListener::class,
             CreatePlanNoteListener::class,
-
         ],
         CreateApplicationEvent::class => [
             CreateHubSpotContact::class,

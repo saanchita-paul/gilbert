@@ -23,6 +23,12 @@ const updateNbnProvider = async (data, leadId) => {
     return response;
 }
 
+const submitNBN = async (data, leadId) => {
+    const response = await InternetAPI.NBNSubmit(data, leadId);
+    await loadProviderData(leadId);
+    return response;
+}
+
 const loadProviderData = async (leadId) => {
     const leadData = await LeadApplicationService.loadUserLead(leadId);
     setInternetProvider(leadData.internet_service_info.connection_service.provider_name);
@@ -61,4 +67,5 @@ export default {
     setInternetStatus,
     updateNbnProvider,
     loadProviderData,
+    submitNBN
 };

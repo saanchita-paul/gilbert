@@ -55,10 +55,9 @@ class NbnController extends Controller
     {
         try {
             $service = new NbnService();
-            $inputData = $request->toArray();
-            $service->submitNBN($inputData, $applicationId);
+            $inputData = $request->toArray();;
 
-            return response()->json(['success' => true, 'message' => 'NBN submitted successfully.']);
+            return ApplicationResource::make($service->submitNBN($inputData, $applicationId));
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

@@ -71,7 +71,7 @@
                                 </v-checkbox>
                             </div>
 
-                            <div v-if="internetServiceInfo.is_need_home_phone">
+                            <div v-if="internetServiceInfo.is_need_home_phone && internetServiceInfo.is_existing_landline">
                                 <div class="crm-text-field">
                                     <div class="field-label">
                                         <span>Homephone no.*</span>
@@ -79,7 +79,7 @@
                                     <div class="text-field">
                                         <ValidationProvider
                                             name="Home phone number"
-                                            :rules="internetServiceInfo.is_existing_landline ? 'required' : ''"
+                                            rules="required"
                                             v-slot="{ errors }"
                                         >
                                             <v-text-field
@@ -88,6 +88,7 @@
                                                 hide-details="auto"
                                                 placeholder="Home Phone No"
                                                 v-model="internetServiceInfo.home_phone_number"
+                                                :error-messages="errors[0]"
                                                 @blur="updateInternetServiceInfo"
                                             ></v-text-field>
                                         </ValidationProvider>
@@ -101,7 +102,7 @@
                                     <div class="text-field">
                                         <ValidationProvider
                                             name="Current provider"
-                                            :rules="internetServiceInfo.is_existing_landline ? 'required' : ''"
+                                            rules="required"
                                             v-slot="{ errors }"
                                         >
                                             <v-text-field
@@ -111,6 +112,7 @@
                                                 placeholder="Current Provider"
                                                 v-model="internetServiceInfo.current_provider"
                                                 @blur="updateInternetServiceInfo"
+                                                :error-messages="errors[0]"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </div>
@@ -123,7 +125,7 @@
                                     <div class="text-field">
                                         <ValidationProvider
                                             name="Account number"
-                                            :rules="internetServiceInfo.is_existing_landline ? 'required' : ''"
+                                            rules="required"
                                             v-slot="{ errors }"
                                         >
                                             <v-text-field
@@ -132,6 +134,7 @@
                                                 hide-details="auto"
                                                 placeholder="Account Number"
                                                 v-model="internetServiceInfo.account_number"
+                                                :error-messages="errors[0]"
                                                 @blur="updateInternetServiceInfo"
                                             ></v-text-field>
                                         </ValidationProvider>
@@ -166,6 +169,7 @@
                                                 placeholder="One Time Password"
                                                 v-model="internetServiceInfo.otp"
                                                 @blur="updateInternetServiceInfo"
+                                                :error-messages="errors[0]"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </div>
@@ -188,6 +192,7 @@
                                                 :items="modemTypesItems"
                                                 placeholder="Choose Modem Type"
                                                 v-model="internetServiceInfo.modem_type"
+                                                :error-messages="errors[0]"
                                                 @blur="updateInternetServiceInfo"
                                             >
                                             </v-select>
@@ -212,6 +217,7 @@
                                                 :items="charityItems"
                                                 placeholder="Please select"
                                                 v-model="internetServiceInfo.charity"
+                                                :error-messages="errors[0]"
                                                 @blur="updateInternetServiceInfo"
                                             >
                                             </v-select>
@@ -321,7 +327,8 @@ import InternetPlan from "@scripts/modules/internet/components/InternetPlan";
 import InternetPlanDetails from "@scripts/modules/internet/components/InternetPlanDetails";
 import InternetSubmitConfirmationModal from "@scripts/modules/internet/modals/InternetSubmitConfirmationModal";
 import InternetService from "@scripts/modules/internet/services/InternetService";
-import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
+import ApplicationSummary from "@scripts/models/crm/ApplicationSummary";
+import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 
 export default {
     name: "InternetService.",
@@ -331,13 +338,9 @@ export default {
         InternetPlanDetails,
         InternetSubmitConfirmationModal
     },
-    props: {
-        leadSummary: {
-            required: true
-        }
-    },
     data() {
         return {
+            leadSummary: new ApplicationSummary(),
             viewPlanDetails: false,
             plans: null,
             showInternetSubmitModal: false,
@@ -377,11 +380,20 @@ export default {
                 return await InternetService.updateInternetServiceInfo(value, this.leadSummary.id);
             }
         },
+        loadApplicationSummary() {
+            return LeadApplicationService.loadApplicationSummary();
+        }
     },
     async mounted() {
+        this.leadSummary = await this.loadApplicationSummary;
         await InternetService.loadProviderData(this.leadSummary.id);
         this.onSelectProvider(this.selectedProvider);
         this.setActivePlan(this.selectedPlan);
+        this.$eventBus.$on("nbn_submitted", async () => {
+            console.log("nbn_submitted");
+            await this.confirmSubmit();
+            this.$eventBus.$off("nbn_submitted");
+        });
     },
     methods: {
         reviewPlan() {
@@ -416,19 +428,24 @@ export default {
             this.updateInternetServiceInfo();
         },
         submit() {
+            let v = this.$eventBus.$emit('nbn_submit_validate');
+
+            console.log(!v);
+            return;
             this.showInternetSubmitModal = true;
         },
         backToEdit() {
             this.showInternetSubmitModal = false;
         },
-        confirmSubmit() {
+        async confirmSubmit() {
+            await InternetService.submitNBN({service_type: 'internet'}, this.leadSummary.id);
             this.showInternetSubmitModal = false;
         },
         updateInternetServiceInfo() {
             ({internetServiceInfo: this.internetServiceInfo} = this);
         },
         isNeedPhonePlanHandler() {
-            if (!this.internetServiceInfo.is_need_phone_plan) {
+            if (!this.internetServiceInfo.is_need_home_phone) {
                 this.internetServiceInfo.home_phone_provider = null;
                 this.internetServiceInfo.home_phone_plan = null;
                 this.internetServiceInfo.is_existing_landline = false;
