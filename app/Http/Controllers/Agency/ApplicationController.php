@@ -10,6 +10,9 @@ use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Requests\Agency\ProviderRequest;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationResource;
+use App\Http\Resources\Agency\DuplicationApplicationResource;
+use App\Jobs\AutoAssignAppToChatbotJob;
+use App\Jobs\GilbertToChatbotJob;
 use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
@@ -17,6 +20,8 @@ use App\Models\ConnectionService;
 use App\Models\TSACallHistory;
 use App\Models\User;
 use App\Services\Agency\ApplicationService;
+use App\Services\Agency\AutoAssignApplicationService;
+use App\Services\Agency\TriageFlagService;
 use App\Services\Agency\WaterAutoSubmitService;
 use App\Services\Application\ApplicationLockUnlockService;
 use App\Services\Application\ApplicationsMetricsService;
@@ -82,17 +87,24 @@ class ApplicationController extends Controller
      */
     public function create(ApplicationRequest $request)
     {
+
+        set_time_limit(180);
+
+
         try {
             /** @var  User $user */
             $user = Auth::user();
 
             $service = new ApplicationService();
             $application = $service->createApplication($request->toArray(), $user);
+
+            // Auto assign application to chatbot
+            AutoAssignAppToChatbotJob::dispatch($application);
+
             CreateApplicationEvent::dispatch($application->id);
             NotifyAgentAfterLeadCreation::dispatch($application->id);
 
             return ApplicationResource::make($application);
-
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

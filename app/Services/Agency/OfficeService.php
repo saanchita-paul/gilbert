@@ -8,12 +8,14 @@ use App\Models\Agency;
 use App\Models\AgentProfile;
 use App\Models\HoodProfile;
 use App\Models\Office;
+use App\Models\OfficeAutoAssignTimeSlot;
 use App\Models\OfficeCommission;
 
 class OfficeService
 {
 
     private int $id;
+
     public function __construct(int $id)
     {
         $this->id = $id;
@@ -26,8 +28,10 @@ class OfficeService
         $office['commissions'] = $this->getOfficeCommistion();
         $office['agent'] = $this->getAgent();
         $office['hood_users'] = $this->getHoodUser();
+        $office['time_slots'] = [$this->getOfficeTimeSlots()];
         return $office;
     }
+
     public function getOnlyOffice()
     {
         $office = Office::findOrFail($this->id)->toArray();
@@ -38,12 +42,12 @@ class OfficeService
 
     public function getOfficeCommistion()
     {
-        return OfficeCommission::query()->where('office_id','=', $this->id)->get();
+        return OfficeCommission::query()->where('office_id', '=', $this->id)->get();
     }
 
     public function getAgent()
     {
-        return AgentProfile::query()->with('user')->where('office_id','=', $this->id)->first();
+        return AgentProfile::query()->with('user')->where('office_id', '=', $this->id)->first();
     }
 
     public function getHoodUser()
@@ -51,4 +55,15 @@ class OfficeService
         return HoodProfile::query()->get();
     }
 
+    public function getOfficeTimeSlots()
+    {
+        $timeSlot = OfficeAutoAssignTimeSlot::query()->where('office_id', $this->id)
+            ->where('day', strtolower(date('l')))->first();
+        return [
+            'id' => $timeSlot->id ?? null,
+            'day' => $timeSlot->day ?? null,
+            'start_time' => $timeSlot->start_time ?? null,
+            'end_time' => $timeSlot->end_time ?? null,
+        ];
+    }
 }

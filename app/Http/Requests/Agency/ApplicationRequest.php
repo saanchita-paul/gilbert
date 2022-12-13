@@ -31,7 +31,7 @@ class ApplicationRequest extends FormRequest
             'email' => 'required|string|email',
             'phone' => 'nullable|string',
             'tenancy_type' => 'required|integer',
-            'dob' => $request->tenancy_type == 
+            'dob' => $request->tenancy_type ==
                      ConnectionApplication::TENANCY_TYPE_HOME_OWNER ?
                      'nullable|date' : 'required|date', #before_or_equal:-18 years
             'moving_date' => 'required|date', #|after_or_equal:3 days
