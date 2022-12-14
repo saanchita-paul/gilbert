@@ -237,7 +237,9 @@ class ChatbotToGilbertSyncService
         if (isset($this->requestData['rejection_reasons'])) {
             $this->rejectionReasonData = $this->mapRejectionRejection($this->requestData['rejection_reasons']);
         }
-
+        if (isset($this->requestData['escalated_status'])) {
+            $this->applicationData['status'] = $this->requestData['escalated_status']['status'];
+        }
     }
 
 

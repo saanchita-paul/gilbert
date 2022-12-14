@@ -2,144 +2,169 @@
     <div>
 
         <v-form ref="form" autocomplete="off">
-            <div class="d-flex justify-end pt-2">
-                <!-- <slot/> -->
-                <!-- <div class="px-3 py-1 clearButton" @click="clearSearch">
-                    <v-icon medium color="black"> mdi mdi-close </v-icon>
-                      Clear Filter
-                </div> -->
-                <v-btn v-show="!isSearchEmpty" x-small tile color="#e0e0e0" @click="clearSearch">
-                    <v-icon small left> mdi mdi-close</v-icon>
-                    Clear Filter
-                </v-btn>
-            </div>
-            <div class="d-flex">
-                <v-text-field
-                    autocomplete="off"
-                    v-model="$attrs.value.tenant_name"
-                    full-width
-                    outlined
-                    dense
-                    hide-details="auto"
-                    placeholder="Name"
-                    style="background-color: white"
-                    class="my-1 mr-1"
-                />
-                <v-text-field
-                    v-model="$attrs.value.address"
-                    full-width
-                    outlined
-                    dense
-                    hide-details="auto"
-                    placeholder="Address"
-                    style="background-color: white"
-                    class="my-1 mr-1"
-                />
-                <v-text-field
-                    v-model="$attrs.value.phone"
-                    full-width
-                    outlined
-                    dense
-                    hide-details="auto"
-                    placeholder="Mobile"
-                    style="background-color: white"
-                    class="my-1 mr-1"
-                />
-                <!-- lead source start -->
-                <v-select
-                    placeholder="Source"
-                    v-model="$attrs.value.source"
-                    item-text="text"
-                    item-value="value"
-                    :items="srcOptions"
-                    hide-details="auto"
-                    style="background-color: white"
-                    class="my-1 mr-1"
-                    outlined
-                    dense
-                >
-                    <template v-slot:item="{ item, attrs, on }">
-                        <v-list-item link v-bind="attrs" v-on="on">
-                            <v-list-item-avatar>
-                                <v-img :src="item.icon" width="20px"/>
-                            </v-list-item-avatar>
-                            <v-list-item-content>
-                                <v-list-item-title>{{ item.text }}</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                    </template>
-                </v-select>
-                <!-- lead source ends -->
-                <!-- tenancy type starts -->
-                <v-select
-                    placeholder="Tenancy"
-                    v-model="$attrs.value.tenancy_type"
-                    item-text="text"
-                    item-value="value"
-                    :items="tanancyTypeOptions"
-                    hide-details="auto"
-                    style="background-color: white"
-                    class="my-1"
-                    outlined
-                    dense
-                >
-                    <template v-slot:item="{ item, attrs, on }">
-                        <v-list-item link v-bind="attrs" v-on="on">
-                            <v-list-item-content>
-                                <v-list-item-title>{{ item.text }}</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                    </template>
-                </v-select>
-                <!-- tenancy type ends -->
-                <!-- triage starts -->
-                <v-select
-                    placeholder="Triage"
-                    v-model="$attrs.value.triage"
-                    item-text="text"
-                    item-value="value"
-                    :items="triageOptions"
-                    hide-details="auto"
-                    style="background-color: white"
-                    class="my-1 ml-1"
-                    outlined
-                    dense
-                >
-                    <template v-slot:item="{ item, attrs, on }">
-                        <v-list-item link v-bind="attrs" v-on="on">
-                            <v-list-item-content>
-                                <v-list-item-title>{{ item.text }}</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                    </template>
-                </v-select>
-                <!-- triage ends -->
-
-
-
-                <v-text-field
-                    v-model="$attrs.value.tenant_email"
-                    full-width
-                    outlined
-                    dense
-                    hide-details="auto"
-                    placeholder="Email"
-                    style="background-color: white"
-                    class="my-1 ml-1"
-                />
-
-                <v-text-field
-                    hidden
-                    v-model="$attrs.value.duplication_group_id"
-                />
-
-
-            </div>
+            <v-row>
+                <v-col cols="12" class="pb-0">
+                    <div class="d-flex justify-end pt-2">
+                        <v-btn v-show="!isSearchEmpty" x-small tile color="#e0e0e0" @click="clearSearch">
+                            <v-icon small left> mdi mdi-close</v-icon>
+                            Clear Filter
+                        </v-btn>
+                    </div>
+                    <div class="d-flex">
+                        <v-text-field
+                            autocomplete="off"
+                            v-model="$attrs.value.tenant_name"
+                            full-width
+                            outlined
+                            dense
+                            hide-details="auto"
+                            placeholder="Name"
+                            class="my-1 mr-1 width-25"
+                        />
+                        <v-text-field
+                            v-model="$attrs.value.address"
+                            full-width
+                            outlined
+                            dense
+                            hide-details="auto"
+                            placeholder="Address"
+                            class="my-1 mr-1 width-25"
+                        />
+                        <v-text-field
+                            v-model="$attrs.value.phone"
+                            full-width
+                            outlined
+                            dense
+                            hide-details="auto"
+                            placeholder="Mobile"
+                            class="my-1 mr-1 width-25"
+                        />
+                        <v-text-field
+                            v-model="$attrs.value.tenant_email"
+                            full-width
+                            outlined
+                            dense
+                            hide-details="auto"
+                            placeholder="Email"
+                            class="my-1 mr-1 width-25"
+                        />
+                        <v-text-field
+                            hidden
+                            v-model="$attrs.value.duplication_group_id"
+                        />
+                    </div>
+                </v-col>
+                <v-col cols="12" class="pt-0">
+                    <div class="d-flex">
+                        <!-- lead source start -->
+                        <v-select
+                            placeholder="Source"
+                            v-model="$attrs.value.source"
+                            item-text="text"
+                            item-value="value"
+                            :items="srcOptions"
+                            hide-details="auto"
+                            class="my-1 mr-1 width-25"
+                            outlined
+                            dense
+                        >
+                            <template v-slot:item="{ item, attrs, on }">
+                                <v-list-item link v-bind="attrs" v-on="on">
+                                    <v-list-item-avatar>
+                                        <v-img :src="item.icon" width="20px"/>
+                                    </v-list-item-avatar>
+                                    <v-list-item-content>
+                                        <v-list-item-title>{{ item.text }}</v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </template>
+                        </v-select>
+                        <!-- lead source ends -->
+                        <!-- tenancy type starts -->
+                        <v-select
+                            placeholder="Tenancy"
+                            v-model="$attrs.value.tenancy_type"
+                            item-text="text"
+                            item-value="value"
+                            :items="tanancyTypeOptions"
+                            hide-details="auto"
+                            class="my-1 mr-1 width-25"
+                            outlined
+                            dense
+                        >
+                            <template v-slot:item="{ item, attrs, on }">
+                                <v-list-item link v-bind="attrs" v-on="on">
+                                    <v-list-item-content>
+                                        <v-list-item-title>{{ item.text }}</v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </template>
+                        </v-select>
+                        <!-- tenancy type ends -->
+                        <!-- triage starts -->
+                        <v-select
+                            placeholder="Triage"
+                            v-model="$attrs.value.triage"
+                            item-text="text"
+                            item-value="value"
+                            :items="triageOptions"
+                            hide-details="auto"
+                            class="my-1 mr-1 width-25"
+                            outlined
+                            dense
+                        >
+                            <template v-slot:item="{ item, attrs, on }">
+                                <v-list-item link v-bind="attrs" v-on="on">
+                                    <v-list-item-content>
+                                        <v-list-item-title>{{ item.text }}</v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </template>
+                        </v-select>
+                        <!-- triage ends -->
+                        <!-- assignee start -->
+                        <v-select
+                            placeholder="Assignee"
+                            v-model="$attrs.value.assignee"
+                            item-text="proerty_manager_name"
+                            item-value="id"
+                            :items="users"
+                            hide-details="auto"
+                            class="my-1 mr-1 width-25"
+                            outlined
+                            dense
+                        >
+                            <template v-slot:prepend-item>
+                                <div class="assigneeSearch">
+                                    <v-text-field
+                                        label="Search"
+                                        outlined
+                                        dense
+                                        prepend-inner-icon="mdi-magnify"
+                                        hide-details="auto"
+                                        v-model="search"
+                                        @input="changeInput"
+                                    ></v-text-field>
+                                </div>
+                            </template>
+                            <template v-slot:item="{ item, attrs, on }">
+                                <v-avatar size="30">
+                                    <img v-if="item.profile_img" :src="item.profile_img" alt="Image">
+                                    <v-icon v-else large>mdi-account-circle</v-icon>
+                                </v-avatar>
+                                <small class="pl-2">{{ item.proerty_manager_name }}</small>
+                            </template>
+                        </v-select>
+                    </div>
+                </v-col>
+            </v-row>
         </v-form>
     </div>
 </template>
 
 <script>
+import CrmUserService from "@scripts/services/crm/CrmUserService";
+
 export default {
     name: "ApplicationFilter",
     props: ["isSearchEmpty"],
@@ -199,11 +224,44 @@ export default {
             leadSrc: {default: "all"},
             tenancy_Type: {default: "all"},
             triage: {default: "all"},
+
+            assignee: "",
+            search: "",
+            users: [],
+            userSearch: "",
+            page: 1,
+            pageCount: 0,
+            itemsPerPage: 10,
+            totalUserItem: null,
+            options: {
+                itemsPerPage: 10
+            },
         };
+    },
+    async mounted() {
+        await this.loadUserList();
     },
     methods: {
         clearSearch() {
             this.$refs.form.reset();
+        },
+        changeInput() {
+            this.userSearch = this.search;
+            this.loadUserList();
+        },
+        async loadUserList() {
+            const meta = {
+                search: this.userSearch,
+                page: this.options.page,
+                per_page: this.options.itemsPerPage,
+                is_descending: false,
+                sort_by: '',
+            }
+            const data = await CrmUserService.loadAllUser(meta);
+            this.users = data?.users;
+            this.page = data.pagination.current_page;
+            this.itemsPerPage = data.pagination.per_page;
+            this.totalUserItem = data.pagination.total;
         },
     },
     watch: {
@@ -224,5 +282,13 @@ export default {
     &:hover {
         cursor: pointer;
     }
+}
+.assigneeSearch {
+    max-width: 350px;
+    padding: 10px;
+}
+.width-25 {
+    width: 25%;
+    background-color: #FFFFFF;
 }
 </style>
