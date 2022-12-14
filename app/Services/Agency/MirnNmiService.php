@@ -32,7 +32,7 @@ class MirnNmiService
             'is_embedded' => $application->is_embedded ?? null,
         ];
 
-        if ($application && $application->nmi && is_null($application->is_embedded)) {
+        if ($application && $application->nmi && !$application->is_embedded) {
             $svcUtilities = new FastConnectService();
             $result = $svcUtilities->authenticate()->fetchEmbeddedNetwork("", true, $application->id);
         }
