@@ -444,7 +444,7 @@
               placeholder="This is an extra long address, 398 Bourke Road, Camberwell 3124 VIC"
             ></v-textarea>
           </ValidationProvider>
-            <span class="error--text">
+            <span class="error--text" v-if="lead.is_embedded">
               <v-icon color="error">
                   info
               </v-icon>
@@ -464,7 +464,7 @@
               outlined
               dense
               readonly
-              hide-details="auto" :error-messages=" errors[0]"
+              hide-details="auto" :error-messages="errors[0]"
           ></v-textarea>
           </ValidationProvider>
         </div>

@@ -31,9 +31,9 @@ Route::get('/email', function () {
 });
 
 Route::get('/mi-test', function () {
-    $svcUtilities = new \App\Services\Agency\MirnNmiService();
-    $result = $svcUtilities->fetchIsEmbedded(\App\Models\ConnectionApplication::find(5099));
-    dd($result);
+    $mirnNmiResult = \App\Services\Agency\MirnNmiService::fetchMirnNmi(5099);
+    $isEmbeddedResult = \App\Services\Agency\MirnNmiService::fetchIsEmbedded(5099);
+    dd($mirnNmiResult, $isEmbeddedResult);
 });
 
 Route::get('/{vue_capture?}', fn() => view('app'))

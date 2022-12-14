@@ -369,7 +369,6 @@ export default {
 
     async updateAddress(address, leadId) {
         try {
-            console.log(address);
             const response = await axios.put('/api/applications/'+leadId+'/update-address',{address});
             return ApplicationMapper.mapApplication(response.data.data);
         } catch (error) {
