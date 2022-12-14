@@ -70,6 +70,11 @@ class GilbertToChatbotSyncService
         return (new SendApplicationToChatbotAPI())->postApi($this->getMappedData());
     }
 
+    public function lockApp()
+    {
+        return $this->application->update(['is_locked' => true]);
+    }
+
     /**
      * map data
      *
