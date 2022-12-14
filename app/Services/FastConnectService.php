@@ -182,8 +182,7 @@ class FastConnectService
         } catch (\Exception $exception) {
 
             return [
-                'mirn' => null,
-                'nmi' => null,
+                'is_embedded' => null
             ];
         }
     }
