@@ -432,7 +432,7 @@
             rules="required"
             v-slot="{ errors }"
           >
-            <v-textarea
+            <v-textarea class="mb-2"
               @click="openServiceAddress"
               v-model="property_details.address_text"
               style="min-height: 56px !important;"

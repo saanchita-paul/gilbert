@@ -122,8 +122,6 @@
            </v-col>
            <v-col cols="7" class="py-0 my-0">
                <p>{{lead.address_text}}</p>
-           </v-col>
-           <v-col cols="12" class="py-0 my-0">
                <span class="error--text" v-if="lead.is_embedded">
                   <v-icon color="error">
                       info
