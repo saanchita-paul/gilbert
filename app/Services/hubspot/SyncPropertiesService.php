@@ -13,18 +13,45 @@ use Illuminate\Support\Facades\Http;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
+/**
+ *
+ */
 class SyncPropertiesService
 {
+    /**
+     * @var array
+     */
     private array $properties;
+    /**
+     * @var array
+     */
     private array $results;
+    /**
+     * @var ProgressBar
+     */
     private ProgressBar $progressBar;
+    /**
+     * @var ConsoleOutput
+     */
     private ConsoleOutput $output;
+
+
+    /**
+     * @param string $path
+     * @return void
+     * @throws Exception
+     */
+    public static function run(string $path): void
+    {
+        $self = new SyncPropertiesService();
+        $self->sync($path);
+    }
 
 
     /**
      * @throws Exception
      */
-    public function run(string $path): void
+    public function sync(string $path): void
     {
         $this->properties = $this->getPropertiesFromJsonFile($path);
 
@@ -34,6 +61,9 @@ class SyncPropertiesService
         $this->updateConcurrently();
     }
 
+    /**
+     * @return void
+     */
     private function updateConcurrently(): void
     {
         $client = $this->getClient();
@@ -64,6 +94,11 @@ class SyncPropertiesService
         info("RESULT", $this->results);
     }
 
+    /**
+     * @param Response $response
+     * @param $index
+     * @return void
+     */
     private function handleSuccessUpdate(Response $response, $index): void
     {
         $property = $this->properties[$index] ?? null;
@@ -73,6 +108,11 @@ class SyncPropertiesService
         }
     }
 
+    /**
+     * @param RequestException $exception
+     * @param $index
+     * @return void
+     */
     private function handleFailedUpdate(RequestException $exception, $index): void
     {
         if ($exception->getResponse()->getStatusCode() === 404) {
@@ -90,6 +130,10 @@ class SyncPropertiesService
         }
     }
 
+    /**
+     * @param $index
+     * @return void
+     */
     private function createProperty($index): void
     {
         $property = $this->properties[$index] ?? null;
@@ -125,6 +169,9 @@ class SyncPropertiesService
         }
     }
 
+    /**
+     * @return Client
+     */
     private function getClient(): Client
     {
         return new Client(['headers' => [
@@ -133,12 +180,19 @@ class SyncPropertiesService
         ]]);
     }
 
+    /**
+     * @return string
+     */
     private function getURL(): string
     {
         return config('hub_spot.properties_url') . '/contacts';
     }
 
-    private function createProgressBar($count = 0): ProgressBar
+    /**
+     * @param int $count
+     * @return ProgressBar
+     */
+    private function createProgressBar(int $count = 0): ProgressBar
     {
         $p = new ProgressBar($this->output, $count);
         #phpcs:ignore
