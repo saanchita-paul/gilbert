@@ -145,6 +145,7 @@ export default {
                 {text: 'Our Property', value: 'our-property', icon: '/assets/images/icons/company/our-property.png'},
                 {text: 'PropertyMe ', value: 'property_me', icon: '/assets/images/icons/company/propertyMe.png'},
                 {text: 'TApp', value: 't_app', icon: '/assets/images/icons/company/tapp.png'},
+                {text: 'MRI', value: 'mri', icon: '/assets/images/icons/company/mri.png'},
             ],
             headers:  [
                 {

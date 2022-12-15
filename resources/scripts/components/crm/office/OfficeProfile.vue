@@ -103,9 +103,8 @@
                                 :error-messages=" errors[0]"
                             ></v-text-field>
                         </ValidationProvider>
-
-
-                    </v-col>
+                    <MriOfficeDropdown :mriOfficeData="mriOffice" @saveMriOffice="saveMriOffice"></MriOfficeDropdown>
+                </v-col>
 
                     <v-col cols="12">
                         <v-row>
@@ -384,12 +383,14 @@ import OfficeService from "@scripts/services/crm/OfficeService";
 import CreateSuccessfulModal from "@scripts/components/crm/modals/CreateSuccessfulModal";
 import HoodAgentDropdown from "@scripts/components/crm/office/HoodAgentDropdown";
 import TimeSlotsService from "@scripts/services/crm/TimeSlotsService";
+import MriOfficeDropdown from "@scripts/components/crm/office/mri/MriOfficeDropdown";
 
 export default {
     name: "OfficeProfile",
     components: {
         CreateSuccessfulModal,
         HoodAgentDropdown,
+        MriOfficeDropdown
     },
     data() {
         return {
@@ -431,6 +432,10 @@ export default {
                 phone: null,
             },
             selectedAgentId: null,
+            mriOffice: {
+                isMriOffice: false,
+                selectedMriDropdownItem: null
+            },
             time_slots: [
                 {
                     day: null,
@@ -479,6 +484,7 @@ export default {
             await this.updateOffice(this.data?.office);
             await this.updateCommission(this.data?.commissions);
             await this.updateAgent(this.data?.agent);
+            await this.updateMriOffice(this.data?.office?.mri_office);
             this.hood_users = this.data?.hood_users;
             await this.updateTimeSlots(this.data?.time_slots);
         },
@@ -508,6 +514,14 @@ export default {
             this.office.hood_agent_id = data.hood_agent_id;
             this.office.should_notify_agent = data.should_notify_agent;
             this.office.is_chatbot_office = data.is_chatbot_office;
+        },
+        updateMriOffice(data) {
+            this.mriOffice.isMriOffice = !!data;
+            this.mriOffice.selectedMriDropdownItem = {
+                activation_date: data?.activation_date || null,
+                company_name: data?.company_name || null,
+                key: data?.key || null
+            }
         },
 
         updateCommission(commission) {
@@ -595,7 +609,8 @@ export default {
                 office: this.office,
                 commissions: this.synCommissionbeforeSave(),
                 agent: this.agent,
-                time_slots: this.time_slots
+                time_slots: this.time_slots,
+                mriOffice: this.mriOffice
             };
             await OfficeService.updateOffice(officeData, this.activeOffice);
             this.updateConfirmFlag = true;
@@ -628,7 +643,10 @@ export default {
         onEndTimeChange(index, item) {
             this.time_slots[index].all_day = TimeSlotsService.getFullDayTime(item);
         },
-    }
+        saveMriOffice(item) {
+            this.mriOffice.selectedMriDropdownItem = item;
+        }
+    },
 };
 </script>
 

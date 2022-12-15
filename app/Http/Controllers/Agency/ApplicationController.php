@@ -507,11 +507,11 @@ class ApplicationController extends Controller
         $request->validate([
             'email' => 'email'
         ]);
-        try {
+        try {            
             // Check email validation is enabled or not
             if (config('gbg.email_validation')) {
                 $service = new GBGEmailValidationService();
-                $result = $service->validateEmail($request->email);
+                $result = !empty($request->email) ? $service->validateEmail($request->email) : false;
             } else {
                 Log::warning('GGB EMAIL VALIDATION - Email validation is disabled.');
                 $result = true;

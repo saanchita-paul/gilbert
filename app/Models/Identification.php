@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Services\Utility\StateMapService;
 
 /**
  * App\Models\Identification
@@ -82,5 +83,17 @@ class Identification extends Model
     public function connectionApplication()
     {
         return $this->belongsTo(ConnectionApplication::class);
+    }
+
+    /**
+     * Get the full name of state.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getStateAttribute($value)
+    {
+        return !empty($value) ? StateMapService::getFullName($value) : null;
+        // return ucfirst($value);
     }
 }

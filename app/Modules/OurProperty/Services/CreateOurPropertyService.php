@@ -1,8 +1,6 @@
 <?php
 
-
 namespace OurProperty\Services;
-
 
 use App\Events\NotifyAgentAfterLeadCreation;
 use App\Jobs\CreateHubspotProperty;
@@ -229,14 +227,13 @@ class CreateOurPropertyService
                     $res["agency"] = $res["office"]?->agency;
                     throw new Exception("No Agent matched for email: $email. falling back to default agency & office mapping.");
                 }
-    
             } catch (Exception $exception) {
                 Log::error($exception->getMessage());
                 Log::error($exception->getTraceAsString());
-    
+
                 $this->sendAgentNotFoundEmail($exception->getMessage());
             }
-    
+
             $this->officeData = $res;
         }
 

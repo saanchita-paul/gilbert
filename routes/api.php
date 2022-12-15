@@ -25,6 +25,8 @@ use PropertyMe\services\FetchContacts;
 use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\GilbertLeadAPIController;
 use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
+use App\Http\Controllers\Agency\MriOfficeController;
+use MRI\Controllers\TestMriController;
 
 /*
 |--------------------------------------------------------------------------
@@ -297,6 +299,11 @@ Route::get('/applications/{id}/email-manually-verified', [ApplicationController:
  */
 Route::post('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syncProperty']);
 
+/**
+ * MRI Office
+ */
+Route::get('/mri-offices', [MriOfficeController::class, 'getMriOffices']);
+
 
 /**
  * Bellow API are only for testing purpose
@@ -398,3 +405,7 @@ Route::get('/test', function () {
 //    ApplicationFromGilbertJob::dispatch(3);
 
 });
+
+Route::get('/test/mri/agents', [TestMriController::class, 'fetchAgents']);
+
+Route::get('/test/mri/tenancies', [TestMriController::class, 'fetchTenancies']);

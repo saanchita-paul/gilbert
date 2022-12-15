@@ -8,6 +8,7 @@ use App\Models\Office;
 use App\Models\OfficeAutoAssignTimeSlot;
 use App\Models\OfficeCommission;
 use Carbon\Carbon;
+use App\Services\MRI\HandleMRIOfficeService;
 
 class UpdateOfficeService
 {
@@ -21,10 +22,20 @@ class UpdateOfficeService
 
     public function updateOffice($data)
     {
-        info("request data", ['request data' => $data]);
-
         $office = Office::findOrFail($this->id);
         $office->update($data['office']);
+        $mriOffice = $data['mri_office'];
+        $service = new HandleMRIOfficeService($this->id);
+        // Update MRI office
+        if (
+            $mriOffice && !empty($mriOffice['key'])
+            && !empty($mriOffice['company_name'])
+            && !empty($mriOffice['activation_date'])
+        ) {
+            $service->saveMRIOffice($mriOffice);
+        } else {
+            $service->resetMRIOffice();
+        }
 
         if ($data['office']['agency_type'] == 0) {
             $agency = Agency::findOrFail($data['office']['agency_id']);

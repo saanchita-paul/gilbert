@@ -47,8 +47,6 @@ export default {
 
     saveOfficeData: async (officeData, agencyId) => {
         try {
-            // const data = await axios.get('/')
-
             officeData = OfficeMapper.mapOfficeToserver(officeData , agencyId);
             const data = await axios.post('/api/offices',{...officeData});
             return OfficeMapper.mapOffice(data.data.data);
@@ -83,6 +81,7 @@ export default {
     updateOffice: async (office, id) => {
 
         try {
+            office = OfficeMapper.mapMriOfficeToServer(office);
             const data = await axios.post('/api/offices/'+id+'/update',{...office});
 
         } catch (error) {

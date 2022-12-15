@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\OfficeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -155,8 +156,19 @@ class Office extends Model
         return $this->eaClientCredential?->vendor_code ?? config('ea.default_vendor_code');
     }
 
+
     public function timeSlots(): HasMany
     {
         return $this->hasMany(OfficeAutoAssignTimeSlot::class);
+    }
+
+    public function mriOffice()
+    {
+        return $this->hasOne(MriOffice::class);
+    }
+
+    protected static function newFactory()
+    {
+        return OfficeFactory::new();
     }
 }
