@@ -27,7 +27,11 @@ class UpdateOfficeService
         $mriOffice = $data['mri_office'];
         $service = new HandleMRIOfficeService($this->id);
         // Update MRI office
-        if ($mriOffice) {
+        if (
+            $mriOffice && !empty($mriOffice['key'])
+            && !empty($mriOffice['company_name'])
+            && !empty($mriOffice['activation_date'])
+        ) {
             $service->saveMRIOffice($mriOffice);
         } else {
             $service->resetMRIOffice();
@@ -47,7 +51,7 @@ class UpdateOfficeService
     public function updateCommissions($commistions, $office)
     {
         foreach ($commistions as $commission) {
-            if(isset($commission['id']))  {
+            if (isset($commission['id'])) {
                 $officeCmtn = OfficeCommission::findOrFail($commission['id']);
                 $officeCmtn->update($commission);
             } else {
@@ -58,14 +62,14 @@ class UpdateOfficeService
             }
 
         }
-        return OfficeCommission::query()->where('office_id','=', $this->id)->get();
+        return OfficeCommission::query()->where('office_id', '=', $this->id)->get();
     }
 
     public function updateAgent($agentData)
     {
-       $agent = AgentProfile::findOrFail($agentData['id']);
-       $agent->update($agentData);
-       $agent->user->update(["email" => $agentData['email']]);
-       return $agent->refresh();
+        $agent = AgentProfile::findOrFail($agentData['id']);
+        $agent->update($agentData);
+        $agent->user->update(["email" => $agentData['email']]);
+        return $agent->refresh();
     }
 }
