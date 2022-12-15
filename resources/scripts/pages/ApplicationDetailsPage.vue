@@ -13,10 +13,10 @@
                 @readMore="readMore"
                 :leadSummary="leadSummary"
                 @updateAddress="updateAddress"
+                @loadPlanNoteAndLead="loadPlanNoteAndLead"
                 @updateDraft="updateDraft"
                 @duplicateLead="duplicatedLead"
                 :isLocked="isLocked"
-                @loadPlanNoteAndLead="loadPlanNoteAndLead"
             ></LeadUserDetails>
         </ValidationObserver>
 
