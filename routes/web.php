@@ -30,11 +30,5 @@ Route::get('/email', function () {
     return response('hello world');
 });
 
-Route::get('/mi-test', function () {
-    $mirnNmiResult = \App\Services\Agency\MirnNmiService::fetchMirnNmi(5099);
-    $isEmbeddedResult = \App\Services\Agency\MirnNmiService::fetchIsEmbedded(5099);
-    dd($mirnNmiResult, $isEmbeddedResult);
-});
-
 Route::get('/{vue_capture?}', fn() => view('app'))
     ->where('vue_capture', '[\/\w\.-]*');
