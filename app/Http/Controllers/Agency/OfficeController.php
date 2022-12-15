@@ -91,7 +91,11 @@ class OfficeController extends Controller
             $agentData['agency_id'] = $officeData['agency_id'];
 
             // Save MRI office
-            if ($mriOffice) {
+            if (
+                $mriOffice
+                && !empty($mriOffice['key'])
+                && !empty($mriOffice['company_name'])
+                && !empty($mriOffice['activation_date'])) {
                 $service = new HandleMRIOfficeService($office->id);
                 $service->saveMRIOffice($mriOffice);
             }
