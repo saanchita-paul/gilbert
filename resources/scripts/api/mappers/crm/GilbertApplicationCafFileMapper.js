@@ -103,7 +103,7 @@ const mapService = service => {
     }
 }
 
-const mapSelectedService = (services) => {
+const  mapSelectedService = (services) => {
     let filterServices = services.filter(svc => {
         return (svc.service_type === 'gas')
             || (svc.service_type === 'power');

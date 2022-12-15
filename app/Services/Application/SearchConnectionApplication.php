@@ -69,6 +69,8 @@ class SearchConnectionApplication
 
     private ?string $provider = null;
 
+    private ?string $application_service_type = null;
+
     /**
      * @param array $request
      */
@@ -99,6 +101,7 @@ class SearchConnectionApplication
 
         $this->dateStart = !empty($request['start_date']) ? $request['start_date'] : null;
         $this->dateEnd = !empty($request['end_date']) ? $request['end_date'] : null;
+        $this->application_service_type = !empty($request['application_service_type']) ? $request['application_service_type'] : null;
     }
 
     /**
@@ -135,6 +138,7 @@ class SearchConnectionApplication
             ->applyFilterByProvider()
             ->applyDuplicateFilter()
             ->applyDateRangeFilter()
+            ->applyFilterByService()
             ->applySearch();
 
         $this->builder = $this->applySorting($this->builder);
@@ -393,5 +397,15 @@ class SearchConnectionApplication
                 ->where('created_at', '<=', $this->dateEnd);
         }
         return $this;
+    }
+
+    private function applyFilterByService(): static {
+        if ($this->application_service_type) {
+            $this->builder = $this->builder->whereHas('connectionServices', function (Builder $query){
+                $query->whereIn('service_type', ['power', 'gas']);
+            });
+        }
+        return $this;
+
     }
 }
