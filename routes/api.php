@@ -25,6 +25,7 @@ use PropertyMe\services\FetchContacts;
 use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\GilbertLeadAPIController;
 use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
+use App\Http\Controllers\ApplicationEventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -291,7 +292,10 @@ Route::get('/applications/{id}/email-manually-verified', [ApplicationController:
  */
 Route::get('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syncProperty']);
 
-
+/**
+ * application events
+ */
+Route::post('/application-events', [ApplicationEventController::class, 'saveEvent']);
 
 
 /**
