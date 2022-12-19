@@ -360,51 +360,8 @@ Route::get('powers-api', function () {
     dd($re);
 });
 
-//Route::get('/exceltest', function () {
-//    return FastExcel::data(collect([['name'=> 'sanchita'], ['name'=> 'paul']]))->download('file.xlsx');
-//});
 
 
-//Route::post('/gbg-validate-email', function() {
-//
-//    $email = "admin@mail.com";
-//    $service = new GBGEmailValidationService();
-//
-//    return $service->validateEmail($email);
-//
-//});
-
-
-Route::get('/nmi-mirn', function () {
-//    dd('hello');
-    $app = ConnectionApplication::firstOrFail();
-    $app->first_name = 'helllllo';
-    $app->updateOrFail();
-    info('testing', [$app]);
-//    return true;
-//    $app = ConnectionApplication::where('id', 1)->firstOrFail();
-//    $app->update([
-//        'nmi' => 349379
-//    ]);
-
-});
-
-Route::get('/test', function () {
-//    dd('hello');
-    $service = \App\Models\ConnectionService::where('id', 12)->firstOrFail();
-    $service->update([
-        'service_type' => 'electricity',
-        'connection_application_id' => 4,
-        'status' => 1
-    ]);
-//    $service = ConnectionService::update([
-//        'service_type' => 'hgfhg',
-//        'connection_application_id' => 4
-//    ]);
-//    dd($service);
-//    ApplicationFromGilbertJob::dispatch(3);
-
-});
 
 Route::get('/test/mri/agents', [TestMriController::class, 'fetchAgents']);
 
