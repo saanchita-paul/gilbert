@@ -2,8 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\ConnectionApplication;
-use App\Services\Agency\HubspotContactService;
 use App\Services\Sales\GetSalesRequestStaus;
 use Illuminate\Console\Command;
 

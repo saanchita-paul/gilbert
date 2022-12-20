@@ -451,7 +451,6 @@
         "fieldType": "text",
         "formField": true,
         "options": [
-
         ]
     },
     {
@@ -463,7 +462,6 @@
         "fieldType": "text",
         "formField": true,
         "options": [
-
         ]
     },
     {
@@ -475,7 +473,6 @@
         "fieldType": "text",
         "formField": true,
         "options": [
-
         ]
     },
     {
@@ -487,7 +484,6 @@
         "fieldType": "text",
         "formField": true,
         "options": [
-
         ]
     },
     {
@@ -499,7 +495,6 @@
         "fieldType": "text",
         "formField": true,
         "options": [
-
         ]
     },
     {
@@ -511,7 +506,6 @@
         "fieldType": "text",
         "formField": true,
         "options": [
-
         ]
     },
     {
@@ -523,7 +517,6 @@
         "fieldType": "text",
         "formField": true,
         "options": [
-
         ]
     },
     {
@@ -535,7 +528,6 @@
         "fieldType": "text",
         "formField": true,
         "options": [
-
         ]
     },
     {
@@ -547,7 +539,6 @@
         "fieldType": "text",
         "formField": true,
         "options": [
-
         ]
     },
     {
@@ -559,7 +550,6 @@
         "fieldType": "text",
         "formField": true,
         "options": [
-
         ]
     },
     {
@@ -572,7 +562,6 @@
         "formField": true,
         "displayOrder": 6,
         "options": [
-
         ]
     },
     {
@@ -585,7 +574,6 @@
         "formField": true,
         "displayOrder": 6,
         "options": [
-
         ]
     },
     {
@@ -598,10 +586,8 @@
         "formField": true,
         "displayOrder": 6,
         "options": [
-
         ]
     },
-
     {
         "name": "hood_utility_plan",
         "label": "Plan Text",
@@ -612,7 +598,6 @@
         "formField": true,
         "displayOrder": 6,
         "options": [
-
         ]
     },
     {
@@ -625,7 +610,6 @@
         "formField": true,
         "displayOrder": 6,
         "options": [
-
         ]
     },
     {
@@ -638,7 +622,6 @@
         "formField": true,
         "displayOrder": 6,
         "options": [
-
         ]
     },
     {
@@ -651,7 +634,6 @@
         "formField": true,
         "displayOrder": 6,
         "options": [
-
         ]
     },
     {
@@ -664,7 +646,6 @@
         "formField": true,
         "displayOrder": 6,
         "options": [
-
         ]
     },
     {
@@ -677,7 +658,6 @@
         "formField": true,
         "displayOrder": 6,
         "options": [
-
         ]
     },
     {
@@ -690,7 +670,6 @@
         "formField": true,
         "displayOrder": 6,
         "options": [
-
         ]
     },
     {
@@ -703,7 +682,6 @@
         "formField": true,
         "displayOrder": 6,
         "options": [
-
         ]
     },
     {
@@ -716,7 +694,32 @@
         "formField": true,
         "displayOrder": 6,
         "options": [
-
+        ]
+    },
+    {
+        "name": "is_embedded_network",
+        "label": "is embedded network",
+        "description": "is embedded network",
+        "groupName": "contactinformation",
+        "type": "enumeration",
+        "fieldType": "booleancheckbox",
+        "formField": false,
+        "displayOrder": 6,
+        "options": [
+            {
+                "displayOrder" : 0,
+                "hidden" : false,
+                "label" : "Yes",
+                "readOnly" : false,
+                "value" : "Yes"
+            },
+            {
+                "displayOrder" : 0,
+                "hidden" : false,
+                "label" : "No",
+                "readOnly" : false,
+                "value" : "no"
+            }
         ]
     }
 ]

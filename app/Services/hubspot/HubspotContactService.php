@@ -1,20 +1,22 @@
 <?php
 
-namespace App\Services\Agency;
+namespace App\Services\hubspot;
 
 use App\Models\APILog;
-use App\Models\Identification;
-use Illuminate\Http\Client\PendingRequest;
-use Illuminate\Support\Carbon;
-use App\Models\ConnectionService;
 use App\Models\ConnectionApplication;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
+use App\Models\ConnectionService;
 use App\Models\HubspotHistory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Identification;
+use App\Services\Agency\contact_id;
+use App\Services\Agency\hubspot_response;
+use App\Services\Agency\oldApplicationId;
 use App\Services\Logger\ErrorLogService;
 use Illuminate\Database\Eloquent\Collection;
-use PropertyMe\Services\SaveContacts;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class HubspotContactService
 {
