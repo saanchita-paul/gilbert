@@ -174,9 +174,18 @@ class ApplicationService
 
     public function assignUser(string $agentId, int $applicationId)
     {
-        ConnectionApplication::query()
-            ->where('id', $applicationId)
-            ->update(['assigned_to' => $agentId, 'status' => ConnectionApplication::STATUS_ASSIGNED]);
+        $connectionApplication = ConnectionApplication::query()
+            ->where('id', $applicationId)->first();
+
+        if (!$connectionApplication) {
+            throw new \Exception('assignUser: Application not found!');
+        }
+
+        if (!$this->checkAllowableForAssign($connectionApplication)) {
+            throw new \Exception('assignUser: Application has no phone number or suburb/city!');
+        }
+
+        $connectionApplication->update(['assigned_to' => $agentId, 'status' => ConnectionApplication::STATUS_ASSIGNED]);
 
         if (in_array(HoodProfile::find($agentId)->user->roles->first()?->name,
             [RolePermission::ROLE_EXTERNAL_HOOD_TEAM_LEAD])) {
@@ -190,6 +199,11 @@ class ApplicationService
 
         $this->sendToChatbot($applicationId, $agentId);
         return $this->findApplications($applicationId);
+    }
+
+    private function checkAllowableForAssign($connectionApplication)
+    {
+        return $connectionApplication->phone && $connectionApplication->city;
     }
 
     public function sendToChatbot($appId, $hoodUserId)
