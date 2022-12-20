@@ -711,7 +711,7 @@
                 "hidden" : false,
                 "label" : "Yes",
                 "readOnly" : false,
-                "value" : "Yes"
+                "value" : "yes"
             },
             {
                 "displayOrder" : 0,
