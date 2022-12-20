@@ -10,9 +10,9 @@ class ApplicationEventService
     /**
      * save application event
      */
-    public function saveApplicationEvent(array $event)
+    public function saveApplicationEvent($event)
     {
-        $event['event_type'] = ApplicationEvent::TWIDDLE_SMS_CLICK;
+        $event['event_type'] = $event['event_type'] ? ApplicationEvent::EVENT_TYPE[$event['event_type']] : '';
         $checkAppExists = ApplicationEvent::query()->where('app_id', $event['app_id'])->exists();
         if (!$checkAppExists) {
             return ApplicationEvent::query()->create($event);
