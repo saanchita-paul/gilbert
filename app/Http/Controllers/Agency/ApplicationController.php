@@ -99,7 +99,7 @@ class ApplicationController extends Controller
             $application = $service->createApplication($request->toArray(), $user);
 
             // Auto assign application to chatbot
-            AutoAssignAppToChatbotJob::dispatch($application);
+
 
             CreateApplicationEvent::dispatch($application->id);
             NotifyAgentAfterLeadCreation::dispatch($application->id);
