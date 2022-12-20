@@ -2,19 +2,15 @@
 
 namespace App\Jobs\EnergySubmission;
 
-use App\Events\Agency\SubmitApplicationEvent;
 use App\Models\ConnectionApplication;
-use App\Services\Sales\PostSalesService;
+use App\Models\ConnectionService;
 use App\Services\Utility\SumoService;
 use App\thiss\Agency\SubmitApplicationthis;
-use App\Models\ConnectionService;
-use App\Services\Agency\HubspotContactService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Origin\Services\OriginService;
 
 class SumoSubmissionJob implements ShouldQueue
 {
@@ -56,7 +52,7 @@ class SumoSubmissionJob implements ShouldQueue
                 ConnectionApplication::where('id' , $this->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
                 info(json_encode($res));
                 info("Sumo response body 2");
-            } 
+            }
             catch (\Exception $e) {
                 $logError = [
                     'message' => $e->getMessage(),

@@ -238,6 +238,7 @@ class ConnectionApplication extends Model
         'is_locked',
         'mri_application_id',
         'status_log_id',
+        'is_embedded',
     ];
 
 

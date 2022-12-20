@@ -145,6 +145,7 @@ class ApplicationResource extends JsonResource
             'email_manually_verified_by' => $this->email_manually_verified_by,
             'is_generated_caf' => $this->is_generated_caf,
             'chatbot_id' => $this->chatbot_id,
+            'is_embedded' => $this->is_embedded,
         ];
     }
 

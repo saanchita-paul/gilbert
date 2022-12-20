@@ -122,6 +122,12 @@
            </v-col>
            <v-col cols="7" class="py-0 my-0">
                <p>{{lead.address_text}}</p>
+               <span class="error--text" v-if="lead.is_embedded">
+                  <v-icon color="error">
+                      info
+                  </v-icon>
+                  This address is in an <strong>Embedded network.</strong>
+              </span>
            </v-col>
        </v-row>
 

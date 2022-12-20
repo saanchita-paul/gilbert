@@ -3,9 +3,8 @@
 namespace App\Listeners\Agency;
 
 use App\Events\Agency\SubmitApplicationEvent;
-use App\Services\Agency\HubspotContactService;
+use App\Services\hubspot\HubspotContactService;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class UpdateHubSpotContact implements ShouldQueue
 {

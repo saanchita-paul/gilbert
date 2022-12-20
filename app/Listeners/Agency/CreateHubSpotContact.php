@@ -3,9 +3,8 @@
 namespace App\Listeners\Agency;
 
 use App\Events\Agency\CreateApplicationEvent;
+use App\Services\hubspot\HubspotHandlerService;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use App\Services\Agency\HubspotHandlerService;
 
 class CreateHubSpotContact implements ShouldQueue
 {
