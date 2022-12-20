@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="dataLoaded">
         <v-form ref="form" autocomplete="off">
             <v-row>
                 <v-col cols="12" class="pb-0">
@@ -124,7 +124,7 @@
                         <!-- assignee start -->
                         <v-select
                             placeholder="Assignee"
-                            v-model="$attrs.value.assignee"
+                            v-model="selectedAssignee"
                             item-text="proerty_manager_name"
                             item-value="id"
                             :items="users"
@@ -223,6 +223,7 @@ export default {
             leadSrc: {default: "all"},
             tenancy_Type: {default: "all"},
             triage: {default: "all"},
+            dataLoaded: false,
 
             assignee: "",
             search: "",
@@ -237,20 +238,33 @@ export default {
             },
         };
     },
+    computed: {
+        selectedAssignee: {
+            get: function () {
+                let assignee = this.$attrs.value.assignee ?? this.$route.query.assignee;
+                return this.users.find((user) => user.id == assignee);
+            },
+            set: function (newValue) {
+                this.$attrs.value.assignee = newValue;
+            }
+        },
+    },
     async mounted() {
         await this.loadUserList();
+        this.dataLoaded = true;
     },
     methods: {
         clearSearch() {
             this.$refs.form.reset();
         },
         changeInput() {
-            this.userSearch = this.search;
+            this.$attrs.value.assignee_search = this.search;
             this.loadUserList();
         },
         async loadUserList() {
+            this.search = this.$attrs.value.assignee_search ? this.$attrs.value.assignee_search : '';
             const meta = {
-                search: this.userSearch,
+                search: this.$attrs.value.assignee_search || this.$route.query.assignee_search,
                 page: this.options.page,
                 per_page: this.options.itemsPerPage,
                 is_descending: false,
@@ -282,10 +296,12 @@ export default {
         cursor: pointer;
     }
 }
+
 .assigneeSearch {
     max-width: 350px;
     padding: 10px;
 }
+
 .width-25 {
     width: 25%;
     background-color: #FFFFFF;
