@@ -21,6 +21,7 @@ use App\Models\TSACallHistory;
 use App\Models\User;
 use App\Services\Agency\ApplicationService;
 use App\Services\Agency\AutoAssignApplicationService;
+use App\Services\Agency\MirnNmiService;
 use App\Services\Agency\TriageFlagService;
 use App\Services\Agency\WaterAutoSubmitService;
 use App\Services\Application\ApplicationLockUnlockService;
@@ -98,8 +99,9 @@ class ApplicationController extends Controller
             $service = new ApplicationService();
             $application = $service->createApplication($request->toArray(), $user);
 
-            // Auto assign application to chatbot
-
+            // Fetch MIRN, NMI, EMBEDDED NETWORK and set to DB
+            MirnNmiService::fetchMirnNmi($application->id);
+            MirnNmiService::fetchIsEmbedded($application->id);
 
             CreateApplicationEvent::dispatch($application->id);
             NotifyAgentAfterLeadCreation::dispatch($application->id);
@@ -200,6 +202,7 @@ class ApplicationController extends Controller
             $inputData = $request->get('address');
             $svcUtilities = new FastConnectService();
             $result = $svcUtilities->authenticate()->searchAddress($inputData);
+            MirnNmiService::fetchIsEmbedded($applicationId);
             $service = new ApplicationService();
 
             return ApplicationResource::make($service->updateAddress(array_merge($inputData, $result), $applicationId));
@@ -348,8 +351,10 @@ class ApplicationController extends Controller
         try {
             $service = new FastConnectService();
             $res = $service->authenticate()->searchAddress([], true, $id);
-            return response()->json(['success' => true, 'data' => $res]);
+            $res2 = MirnNmiService::fetchIsEmbedded($id);
+            $res = array_merge($res, $res2);
 
+            return response()->json(['success' => true, 'data' => $res]);
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
@@ -507,7 +512,7 @@ class ApplicationController extends Controller
         $request->validate([
             'email' => 'email'
         ]);
-        try {            
+        try {
             // Check email validation is enabled or not
             if (config('gbg.email_validation')) {
                 $service = new GBGEmailValidationService();

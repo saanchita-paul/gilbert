@@ -38,6 +38,7 @@ class FastConnectService
 
             $authorization = 'Bearer ' . $this->accessToken;
             $response = Http::retry(2)->withHeaders([
+
                 'content-type' => 'application/json',
                 'accept' => 'application/json',
                 'authorization' => $authorization,
@@ -124,5 +125,65 @@ class FastConnectService
         }
         return $state;
 
+    }
+
+    public static function makeNmiPayload($nmi)
+    {
+        return [
+            'nmi' => [
+                'nmi' => $nmi,
+                'lookup_provider_id' => 25,
+            ]
+        ];
+    }
+
+    public function fetchEmbeddedNetwork($nmi = "", $applicationFlag = false, $id = null)
+    {
+        try {
+            if ($applicationFlag) {
+                $nmi = ConnectionApplication::find($id, ['nmi'])->nmi;
+            }
+
+            $payload = FastConnectService::makeNmiPayload($nmi);
+
+            Log::info('fast connect embedded payload', $payload);
+
+            $authorization = 'Bearer ' . $this->accessToken;
+            $response = Http::withHeaders([
+                'content-type' => 'application/json',
+                'accept' => 'application/json',
+                'authorization' => $authorization,
+            ])
+                ->withBody(json_encode($payload), 'application/json')
+                ->post(config('fastconnect.root_url') . config('fastconnect.embedded_nmi_uri'));
+
+            $responseData = $response->json();
+
+            $is_embedded = null;
+            if (!empty($responseData['nmi']['result'])) {
+                $is_embedded = $responseData['nmi']['result']['master_data']['embedded_network'];
+            }
+
+            $error = $responseData['nmi']['error'];
+            $no_result = empty($is_embedded);
+
+            if ($no_result && !empty($error)) {
+                throw new \ErrorException($error);
+            }
+
+            if ($applicationFlag) {
+                $connectionApp = ConnectionApplication::find($id);
+                $connectionApp->update(['is_embedded' => $is_embedded]);
+            }
+
+            return [
+                'is_embedded' => $is_embedded,
+            ];
+        } catch (\Exception $exception) {
+
+            return [
+                'is_embedded' => null
+            ];
+        }
     }
 }

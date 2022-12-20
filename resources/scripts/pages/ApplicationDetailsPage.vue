@@ -8,6 +8,7 @@
                 @closeApplicationWithReason="closeApplicationWithReason"
                 @closeApplication="closeApplication"
                 @sendToChatBotConfirmModal="sendToChatBotConfirmModal"
+                @sendToChatBot="sendToChatBot"
                 @eacalate="eacalate"
                 @updateLead="updateLead"
                 @readMore="readMore"
@@ -45,7 +46,8 @@
         <SendToChatBotModal v-if="closeSentConfirm" :dialog="closeSentConfirm" :title="fullName"
                             @done="done"></SendToChatBotModal>
 
-        <!--            <ChatbotInChargeModal v-if="isChatbotInCharge" :dialog="isChatbotInCharge" :title="fullName"></ChatbotInChargeModal>-->
+        <ChatbotInChargeModal v-if="isChatbotInCharge" :dialog="isChatbotInCharge"
+                              :title="fullName"></ChatbotInChargeModal>
 
         <!-- <CloseApplicationModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></CloseApplicationModal> -->
 
@@ -80,7 +82,6 @@
                                    :dialog="sentToChabotConfirmModal"
                                    @continueSendToChatBot="lockApp"
                                    @cancelSendToChatBotConfirmModal="cancelSendToChatBotConfirmModal"></SendToChatbotConfirmModal>
-
     </v-container>
 </template>
 
@@ -266,6 +267,22 @@ export default {
         async sendToChatBotConfirmModal() {
             this.sentToChabotConfirmModal = true;
         },
+        async sendToChatBot() {
+            try {
+                let v = await this.validateLead();
+                if (v) {
+                    // let assignedHoodUser = await this.getAssignedHoodUser();
+                    // if(!assignedHoodUser) {
+                    //     this.assignedToDialog = true;
+                    //     return true;
+                    // }
+                    await LeadApplicationService.sendToChatBot(this.leadId);
+                    this.closeSentConfirm = true;
+                }
+            } catch (error) {
+                console.log('sendToChatBot error', error);
+            }
+        },
         done() {
             this.$router.push({name: 'application.list'});
         },
@@ -395,6 +412,7 @@ export default {
             let response = await LeadApplicationService.updateAddress(address, this.leadId);
             console.log('updateAddress response', response);
             this.leadSummary.nmi = response.nmi;
+            this.leadSummary.is_embedded = response.is_embedded;
             this.leadSummary.mirn = response.mirn;
             this.nmiMernFlag = false;
 
@@ -452,6 +470,7 @@ export default {
                 const nmiMern = await LeadApplicationService.getNmiMern(this.leadId);
                 this.leadSummary.nmi = nmiMern.nmi;
                 this.leadSummary.mirn = nmiMern.mirn;
+                this.leadSummary.is_embedded = nmiMern.is_embedded;
             }
         },
         closeAssignedToEmptyModal() {
