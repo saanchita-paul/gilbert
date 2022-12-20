@@ -16,7 +16,6 @@ class CreateApplicationEventsTable extends Migration
         Schema::create('application_events', function (Blueprint $table) {
             $table->id();
             $table->foreignId('app_id')
-                ->nullable()
                 ->constrained('connection_applications')
                 ->cascadeOnDelete();
             $table->string('event_type', 100)->nullable();

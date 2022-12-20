@@ -9,7 +9,7 @@ class ApplicationEvent extends Model
 {
     use HasFactory;
 
-    const TWIDDLE_SMS_CLICK = 'Twiddle SMS Click';
+    const TWIDDLE_SMS_CLICK = 'twiddle_sms_click';
     const EVENT_TYPE = [
         'twiddle_sms_click' => self::TWIDDLE_SMS_CLICK
     ];
