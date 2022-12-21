@@ -64,7 +64,7 @@ export default {
             this.$emit('openUnlockConfirmModal');
         },
         goToApplicationList() {
-            this.$router.push({name: 'applications'});
+            this.$router.back();
         },
         escalate() {
             this.$emit('escalate');
