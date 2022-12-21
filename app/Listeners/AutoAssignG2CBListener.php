@@ -4,11 +4,12 @@ namespace App\Listeners;
 
 use App\Jobs\AutoAssignAppToChatbotJob;
 use App\Models\ConnectionApplication;
+use Exception;
 use Illuminate\Support\Facades\Log;
 
 class AutoAssignG2CBListener
 {
-    const ALLOWED_SOURCES = [
+    public const ALLOWED_SOURCES = [
         ConnectionApplication::SOURCE_HOOD,
         ConnectionApplication::SOURCE_FOXIE,
         ConnectionApplication::SOURCE_IGNITE,
@@ -32,16 +33,25 @@ class AutoAssignG2CBListener
      *
      * @param object $event
      * @return void
+     * @throws Exception
      */
     public function handle($event)
     {
         $application = ConnectionApplication::find($event->applicationId);
         if (!$application) {
-            throw new \Exception('AutoAssignG2CBListener: Application not found for id ' . $event->applicationId . ' !');
+            throw new Exception(
+                'AutoAssignG2CBListener: Application not found for id '
+                . $event->applicationId
+                . ' !'
+            );
         }
 
         if (!in_array($application->source, self::ALLOWED_SOURCES)) {
-            Log::info('AutoAssignG2CBListener: Application source ' . $application->source . ' is not allowed for auto assign to chatbot!');
+            Log::info(
+                'AutoAssignG2CBListener: Application source '
+                . $application->source
+                . ' is not allowed for auto assign to chatbot!'
+            );
             return;
         }
 
