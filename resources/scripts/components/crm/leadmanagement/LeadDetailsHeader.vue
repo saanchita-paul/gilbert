@@ -150,7 +150,7 @@ name: "LeadDetailsHeader",
     methods: {
         goToBack()
         {
-            this.$router.push({name:'applications'});
+            this.$router.back();
         },
 
         escalate() {
