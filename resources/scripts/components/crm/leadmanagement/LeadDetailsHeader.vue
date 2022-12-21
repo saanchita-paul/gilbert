@@ -200,8 +200,9 @@ export default {
 
     },
     methods: {
-        goToBack() {
-            this.$router.push({name: 'applications'});
+        goToBack()
+        {
+            this.$router.back();
         },
 
         escalate() {
