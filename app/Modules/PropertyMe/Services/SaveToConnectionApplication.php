@@ -2,8 +2,8 @@
 
 namespace App\Modules\PropertyMe\Services;
 
+use App\Events\Agency\CreateApplicationEvent;
 use App\Events\NotifyAgentAfterLeadCreation;
-use App\Jobs\CreateHubspotProperty;
 use App\Models\AgentProfile;
 use App\Models\User;
 use App\Models\ConnectionApplication;
@@ -12,11 +12,9 @@ use App\Models\Identification;
 use App\Models\Office;
 use App\Notifications\ErrorLogNotification;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Notification;
 use PropertyMe\PropertyMeLead;
-use App\Modules\PropertyMe\Services\DobIdentificationService;
 use App\Models\ApplicationNote;
 use App\Models\ConnectionService;
 use App\Services\NotifyBadAgentMailService;
@@ -88,10 +86,10 @@ class SaveToConnectionApplication
         if ($application->id) {
 
             NotifyBadAgentMailService::check(
-                $application, 
-                'PropertyMe', 
-                $this->office->agency->name ?? '', 
-                $this->office->name ?? '', 
+                $application,
+                'PropertyMe',
+                $this->office->agency->name ?? '',
+                $this->office->name ?? '',
                 $lead->agent_email ?? ''
             );
 
@@ -143,7 +141,8 @@ class SaveToConnectionApplication
 
         $this->saveApplicationId($application->id, $lead);
         NotifyAgentAfterLeadCreation::dispatch($application->id);
-        CreateHubspotProperty::dispatch($application->id);
+
+        CreateApplicationEvent::dispatch($application->id);
 
         return $application;
     }
