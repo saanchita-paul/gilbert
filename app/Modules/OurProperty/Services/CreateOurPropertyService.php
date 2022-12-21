@@ -1,9 +1,11 @@
 <?php
 
+
 namespace OurProperty\Services;
 
+
+use App\Events\Agency\CreateApplicationEvent;
 use App\Events\NotifyAgentAfterLeadCreation;
-use App\Jobs\CreateHubspotProperty;
 use App\Mail\OurPropertyAgentNotFoundMail;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
@@ -108,10 +110,10 @@ class CreateOurPropertyService
         $this->connectionApplicaton->save();
 
         NotifyBadAgentMailService::check(
-            $this->connectionApplicaton, 
-            'OurProperty', 
-            $this->userRequestData->agency_name ?? '', 
-            $this->getAgencyAndOffice()['office']->name ?? '', 
+            $this->connectionApplicaton,
+            'OurProperty',
+            $this->userRequestData->agency_name ?? '',
+            $this->getAgencyAndOffice()['office']->name ?? '',
             $this->userRequestData->agent_email ?? ''
         );
 
@@ -124,7 +126,9 @@ class CreateOurPropertyService
             $this->createService($requestData->tenancy_service_type, $this->connectionApplicaton->id);
             $this->createAuthorizedPerson($this->connectionApplicaton->id);
             NotifyAgentAfterLeadCreation::dispatch($this->connectionApplicaton->id);
-            CreateHubspotProperty::dispatch($this->connectionApplicaton->id);
+
+            CreateApplicationEvent::dispatch($this->connectionApplicaton->id);
+
         } catch (Exception $ex) {
             \Log::error("Lead create successful, Identification or Service or Authorization creation fail");
             \Log::error($ex->getMessage());
@@ -227,6 +231,7 @@ class CreateOurPropertyService
                     $res["agency"] = $res["office"]?->agency;
                     throw new Exception("No Agent matched for email: $email. falling back to default agency & office mapping.");
                 }
+
             } catch (Exception $exception) {
                 Log::error($exception->getMessage());
                 Log::error($exception->getTraceAsString());

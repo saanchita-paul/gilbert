@@ -2,6 +2,7 @@
 
 namespace Ignite\Services;
 
+use App\Events\Agency\CreateApplicationEvent;
 use App\Events\NotifyAgentAfterLeadCreation;
 use Ignite\Models\IgniteLead;
 use App\Models\Agency;
@@ -13,7 +14,6 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
-use App\Jobs\CreateHubspotProperty;
 use App\Services\NotifyBadAgentMailService;
 
 use Locale;
@@ -174,7 +174,7 @@ class IgniteLeadService
 
     private function isStateVic($state) : bool
     {
-        return strtolower($state) === 'vic' || strtolower($state) === 'victoria'; 
+        return strtolower($state) === 'vic' || strtolower($state) === 'victoria';
     }
 
     /**
@@ -191,7 +191,7 @@ class IgniteLeadService
                 $agentOfficeId = $agentProfile->office_id;
 
                 $this->connectionApplication->agency_id = $agentAgencyId;
-                $this->connectionApplication->office_id = $agentOfficeId;                    
+                $this->connectionApplication->office_id = $agentOfficeId;
             }
             else{
                 $agencyName = $leadInfo['agency']['name'];
@@ -225,12 +225,12 @@ class IgniteLeadService
 
             $this->setAttributeToIgniteLead($leadInfo);
             $this->lead->save();
-            
+
             $this->setAttributeToApplication($leadInfo);
             $this->setOfficeAndAgencyId($leadInfo);
 
             $this->connectionApplication->status = ConnectionApplication::STATUS_UNASSIGNED;
-            
+
             if ($this->connectionApplication->save()){
                 $this->setIdentificationNew($leadInfo);
             }
@@ -252,7 +252,8 @@ class IgniteLeadService
 
             // hubspot api call for creation
             NotifyAgentAfterLeadCreation::dispatch($this->lead->id);
-            CreateHubspotProperty::dispatch($this->connectionApplication->id);
+
+            CreateApplicationEvent::dispatch($this->connectionApplication->id);
 
             return true;
         } catch (\Exception $exception) {
@@ -286,7 +287,7 @@ class IgniteLeadService
 
     /**
      *  Create dummy new ConnectionApplication via read json from path 'Storage/app/ignite_lead_response.json'
-     * 
+     *
      * @return void
      * @throws Exception
      */
@@ -303,7 +304,7 @@ class IgniteLeadService
             \Log::info($exception->getMessage());
             \Log::error($exception->getTraceAsString());
             throw $exception;
-        }        
+        }
     }
 
     /**
@@ -356,7 +357,7 @@ class IgniteLeadService
         info("IGNITE TATA: " . $this->lead->lead_id);
     }
 
-    private function setIdentificationNew (array $leadInfo) 
+    private function setIdentificationNew (array $leadInfo)
     {
         try {
             if (empty($leadInfo['tenant']['identityDocument'])) {
@@ -364,19 +365,19 @@ class IgniteLeadService
             }
 
             $identityInfo = $leadInfo['tenant']['identityDocument'];
-            
+
             if (!array_key_exists($identityInfo['documentType'], self::MAP_IDENTITY_TYPE)){
                 throw new \Exception(sprintf('Ignite Lead identity type "%s" not valid', $identityInfo['documentType']));
             }
 
             $newIdentification = new Identification();
             $newIdentification->connection_application_id = $this->connectionApplication->id;
-            $newIdentification->type = self::MAP_IDENTITY_TYPE[$identityInfo['documentType']]; 
+            $newIdentification->type = self::MAP_IDENTITY_TYPE[$identityInfo['documentType']];
             $newIdentification->card_number = $identityInfo['licenceNumber'] ?? ($identityInfo['passportNumber'] ?? null);
             $newIdentification->state  = self::MAP_STATE[strtolower( $identityInfo['licenceState'] )] ?? null;
-            $newIdentification->expire_date = $identityInfo['licenceExpiryDate'] ?? ($identityInfo['passportExpiryDate'] ?? null); 
+            $newIdentification->expire_date = $identityInfo['licenceExpiryDate'] ?? ($identityInfo['passportExpiryDate'] ?? null);
             if (!empty($identityInfo['passportCountryCode'])) $newIdentification->country = Locale::getDisplayRegion(sprintf('-%s', $identityInfo['passportCountryCode']));
-            
+
             $newIdentification->save();
 
         } catch (\Exception $e){
