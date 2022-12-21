@@ -6,6 +6,7 @@ use App\Http\Controllers\Agency\AppCloseReasonController;
 use App\Http\Controllers\Agency\ApplicationController;
 use App\Http\Controllers\Agency\DuplicationApplicationController;
 use App\Http\Controllers\Agency\HoodUserController;
+use App\Http\Controllers\Agency\NbnController;
 use App\Http\Controllers\Agency\NoteController;
 use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ReaExtractsReportController;
@@ -146,11 +147,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_CLOSE_APPLICATION);
     Route::put('/applications/{applicationId}/update-address', [ApplicationController::class, 'updateAddress'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_ADDRESS);
-    Route::put(
-        '/applications/{applicationId}/update-internet-service-info',
-        [ApplicationController::class, 'updateInternetServiceInfo']
-    )
-        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_ADDRESS);
+
     Route::post('/applications/{applicationId}/draft', [ApplicationController::class, 'saveDraft'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
     Route::post('/applications/{applicationId}/save-email', [ApplicationController::class, 'saveEmail'])
@@ -163,8 +160,6 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/applications/{applicationId}/duplicate', [DuplicationApplicationController::class, 'getDuplicateLeads'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 
-
-    //todo: make a  separate controller for notes
     Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_NOTES);
     Route::post('/applications/{id}/notes', [NoteController::class, 'createConnectionNotes'])
@@ -199,6 +194,20 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     // REA extracts report
     Route::get('/rea-extract/report', [ReaExtractsReportController::class, 'getReaReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
+
+    // NBN Routes
+    Route::put(
+        '/applications/{applicationId}/update-internet-service-info',
+        [NbnController::class, 'updateInternetServiceInfo']
+    )->middleware('permission:' . RolePermissionService::CAN_UPDATE_ADDRESS);
+    Route::put(
+        '/applications/{applicationId}/update-nbn-provider',
+        [NbnController::class, 'updateNbnProvider']
+    )->middleware('permission:' . RolePermissionService::CAN_UPDATE_SERVICE_PROVIDERS);
+    Route::post(
+        '/applications/{applicationId}/nbn-submit',
+        [NbnController::class, 'submitNbn']
+    )->middleware('permission:' . RolePermissionService::CAN_UPDATE_SERVICE_PROVIDERS);
 
     /***
      * Send to chatbot

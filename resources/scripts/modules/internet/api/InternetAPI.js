@@ -19,7 +19,27 @@ const updateInternetServiceInfo = async (data, leadId) => {
     }
 }
 
+const updateNbnProviderInfo = async (data, leadId) => {
+    try {
+        const response = (await axios.put('/api/applications/' + leadId + '/update-nbn-provider', data)).data;
+        return response.data;
+    } catch (error) {
+        return error.data;
+    }
+}
+
+const NBNSubmit = async (data, leadId) => {
+    try {
+        const response = (await axios.post('/api/applications/' + leadId + '/nbn-submit', data)).data;
+        return response.data;
+    } catch (error) {
+        return error.data;
+    }
+}
+
 export default {
     getProviderAndPlan,
-    updateInternetServiceInfo
+    updateInternetServiceInfo,
+    updateNbnProviderInfo,
+    NBNSubmit
 };

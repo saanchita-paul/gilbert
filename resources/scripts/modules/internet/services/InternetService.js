@@ -2,6 +2,7 @@ import InternetServiceConstant from "@scripts/modules/internet/constants/Interne
 import InternetAPI from "@scripts/modules/internet/api/InternetAPI";
 import Store from "@scripts/store";
 import InternetServiceInfoMapper from "@scripts/data/InternetServiceInfoMapper";
+import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 
 // get modem types
 const getModemTypes = () => InternetServiceConstant.MODEM_TYPES;
@@ -14,6 +15,26 @@ const updateInternetServiceInfo = async (data, leadId) => {
     const response = await InternetAPI.updateInternetServiceInfo(data, leadId);
     Store.commit('internetServiceInfoStore/setInternetServiceInfo', InternetServiceInfoMapper.mapData(response.internet_service_info));
     return response;
+}
+
+const updateNbnProvider = async (data, leadId) => {
+    const response = await InternetAPI.updateNbnProviderInfo(data, leadId);
+    await loadProviderData(leadId);
+    return response;
+}
+
+const submitNBN = async (data, leadId) => {
+    const response = await InternetAPI.NBNSubmit(data, leadId);
+    await loadProviderData(leadId);
+    return response;
+}
+
+const loadProviderData = async (leadId) => {
+    const leadData = await LeadApplicationService.loadUserLead(leadId);
+    setInternetProvider(leadData.internet_service_info.connection_service.provider_name);
+    setInternetPlan(leadData.internet_service_info.connection_service.plan_type);
+    setInternetStatus(leadData.internet_service_info.connection_service.status);
+    return leadData;
 }
 
 const loadInternetServiceInfo = () => {
@@ -43,5 +64,8 @@ export default {
     getInternetPlan,
     setInternetPlan,
     getInternetStatus,
-    setInternetStatus
+    setInternetStatus,
+    updateNbnProvider,
+    loadProviderData,
+    submitNBN
 };

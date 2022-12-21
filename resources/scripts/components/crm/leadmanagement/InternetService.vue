@@ -18,7 +18,7 @@
             <div class="d-flex w-100 overflow-auto">
                 <InternetPlan
                     @reviewPlan="reviewPlan"
-                    :isActive="selectedPlan"
+                    :selectedPlan="selectedPlan"
                     v-for="(plan, index) in plans"
                     :key="index"
                     :plan="plan"
@@ -49,14 +49,14 @@
                                     <v-switch v-model="internetServiceInfo.is_need_home_phone"
                                               inset
                                               class="mt-0"
-                                              @change="updateInternetServiceInfo"
+                                              @change="isNeedPhonePlanHandler"
                                     ></v-switch>
                                 </div>
                             </div>
 
-                            <div>
+                            <div v-if="internetServiceInfo.is_need_home_phone">
                                 <p class="mb-0">Home Phone Plans</p>
-                                <div class="home-plan">
+                                <div class="home-plan" @click="selectPhonePlan()">
                                     <div class="pa-2">
                                         <p class="mb-0 text-internet">Phone Calls</p>
                                         <p class="black--text font-weight-bold">$10/month</p>
@@ -64,27 +64,34 @@
                                 </div>
                             </div>
 
-                            <div>
+                            <div v-if="internetServiceInfo.is_need_home_phone">
                                 <v-checkbox v-model="internetServiceInfo.is_existing_landline"
                                             @change="updateInternetServiceInfo"
                                             :label="`Do you have an existing landline phone number you'd like to bring to your new service? *`">
                                 </v-checkbox>
                             </div>
 
-                            <div>
+                            <div v-if="internetServiceInfo.is_need_home_phone && internetServiceInfo.is_existing_landline">
                                 <div class="crm-text-field">
                                     <div class="field-label">
                                         <span>Homephone no.*</span>
                                     </div>
                                     <div class="text-field">
-                                        <v-text-field
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            placeholder="Home Phone No"
-                                            v-model="internetServiceInfo.home_phone_number"
-                                            @blur="updateInternetServiceInfo"
-                                        ></v-text-field>
+                                        <ValidationProvider
+                                            name="Home phone number"
+                                            rules="required"
+                                            v-slot="{ errors }"
+                                        >
+                                            <v-text-field
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                placeholder="Home Phone No"
+                                                v-model="internetServiceInfo.home_phone_number"
+                                                :error-messages="errors[0]"
+                                                @blur="updateInternetServiceInfo"
+                                            ></v-text-field>
+                                        </ValidationProvider>
                                     </div>
                                 </div>
 
@@ -93,14 +100,21 @@
                                         <span>Current Provider*</span>
                                     </div>
                                     <div class="text-field">
-                                        <v-text-field
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            placeholder="Current Provider"
-                                            v-model="internetServiceInfo.current_provider"
-                                            @blur="updateInternetServiceInfo"
-                                        ></v-text-field>
+                                        <ValidationProvider
+                                            name="Current provider"
+                                            rules="required"
+                                            v-slot="{ errors }"
+                                        >
+                                            <v-text-field
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                placeholder="Current Provider"
+                                                v-model="internetServiceInfo.current_provider"
+                                                @blur="updateInternetServiceInfo"
+                                                :error-messages="errors[0]"
+                                            ></v-text-field>
+                                        </ValidationProvider>
                                     </div>
                                 </div>
 
@@ -109,14 +123,21 @@
                                         <span>Account Number*</span>
                                     </div>
                                     <div class="text-field">
-                                        <v-text-field
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            placeholder="Account Number"
-                                            v-model="internetServiceInfo.account_number"
-                                            @blur="updateInternetServiceInfo"
-                                        ></v-text-field>
+                                        <ValidationProvider
+                                            name="Account number"
+                                            rules="required"
+                                            v-slot="{ errors }"
+                                        >
+                                            <v-text-field
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                placeholder="Account Number"
+                                                v-model="internetServiceInfo.account_number"
+                                                :error-messages="errors[0]"
+                                                @blur="updateInternetServiceInfo"
+                                            ></v-text-field>
+                                        </ValidationProvider>
                                     </div>
                                 </div>
                             </div>
@@ -136,14 +157,21 @@
                                         <span>Setup OTP</span>
                                     </div>
                                     <div class="text-field">
-                                        <v-text-field
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            placeholder="One Time Password"
-                                            v-model="internetServiceInfo.otp"
-                                            @blur="updateInternetServiceInfo"
-                                        ></v-text-field>
+                                        <ValidationProvider
+                                            name="OTP"
+                                            rules="required"
+                                            v-slot="{ errors }"
+                                        >
+                                            <v-text-field
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                placeholder="One Time Password"
+                                                v-model="internetServiceInfo.otp"
+                                                @blur="updateInternetServiceInfo"
+                                                :error-messages="errors[0]"
+                                            ></v-text-field>
+                                        </ValidationProvider>
                                     </div>
                                 </div>
 
@@ -152,16 +180,23 @@
                                         <span>Modem Type</span>
                                     </div>
                                     <div class="text-field">
-                                        <v-select
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            :items="modemTypesItems"
-                                            placeholder="Choose Modem Type"
-                                            v-model="internetServiceInfo.modem_type"
-                                            @blur="updateInternetServiceInfo"
+                                        <ValidationProvider
+                                            name="Modem type"
+                                            rules="required"
+                                            v-slot="{ errors }"
                                         >
-                                        </v-select>
+                                            <v-select
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                :items="modemTypesItems"
+                                                placeholder="Choose Modem Type"
+                                                v-model="internetServiceInfo.modem_type"
+                                                :error-messages="errors[0]"
+                                                @blur="updateInternetServiceInfo"
+                                            >
+                                            </v-select>
+                                        </ValidationProvider>
                                     </div>
                                 </div>
 
@@ -170,16 +205,23 @@
                                         <span>Charity</span>
                                     </div>
                                     <div class="text-field">
-                                        <v-select
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            :items="charityItems"
-                                            placeholder="Please select"
-                                            v-model="internetServiceInfo.charity"
-                                            @blur="updateInternetServiceInfo"
+                                        <ValidationProvider
+                                            name="Charity"
+                                            rules="required"
+                                            v-slot="{ errors }"
                                         >
-                                        </v-select>
+                                            <v-select
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                :items="charityItems"
+                                                placeholder="Please select"
+                                                v-model="internetServiceInfo.charity"
+                                                :error-messages="errors[0]"
+                                                @blur="updateInternetServiceInfo"
+                                            >
+                                            </v-select>
+                                        </ValidationProvider>
                                     </div>
                                 </div>
 
@@ -273,6 +315,8 @@
             :dialog="showInternetSubmitModal"
             @confirmSubmit="confirmSubmit"
             @backToEdit="backToEdit"
+            :leadSummary="leadSummary"
+            :activePlan="activePlan"
         ></InternetSubmitConfirmationModal>
     </v-card>
 </template>
@@ -283,7 +327,8 @@ import InternetPlan from "@scripts/modules/internet/components/InternetPlan";
 import InternetPlanDetails from "@scripts/modules/internet/components/InternetPlanDetails";
 import InternetSubmitConfirmationModal from "@scripts/modules/internet/modals/InternetSubmitConfirmationModal";
 import InternetService from "@scripts/modules/internet/services/InternetService";
-import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
+import ApplicationSummary from "@scripts/models/crm/ApplicationSummary";
+import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 
 export default {
     name: "InternetService.",
@@ -293,18 +338,15 @@ export default {
         InternetPlanDetails,
         InternetSubmitConfirmationModal
     },
-    props: {
-        leadSummary: {
-            require: true
-        }
-    },
     data() {
         return {
+            leadSummary: new ApplicationSummary(),
             viewPlanDetails: false,
             plans: null,
             showInternetSubmitModal: false,
             modemTypesItems: InternetService.getModemTypes(),
             charityItems: InternetService.getCharityItems(),
+            activePlan: {},
         }
     },
     computed: {
@@ -338,8 +380,20 @@ export default {
                 return await InternetService.updateInternetServiceInfo(value, this.leadSummary.id);
             }
         },
+        loadApplicationSummary() {
+            return LeadApplicationService.loadApplicationSummary();
+        }
     },
-    mounted() {
+    async mounted() {
+        this.leadSummary = await this.loadApplicationSummary;
+        await InternetService.loadProviderData(this.leadSummary.id);
+        this.onSelectProvider(this.selectedProvider);
+        this.setActivePlan(this.selectedPlan);
+        this.$eventBus.$on("nbn_submitted", async () => {
+            console.log("nbn_submitted");
+            await this.confirmSubmit();
+            this.$eventBus.$off("nbn_submitted");
+        });
     },
     methods: {
         reviewPlan() {
@@ -355,20 +409,52 @@ export default {
             this.plans = selectedProvider.plans;
         },
         selectPlan(plan) {
-            this.selectedPlan = plan.name;
+            this.selectedPlan = plan.value;
+            const formData = {
+                provider_name: this.selectedProvider,
+                plan_type: this.selectedPlan,
+                service_type: 'internet'
+            };
+            InternetService.updateNbnProvider(formData, this.leadSummary.id);
+        },
+        setActivePlan(plan) {
+            this.activePlan = this.plans.find(dt => {
+                return dt.value === plan;
+            });
+        },
+        selectPhonePlan(plan = 'standard') {
+            this.internetServiceInfo.home_phone_provider = this.selectedProvider;
+            this.internetServiceInfo.home_phone_plan = plan;
+            this.updateInternetServiceInfo();
         },
         submit() {
+            let v = this.$eventBus.$emit('nbn_submit_validate');
+
+            console.log(!v);
+            return;
             this.showInternetSubmitModal = true;
         },
         backToEdit() {
             this.showInternetSubmitModal = false;
         },
-        confirmSubmit() {
+        async confirmSubmit() {
+            await InternetService.submitNBN({service_type: 'internet'}, this.leadSummary.id);
             this.showInternetSubmitModal = false;
         },
         updateInternetServiceInfo() {
             ({internetServiceInfo: this.internetServiceInfo} = this);
-        }
+        },
+        isNeedPhonePlanHandler() {
+            if (!this.internetServiceInfo.is_need_home_phone) {
+                this.internetServiceInfo.home_phone_provider = null;
+                this.internetServiceInfo.home_phone_plan = null;
+                this.internetServiceInfo.is_existing_landline = false;
+                this.internetServiceInfo.home_phone_number = null;
+                this.internetServiceInfo.current_provider = null;
+                this.internetServiceInfo.account_number = null;
+            }
+            this.updateInternetServiceInfo();
+        },
     }
 }
 </script>

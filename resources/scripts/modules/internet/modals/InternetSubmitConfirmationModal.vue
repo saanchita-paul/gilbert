@@ -14,7 +14,9 @@
                         <div class="flex-basis-58">
                             <v-row>
                                 <v-col cols="12">
-                                    <h2 class="primary--text">Mr. Ervin Jacon Avena</h2>
+                                    <h2 class="primary--text">
+                                        {{ this.leadSummary.applicant_name }}
+                                    </h2>
                                 </v-col>
 
                                 <v-col cols="12">
@@ -33,7 +35,7 @@
                                             <span>DOB</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>11/11/1991</span>
+                                            <span>{{ date_of_birth }}</span>
                                         </div>
                                     </div>
 
@@ -42,7 +44,7 @@
                                             <span>Mobile</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>04XX - XXXX - XXXX</span>
+                                            <span>{{ leadSummary.phone }}</span>
                                         </div>
                                     </div>
 
@@ -51,7 +53,7 @@
                                             <span>Email</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>ea@gmail.com</span>
+                                            <span>{{ leadSummary.email }}</span>
                                         </div>
                                     </div>
 
@@ -60,7 +62,7 @@
                                             <span>Email Billing</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>04XX - XXXX - XXXX</span>
+                                            <span>{{ leadSummary.email_billing }}</span>
                                         </div>
                                     </div>
                                 </v-col>
@@ -81,7 +83,7 @@
                                             <span>Connection Address</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>54 Haughton Road, Oakleigh 3166 VIC</span>
+                                            <span>{{ leadSummary.address_text }}</span>
                                         </div>
                                     </div>
 
@@ -90,7 +92,7 @@
                                             <span>Billing Address</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>17 Bradman Drive, Sunbury 3429VIC</span>
+                                            <span>{{ leadSummary.billing_address_text }}</span>
                                         </div>
                                     </div>
 
@@ -99,7 +101,7 @@
                                             <span>Shipping Address</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>19 The Heights, Sunbutry, 3429 VIC</span>
+                                            <span>{{ internetServiceInfo.address.address_text }}</span>
                                         </div>
                                     </div>
                                 </v-col>
@@ -120,7 +122,7 @@
                                             <span>Modem Type</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>Google Nest Router + 2 WiFi points (3 pack)</span>
+                                            <span>{{ internetServiceInfo.modem_type }}</span>
                                         </div>
                                     </div>
 
@@ -129,7 +131,7 @@
                                             <span>Charity</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>National Breast Cancer Foundation</span>
+                                            <span>{{ internetServiceInfo.charity }}</span>
                                         </div>
                                     </div>
 
@@ -167,16 +169,16 @@
                                                 <v-img
                                                     class="mr-2"
                                                     max-width="30"
-                                                    src="/assets/images/logo/providers/goodtel_logo.png"
+                                                    :src="activePlan.logo"
                                                 ></v-img>
-                                                <h3>Goodtel</h3>
+                                                <h3>{{ activePlan.title }}</h3>
                                             </div>
                                         </div>
 
                                         <div class="pa-4">
-                                            <p class="mb-0 text-internet">Casual nbn™</p>
-                                            <p class="text-internet">25/10Mbps</p>
-                                            <p class="black--text font-weight-bold">$10/month</p>
+                                            <p class="mb-0 text-internet">{{ activePlan.name }}</p>
+                                            <p class="text-internet">{{ activePlan.mbps }}</p>
+                                            <p class="black--text font-weight-bold">{{ activePlan.amount }}</p>
                                         </div>
 
                                         <div class="view-plan">
@@ -193,7 +195,10 @@
                                             <span>Homephone</span>
                                         </div>
                                         <div class="text-field d-flex justify-end">
-                                            <v-switch inset class="mt-0 p-0"></v-switch>
+                                            <v-switch inset class="mt-0 p-0"
+                                                      v-model="internetServiceInfo.is_need_home_phone"
+                                                      @change="isNeedPhonePlanHandler">
+                                            </v-switch>
                                         </div>
                                     </div>
 
@@ -202,7 +207,7 @@
                                             <span>Selected Phone Plan</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>Phone Calls ($10/mo)</span>
+                                            <span>{{ internetServiceInfo.home_phone_plan }}</span>
                                         </div>
                                     </div>
 
@@ -211,7 +216,7 @@
                                             <span>Homephone #</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>7744 128 128</span>
+                                            <span>{{ internetServiceInfo.home_phone_number }}</span>
                                         </div>
                                     </div>
 
@@ -220,7 +225,7 @@
                                             <span>Current Provider</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>Telstra</span>
+                                            <span>{{ internetServiceInfo.current_provider }}</span>
                                         </div>
                                     </div>
 
@@ -229,7 +234,7 @@
                                             <span>Name on Account</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>Grace Avena</span>
+                                            <span>{{ leadSummary.applicant_name }}</span>
                                         </div>
                                     </div>
 
@@ -238,7 +243,10 @@
                                             <span>Back to base?</span>
                                         </div>
                                         <div class="text-field d-flex justify-end">
-                                            <v-switch inset class="mt-0 p-0"></v-switch>
+                                            <v-switch inset class="mt-0 p-0"
+                                                      v-model="internetServiceInfo.is_back_to_base"
+                                                      @change="updateInternetServiceInfo">
+                                            </v-switch>
                                         </div>
                                     </div>
 
@@ -247,7 +255,10 @@
                                             <span>Medical or Security Alarm?</span>
                                         </div>
                                         <div class="text-field d-flex justify-end">
-                                            <v-switch inset class="mt-0 p-0"></v-switch>
+                                            <v-switch inset class="mt-0 p-0"
+                                                      v-model="internetServiceInfo.is_security_alarm"
+                                                      @change="updateInternetServiceInfo">
+                                            </v-switch>
                                         </div>
                                     </div>
                                 </v-col>
@@ -281,22 +292,68 @@
 </template>
 
 <script>
+import DayJs from "dayjs";
+import ApplicationSummary from "@scripts/models/crm/ApplicationSummary";
+import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import InternetService from "@scripts/modules/internet/services/InternetService";
+import InternetServiceInfo from "@scripts/models/crm/InternetServiceInfo";
 
 export default {
     name: "InternetSubmitConfirmationModal",
-    components: {},
     props: {
         dialog: {
-            require: true,
+            required: true
         },
+        activePlan: {
+            required: true
+        }
+    },
+    data() {
+        return {
+            leadSummary: new ApplicationSummary(),
+        };
+    },
+    computed: {
+        date_of_birth() {
+            return DayJs(this.leadSummary.date_of_birth).format("DD/MM/YYYY");
+        },
+        loadApplicationSummary() {
+            return LeadApplicationService.loadApplicationSummary();
+        },
+        internetServiceInfo: {
+            get() {
+                return InternetService.loadInternetServiceInfo();
+            },
+            async set(value) {
+                return await InternetService.updateInternetServiceInfo(value, this.leadSummary.id);
+            }
+        },
+    },
+    async mounted() {
+        this.leadSummary = await this.loadApplicationSummary;
+        this.internetServiceInfo = await this.internetServiceInfo;
     },
     methods: {
         backToEdit() {
             this.$emit('backToEdit');
         },
         confirmSubmit() {
-            this.$emit('confirmSubmit');
-        }
+            this.$eventBus.$emit("nbn_submitted");
+        },
+        updateInternetServiceInfo() {
+            ({internetServiceInfo: this.internetServiceInfo} = this);
+        },
+        isNeedPhonePlanHandler() {
+            if (!this.internetServiceInfo.is_need_home_phone) {
+                this.internetServiceInfo.home_phone_provider = null;
+                this.internetServiceInfo.home_phone_plan = null;
+                this.internetServiceInfo.is_existing_landline = false;
+                this.internetServiceInfo.home_phone_number = null;
+                this.internetServiceInfo.current_provider = null;
+                this.internetServiceInfo.account_number = null;
+            }
+            this.updateInternetServiceInfo();
+        },
     }
 }
 </script>
@@ -305,15 +362,19 @@ export default {
 .flex-basis-58 {
     flex-basis: 58%;
 }
+
 .flex-basis-40 {
     flex-basis: 40%;
 }
+
 .field-label {
     text-align: left !important;
 }
+
 .crm-text-field {
     margin-bottom: 5px !important;
 }
+
 .internet-plan {
     border: 1px solid #85639A;
     text-align: left;
