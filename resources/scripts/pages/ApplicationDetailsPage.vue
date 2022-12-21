@@ -46,11 +46,6 @@
         <SendToChatBotModal v-if="closeSentConfirm" :dialog="closeSentConfirm" :title="fullName"
                             @done="done"></SendToChatBotModal>
 
-        <ChatbotInChargeModal v-if="isChatbotInCharge" :dialog="isChatbotInCharge"
-                              :title="fullName"></ChatbotInChargeModal>
-
-        <!-- <CloseApplicationModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></CloseApplicationModal> -->
-
         <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag"
                            :readmore="additionalInstruction"
                            @close="closeReadMore"></LeadReadMoreModal>
@@ -106,7 +101,6 @@ import ChatbotService from "@scripts/services/crm/ChatbotService";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import Store from '@scripts/store/index';
 import SendToChatBotModal from "@scripts/components/crm/modals/SendToChatBotModal";
-import ChatbotInChargeModal from "@scripts/components/crm/modals/ChatbotInChargeModal";
 import DuplicateLeadModal from "@scripts/components/crm/modals/DuplicateLeadModal";
 import ApplicationUnlockModal from "@scripts/components/crm/modals/ApplicationUnlockModal";
 import ApplicationUnlockConfirmModal from "@scripts/components/crm/modals/ApplicationUnlockConfirmModal";
@@ -117,7 +111,6 @@ export default {
     //todo shift afterHourFlag, nextBusinessDay, getElectricityDistributor to powerService
     name: "ApplicationDetailsPage",
     components: {
-        ChatbotInChargeModal,
         SendToChatBotModal,
         LeadReadMoreModal,
         EscalationConfirmModal,
@@ -175,7 +168,6 @@ export default {
             gasOnlyNotSubmitDialog: false,
             serviceSubmitType: null,
             closeSentConfirm: false,
-            // isChatbotInCharge: false,
             duplicateLead: false,
             isChatBotApplication: false,
             showUnlockConfirmModal: false,
