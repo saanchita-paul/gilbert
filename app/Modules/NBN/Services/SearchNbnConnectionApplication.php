@@ -389,8 +389,9 @@ class SearchNbnConnectionApplication
     private function applyFilterByService(): static
     {
         if ($this->application_service_type) {
-            $this->builder = $this->builder->whereHas('connectionServices', function (Builder $query) {
-                $query->where('service_type', 'internet');
+            $this->builder = $this->builder->where('status', ConnectionApplication::STATUS_SUBMITTED)->whereHas('connectionServices', function (Builder $query) {
+                $query->where('service_type', 'internet')
+                    ->where('status', ConnectionService::AC_MANUAL_PROCESSING);
             });
 
         }

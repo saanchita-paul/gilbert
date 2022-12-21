@@ -40,10 +40,11 @@ class NBNCafGenerationService{
 //        dd($this->applicationList);
     }
 
-    public function mapApplications() : void{
+    public function mapApplications(){
         $selectedId = [];
 
         foreach ($this->applicationList as $app) {
+//            dd($app->connectionServices);
             try{
 //                $cafToken = $this->getPowerShopCafToken($app);
                 $this->mappedApplicationList[] = [
@@ -75,9 +76,9 @@ class NBNCafGenerationService{
                     'Driving Licence Number' => $app->identification?->card_number,
                     'State of Issue' => $app->identification?->state,
                     'Date of Birth' => $this->generateDate($app->dob),
-                    'Preferred Connection Date' => $this->generateDate($app->connectionServices->connection_date),
+                    'Preferred Connection Date' => $this->generateDate($app->connectionServices[3]->connection_date),
                     'Plan Variant' => '',
-                    'Utility Bill Plan Name' => $app->connectionServices->plan_type,
+                    'Utility Bill Plan Name' => $app->connectionServices[3]->plan_type,
                     'Phone calls Y/N' => $this->generateReadableAnswer($app->internetServiceInfo->is_need_home_phone),
                     'Phone Number to Transfer' => '',
                     'Name of Current Provider' => $app->internetServiceInfo->current_provider,
@@ -87,14 +88,12 @@ class NBNCafGenerationService{
                     'Amount Paid' => '',
                     'Agreed to Policies' => 'Y',
                     'Back to Base  Alarm Y/N' => $this->generateReadableAnswer($app->internetServiceInfo->is_back_to_base),
-                    'Medical Alarm' => '',
+                    'Medical Alarm Y/N' => $this->generateReadableAnswer($app->internetServiceInfo->is_security_alarm),
                     'Selected Charity' => $app->internetServiceInfo->charity,
                     'Stripe PaymentId' => '',
                     'Stripe CustomerId' => ''
-
                 ];
                 $selectedId[] = $app->id;
-
             } catch (\Exception $exception) {
                 Log::error($exception->getMessage());
                 info('Data failed to export due to', [$exception->getMessage()]);
