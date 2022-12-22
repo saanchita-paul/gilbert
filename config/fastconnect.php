@@ -12,5 +12,5 @@ return [
     'submit_water_lead_url' => env('FC_SUBMIT_LEAD_URL', '/api/order/submit'),
     'submitted_water_status_lead_url' => env('FC_SUBMITTED_LEAD_URL', '/api/order/status/customer_reference'),
     'get_countries' => env('GET_COUNTRIES', '/api/order/countries'),
-    'embedded_enabled' => env('EMBEDDED_ENABLED', false),
+    'embedded_enabled' => env('EMBEDDED_ENABLED', true),
 ];
