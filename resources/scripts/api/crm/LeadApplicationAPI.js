@@ -425,7 +425,7 @@ export default {
             identification: identification,
             isService: isService
         }
-        const response = await axios.post('/api/applications/'+leadId+'/draft', payload);
+        return await axios.post('/api/applications/' + leadId + '/draft', payload);
     },
     async updateConnecitionEndNullDate(leadId){
         let payload = {

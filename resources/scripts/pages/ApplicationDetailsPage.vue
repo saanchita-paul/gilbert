@@ -403,7 +403,10 @@ export default {
                     return;
                 }
             }
-            await LeadApplicationService.saveSoleField(field, value, this.leadId, isDate, identification, false);
+            const res = await LeadApplicationService.saveSoleField(field, value, this.leadId, isDate, identification, false);
+
+            // Is embedded change
+            this.leadSummary.is_embedded = res.data.data.is_embedded;
 
             let [day, month, year] = [];
             if (isDate) {
