@@ -265,10 +265,41 @@
                         @change="updateSelelectedService"
                     ></v-select>
                 </div>
+                <div class="item" v-if="electricityService.service_type === 'electricity'">
+                    <p class="item-title">Electricity</p>
+                    <p class="item-value">{{ electricityService.status }}</p>
+                    <v-btn v-if="electricityService.status === 'Rejected'"
+                        @click="dialog=true"
+                        small
+                        style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;"
+                        outlined
+                    >
+                        Reason
+                    </v-btn>
+
+
+                </div>
+
+                <div class="item" v-if="gasService.service_type === 'gas'">
+                    <p class="item-title">Gas</p>
+                    <p class="item-value">{{ gasService.status }}</p>
+                    <v-btn v-if="gasService.status === 'Rejected'"
+                        @click="dialog=true"
+                        small
+                        style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;"
+                        outlined
+                    >
+                        Reason
+                    </v-btn>
+
+                    <RejectionReasonModal :dialog="dialog" @close="onCloseReject"></RejectionReasonModal>
+
+                </div>
             </v-col>
         </v-row>
 
         <SuccessfullyUpdateCloseConfirmModal v-if="closeConfirm" :dialog="closeConfirm"></SuccessfullyUpdateCloseConfirmModal>
+
     </div>
 </template>
 
@@ -280,15 +311,18 @@ import SuccessfullyUpdateCloseConfirmModal from "@scripts/components/crm/modals/
 import {capitalize} from "lodash-es";
 import {titlesMapperForDropdown} from "@scripts/data/titleMapper";
 import DayJs from "dayjs";
+import RejectionReasonModal from "@scripts/components/crm/modals/RejectionReasonModal";
 
 export default {
     name: "ApplicationCafFileDetails",
-    components: {SuccessfullyUpdateCloseConfirmModal},
+    components: {SuccessfullyUpdateCloseConfirmModal, RejectionReasonModal},
     props: ["cafFileData"],
 
     data() {
         return {
+            dialog: false,
             isEdit: true,
+            isRejected: "Rejected",
             titlesDropDown: titlesMapperForDropdown,
             serviceDropDown: [],
             planDropDown: [
@@ -307,6 +341,7 @@ export default {
             ],
             connectionDate: false,
             closeConfirm: false,
+            showModal:false,
             loading: false,
             connection_date: null,
             selectedService: '',
@@ -337,6 +372,20 @@ export default {
         date_of_birth() {
             return dayJs(dayJs(this.cafFileData.dob,'YYYY-MM-DD').format('DD/MM/YYYY')).isValid() ? dayJs(this.cafFileData.dob,'YYYY-MM-DD').format('DD/MM/YYYY') : null;
         },
+
+        electricityService()
+        {
+            return this.cafFileData.service.find((dt)=>  {
+                return dt.service_type === 'electricity';
+            });
+        },
+
+        gasService()
+        {
+            return this.cafFileData.service.find((dt)=>  {
+                return dt.service_type === 'gas';
+            });
+        }
     },
     watch: {
         cafFileData: {
@@ -385,6 +434,7 @@ export default {
             this.caf_detail.service.plan = this.selectedPlan;
             this.caf_detail.service.service_type = this.cafFileData.selected_service;
             this.caf_detail.service.connection_date = dayJs(this.cafFileData.connection_date,'DD/MM/YYYY').format('YYYY-MM-DD');
+            this.caf_detail.service.status = this.cafFileData.status;
 
 
 
@@ -407,7 +457,10 @@ export default {
         changeServiceType() {
             this.caf_detail.service.service_type = this.selectedService;
             this.$emit('updateServiceType', this.selectedService, this.cafFileData.id)
-        }
+        },
+        onCloseReject() {
+            this.dialog = false;
+        },
 
         // isDisabled(services) {
         //    return ApplicationCafFileService.isPossibleToCreateCaf(this.cafFileData.selected_service, services);
