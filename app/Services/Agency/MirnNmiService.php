@@ -44,20 +44,12 @@ class MirnNmiService
 
     public static function fetchIsEmbedded($nmi = null, $applicationFlag = false, $applicationId = null)
     {
-        if ($applicationFlag && config('fastconnect.embedded_enabled')) {
+        if ($applicationFlag) {
             $mirnNmiResult = self::fetchMirnNmiWithoutUnit($applicationId);
             $nmi = $mirnNmiResult['nmi'];
         }
 
-        $result = [
-            'is_embedded' => null,
-        ];
-
-        if ($nmi && config('fastconnect.embedded_enabled')) {
-            $svcUtilities = new EmbeddedNetworkService();
-            $result = $svcUtilities->authenticate()->fetchEmbeddedNetwork($nmi, $applicationFlag, $applicationId);
-        }
-
-        return $result;
+        $svcUtilities = new EmbeddedNetworkService();
+        return $svcUtilities->authenticate()->fetchEmbeddedNetwork($nmi, $applicationFlag, $applicationId);
     }
 }

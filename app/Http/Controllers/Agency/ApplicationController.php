@@ -10,19 +10,15 @@ use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Requests\Agency\ProviderRequest;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationResource;
-use App\Http\Resources\Agency\DuplicationApplicationResource;
-use App\Jobs\AutoAssignAppToChatbotJob;
-use App\Jobs\GilbertToChatbotJob;
 use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\TSACallHistory;
 use App\Models\User;
+use App\Services\Address\EmbeddedNetworkService;
 use App\Services\Agency\ApplicationService;
-use App\Services\Agency\AutoAssignApplicationService;
 use App\Services\Agency\MirnNmiService;
-use App\Services\Agency\TriageFlagService;
 use App\Services\Agency\WaterAutoSubmitService;
 use App\Services\Application\ApplicationLockUnlockService;
 use App\Services\Application\ApplicationsMetricsService;
@@ -30,8 +26,6 @@ use App\Services\Application\SearchConnectionApplication;
 use App\Services\Ea\SetEaDistributorService;
 use App\Services\GBGEmailValidationService;
 use Exception;
-use App\Services\GilbertToCB\GilbertToChatbotService;
-use App\Services\RolePermission;
 use Illuminate\Support\Facades\Log;
 use Origin\Services\SetOriginDistributorService;
 use App\Services\FastConnectService;
@@ -202,7 +196,12 @@ class ApplicationController extends Controller
             $inputData = $request->get('address');
             $svcUtilities = new FastConnectService();
             $result = $svcUtilities->authenticate()->searchAddress($inputData);
-            $embeddedResult = $svcUtilities->authenticate()->fetchEmbeddedNetwork($result['nmi']);
+
+            // Embedded Network
+            $embeddedService = new EmbeddedNetworkService();
+            $embeddedMirnNmiResult = $embeddedService->authenticate()->searchAddressWithoutUnit($inputData);
+            $embeddedResult = $svcUtilities->authenticate()->fetchEmbeddedNetwork($embeddedMirnNmiResult['nmi']);
+
             $service = new ApplicationService();
 
             return ApplicationResource::make($service->updateAddress(array_merge($inputData, $result, $embeddedResult), $applicationId));
