@@ -138,6 +138,7 @@ class ApplicationService
         $existingApplication->country = $address['country'];
         $existingApplication->mirn = $address['mirn'];
         $existingApplication->nmi = $address['nmi'];
+        $existingApplication->is_embedded = $address['is_embedded'];
         $existingApplication->is_billing_same = $address['is_billing_same'];
 
 
@@ -443,6 +444,12 @@ class ApplicationService
         $existLead = ConnectionApplication::findOrFail($id);
         $isIdentification = $application['identification'];
         $isService = $application['isService'];
+
+        if (array_key_exists('nmi', $application)) {
+            $application['is_embedded'] = MirnNmiService::fetchIsEmbedded($application['nmi'])['is_embedded'];
+        }
+
+
 
         unset($application['identification']);
         unset($application['isService']);

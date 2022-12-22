@@ -44,7 +44,7 @@ class FastConnectService
                 'authorization' => $authorization,
             ])
                 ->withBody(json_encode($payload), 'application/json')
-                ->post(\config('fastconnect.root_url') . \config('fastconnect.search_nmi_mirn_uri')); //CHANGE
+                ->post(config('fastconnect.root_url') . \config('fastconnect.search_nmi_mirn_uri')); //CHANGE
             // ->post("https://api.fastconnect.net.au/api/datafind/address");
 
             $response_decoded = json_decode($response->body(), true);
@@ -127,7 +127,7 @@ class FastConnectService
 
     }
 
-    public static function makeNmiPayload($nmi)
+    private static function makeNmiPayload($nmi)
     {
         return [
             'nmi' => [
@@ -146,7 +146,7 @@ class FastConnectService
 
             $payload = FastConnectService::makeNmiPayload($nmi);
 
-            Log::info('fast connect embedded payload', $payload);
+            Log::info('Embedded Network Payload: ', $payload);
 
             $authorization = 'Bearer ' . $this->accessToken;
             $response = Http::withHeaders([
@@ -158,6 +158,8 @@ class FastConnectService
                 ->post(config('fastconnect.root_url') . config('fastconnect.embedded_nmi_uri'));
 
             $responseData = $response->json();
+
+            Log::info('Embedded Network Response: ', $responseData);
 
             $is_embedded = null;
             if (!empty($responseData['nmi']['result'])) {

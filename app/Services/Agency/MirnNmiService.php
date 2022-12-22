@@ -3,6 +3,7 @@
 namespace App\Services\Agency;
 
 use App\Models\ConnectionApplication;
+use App\Services\Address\EmbeddedNetworkService;
 use App\Services\FastConnectService;
 
 class MirnNmiService
@@ -24,19 +25,31 @@ class MirnNmiService
         return $result;
     }
 
-    public static function fetchIsEmbedded($application_id)
+    public static function fetchMirnNmiWithoutUnit($application_id)
     {
         $application = ConnectionApplication::find($application_id);
 
         $result = [
-            'is_embedded' => $application->is_embedded ?? null,
+            'mirn' => null,
+            'nmi' => null,
         ];
 
-        if ($application && $application->nmi && !$application->is_embedded) {
-            $svcUtilities = new FastConnectService();
-            $result = $svcUtilities->authenticate()->fetchEmbeddedNetwork("", true, $application->id);
+        if ($application) {
+            $svcUtilities = new EmbeddedNetworkService();
+            $result = $svcUtilities->authenticate()->searchAddressWithoutUnit([], true, $application->id);
         }
 
         return $result;
+    }
+
+    public static function fetchIsEmbedded($nmi = null, $applicationFlag = false, $applicationId = null)
+    {
+        if ($applicationFlag) {
+            $mirnNmiResult = self::fetchMirnNmiWithoutUnit($applicationId);
+            $nmi = $mirnNmiResult['nmi'];
+        }
+
+        $svcUtilities = new EmbeddedNetworkService();
+        return $svcUtilities->authenticate()->fetchEmbeddedNetwork($nmi, $applicationFlag, $applicationId);
     }
 }
