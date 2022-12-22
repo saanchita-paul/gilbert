@@ -15,7 +15,7 @@ class GBGEmailValidationService
      * @throws \Exception
      */
 
-    public static function validateEmail($email)
+    public static function validateEmail(string $email)
     {
         $url = config('gbg.base_url') . "/validate/email";
         $sourceOfTruth = 'VE_ALL';

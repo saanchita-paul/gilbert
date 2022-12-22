@@ -54,7 +54,7 @@ class ApplicationResource extends JsonResource
             'street_address' => $this->street_address,
             'city' => $this->city,
             'postcode' => $this->postcode,
-            'state' => $this->getStateFull($this->state),
+            'state' => $this->state ? $this->getStateFull($this->state) : '',
             'state_short' => $this->state_short,
             'country' => $this->country,
             'additional_instruction' => $this->additional_instruction,
@@ -90,7 +90,7 @@ class ApplicationResource extends JsonResource
             'billing_address_unit' => $this->billing_unit_number,
             'billing_street_address' => $this->billing_street_address,
             'billing_city' => $this->billing_city,
-            'billing_state' => $this->getStateFull($this->billing_state),
+            'billing_state' => $this->billing_state ? $this->getStateFull($this->billing_state) : '',
             'billing_street_type' => $this->billing_street_type,
             'billing_postcode' => $this->billing_postcode,
             'is_billing_same' => $this->is_billing_same,
@@ -145,6 +145,7 @@ class ApplicationResource extends JsonResource
             'email_manually_verified_by' => $this->email_manually_verified_by,
             'is_generated_caf' => $this->is_generated_caf,
             'chatbot_id' => $this->chatbot_id,
+            'is_embedded' => $this->is_embedded,
         ];
     }
 

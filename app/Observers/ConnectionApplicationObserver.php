@@ -2,12 +2,10 @@
 
 namespace App\Observers;
 
-use App\Jobs\ApplicationFromGilbertJob;
 use App\Models\ConnectionApplication;
 use App\Services\Agency\TriageFlagService;
 use App\Services\DuplicateApplication\DuplicationApplicationService;
 use App\Services\GBGEmailValidationService;
-use App\Services\GilbertToCB\UpdateApplicationFromGilbertService;
 
 class ConnectionApplicationObserver
 {
@@ -21,8 +19,9 @@ class ConnectionApplicationObserver
     {
         TriageFlagService::setTriageFlag($connectionApplication->id);
 
+        $checkEmail = !empty($connectionApplication->email) ? GBGEmailValidationService::validateEmail($connectionApplication->email) : false;
         $connectionApplication->update([
-            'is_email_validate' => GBGEmailValidationService::validateEmail($connectionApplication->email),
+            'is_email_validate' => $checkEmail,
         ]);
 
     }
@@ -51,13 +50,6 @@ class ConnectionApplicationObserver
      */
     public function updated(ConnectionApplication $application)
     {
-//        dd($application->id);
-        info('hello', [$application->id]);
-//        if (UpdateApplicationFromGilbertService::shouldUpdateChatbotNmiMirn($application)) {
-//            ApplicationFromGilbertJob::dispatch($application->id);
-//        }
-        ApplicationFromGilbertJob::dispatch($application->id);
-
         foreach (TriageFlagService::MANDATORY_APP_FIELDS_NOT_HOOD_AI as $field) {
             if ($application->isDirty($field)) {
                return TriageFlagService::setTriageFlag($application->id);

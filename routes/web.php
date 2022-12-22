@@ -1,6 +1,11 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Models\ConnectionApplication;
+use App\Jobs\AutoAssignAppToChatbotJob;
+use App\Services\Agency\ApplicationService;
+use App\Services\Agency\AutoAssignApplicationService;
+use App\Services\FastConnectService;
 use App\Services\Application\ServiceStatusFilterMapper;
 use Powershop\Http\Controllers\PxPayController;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +34,14 @@ Route::get('/powershop/payment/callback', [PxPayController::class, 'handleCallba
 
 Route::get('/email', function () {
     return response('hello world');
+});
+
+Route::get('mi-test', function () {
+    $app = ConnectionApplication::find(5091);
+    event(new \App\Events\ConnectionApplicationStatusChangeEvent($app->id));
+    dd($app->toArray());
+    $connectionApplication = \App\Models\ConnectionApplication::find(5099);
+    AutoAssignAppToChatbotJob::dispatch($connectionApplication);
 });
 
 Route::get('/{vue_capture?}', fn() => view('app'))

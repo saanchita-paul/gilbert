@@ -5,8 +5,10 @@
                            @closeApplication="closeApplication"
                            @eacalate="eacalate"
                            @duplicateLead="duplicateLead"
+                           @sendToChatBotConfirmModal="sendToChatBotConfirmModal"
                            @sendToChatBot="sendToChatBot"
                            @reloadPlanNoteAndLead="reloadPlanNoteAndLead"
+                           :isLocked="isLocked"
         ></LeadDetailsHeader>
         <InfoField v-bind="$attrs" :services="services" @updateLead="updateLead" :nmiMernFlag="nmiMernFlag"
                    :lead="leadSummary" @updateDraft="updateDraft" @readMore="readMore"
@@ -31,6 +33,9 @@ export default {
         },
         services: {
             require: false
+        },
+        isLocked: {
+            required: true
         }
 
     },
@@ -55,6 +60,9 @@ export default {
         },
         updateDraft(field, value, isDate, identification, isManualChangeFlag = false) {
             this.$emit('updateDraft', field, value, isDate, identification, isManualChangeFlag);
+        },
+        sendToChatBotConfirmModal() {
+            this.$emit('sendToChatBotConfirmModal');
         },
         sendToChatBot(lead) {
             this.$emit('sendToChatBot', lead);

@@ -11,6 +11,7 @@ use App\Http\Requests\Agency\ProviderRequest;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationResource;
 use App\Http\Resources\Agency\DuplicationApplicationResource;
+use App\Jobs\AutoAssignAppToChatbotJob;
 use App\Jobs\GilbertToChatbotJob;
 use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
@@ -19,13 +20,16 @@ use App\Models\ConnectionService;
 use App\Models\TSACallHistory;
 use App\Models\User;
 use App\Services\Agency\ApplicationService;
+use App\Services\Agency\AutoAssignApplicationService;
+use App\Services\Agency\MirnNmiService;
 use App\Services\Agency\TriageFlagService;
 use App\Services\Agency\WaterAutoSubmitService;
+use App\Services\Application\ApplicationLockUnlockService;
 use App\Services\Application\ApplicationsMetricsService;
 use App\Services\Application\SearchConnectionApplication;
-use App\Services\DuplicateApplicationService;
 use App\Services\Ea\SetEaDistributorService;
 use App\Services\GBGEmailValidationService;
+use Exception;
 use App\Services\GilbertToCB\GilbertToChatbotService;
 use App\Services\RolePermission;
 use Illuminate\Support\Facades\Log;
@@ -36,7 +40,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Origin\Services\ValidateCutOffTime;
-use PropertyMe\services\FetchContacts;
 use Powershop\Services\SetPowershopDistributorService;
 
 class ApplicationController extends Controller
@@ -85,17 +88,25 @@ class ApplicationController extends Controller
      */
     public function create(ApplicationRequest $request)
     {
+
+        set_time_limit(180);
+
+
         try {
             /** @var  User $user */
             $user = Auth::user();
 
             $service = new ApplicationService();
             $application = $service->createApplication($request->toArray(), $user);
+
+            // Fetch MIRN, NMI, EMBEDDED NETWORK and set to DB
+            MirnNmiService::fetchMirnNmi($application->id);
+            MirnNmiService::fetchIsEmbedded($application->id);
+
             CreateApplicationEvent::dispatch($application->id);
             NotifyAgentAfterLeadCreation::dispatch($application->id);
 
             return ApplicationResource::make($application);
-
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
@@ -191,6 +202,7 @@ class ApplicationController extends Controller
             $inputData = $request->get('address');
             $svcUtilities = new FastConnectService();
             $result = $svcUtilities->authenticate()->searchAddress($inputData);
+            MirnNmiService::fetchIsEmbedded($applicationId);
             $service = new ApplicationService();
 
             return ApplicationResource::make($service->updateAddress(array_merge($inputData, $result), $applicationId));
@@ -339,8 +351,10 @@ class ApplicationController extends Controller
         try {
             $service = new FastConnectService();
             $res = $service->authenticate()->searchAddress([], true, $id);
-            return response()->json(['success' => true, 'data' => $res]);
+            $res2 = MirnNmiService::fetchIsEmbedded($id);
+            $res = array_merge($res, $res2);
 
+            return response()->json(['success' => true, 'data' => $res]);
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
@@ -502,7 +516,7 @@ class ApplicationController extends Controller
             // Check email validation is enabled or not
             if (config('gbg.email_validation')) {
                 $service = new GBGEmailValidationService();
-                $result = $service->validateEmail($request->email);
+                $result = !empty($request->email) ? $service->validateEmail($request->email) : false;
             } else {
                 Log::warning('GGB EMAIL VALIDATION - Email validation is disabled.');
                 $result = true;
@@ -547,8 +561,19 @@ class ApplicationController extends Controller
         try {
             $res = ValidateCutOffTime::validateCutOff($applicationId);
             return response()->json(['success' => true, 'data' => $res]);
-
         } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function lockUnlockApp(Request $request, $id)
+    {
+        try {
+            $service = new ApplicationLockUnlockService($id);
+            $service->setStatus($request);
+            $message = 'success';
+            return $this->sendSuccessResponse($message);
+        } catch (Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
     }

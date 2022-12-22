@@ -12,6 +12,7 @@
                                       @updateOffice = "updateOffice"
                                       @updateAllocator = "updateAllocator"
                                       @updateProfile = "updateProfile"
+                                      @saveMriOffice="saveMriOffice"
                            > </component>
                     </ValidationObserver>
                     <ProgressBar :total-step="totalStep" :current-index="currentCompIndex" ></ProgressBar>
@@ -87,6 +88,9 @@ name: "CreateIndeOfficeModal",
 
                 },
                 profile: {
+
+                },
+                mriOffice: {
 
                 }
             },
@@ -185,6 +189,9 @@ name: "CreateIndeOfficeModal",
             ) return  false;
 
             return true;
+        },
+        saveMriOffice(mriOffice) {
+            this.agency.mriOffice = mriOffice;
         }
 
 

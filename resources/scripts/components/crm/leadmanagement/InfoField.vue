@@ -432,7 +432,7 @@
             rules="required"
             v-slot="{ errors }"
           >
-            <v-textarea
+            <v-textarea class="mb-2"
               @click="openServiceAddress"
               v-model="property_details.address_text"
               style="min-height: 56px !important;"
@@ -444,6 +444,12 @@
               placeholder="This is an extra long address, 398 Bourke Road, Camberwell 3124 VIC"
             ></v-textarea>
           </ValidationProvider>
+            <span class="error--text" v-if="lead.is_embedded">
+              <v-icon color="error">
+                  info
+              </v-icon>
+              This address is in an <strong>Embedded network.</strong>
+          </span>
         </div>
       </div>
       <div class="crm-text-field">
@@ -458,7 +464,7 @@
               outlined
               dense
               readonly
-              hide-details="auto" :error-messages=" errors[0]"
+              hide-details="auto" :error-messages="errors[0]"
           ></v-textarea>
           </ValidationProvider>
         </div>

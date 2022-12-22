@@ -78,6 +78,11 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware([])
                 ->group(base_path('app/Modules/PropertyMe/route.php'));
 
+            Route::prefix('api/settings')
+                ->middleware('api')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/setting.php'));
+
             /**
              * HoodLead module
              */
