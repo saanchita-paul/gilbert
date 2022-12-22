@@ -22,6 +22,7 @@ export default {
         };
     },
 
+
     updateApplicationCafFileData: async (cafId, cafDetail) => {
         try{
             const data = await axios.put(`${BASE_URL}/applications/${cafId}`, cafDetail);
@@ -29,6 +30,19 @@ export default {
             return ApplicationCafFileMapper.mapSingleData(response)
         } catch (e) {
             console.log('updating fail due to below reason')
+            console.log(e);
+            return false;
+        }
+
+    },
+
+    rejectionReasonCafFileData: async (rejectionReason) => {
+        try{
+            const data = await axios.put(`${BASE_URL}/rejection-reasons/`, rejectionReason);
+            let response = data.data.data
+            return ApplicationCafFileMapper.mapSingleData(response)
+        } catch (e) {
+            console.log('No rejection reason found')
             console.log(e);
             return false;
         }

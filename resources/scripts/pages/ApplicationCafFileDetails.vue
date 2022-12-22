@@ -407,9 +407,12 @@ export default {
     },
     methods: {
 
+
         updateSelelectedService() {
             this.caf_detail.service.service_type = this.selectedService;
             this.caf_detail.service.plan = this.selectedPlan;
+
+
         },
 
         updateServiceDropDown()
