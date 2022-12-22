@@ -384,7 +384,7 @@ class HubspotContactService
                 "value" => $this->application->getAgencyName(),
             ],
             [
-                "property" => "hood_real_estate_agency",
+                "property" => "is_embedded_network",
                 "value" => $this->application->is_embedded ? 'yes' : 'no',
             ],
         ];
