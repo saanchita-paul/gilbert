@@ -101,7 +101,7 @@ class ApplicationController extends Controller
 
             // Fetch MIRN, NMI, EMBEDDED NETWORK and set to DB
             MirnNmiService::fetchMirnNmi($application->id);
-            MirnNmiService::fetchIsEmbedded($application->id);
+            MirnNmiService::fetchIsEmbedded(null, true, $application->id);
 
             CreateApplicationEvent::dispatch($application->id);
             NotifyAgentAfterLeadCreation::dispatch($application->id);
@@ -202,10 +202,10 @@ class ApplicationController extends Controller
             $inputData = $request->get('address');
             $svcUtilities = new FastConnectService();
             $result = $svcUtilities->authenticate()->searchAddress($inputData);
-            MirnNmiService::fetchIsEmbedded($applicationId);
+            $embeddedResult = $svcUtilities->authenticate()->fetchEmbeddedNetwork($result['nmi']);
             $service = new ApplicationService();
 
-            return ApplicationResource::make($service->updateAddress(array_merge($inputData, $result), $applicationId));
+            return ApplicationResource::make($service->updateAddress(array_merge($inputData, $result, $embeddedResult), $applicationId));
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
@@ -338,6 +338,7 @@ class ApplicationController extends Controller
     {
         try {
             $service = new ApplicationService();
+
             $res = $service->updateSoleField($request->toArray(), $id);
             return response()->json(['success' => true, 'data' => $res]);
 
@@ -351,7 +352,7 @@ class ApplicationController extends Controller
         try {
             $service = new FastConnectService();
             $res = $service->authenticate()->searchAddress([], true, $id);
-            $res2 = MirnNmiService::fetchIsEmbedded($id);
+            $res2 = MirnNmiService::fetchIsEmbedded(null, true, $id);
             $res = array_merge($res, $res2);
 
             return response()->json(['success' => true, 'data' => $res]);

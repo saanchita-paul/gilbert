@@ -20,7 +20,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/hello', [\App\Http\Controllers\TestControler::class, 'index']);
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
