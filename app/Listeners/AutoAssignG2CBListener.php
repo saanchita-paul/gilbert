@@ -52,7 +52,11 @@ class AutoAssignG2CBListener
                 . $application->source
                 . ' is not allowed for auto assign to chatbot!'
             );
-            return;
+            throw new Exception(
+                'AutoAssignG2CBListener: Application source '
+                . $application->source
+                . ' is not allowed for auto assign to chatbot!'
+            );
         }
 
         AutoAssignAppToChatbotJob::dispatch($application);
