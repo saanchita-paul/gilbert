@@ -71,10 +71,10 @@ class UpdateOfficeService
                     'end_time' => Carbon::parse($timeSlots[0]['end_time'])->format('H:i:s'),
                 ]);
             }*/
+            OfficeAutoAssignTimeSlot::query()->where('office_id', $this->id)->delete();
 
-            OfficeAutoAssignTimeSlot::updateOrCreate([
-                'office_id' => $this->id
-            ], [
+            OfficeAutoAssignTimeSlot::create([
+                'office_id' => $this->id,
                 'start_time' => Carbon::parse($timeSlots[0]['start_time'])->format('H:i:s'),
                 'end_time' => Carbon::parse($timeSlots[0]['end_time'])->format('H:i:s'),
             ]);
