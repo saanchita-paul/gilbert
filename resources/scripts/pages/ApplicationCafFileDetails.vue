@@ -269,7 +269,7 @@
                     <p class="item-title">Electricity</p>
                     <p class="item-value">{{ electricityService.status }}</p>
                     <v-btn v-if="electricityService.status === 'Rejected'"
-                        @click="dialog=true"
+                        @click="dialog=true"  :loading = "loading"
                         small
                         style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;"
                         outlined
@@ -411,8 +411,6 @@ export default {
         updateSelelectedService() {
             this.caf_detail.service.service_type = this.selectedService;
             this.caf_detail.service.plan = this.selectedPlan;
-
-
         },
 
         updateServiceDropDown()
@@ -450,8 +448,6 @@ export default {
             this.loading = true;
             let response = await ApplicationCafFileService.updateApplicationCafFileData(cafId, this.caf_detail);
             this.$emit('refreshTable', response);
-
-
             console.log(response);
             this.loading = false;
             // this.closeConfirm = true;
@@ -460,6 +456,15 @@ export default {
         changeServiceType() {
             this.caf_detail.service.service_type = this.selectedService;
             this.$emit('updateServiceType', this.selectedService, this.cafFileData.id)
+        },
+
+        async getRejectionReason(connectionServiceId) {
+            this.loading = true;
+            let response = await ApplicationCafFileService.updateApplicationCafFileData(connectionServiceId, this.caf_detail);
+            this.$emit('refreshTable', response);
+            console.log(response);
+            this.loading = false;
+
         },
         onCloseReject() {
             this.dialog = false;

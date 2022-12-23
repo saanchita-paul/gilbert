@@ -36,9 +36,9 @@ export default {
 
     },
 
-    rejectionReasonCafFileData: async (rejectionReason) => {
+    rejectionReasonCafFileData: async (connectionServiceId) => {
         try{
-            const data = await axios.put(`${BASE_URL}/rejection-reasons/`, rejectionReason);
+            const data = await axios.put(`${BASE_URL}/rejection-reasons/${connectionServiceId}`);
             let response = data.data.data
             return ApplicationCafFileMapper.mapSingleData(response)
         } catch (e) {
