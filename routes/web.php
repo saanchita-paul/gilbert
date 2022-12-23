@@ -35,13 +35,5 @@ Route::get('/email', function () {
     return response('hello world');
 });
 
-Route::get('mi-test', function () {
-    $app = ConnectionApplication::find(5091);
-    event(new \App\Events\ConnectionApplicationStatusChangeEvent($app->id));
-    dd($app->toArray());
-    $connectionApplication = \App\Models\ConnectionApplication::find(5099);
-    AutoAssignAppToChatbotJob::dispatch($connectionApplication);
-});
-
 Route::get('/{vue_capture?}', fn() => view('app'))
     ->where('vue_capture', '[\/\w\.-]*');

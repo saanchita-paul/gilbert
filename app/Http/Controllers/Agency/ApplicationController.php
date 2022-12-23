@@ -82,10 +82,7 @@ class ApplicationController extends Controller
      */
     public function create(ApplicationRequest $request)
     {
-
         set_time_limit(180);
-
-
         try {
             /** @var  User $user */
             $user = Auth::user();

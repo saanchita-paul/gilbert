@@ -62,7 +62,7 @@ class UpdateOfficeService
         ];
 
         if ($isChatbotOffice && count($timeSlots) > 0) {
-            foreach ($weekDays as $weekDayName => $weekDay) {
+            /*foreach ($weekDays as $weekDayName => $weekDay) {
                 OfficeAutoAssignTimeSlot::updateOrCreate([
                     'office_id' => $this->id,
                     'day' => $weekDayName,
@@ -70,7 +70,7 @@ class UpdateOfficeService
                     'start_time' => Carbon::parse($timeSlots[0]['start_time'])->format('H:i:s'),
                     'end_time' => Carbon::parse($timeSlots[0]['end_time'])->format('H:i:s'),
                 ]);
-            }
+            }*/
         } else {
             OfficeAutoAssignTimeSlot::query()->where('office_id', $this->id)->delete();
         }
