@@ -87,19 +87,13 @@ class ApplicationController extends Controller
      */
     public function create(ApplicationRequest $request)
     {
-
         set_time_limit(180);
-
-
         try {
             /** @var  User $user */
             $user = Auth::user();
 
             $service = new ApplicationService();
             $application = $service->createApplication($request->toArray(), $user);
-
-            // Auto assign application to chatbot
-
 
             CreateApplicationEvent::dispatch($application->id);
             NotifyAgentAfterLeadCreation::dispatch($application->id);

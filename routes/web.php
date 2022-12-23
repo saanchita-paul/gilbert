@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Models\ConnectionApplication;
 use App\Jobs\AutoAssignAppToChatbotJob;
 use App\Services\Agency\ApplicationService;
 use App\Services\Agency\AutoAssignApplicationService;
@@ -19,7 +20,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/hello', [\App\Http\Controllers\TestControler::class, 'index']);
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
@@ -36,8 +36,22 @@ Route::get('/email', function () {
 });
 
 Route::get('mi-test', function () {
-    $connectionApplication = \App\Models\ConnectionApplication::find(5099);
-    AutoAssignAppToChatbotJob::dispatch($connectionApplication);
+    $currentTime = Carbon::now()->timezone(TimeZoneService::getTimeZoneArea());
+    $timeSlot = \App\Models\OfficeAutoAssignTimeSlot::first();
+    $start_time = $timeSlot->start_time;
+    $end_time = $timeSlot->end_time;
+
+//dd($end_time < $start_time && $currentTime->gt($start_time) && $currentTime->lt($end_time));
+    if ($start_time > $end_time && $currentTime->gt($start_time) && $currentTime->lt($end_time)) {
+        dd('Current date');
+    } elseif($start_time > $end_time && ($currentTime->gt($start_time) || $currentTime->lt($end_time))) {
+        dd('Next date');
+    } else {
+        dd('Not in time slot');
+    }
+
+    $isAllowable = \Carbon\Carbon::parse('2022-12-23 21:00:00')->timezone(TimeZoneService::getTimeZoneArea())->isBetween($start_time, $end_time);
+    dd($isAllowable);
 });
 
 Route::get('/{vue_capture?}', fn() => view('app'))

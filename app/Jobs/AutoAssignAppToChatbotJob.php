@@ -38,8 +38,6 @@ class AutoAssignAppToChatbotJob implements ShouldQueue
             $autoAssignService = new AutoAssignApplicationService();
             $autoAssignService->assignApplication($this->application);
 
-            // Update Hubspot Contact auto assign
-            UpdateHubspotContactJob::dispatch($this->application->id);
             Log::info('Auto assign application to chatbot successfully');
         } catch (\Exception $e) {
             Log::error($e->getMessage());
