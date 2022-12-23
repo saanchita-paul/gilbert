@@ -3,6 +3,7 @@
 namespace App\Services\Agency;
 
 use App\Models\ConnectionApplication;
+use App\Models\OfficeAutoAssignTimeSlot;
 use App\Models\Setting;
 use App\Models\User;
 use App\Services\SettingService;
@@ -79,84 +80,35 @@ class AutoAssignApplicationService
      * Check if auto assign is enabled
      * @return bool
      */
-    private function isAutoAssignable($application)
+    public function isAutoAssignable($application)
     {
-        $timeSlot = $application->office->timeSlots()->first();
+        $timeSlot = OfficeAutoAssignTimeSlot::first();
 
         $currentTime = Carbon::now()->timezone(TimeZoneService::getTimeZoneArea());
 
-        $allowableTime = false;
+        $allowableTime = $this->isAllowableTime($timeSlot->start_time, $timeSlot->end_time, $currentTime);
 
-        // Check if current time is in time slot
-        if (
-            $timeSlot->start_time > $timeSlot->start_time
-            && $currentTime->gt($timeSlot->start_time)
-            && $currentTime->lt($timeSlot->end_time)
-        ) {
-            Log::info('Condition 1 : $startTime > $endTime && $currentTime > $startTime && $currentTime < $endTime');
-            Log::info('Auto assign application: ', [
-                'start_time' => $timeSlot->start_time,
-                'end_time' => $timeSlot->end_time,
-                'current_time' => $currentTime->format('Y-m-d H:i:s'),
-                'condition' => $timeSlot->start_time > $timeSlot->start_time
-                    && $currentTime->gt($timeSlot->start_time)
-                    && $currentTime->lt($timeSlot->end_time)
-            ]);
-            $allowableTime = true;
-        } elseif (
-            $timeSlot->start_time > $timeSlot->end_time
-            && (
-                $currentTime->gt($timeSlot->start_time)
-                || $currentTime->lt($timeSlot->end_time)
-            )
-        ) {
-            Log::info('Condition 2: $startTime > $endTime && $currentTime > $startTime && $currentTime < $endTime');
-            Log::info('Auto assign application: ', [
-                'start_time' => $timeSlot->start_time,
-                'end_time' => $timeSlot->end_time,
-                'current_time' => $currentTime->format('H:i:s'),
-                'condition' => $timeSlot->start_time > $timeSlot->start_time
-                    && $currentTime->gt($timeSlot->start_time)
-                    && $currentTime->lt($timeSlot->end_time)
-            ]);
-            $allowableTime = true;
-        } else {
-            Log::info('Condition 3: Not in condition 1 and 2');
-            Log::info('Auto assign application: ', [
-                'start_time' => $timeSlot->start_time,
-                'end_time' => $timeSlot->end_time,
-                'current_time' => $currentTime->format('H:i:s'),
-                'condition' => false
-            ]);
-            $allowableTime = false;
-        }
-
-        Log::info('AutoAssignApplicationService: Time slot: ', $timeSlot->toArray());
-
-        Log::info('AutoAssignApplicationService: Allowable time: ', [
+        Log::info('Auto assign application allowable time: ', [
             'start_time' => $timeSlot->start_time,
             'end_time' => $timeSlot->end_time,
-        ]);
-
-        Log::info('AutoAssignApplicationService: Is Allowable Time: ', [
-            'current_date_time' => Carbon::now()->timezone(TimeZoneService::getTimeZoneArea())
-                ->format('Y-m-d H:i:s'),
-            'current_day' => date('l'),
-            'is_allowable_time' => $allowableTime
-        ]);
-
-        Log::info('AutoAssignApplicationService: Is auto assignable: ', [
-            'global_setting' => $this->getAutoAssignGlobalSetting()->toArray(),
-            'is_auto_assignable_global_flag' => $this->getAutoAssignGlobalSetting()->setting_value,
-            'is_ofc_auto_assignable' => $application->office->is_chatbot_office,
-            'is_allowable_time' => $allowableTime,
-            'is_auto_assignable' => $this->getAutoAssignGlobalSetting()->setting_value
-                && $application->office->is_chatbot_office
-                && $allowableTime
+            'current_time' => $currentTime,
+            'allowable_time' => $allowableTime
         ]);
 
         return $application->office->is_chatbot_office
             && $this->getAutoAssignGlobalSetting()->setting_value
             && $allowableTime;
+    }
+
+    public function isAllowableTime($startTime, $endTime, $currentTime)
+    {
+        if ($startTime < $endTime) {
+            return $currentTime->gt($startTime) && $currentTime->lt($endTime);
+        }
+        if ($startTime > $endTime) {
+            return ($currentTime->gt($startTime) || $currentTime->lt($endTime));
+        }
+
+        return false;
     }
 }

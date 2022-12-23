@@ -1,12 +1,6 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
-use App\Models\ConnectionApplication;
-use App\Jobs\AutoAssignAppToChatbotJob;
-use App\Services\Agency\ApplicationService;
-use App\Services\Agency\AutoAssignApplicationService;
-use App\Services\FastConnectService;
-use App\Services\Application\ServiceStatusFilterMapper;
 use Powershop\Http\Controllers\PxPayController;
 use Illuminate\Support\Facades\Route;
 
