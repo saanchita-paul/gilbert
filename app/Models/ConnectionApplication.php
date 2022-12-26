@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Notifications\Notifiable;
 use OurProperty\Models\OurProperty;
 use phpDocumentor\Reflection\Utils;
 use PropertyMe\PropertyMeLead;
@@ -120,7 +121,7 @@ use Carbon\Carbon;
  */
 class ConnectionApplication extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -240,6 +241,8 @@ class ConnectionApplication extends Model
         'mri_application_id',
         'status_log_id',
         'is_embedded',
+        'loading_address_info',
+        'is_embedded_nmi',
     ];
 
 

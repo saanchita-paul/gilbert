@@ -175,18 +175,18 @@ class EmbeddedNetworkService
 
             if ($applicationFlag) {
                 $connectionApp = ConnectionApplication::find($applicationId);
-                $connectionApp->update(['is_embedded' => $is_embedded]);
+                $connectionApp->update(['is_embedded_nmi' => $is_embedded]);
             }
 
             return [
-                'is_embedded' => $is_embedded,
+                'is_embedded_nmi' => $is_embedded,
             ];
         } catch (\Exception $exception) {
 
             Log::info('Embedded Network Error: ', $exception->getMessage());
 
             return [
-                'is_embedded' => null
+                'is_embedded_nmi' => null
             ];
         }
     }

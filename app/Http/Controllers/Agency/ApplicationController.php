@@ -10,6 +10,7 @@ use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Requests\Agency\ProviderRequest;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationResource;
+use App\Jobs\FetchAdditionalInfoAddressJob;
 use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
@@ -89,10 +90,6 @@ class ApplicationController extends Controller
 
             $service = new ApplicationService();
             $application = $service->createApplication($request->toArray(), $user);
-
-            // Fetch MIRN, NMI, EMBEDDED NETWORK and set to DB
-            MirnNmiService::fetchMirnNmi($application->id);
-            MirnNmiService::fetchIsEmbedded(null, true, $application->id);
 
             CreateApplicationEvent::dispatch($application->id);
             NotifyAgentAfterLeadCreation::dispatch($application->id);
@@ -191,17 +188,20 @@ class ApplicationController extends Controller
     {
         try {
             $inputData = $request->get('address');
-            $svcUtilities = new FastConnectService();
-            $result = $svcUtilities->authenticate()->searchAddress($inputData);
-
-            // Embedded Network
-            $embeddedService = new EmbeddedNetworkService();
-            $embeddedMirnNmiResult = $embeddedService->authenticate()->searchAddressWithoutUnit($inputData);
-            $embeddedResult = $svcUtilities->authenticate()->fetchEmbeddedNetwork($embeddedMirnNmiResult['nmi']);
+//            $svcUtilities = new FastConnectService();
+//            $result = $svcUtilities->authenticate()->searchAddress($inputData);
+//
+//            // Embedded Network
+//            $embeddedService = new EmbeddedNetworkService();
+//            $embeddedMirnNmiResult = $embeddedService->authenticate()->searchAddressWithoutUnit($inputData);
+//            $embeddedResult = $svcUtilities->authenticate()->fetchEmbeddedNetwork($embeddedMirnNmiResult['nmi']);
 
             $service = new ApplicationService();
 
-            return ApplicationResource::make($service->updateAddress(array_merge($inputData, $result, $embeddedResult), $applicationId));
+            $application = $service->updateAddress($inputData, $applicationId);
+            FetchAdditionalInfoAddressJob::dispatch($applicationId);
+
+            return ApplicationResource::make($application);
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

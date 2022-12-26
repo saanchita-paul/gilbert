@@ -404,9 +404,9 @@ export default {
             let response = await LeadApplicationService.updateAddress(address, this.leadId);
             console.log('updateAddress response', response);
             this.leadSummary.nmi = response.nmi;
-            this.leadSummary.is_embedded = response.is_embedded;
+            this.leadSummary.is_embedded_nmi = response.is_embedded_nmi;
             this.leadSummary.mirn = response.mirn;
-            this.nmiMernFlag = false;
+            this.nmiMernFlag = response.loading_address_info;
 
             await this.getElectricityDistributor();
             await this.loadNextBusinessDay();
@@ -431,7 +431,7 @@ export default {
             const res = await LeadApplicationService.saveSoleField(field, value, this.leadId, isDate, identification, false);
 
             // Is embedded change
-            this.leadSummary.is_embedded = res.data.data.is_embedded;
+            this.leadSummary.is_embedded_nmi = res.data.data.is_embedded_nmi;
 
             let [day, month, year] = [];
             if (isDate) {
@@ -465,7 +465,7 @@ export default {
                 const nmiMern = await LeadApplicationService.getNmiMern(this.leadId);
                 this.leadSummary.nmi = nmiMern.nmi;
                 this.leadSummary.mirn = nmiMern.mirn;
-                this.leadSummary.is_embedded = nmiMern.is_embedded;
+                this.leadSummary.is_embedded_nmi = nmiMern.is_embedded_nmi;
             }
         },
         closeAssignedToEmptyModal() {
@@ -539,6 +539,21 @@ export default {
         cancelSendToChatBotConfirmModal() {
             this.sentToChabotConfirmModal = false;
         },
+        listenMirnNmiNotification() {
+            this.$echo.channel(`fetchMirnNmi.${this.leadSummary.id}`)
+                .notification(async (res) => {
+                    console.log(res);
+                    this.nmiMernFlag = res.loading_address_info;
+                    await this.loadPlanNoteAndLead();
+                });
+        },
+        listenEmbeddedNetworkNotification() {
+            this.$echo.channel(`fetchEmbeddedNetwork.${this.leadSummary.id}`)
+                .notification(async (res) => {
+                    console.log(res);
+                    await this.loadPlanNoteAndLead();
+                });
+        }
     },
     watch: {
         powerPlan: {
@@ -580,6 +595,9 @@ export default {
         this.$eventBus.$on("lock_app_auto_assign", async () => {
             await this.lockApp();
         });
+
+        this.listenMirnNmiNotification();
+        this.listenEmbeddedNetworkNotification();
     }
 };
 </script>

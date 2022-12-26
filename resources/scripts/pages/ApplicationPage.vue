@@ -138,6 +138,7 @@ export default {
             this.totalItem = data.pagination.total;
             this.selected_lead_id = this.leads[0]?.id;
             this.leads.length ? await this.loadLeadSummary() : "";
+            this.listenEmbeddedNetworkNotification();
             // console.log('lead list', this.leads);
         },
 
@@ -153,6 +154,7 @@ export default {
         openLeadSummary(id) {
             this.selected_lead_id = id;
             this.loadLeadSummary();
+            this.listenEmbeddedNetworkNotification();
         },
 
         refreshDataTable(meta) {
@@ -178,6 +180,12 @@ export default {
 
         async showDuplicateList(duplication_group_id) {
             let duplicatedData = await DuplicateLeadService.getDuplicateLeadData(duplication_group_id);
+        },
+        listenEmbeddedNetworkNotification() {
+            this.$echo.channel(`fetchEmbeddedNetwork.${this.selected_lead_id}`)
+                .notification( (res) => {
+                    this.loadLeadSummary();
+                });
         }
 
     },

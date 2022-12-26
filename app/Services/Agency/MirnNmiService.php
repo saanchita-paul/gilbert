@@ -13,11 +13,11 @@ class MirnNmiService
         $application = ConnectionApplication::find($application_id);
 
         $result = [
-            'mirn' => $application->mirn ?? null,
-            'nmi' => $application->nmi ?? null,
+            'mirn' => null,
+            'nmi' => null,
         ];
 
-        if ($application && (!$application->mirn || !$application->nmi)) {
+        if ($application) {
             $svcUtilities = new FastConnectService();
             $result = $svcUtilities->authenticate()->searchAddress([], true, $application->id);
         }
