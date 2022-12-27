@@ -7,7 +7,7 @@ use App\Models\ConnectionApplication;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
-class AutoAssignG2CBListener
+class  AutoAssignG2CBListener
 {
     public const ALLOWED_SOURCES = [
         ConnectionApplication::SOURCE_HOOD,

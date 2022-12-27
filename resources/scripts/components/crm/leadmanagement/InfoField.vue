@@ -571,7 +571,7 @@
                   </v-icon>
                   <small>Checking for Embedded network</small>
             </span>
-            <span class="error--text" v-if="isEmbeddedNMI">
+            <span class="error--text" v-if="isEmbeddedNMI == 1">
                   <v-icon color="error">
                       info
                   </v-icon>
@@ -606,13 +606,13 @@
                         </template>
                     </v-text-field>
                 </ValidationProvider>
-                <span class="info--text" v-if="nmiMernFlag">
+                <span class="info--text" v-if="isEmbeddedNMI==2">
                       <v-icon color="info">
                           info
                       </v-icon>
                       <small>Checking for Embedded network</small>
                 </span>
-                <span class="error--text" v-if="isEmbeddedNMI && !nmiMernFlag">
+                <span class="error--text" v-if="isEmbeddedNMI == 1">
                       <v-icon color="error">
                           info
                       </v-icon>

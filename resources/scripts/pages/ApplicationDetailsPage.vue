@@ -433,7 +433,6 @@ export default {
             // Is embedded change
             this.leadSummary.embedded_nmi = res.data.data.embedded_nmi;
             this.leadSummary.loading_address_info = res.data.data.loading_address_info;
-            this.nmiMernFlag = true;
 
             let [day, month, year] = [];
             if (isDate) {
@@ -588,7 +587,7 @@ export default {
 
         await this.loadPlanNoteAndLead();
         await this.loadNextBusinessDay();
-        await this.updateMernNmi();
+        // await this.updateMernNmi();
         this.nmiMernFlag = false;
 
         this.$eventBus.$on("lock_app_auto_assign", async () => {
