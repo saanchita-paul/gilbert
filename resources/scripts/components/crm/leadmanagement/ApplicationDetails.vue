@@ -122,7 +122,7 @@
            </v-col>
            <v-col cols="7" class="py-0 my-0">
                <p>{{lead.address_text}}</p>
-               <span class="error--text" v-if="lead.is_embedded_nmi">
+               <span class="error--text" v-if="lead.embedded_nmi">
                   <v-icon color="error">
                       info
                   </v-icon>

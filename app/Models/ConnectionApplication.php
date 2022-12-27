@@ -242,7 +242,7 @@ class ConnectionApplication extends Model
         'status_log_id',
         'is_embedded',
         'loading_address_info',
-        'is_embedded_nmi',
+        'embedded_nmi',
     ];
 
 

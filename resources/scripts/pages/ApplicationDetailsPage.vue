@@ -404,7 +404,7 @@ export default {
             let response = await LeadApplicationService.updateAddress(address, this.leadId);
             console.log('updateAddress response', response);
             this.leadSummary.nmi = response.nmi;
-            this.leadSummary.is_embedded_nmi = response.is_embedded_nmi;
+            this.leadSummary.embedded_nmi = response.embedded_nmi;
             this.leadSummary.mirn = response.mirn;
             this.nmiMernFlag = response.loading_address_info;
 
@@ -431,7 +431,7 @@ export default {
             const res = await LeadApplicationService.saveSoleField(field, value, this.leadId, isDate, identification, false);
 
             // Is embedded change
-            this.leadSummary.is_embedded_nmi = res.data.data.is_embedded_nmi;
+            this.leadSummary.embedded_nmi = res.data.data.embedded_nmi;
             this.leadSummary.loading_address_info = res.data.data.loading_address_info;
             this.nmiMernFlag = true;
 
@@ -467,7 +467,7 @@ export default {
                 const nmiMern = await LeadApplicationService.getNmiMern(this.leadId);
                 this.leadSummary.nmi = nmiMern.nmi;
                 this.leadSummary.mirn = nmiMern.mirn;
-                this.leadSummary.is_embedded_nmi = nmiMern.is_embedded_nmi;
+                this.leadSummary.embedded_nmi = nmiMern.embedded_nmi;
             }
         },
         closeAssignedToEmptyModal() {

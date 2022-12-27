@@ -1986,7 +1986,7 @@ export default {
             return this.person_details.email_manually_verified_by;
         },
         isEmbeddedNMI() {
-            return this.lead.is_embedded_nmi;
+            return this.lead.embedded_nmi;
         },
         loadAddressLoader() {
             return this.lead.loading_address_info;

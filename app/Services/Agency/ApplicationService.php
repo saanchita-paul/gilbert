@@ -141,7 +141,7 @@ class ApplicationService
         $existingApplication->country = $address['country'];
         $existingApplication->mirn = null;
         $existingApplication->nmi = null;
-        $existingApplication->is_embedded_nmi = false;
+        $existingApplication->embedded_nmi = false;
         $existingApplication->loading_address_info = true;
         $existingApplication->is_billing_same = $address['is_billing_same'];
 
@@ -450,7 +450,7 @@ class ApplicationService
         $isService = $application['isService'];
 
         if (array_key_exists('nmi', $application)) {
-            $application['is_embedded_nmi'] = false;
+            $application['embedded_nmi'] = false;
             $application['loading_address_info'] = true;
             FetchEmbeddedNetworkJob::dispatch($id);
         }

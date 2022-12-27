@@ -175,16 +175,16 @@ class FastConnectService
 
             if ($applicationFlag) {
                 $connectionApp = ConnectionApplication::find($id);
-                $connectionApp->update(['is_embedded_nmi' => $is_embedded]);
+                $connectionApp->update(['embedded_nmi' => $is_embedded]);
             }
 
             return [
-                'is_embedded_nmi' => $is_embedded,
+                'embedded_nmi' => $is_embedded,
             ];
         } catch (\Exception $exception) {
 
             return [
-                'is_embedded_nmi' => null
+                'embedded_nmi' => null
             ];
         }
     }

@@ -147,7 +147,7 @@ class ApplicationResource extends JsonResource
             'chatbot_id' => $this->chatbot_id,
             'is_embedded' => $this->is_embedded,
             'loading_address_info' => $this->loading_address_info,
-            'is_embedded_nmi' => $this->is_embedded_nmi,
+            'embedded_nmi' => $this->embedded_nmi,
         ];
     }
 

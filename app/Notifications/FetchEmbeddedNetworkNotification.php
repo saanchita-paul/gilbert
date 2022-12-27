@@ -79,7 +79,7 @@ class FetchEmbeddedNetworkNotification extends Notification implements ShouldQue
         return new BroadcastMessage([
             'connection_application_id' => $this->applicationId,
             'message' => $this->message,
-            'is_embedded_nmi' => $this->application->is_embedded_nmi,
+            'embedded_nmi' => $this->application->embedded_nmi,
             'loading_address_info' => $this->application->loading_address_info,
         ]);
     }
