@@ -16,8 +16,8 @@ class AddIsMirnNmiFetchToConnectionApplicationsTable extends Migration
         Schema::table('connection_applications', function (Blueprint $table) {
             $table->boolean('loading_address_info')
                 ->default(false);
-            $table->boolean('is_embedded_nmi')
-                ->default(false)
+            $table->tinyInteger('embedded_nmi')
+                ->nullable()
                 ->comment('It replaced is embedded value or it get data from embedded');
         });
     }
@@ -32,7 +32,7 @@ class AddIsMirnNmiFetchToConnectionApplicationsTable extends Migration
         Schema::table('connection_applications', function (Blueprint $table) {
             $table->dropColumn([
                 'loading_address_info',
-                'is_embedded_nmi'
+                'embedded_nmi'
             ]);
         });
     }
