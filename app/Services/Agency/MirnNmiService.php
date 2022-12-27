@@ -34,9 +34,16 @@ class MirnNmiService
             'nmi' => null,
         ];
 
-        if ($application) {
+        if ($application && $application->unit_number) {
             $svcUtilities = new EmbeddedNetworkService();
             $result = $svcUtilities->authenticate()->searchAddressWithoutUnit([], true, $application->id);
+        }
+
+        if ($application && !$application->unit_number) {
+            $result = [
+                'mirn' => $application->mirn,
+                'nmi' => $application->nmi,
+            ];
         }
 
         return $result;
@@ -49,6 +56,12 @@ class MirnNmiService
             $nmi = $mirnNmiResult['nmi'];
         }
 
+        $svcUtilities = new EmbeddedNetworkService();
+        return $svcUtilities->authenticate()->fetchEmbeddedNetwork($nmi, $applicationFlag, $applicationId);
+    }
+
+    public static function fetchIsEmbeddedWithNmi($nmi, $applicationFlag = false, $applicationId = null)
+    {
         $svcUtilities = new EmbeddedNetworkService();
         return $svcUtilities->authenticate()->fetchEmbeddedNetwork($nmi, $applicationFlag, $applicationId);
     }

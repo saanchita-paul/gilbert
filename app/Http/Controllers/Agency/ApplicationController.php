@@ -188,19 +188,9 @@ class ApplicationController extends Controller
     {
         try {
             $inputData = $request->get('address');
-//            $svcUtilities = new FastConnectService();
-//            $result = $svcUtilities->authenticate()->searchAddress($inputData);
-//
-//            // Embedded Network
-//            $embeddedService = new EmbeddedNetworkService();
-//            $embeddedMirnNmiResult = $embeddedService->authenticate()->searchAddressWithoutUnit($inputData);
-//            $embeddedResult = $svcUtilities->authenticate()->fetchEmbeddedNetwork($embeddedMirnNmiResult['nmi']);
-
             $service = new ApplicationService();
-
             $application = $service->updateAddress($inputData, $applicationId);
             FetchAdditionalInfoAddressJob::dispatch($applicationId);
-
             return ApplicationResource::make($application);
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);

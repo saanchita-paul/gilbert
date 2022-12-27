@@ -432,6 +432,8 @@ export default {
 
             // Is embedded change
             this.leadSummary.is_embedded_nmi = res.data.data.is_embedded_nmi;
+            this.leadSummary.loading_address_info = res.data.data.loading_address_info;
+            this.nmiMernFlag = true;
 
             let [day, month, year] = [];
             if (isDate) {
@@ -549,6 +551,7 @@ export default {
         listenEmbeddedNetworkNotification() {
             this.$echo.channel(`fetchEmbeddedNetwork.${this.leadSummary.id}`)
                 .notification(async (res) => {
+                    this.nmiMernFlag = res.loading_address_info;
                     await this.loadPlanNoteAndLead();
                 });
         }
@@ -562,6 +565,8 @@ export default {
         },
     },
     async mounted() {
+        this.leadId = this.$route.params.id;
+        await this.getIsLocked();
         const validateEvent = async (callback) => {
             let v = await this.validateLead();
             if (!v) return;
@@ -581,14 +586,10 @@ export default {
             this.$eventBus.$off("busUtilitySubmit", busUtilitySubmitEvent);
         });
 
-        this.leadId = this.$route.params.id;
         await this.loadPlanNoteAndLead();
         await this.loadNextBusinessDay();
         await this.updateMernNmi();
         this.nmiMernFlag = false;
-
-
-        await this.getIsLocked();
 
         this.$eventBus.$on("lock_app_auto_assign", async () => {
             await this.lockApp();

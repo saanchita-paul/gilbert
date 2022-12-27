@@ -2,6 +2,8 @@
 
 namespace App\Services\Agency;
 
+use App\Jobs\FetchAdditionalInfoAddressJob;
+use App\Jobs\FetchEmbeddedNetworkJob;
 use App\Jobs\GilbertToChatbotJob;
 use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
@@ -137,9 +139,9 @@ class ApplicationService
         $existingApplication->postcode = $address['postcode'];
         $existingApplication->state = $address['state'];
         $existingApplication->country = $address['country'];
-//        $existingApplication->mirn = $address['mirn'];
-//        $existingApplication->nmi = $address['nmi'];
-//        $existingApplication->is_embedded = $address['is_embedded'];
+        $existingApplication->mirn = null;
+        $existingApplication->nmi = null;
+        $existingApplication->is_embedded_nmi = false;
         $existingApplication->loading_address_info = true;
         $existingApplication->is_billing_same = $address['is_billing_same'];
 
@@ -448,7 +450,9 @@ class ApplicationService
         $isService = $application['isService'];
 
         if (array_key_exists('nmi', $application)) {
-            $application['is_embedded_nmi'] = MirnNmiService::fetchIsEmbedded($application['nmi'])['is_embedded_nmi'];
+            $application['is_embedded_nmi'] = false;
+            $application['loading_address_info'] = true;
+            FetchEmbeddedNetworkJob::dispatch($id);
         }
 
 

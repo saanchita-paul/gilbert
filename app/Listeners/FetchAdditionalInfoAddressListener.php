@@ -3,6 +3,8 @@
 namespace App\Listeners;
 
 use App\Models\ConnectionApplication;
+use App\Notifications\FetchEmbeddedNetworkNotification;
+use App\Notifications\FetchMirnNmiNotification;
 use App\Services\Agency\MirnNmiService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -29,7 +31,9 @@ class FetchAdditionalInfoAddressListener implements ShouldQueue
     {
         $application = ConnectionApplication::find($event->applicationId);
         MirnNmiService::fetchMirnNmi($application->id);
+        $application->notify(new FetchMirnNmiNotification($application->id));
         MirnNmiService::fetchIsEmbedded(null, true, $application->id);
+        $application->notify(new FetchEmbeddedNetworkNotification($application->id));
         $application->update(['loading_address_info' => false]);
     }
 }
