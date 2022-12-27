@@ -542,7 +542,6 @@ export default {
         listenMirnNmiNotification() {
             this.$echo.channel(`fetchMirnNmi.${this.leadSummary.id}`)
                 .notification(async (res) => {
-                    console.log(res);
                     this.nmiMernFlag = res.loading_address_info;
                     await this.loadPlanNoteAndLead();
                 });
@@ -550,7 +549,6 @@ export default {
         listenEmbeddedNetworkNotification() {
             this.$echo.channel(`fetchEmbeddedNetwork.${this.leadSummary.id}`)
                 .notification(async (res) => {
-                    console.log(res);
                     await this.loadPlanNoteAndLead();
                 });
         }

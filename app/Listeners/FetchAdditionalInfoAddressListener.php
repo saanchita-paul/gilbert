@@ -31,6 +31,5 @@ class FetchAdditionalInfoAddressListener implements ShouldQueue
         MirnNmiService::fetchMirnNmi($application->id);
         MirnNmiService::fetchIsEmbedded(null, true, $application->id);
         $application->update(['loading_address_info' => false]);
-        event(new \App\Events\TestEvent('Address additional info fetched successfully'));
     }
 }

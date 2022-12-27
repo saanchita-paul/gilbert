@@ -37,13 +37,7 @@ authUser().finally(() => {
         vuetify: Vuetify,
         router: Router,
         store,
-        render: h => h(App),
-        mounted() {
-            this.$echo.channel('testChannel')
-                .listen('TestEvent', (e) => {
-                    console.log('Test Event', e);
-                });
-        }
+        render: h => h(App)
     }).$mount('#app')
 })
 

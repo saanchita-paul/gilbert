@@ -29,10 +29,6 @@ Route::get('/email', function () {
     return response('hello world');
 });
 
-Route::get('/event-test', function () {
-    event(new \App\Events\TestEvent('Hello from broadcasting'));
-    return 'ok';
-});
 
 Route::get('/{vue_capture?}', fn() => view('app'))
     ->where('vue_capture', '[\/\w\.-]*');
