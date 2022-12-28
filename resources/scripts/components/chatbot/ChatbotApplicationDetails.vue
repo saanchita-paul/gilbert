@@ -12,11 +12,9 @@
                                 <p class="font-weight-bold">Title</p>
                             </v-col>
                             <v-col cols="7"  class="py-0 my-1">
-                                <p v-if="isProfileEditMode">{{application.title}}</p>
-
-                                <div v-else class="text-field">
+                                <div class="text-field">
                                         <v-text-field
-                                            v-model="application.title"
+                                            v-model="chatbot_app.personal_details.title"
                                             outlined
                                             dense
                                             hide-details="auto"
@@ -30,10 +28,9 @@
                                 <p class="font-weight-bold">FirstName</p>
                             </v-col>
                             <v-col cols="7"  class="py-0 my-1">
-                                <p v-if="isProfileEditMode">{{application.first_name}}</p>
-                                <div v-else class="text-field">
+                                <div  class="text-field">
                                     <v-text-field
-                                        v-model="application.first_name"
+                                        v-model="chatbot_app.personal_details.first_name"
                                         outlined
                                         dense
                                         hide-details="auto"
@@ -45,10 +42,9 @@
                                 <p class="font-weight-bold">LastName</p>
                             </v-col>
                             <v-col cols="7"  class="py-0 my-1">
-                                <p v-if="isProfileEditMode">{{application.last_name}}</p>
-                                <div v-else class="text-field">
+                                <div class="text-field">
                                     <v-text-field
-                                        v-model="application.last_name"
+                                        v-model="chatbot_app.personal_details.last_name"
                                         outlined
                                         dense
                                         hide-details="auto"
@@ -61,10 +57,9 @@
                                 <p class="font-weight-bold">Email</p>
                             </v-col>
                             <v-col cols="7"  class="py-0 my-1">
-                                <p v-if="isProfileEditMode">{{application.email}}</p>
-                                <div v-else class="text-field">
+                                <div class="text-field">
                                     <v-text-field
-                                        v-model="application.email"
+                                        v-model="chatbot_app.personal_details.email"
                                         outlined
                                         dense
                                         hide-details="auto"
@@ -77,10 +72,9 @@
                                 <p class="font-weight-bold">Date of Birth</p>
                             </v-col>
                             <v-col cols="7"  class="py-0 my-1">
-                                <p v-if="isProfileEditMode">{{application.dob}}</p>
-                                <div v-else class="text-field">
+                                <div class="text-field">
                                     <v-text-field
-                                        v-model="application.dob"
+                                        v-model="chatbot_app.personal_details.dob"
                                         outlined
                                         dense
                                         hide-details="auto"
@@ -93,10 +87,9 @@
                                 <p class="font-weight-bold"> Mobile </p>
                             </v-col>
                             <v-col  cols="7"  class="py-0 my-1">
-                                <p v-if="isProfileEditMode">{{application.phone}}</p>
-                                <div v-else class="text-field">
+                                <div  class="text-field">
                                     <v-text-field
-                                        v-model="application.phone"
+                                        v-model="chatbot_app.personal_details.phone"
                                         outlined
                                         dense
                                         hide-details="auto"
@@ -105,38 +98,6 @@
                                 </div>
                             </v-col>
 
-
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p  class="font-weight-bold">Moving Date</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <p v-if="isProfileEditMode">{{application.connection_date}}</p>
-                                <div v-else class="text-field">
-                                    <v-text-field
-                                        v-model="application.connection_date"
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                        placeholder="Card Number"
-                                    ></v-text-field>
-                                </div>
-                            </v-col>
-
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">Service Address:</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <p v-if="isProfileEditMode">{{application.to_address}}</p>
-                                <div v-else class="text-field">
-                                    <v-text-field
-                                        v-model="application.to_address"
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                        placeholder="Card Number"
-                                    ></v-text-field>
-                                </div>
-                            </v-col>
                         </v-row>
                         <v-row>
                             <v-col cols="10">
@@ -256,6 +217,35 @@
                                         hide-details="auto"
                                     >
                                     </v-select>
+                                </div>
+                            </v-col>
+                            <v-col cols ="5"  class="py-0 my-1">
+                                <p  class="font-weight-bold">Moving Date</p>
+                            </v-col>
+                            <v-col cols ="7" class="py-0 my-1">
+                                <div  class="text-field">
+                                    <v-text-field
+                                        v-model="chatbot_app.personal_details.connection_date"
+                                        outlined
+                                        dense
+                                        hide-details="auto"
+                                        placeholder="Card Number"
+                                    ></v-text-field>
+                                </div>
+                            </v-col>
+
+                            <v-col cols ="5"  class="py-0 my-1">
+                                <p class="font-weight-bold">Service Address:</p>
+                            </v-col>
+                            <v-col cols ="7" class="py-0 my-1">
+                                <div class="text-field">
+                                    <v-text-field
+                                        v-model="chatbot_app.personal_details.to_address"
+                                        outlined
+                                        dense
+                                        hide-details="auto"
+                                        placeholder="Card Number"
+                                    ></v-text-field>
                                 </div>
                             </v-col>
                         </v-row>

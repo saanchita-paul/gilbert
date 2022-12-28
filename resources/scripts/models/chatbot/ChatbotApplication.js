@@ -1,25 +1,25 @@
 export default class {
     constructor({
-                    idDetail = null,
-                    personalDetails = null,
-                    propertyDetails = null,
+                    id_detail = null,
+                    personal_details = null,
+                    property_details = null,
                 }) {
 
-        this.idDetail = idDetail;
-        this.personalDetails = personalDetails;
-        this.propertyDetails = propertyDetails;
+        this.id_detail = id_detail;
+        this.personal_details = personal_details;
+        this.property_details = property_details;
     }
 
     setIdDetails(idDetail) {
-        this.idDetail = idDetail;
+        this.id_detail = idDetail;
     }
 
     setPersonalDetails(personalDetails) {
-        this.personalDetails = personalDetails;
+        this.personal_details = personalDetails;
     }
 
     setPropertyDetails(propertyDetails) {
-        this.propertyDetails = propertyDetails;
+        this.property_details = propertyDetails;
     }
 
 

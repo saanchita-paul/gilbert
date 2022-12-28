@@ -8,14 +8,14 @@ export default {
 
         console.log('chatbot application', application);
 
-        const idDetail = new IdDetail(application);
-        const personalDetail = new PersonalDetail(application);
-        const propertyDetail = new PropertyDetail(application);
+        const id_detail = new IdDetail(application);
+        const personal_detail = new PersonalDetail(application);
+        const property_detail = new PropertyDetail(application);
 
         return new ChatbotApplication({
-            idDetail: idDetail,
-            personalDetails: personalDetail,
-            propertyDetails: propertyDetail
+            id_detail: id_detail,
+            personal_details: personal_detail,
+            property_details: property_detail
         });
 
     }
