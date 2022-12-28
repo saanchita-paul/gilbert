@@ -253,13 +253,41 @@
                             </v-col>
                             <v-col cols ="7" class="py-0 my-1">
                                 <div  class="text-field">
-                                    <v-text-field
-                                        v-model="chatbot_app.property_details.moved_at"
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                        placeholder="Card Number"
-                                    ></v-text-field>
+                                    <v-menu
+                                        v-model="showMovingDate"
+                                        :close-on-content-click="false"
+                                        :nudge-right="40"
+                                        transition="scale-transition"
+                                        offset-y
+                                        min-width="290px"
+                                    >
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <ValidationProvider
+                                                name="Bate Of Birth"
+                                                v-slot="{ errors }"
+                                            >
+                                                <v-text-field
+                                                    placeholder="DD/MM/YYYY"
+                                                    outlined
+                                                    dense
+                                                    append-icon="mdi-calendar"
+                                                    v-model="chatbot_app.property_details.moved_at"
+                                                    v-bind="attrs"
+                                                    :error-messages="errors[0]"
+                                                    hide-details="auto"
+                                                    @change="updateDobPicker"
+                                                >
+                                                    <template slot="append">
+                                                        <v-icon v-on="on">mdi-calendar</v-icon>
+                                                    </template>
+                                                </v-text-field>
+                                            </ValidationProvider>
+                                        </template>
+                                        <v-date-picker
+                                            v-model="moved_at"
+                                            @input="showMovingDate = false"
+                                        ></v-date-picker>
+                                    </v-menu>
                                 </div>
                             </v-col>
 
@@ -294,239 +322,239 @@
 
         <v-divider></v-divider>
 
-<!--        <template>-->
-<!--            <v-expansion-panels>-->
-<!--                <v-expansion-panel style="box-shadow:none !important;">-->
-<!--                    <v-expansion-panel-header>-->
-<!--                        Identification Details-->
-<!--                    </v-expansion-panel-header>-->
-<!--                    <v-expansion-panel-content>-->
-<!--                        <v-row>-->
-<!--                            <v-col cols ="5"  class="py-0 my-1">-->
-<!--                                <p class="font-weight-bold">ID Type</p>-->
-<!--                            </v-col>-->
-<!--                            <v-col cols ="7" class="py-0 my-1">-->
-<!--                                <div class="text-field">-->
-<!--                                    <v-select-->
-<!--                                        v-model="application.type"-->
-<!--                                        item-text="text"-->
-<!--                                        item-value="value"-->
-<!--                                        :items="idenficationTypeDD"-->
-<!--                                        outlined-->
-<!--                                        dense-->
-<!--                                        hide-details="auto"-->
-<!--                                    >-->
-<!--                                    </v-select>-->
-<!--                                </div>-->
-<!--                            </v-col>-->
-<!--                            <v-col cols ="5"  class="py-0 my-1">-->
-<!--                                <p class="font-weight-bold">ID Number</p>-->
-<!--                            </v-col>-->
-<!--                            <v-col cols ="7" class="py-0 my-1">-->
-<!--                                <div class="text-field">-->
-<!--                                    <v-text-field-->
-<!--                                        v-model="application.id_number"-->
-<!--                                        outlined-->
-<!--                                        dense-->
-<!--                                        hide-details="auto"-->
-<!--                                        placeholder="Card Number"-->
-<!--                                    ></v-text-field>-->
-<!--                                </div>-->
-<!--                            </v-col>-->
-<!--                            <v-col cols ="5"  class="py-0 my-1">-->
-<!--                                <p class="font-weight-bold">ID Expire Date</p>-->
-<!--                            </v-col>-->
-<!--                            <v-col cols ="7" class="py-0 my-1">-->
-<!--                                <div class="text-field" >-->
-<!--                                    <v-menu-->
-<!--                                        v-model="showMovingDate"-->
-<!--                                        :close-on-content-click="false"-->
-<!--                                        :nudge-right="40"-->
-<!--                                        transition="scale-transition"-->
-<!--                                        offset-y-->
-<!--                                        min-width="290px"-->
-<!--                                    >-->
-<!--                                        <template v-slot:activator="{ on, attrs }">-->
-<!--                                                <v-text-field-->
-<!--                                                    placeholder="DD/MM/YYYY"-->
-<!--                                                    outlined-->
-<!--                                                    dense-->
-<!--                                                    v-model="chatbot_app.id_detail.identification_expire_date"-->
-<!--                                                    v-bind="attrs"-->
-<!--                                                    hide-details="auto"-->
-<!--                                                    @change="updateExpireDatePicker"-->
-<!--                                                >-->
-<!--                                                    <template slot="append">-->
-<!--                                                        <v-icon v-on="on">mdi-calendar</v-icon>-->
-<!--                                                    </template>-->
-<!--                                                </v-text-field>-->
-<!--                                        </template>-->
-<!--                                        <v-date-picker-->
-<!--                                            v-model="expire_date"-->
-<!--                                            @input="showMovingDate = false"-->
-<!--                                        ></v-date-picker>-->
-<!--                                    </v-menu>-->
-<!--                                </div>-->
-<!--                            </v-col>-->
-<!--                            <v-col cols ="5"  class="py-0 my-1">-->
-<!--                                <p class="font-weight-bold">ID Special Number</p>-->
-<!--                            </v-col>-->
-<!--                            <v-col cols ="7" class="py-0 my-1">-->
-<!--                                <div class="text-field">-->
-<!--                                    <v-select-->
-<!--                                        v-model="application.id_special_number"-->
-<!--                                        :items="specialNumberDD"-->
-<!--                                        outlined-->
-<!--                                        dense-->
-<!--                                        hide-details="auto"-->
-<!--                                    >-->
-<!--                                    </v-select>-->
-<!--                                </div>-->
-<!--                            </v-col>-->
-<!--                            <v-col cols ="5"  class="py-0 my-1">-->
-<!--                                <p class="font-weight-bold">Passport Country</p>-->
-<!--                            </v-col>-->
-<!--                            <v-col cols ="7" class="py-0 my-1">-->
-<!--                                <div class="text-field">-->
-<!--                                    <v-text-field-->
-<!--                                        v-model="application.passport_country"-->
-<!--                                        outlined-->
-<!--                                        dense-->
-<!--                                        hide-details="auto"-->
-<!--                                        placeholder="Card Number"-->
-<!--                                    ></v-text-field>-->
-<!--                                </div>-->
-<!--                            </v-col>-->
+        <template>
+            <v-expansion-panels>
+                <v-expansion-panel style="box-shadow:none !important;">
+                    <v-expansion-panel-header>
+                        Identification Details
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        <v-row>
+                            <v-col cols ="5"  class="py-0 my-1">
+                                <p class="font-weight-bold">ID Type</p>
+                            </v-col>
+                            <v-col cols ="7" class="py-0 my-1">
+                                <div class="text-field">
+                                    <v-select
+                                        v-model="chatbot_app.id_detail.type"
+                                        item-text="text"
+                                        item-value="value"
+                                        :items="idenficationTypeDD"
+                                        outlined
+                                        dense
+                                        hide-details="auto"
+                                    >
+                                    </v-select>
+                                </div>
+                            </v-col>
+                            <v-col cols ="5"  class="py-0 my-1">
+                                <p class="font-weight-bold">ID Number</p>
+                            </v-col>
+                            <v-col cols ="7" class="py-0 my-1">
+                                <div class="text-field">
+                                    <v-text-field
+                                        v-model="chatbot_app.id_detail.id_number"
+                                        outlined
+                                        dense
+                                        hide-details="auto"
+                                        placeholder="Card Number"
+                                    ></v-text-field>
+                                </div>
+                            </v-col>
+                            <v-col cols ="5"  class="py-0 my-1">
+                                <p class="font-weight-bold">ID Expire Date</p>
+                            </v-col>
+                            <v-col cols ="7" class="py-0 my-1">
+                                <div class="text-field" >
+                                    <v-menu
+                                        v-model="showExpireDate"
+                                        :close-on-content-click="false"
+                                        :nudge-right="40"
+                                        transition="scale-transition"
+                                        offset-y
+                                        min-width="290px"
+                                    >
+                                        <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field
+                                                    placeholder="DD/MM/YYYY"
+                                                    outlined
+                                                    dense
+                                                    v-model="chatbot_app.id_detail.identification_expire_date"
+                                                    v-bind="attrs"
+                                                    hide-details="auto"
+                                                    @change="updateExpireDatePicker"
+                                                >
+                                                    <template slot="append">
+                                                        <v-icon v-on="on">mdi-calendar</v-icon>
+                                                    </template>
+                                                </v-text-field>
+                                        </template>
+                                        <v-date-picker
+                                            v-model="expire_date"
+                                            @input="showExpireDate = false"
+                                        ></v-date-picker>
+                                    </v-menu>
+                                </div>
+                            </v-col>
+                            <v-col cols ="5"  class="py-0 my-1">
+                                <p class="font-weight-bold">ID Special Number</p>
+                            </v-col>
+                            <v-col cols ="7" class="py-0 my-1">
+                                <div class="text-field">
+                                    <v-select
+                                        v-model="chatbot_app.id_detail.id_special_number"
+                                        :items="specialNumberDD"
+                                        outlined
+                                        dense
+                                        hide-details="auto"
+                                    >
+                                    </v-select>
+                                </div>
+                            </v-col>
+                            <v-col cols ="5"  class="py-0 my-1">
+                                <p class="font-weight-bold">Passport Country</p>
+                            </v-col>
+                            <v-col cols ="7" class="py-0 my-1">
+                                <div class="text-field">
+                                    <v-text-field
+                                        v-model="chatbot_app.id_detail.passport_country"
+                                        outlined
+                                        dense
+                                        hide-details="auto"
+                                        placeholder="Card Number"
+                                    ></v-text-field>
+                                </div>
+                            </v-col>
 
-<!--                            <v-col cols ="5"  class="py-0 my-1">-->
-<!--                                <p class="font-weight-bold">Card Color</p>-->
-<!--                            </v-col>-->
-<!--                            <v-col cols ="7" class="py-0 my-1">-->
-<!--                                <div class="text-field">-->
-<!--                                    <v-select-->
-<!--                                        v-model="application.type"-->
-<!--                                        item-text="text"-->
-<!--                                        item-value="value"-->
-<!--                                        :items="colorDD"-->
-<!--                                        outlined-->
-<!--                                        dense-->
-<!--                                        hide-details="auto"-->
-<!--                                    >-->
-<!--                                    </v-select>-->
-<!--                                </div>-->
-<!--                            </v-col>-->
+                            <v-col cols ="5"  class="py-0 my-1">
+                                <p class="font-weight-bold">Card Color</p>
+                            </v-col>
+                            <v-col cols ="7" class="py-0 my-1">
+                                <div class="text-field">
+                                    <v-select
+                                        v-model="chatbot_app.id_detail.type"
+                                        item-text="text"
+                                        item-value="value"
+                                        :items="colorDD"
+                                        outlined
+                                        dense
+                                        hide-details="auto"
+                                    >
+                                    </v-select>
+                                </div>
+                            </v-col>
 
-<!--                            <v-col cols ="5"  class="py-0 my-1">-->
-<!--                                <p class="font-weight-bold">DL</p>-->
-<!--                            </v-col>-->
-<!--                            <v-col cols ="7" class="py-0 my-1">-->
-<!--                                <div class="text-field">-->
-<!--                                    <v-select-->
-<!--                                        v-model="application.id_state"-->
-<!--                                        item-text="text"-->
-<!--                                        item-value="value"-->
-<!--                                        :items="statesDD"-->
-<!--                                        outlined-->
-<!--                                        dense-->
-<!--                                        hide-details="auto"-->
-<!--                                    >-->
-<!--                                    </v-select>-->
-<!--                                </div>-->
-<!--                            </v-col>-->
+                            <v-col cols ="5"  class="py-0 my-1">
+                                <p class="font-weight-bold">DL</p>
+                            </v-col>
+                            <v-col cols ="7" class="py-0 my-1">
+                                <div class="text-field">
+                                    <v-select
+                                        v-model="chatbot_app.id_detail.id_state"
+                                        item-text="text"
+                                        item-value="value"
+                                        :items="statesDD"
+                                        outlined
+                                        dense
+                                        hide-details="auto"
+                                    >
+                                    </v-select>
+                                </div>
+                            </v-col>
 
-<!--                        </v-row>-->
-<!--                        <v-row>-->
-<!--                            <v-col cols="10">-->
+                        </v-row>
+                        <v-row>
+                            <v-col cols="10">
 
-<!--                            </v-col>-->
-<!--                            <v-col cols="2">-->
-<!--                                <v-btn small right> Save</v-btn>-->
-<!--                            </v-col>-->
+                            </v-col>
+                            <v-col cols="2">
+                                <v-btn small right> Save</v-btn>
+                            </v-col>
 
-<!--                        </v-row>-->
-<!--                    </v-expansion-panel-content>-->
-<!--                </v-expansion-panel>-->
-<!--            </v-expansion-panels>-->
-<!--        </template>-->
+                        </v-row>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
+        </template>
 
-<!--        <v-divider></v-divider>-->
+        <v-divider></v-divider>
 
-<!--        <template >-->
-<!--            <v-expansion-panels  style="box-shadow: none !important;">-->
-<!--                <v-expansion-panel style="box-shadow: none !important;">-->
-<!--                    <v-expansion-panel-header>-->
-<!--                        Service Preference-->
-<!--                    </v-expansion-panel-header>-->
-<!--                    <v-expansion-panel-content>-->
-<!--                        <v-row>-->
-<!--                            <v-col cols="4">-->
-<!--                                <div  class="my-0 py-0 mx-0 border-all">-->
-<!--                                    <p class="pt-2 pb-1 mb-0 services">-->
-<!--                                  <span class="ml-0">-->
-<!--                                      <v-icon  color="yellow" size="17">mdi-flash</v-icon> Power-->
-<!--                                  </span>-->
-<!--                                    </p>-->
-<!--                                    <p class="py-0 my-0 service-status" >-->
-<!--                                        <small>Current Status</small>-->
-<!--                                        <v-select-->
-<!--                                            placeholder="Please select"-->
-<!--                                            v-model="formData.power_status"-->
-<!--                                            item-text="text"-->
-<!--                                            item-value="value"-->
-<!--                                            :items="powerStatus"-->
-<!--                                            outlined-->
-<!--                                            dense-->
-<!--                                            hide-details="auto"-->
-<!--                                        >-->
-<!--                                        </v-select>-->
-<!--                                    </p>-->
-<!--                                </div>-->
-<!--                            </v-col>-->
-<!--                            <v-col cols="4">-->
-<!--                                <div  class="my-0 py-0 mx-0 border-all">-->
-<!--                                    <p class="pt-2 pb-1 mb-0 services">-->
-<!--                                  <span class="ml-0">-->
-<!--                                      <v-icon color="red" size="17">mdi-fire</v-icon> Gas-->
-<!--                                  </span>-->
-<!--                                    </p>-->
-<!--                                    <p class="py-0 my-0 service-status" >-->
-<!--                                        <small>Current Status</small>-->
-<!--                                        <v-select-->
-<!--                                            placeholder="Please select"-->
-<!--                                            v-model="formData.gas_status"-->
-<!--                                            item-text="text"-->
-<!--                                            item-value="value"-->
-<!--                                            :items="gasStatus"-->
-<!--                                            outlined-->
-<!--                                            dense-->
-<!--                                            hide-details="auto"-->
-<!--                                        >-->
-<!--                                        </v-select>-->
-<!--                                    </p>-->
-<!--                                </div>-->
-<!--                            </v-col>-->
-<!--                        </v-row>-->
-<!--                    </v-expansion-panel-content>-->
-<!--                </v-expansion-panel>-->
-<!--            </v-expansion-panels>-->
-<!--        </template>-->
+        <template >
+            <v-expansion-panels  style="box-shadow: none !important;">
+                <v-expansion-panel style="box-shadow: none !important;">
+                    <v-expansion-panel-header>
+                        Service Preference
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        <v-row>
+                            <v-col cols="4">
+                                <div  class="my-0 py-0 mx-0 border-all">
+                                    <p class="pt-2 pb-1 mb-0 services">
+                                  <span class="ml-0">
+                                      <v-icon  color="yellow" size="17">mdi-flash</v-icon> Power
+                                  </span>
+                                    </p>
+                                    <p class="py-0 my-0 service-status" >
+                                        <small>Current Status</small>
+                                        <v-select
+                                            placeholder="Please select"
+                                            v-model="formData.power_status"
+                                            item-text="text"
+                                            item-value="value"
+                                            :items="powerStatus"
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                        >
+                                        </v-select>
+                                    </p>
+                                </div>
+                            </v-col>
+                            <v-col cols="4">
+                                <div  class="my-0 py-0 mx-0 border-all">
+                                    <p class="pt-2 pb-1 mb-0 services">
+                                  <span class="ml-0">
+                                      <v-icon color="red" size="17">mdi-fire</v-icon> Gas
+                                  </span>
+                                    </p>
+                                    <p class="py-0 my-0 service-status" >
+                                        <small>Current Status</small>
+                                        <v-select
+                                            placeholder="Please select"
+                                            v-model="formData.gas_status"
+                                            item-text="text"
+                                            item-value="value"
+                                            :items="gasStatus"
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                        >
+                                        </v-select>
+                                    </p>
+                                </div>
+                            </v-col>
+                        </v-row>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
+        </template>
 
-<!--        <v-divider ></v-divider>-->
+        <v-divider ></v-divider>
 
-<!--        <template>-->
-<!--            <v-expansion-panels style="box-shadow:none !important;">-->
-<!--                <v-expansion-panel>-->
-<!--                    <v-expansion-panel-header>-->
-<!--                        Application Notes-->
-<!--                    </v-expansion-panel-header>-->
-<!--                    <v-expansion-panel-content>-->
-<!--                        <v-row>-->
-<!--                           <ChatbotApplicationNote ></ChatbotApplicationNote>-->
-<!--                        </v-row>-->
-<!--                    </v-expansion-panel-content>-->
-<!--                </v-expansion-panel>-->
-<!--            </v-expansion-panels>-->
-<!--        </template>-->
+        <template>
+            <v-expansion-panels style="box-shadow:none !important;">
+                <v-expansion-panel>
+                    <v-expansion-panel-header>
+                        Application Notes
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        <v-row>
+                           <ChatbotApplicationNote ></ChatbotApplicationNote>
+                        </v-row>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
+        </template>
 
     </div>
 </template>
@@ -550,7 +578,7 @@ export default {
             app_id: null,
             isProfileEditMode: false,
             specialNumberDD: SPECIAL_NUMBER,
-            showMovingDate: false,
+            showExpireDate: false,
             expire_date:  '',
             accessRequirement: [
                 {
@@ -740,6 +768,9 @@ export default {
             ],
             showDateOfBirth : false,
             dob : null,
+            showMovingDate : false,
+            moved_at : null
+
         }
     },
     methods: {
@@ -769,8 +800,8 @@ export default {
     },
     watch: {
         expire_date() {
-            if (isNull(this.expire_date) || this.expire_date == '' || this.expire_date == undefined ) return;
-            this.chatbot_app.id_detail.expire_date = new DayJs(this.expire_date).format(
+            if (isNull(this.expire_date) || this.expire_date === '' || this.expire_date === undefined ) return;
+            this.chatbot_app.id_detail.identification_expire_date = new DayJs(this.expire_date).format(
                 "DD/MM/YYYY"
             );
         },
@@ -779,7 +810,12 @@ export default {
             this.chatbot_app.personal_details.dob = new DayJs(this.dob).format(
                 "DD/MM/YYYY"
             );
-            // this.chatbot_app.personal_details.dob = new DayJs(this.dob).format("DD/MM/YYYY");
+        },
+        moved_at(){
+            if (isNull(this.moved_at) || this.moved_at === '' || this.moved_at === undefined ) return;
+            this.chatbot_app.property_details.moved_at = new DayJs(this.moved_at).format(
+                "DD/MM/YYYY"
+            );
         },
         '$route': {
             handler() {

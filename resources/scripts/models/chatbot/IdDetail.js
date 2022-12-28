@@ -1,3 +1,5 @@
+import dayJs from "dayjs";
+
 export default class IdDetail{
     constructor({
                     identification_type= null,
@@ -19,6 +21,6 @@ export default class IdDetail{
         this.medicare_card_color = medicare_card_color;
         this.medicare_card_number = medicare_card_number;
         this.individual_reference_number = individual_reference_number;
-        this.identification_expire_date = identification_expire_date;
+        this.identification_expire_date = dayJs(identification_expire_date).format("DD/MM/YYYY");
     }
 }
