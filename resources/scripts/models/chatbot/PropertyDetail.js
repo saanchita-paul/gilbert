@@ -1,3 +1,5 @@
+import dayJs from "dayjs";
+
 export default class PropertyDetail{
     constructor({
                     which_utility= null,
@@ -24,7 +26,7 @@ export default class PropertyDetail{
         this.account_type = account_type;
         this.rent = rent;
         this.solar_panel = solar_panel;
-        this.moved_at = moved_at;
+        this.moved_at = dayJs(moved_at).format("DD/MM/YYYY");
         this.flat_or_unit_number = flat_or_unit_number;
         this.street_number = street_number;
         this.to_postcode = to_postcode;

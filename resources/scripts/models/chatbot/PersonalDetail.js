@@ -1,3 +1,5 @@
+import dayJs from "dayjs";
+
 export default class PersonalDetail{
     constructor({
                     title= null,
@@ -17,7 +19,7 @@ export default class PersonalDetail{
         this.last_name = last_name;
         this.email = email;
         this.phone = phone;
-        this.dob = dob;
+        this.dob = dayJs(dob).format("DD/MM/YYYY");
         this.phone_type = phone_type;
         this.homephone = homephone;
 

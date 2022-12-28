@@ -37,7 +37,7 @@
                 </v-card>
             </v-col>
             <v-col cols="5">
-                <ChatbotApplicationDetails :application="selectedApp"></ChatbotApplicationDetails>
+                <ChatbotApplicationDetails></ChatbotApplicationDetails>
             </v-col>
         </v-row>
     </v-container>
@@ -206,6 +206,10 @@ name: "ChatbotApplicationPage",
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
             this.totalItem = data.pagination.total;
+
+            // allread chek
+
+
         },
 
         async fetchGilbertApplications() {
