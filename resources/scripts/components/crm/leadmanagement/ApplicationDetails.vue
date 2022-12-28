@@ -126,7 +126,7 @@
                   <v-icon color="error">
                       info
                   </v-icon>
-                  This address is in an <strong>Embedded network.</strong>
+                  The electricity at this address is in an <strong>Embedded network.</strong>
               </span>
            </v-col>
        </v-row>
