@@ -7,6 +7,7 @@ import CustomerMovingInfo from "@scripts/models/customer-profile/CustomerMovingI
 import CustomerOrder from "@scripts/models/customer-profile/CustomerOrder";
 import root from "lodash-es/_root";
 import Pagination from "@scripts/models/Pagination";
+import ChatbotApplicationMapper from "@scripts/api/mappers/ChatbotApplicationMapper";
 
 const ROOT = `${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api`;
 
@@ -148,4 +149,9 @@ export default {
     updateNMIAndMIRN: (movingUtilityId, params) => {
         return axios.put(`${BOT_API}/moving-utility/${movingUtilityId}`, params);
     },
+
+    getMovingUtilityData: async (id) => {
+        const response = await axios.get(`${BOT_API}/utility-data/${id}`);
+        return ChatbotApplicationMapper.mapApplication(response.data);
+    }
 }

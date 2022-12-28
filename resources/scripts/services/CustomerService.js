@@ -83,4 +83,9 @@ export default {
      */
     updateNMIAndMIRN: (id, params) => CustomerAPI.updateNMIAndMIRN(id, params),
 
+    /**
+     * @param id
+     */
+    getMovingData: (id) => CustomerAPI.getMovingUtilityData(id)
+
 }
