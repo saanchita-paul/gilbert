@@ -32,7 +32,7 @@ class FetchAdditionalInfoAddressListener implements ShouldQueue
         $application = ConnectionApplication::find($event->applicationId);
         MirnNmiService::fetchMirnNmi($application->id);
         $application->notify(new FetchMirnNmiNotification($application->id));
-        MirnNmiService::fetchIsEmbedded(null, true, $application->id);
+        MirnNmiService::fetchNmiIsEmbedded(null, true, $application->id);
         $application->notify(new FetchEmbeddedNetworkNotification($application->id));
         $application->update(['loading_address_info' => false]);
     }

@@ -338,7 +338,7 @@ class ApplicationController extends Controller
         try {
             $service = new FastConnectService();
             $res = $service->authenticate()->searchAddress([], true, $id);
-            $res2 = MirnNmiService::fetchIsEmbedded(null, true, $id);
+            $res2 = MirnNmiService::fetchNmiIsEmbedded(null, true, $id);
             $res = array_merge($res, $res2);
 
             return response()->json(['success' => true, 'data' => $res]);
