@@ -155,7 +155,7 @@ class EmbeddedNetworkService
 
             if (config('fastconnect.embedded_enabled') && $nmi) {
                 $payload = self::makeNmiPayload($nmi);
-                Log::info('Embedded Network Payload: ', $payload);
+                Log::info('Embedded Network NMI Payload: ', $payload);
 
                 $authorization = 'Bearer ' . $this->accessToken;
                 $response = Http::withHeaders([
@@ -168,8 +168,11 @@ class EmbeddedNetworkService
 
                 $responseData = $response->json();
 
-                Log::info('Embedded Network Response: ', $responseData);
+                Log::info('Embedded Network NMI Response: ', $responseData);
 
+                if (!empty($responseData['errors'])) {
+                    throw new \ErrorException($responseData['errors']);
+                }
 
                 if (!empty($responseData['nmi']['result'])) {
                     $is_embedded = $responseData['nmi']['result']['master_data']['embedded_network'];
@@ -193,7 +196,7 @@ class EmbeddedNetworkService
             ];
         } catch (\Exception $exception) {
 
-            Log::info('Embedded Network Error: ', $exception->getMessage());
+            Log::info('Embedded Network NMI Error: '. $exception->getMessage());
 
             return [
                 'embedded_nmi' => null
