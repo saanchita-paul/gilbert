@@ -79,7 +79,9 @@ export default class ApplicationSummary {
     assigned_to = null;
     app_close_reason_id = null;
 
-    is_embedded = null;
+    loading_address_info = false;
+    embedded_nmi = null;
+    embedded_mirn = null;
 
     constructor(
         {
@@ -176,8 +178,9 @@ export default class ApplicationSummary {
             chatbot_id = null,
             assigned_to = null,
             app_close_reason_id = null,
-
-            is_embedded = null,
+            embedded_nmi = null,
+            embedded_mirn = null,
+            loading_address_info = false,
         }
     ) {
 
@@ -281,8 +284,9 @@ export default class ApplicationSummary {
         this.chatbot_id = chatbot_id;
         this.assigned_to = assigned_to;
         this.app_close_reason_id = app_close_reason_id;
-
-        this.is_embedded = is_embedded;
+        this.embedded_nmi = embedded_nmi;
+        this.embedded_mirn = embedded_mirn;
+        this.loading_address_info = loading_address_info;
     }
 
 

@@ -444,12 +444,6 @@
               placeholder="This is an extra long address, 398 Bourke Road, Camberwell 3124 VIC"
             ></v-textarea>
           </ValidationProvider>
-            <span class="error--text" v-if="lead.is_embedded">
-              <v-icon color="error">
-                  info
-              </v-icon>
-              This address is in an <strong>Embedded network.</strong>
-          </span>
         </div>
       </div>
       <div class="crm-text-field">
@@ -571,6 +565,20 @@
               </template>
             </v-text-field>
           </ValidationProvider>
+            <span class="mt-2" v-if="isEmbeddedNMI == 2">
+                <span><small>Checking Embedded..</small></span>
+                <v-progress-linear
+                    class="primary-color"
+                    indeterminate
+                    height="6"
+                ></v-progress-linear>
+            </span>
+            <span class="error--text" v-if="isEmbeddedNMI == 1">
+                  <v-icon color="error">
+                      info
+                  </v-icon>
+                  This address is in an <strong>Embedded network.</strong>
+            </span>
         </div>
       </div>
 
@@ -600,6 +608,20 @@
                         </template>
                     </v-text-field>
                 </ValidationProvider>
+                <span class="mt-2" v-if="isEmbeddedNMI == 2">
+                    <span><small>Checking Embedded..</small></span>
+                    <v-progress-linear
+                        class="primary-color"
+                        indeterminate
+                        height="6"
+                    ></v-progress-linear>
+                </span>
+                <span class="error--text" v-if="isEmbeddedNMI == 1">
+                      <v-icon color="error">
+                          info
+                      </v-icon>
+                      This address is in an <strong>Embedded network.</strong>
+                </span>
             </div>
         </div>
 
@@ -629,6 +651,21 @@
               </template>
             </v-text-field>
           </ValidationProvider>
+            <span class="mt-2" v-if="isEmbeddedMIRN == 2">
+                <span><small>Checking Embedded..</small></span>
+                <v-progress-linear
+                    class="primary-color"
+                    indeterminate
+                    height="6"
+                ></v-progress-linear>
+            </span>
+
+            <span class="error--text" v-if="isEmbeddedMIRN == 1">
+                  <v-icon color="error">
+                      info
+                  </v-icon>
+                  This address is in an <strong>Embedded network.</strong>
+            </span>
         </div>
       </div>
 
@@ -657,6 +694,21 @@
                         </template>
                     </v-text-field>
                 </ValidationProvider>
+                <span class="mt-2" v-if="isEmbeddedMIRN == 2">
+                    <span><small>Checking Embedded..</small></span>
+                    <v-progress-linear
+                        class="primary-color"
+                        indeterminate
+                        height="6"
+                    ></v-progress-linear>
+                </span>
+
+                <span class="error--text" v-if="isEmbeddedMIRN == 1">
+                      <v-icon color="error">
+                          info
+                      </v-icon>
+                      This address is in an <strong>Embedded network.</strong>
+                </span>
             </div>
         </div>
 
@@ -1967,6 +2019,15 @@ export default {
         isManuallyVerified() {
             return this.person_details.email_manually_verified_by;
         },
+        isEmbeddedNMI() {
+            return this.lead.embedded_nmi;
+        },
+        isEmbeddedMIRN() {
+            return this.lead.embedded_mirn;
+        },
+        loadAddressLoader() {
+            return this.lead.loading_address_info;
+        },
     },
 
   watch: {
@@ -2130,5 +2191,8 @@ export default {
 }
 .message-text {
     font-style: italic;
+}
+.primary-color {
+    color: #5c229a;
 }
 </style>

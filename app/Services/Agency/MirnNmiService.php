@@ -13,11 +13,11 @@ class MirnNmiService
         $application = ConnectionApplication::find($application_id);
 
         $result = [
-            'mirn' => $application->mirn ?? null,
-            'nmi' => $application->nmi ?? null,
+            'mirn' => null,
+            'nmi' => null,
         ];
 
-        if ($application && (!$application->mirn || !$application->nmi)) {
+        if ($application) {
             $svcUtilities = new FastConnectService();
             $result = $svcUtilities->authenticate()->searchAddress([], true, $application->id);
         }
@@ -34,15 +34,22 @@ class MirnNmiService
             'nmi' => null,
         ];
 
-        if ($application) {
+        if ($application && $application->unit_number) {
             $svcUtilities = new EmbeddedNetworkService();
             $result = $svcUtilities->authenticate()->searchAddressWithoutUnit([], true, $application->id);
+        }
+
+        if ($application && !$application->unit_number) {
+            $result = [
+                'mirn' => $application->mirn,
+                'nmi' => $application->nmi,
+            ];
         }
 
         return $result;
     }
 
-    public static function fetchIsEmbedded($nmi = null, $applicationFlag = false, $applicationId = null)
+    public static function fetchNmiIsEmbedded($nmi = null, $applicationFlag = false, $applicationId = null)
     {
         if ($applicationFlag) {
             $mirnNmiResult = self::fetchMirnNmiWithoutUnit($applicationId);
@@ -50,6 +57,29 @@ class MirnNmiService
         }
 
         $svcUtilities = new EmbeddedNetworkService();
-        return $svcUtilities->authenticate()->fetchEmbeddedNetwork($nmi, $applicationFlag, $applicationId);
+        return $svcUtilities->authenticate()->fetchNmiEmbeddedNetwork($nmi, $applicationFlag, $applicationId);
+    }
+
+    public static function fetchNmiIsEmbeddedWithNmi($nmi, $applicationFlag = false, $applicationId = null)
+    {
+        $svcUtilities = new EmbeddedNetworkService();
+        return $svcUtilities->authenticate()->fetchNmiEmbeddedNetwork($nmi, $applicationFlag, $applicationId);
+    }
+
+    public static function fetchMirnIsEmbedded($mirn = null, $applicationFlag = false, $applicationId = null)
+    {
+        if ($applicationFlag) {
+            $mirnNmiResult = self::fetchMirnNmiWithoutUnit($applicationId);
+            $nmi = $mirnNmiResult['mirn'];
+        }
+
+        $svcUtilities = new EmbeddedNetworkService();
+        return $svcUtilities->authenticate()->fetchMirnEmbeddedNetwork($mirn, $applicationFlag, $applicationId);
+    }
+
+    public static function fetchMirnIsEmbeddedWithNmi($nmi, $applicationFlag = false, $applicationId = null)
+    {
+        $svcUtilities = new EmbeddedNetworkService();
+        return $svcUtilities->authenticate()->fetchMirnEmbeddedNetwork($nmi, $applicationFlag, $applicationId);
     }
 }

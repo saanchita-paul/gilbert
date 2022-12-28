@@ -29,5 +29,6 @@ Route::get('/email', function () {
     return response('hello world');
 });
 
+
 Route::get('/{vue_capture?}', fn() => view('app'))
     ->where('vue_capture', '[\/\w\.-]*');

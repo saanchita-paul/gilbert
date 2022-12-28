@@ -385,7 +385,7 @@ class HubspotContactService
             ],
             [
                 "property" => "is_embedded_network",
-                "value" => $this->application->is_embedded ? 'yes' : 'no',
+                "value" => $this->application->embedded_nmi ? 'yes' : 'no',
             ],
         ];
     }

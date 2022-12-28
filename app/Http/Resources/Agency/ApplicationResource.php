@@ -146,6 +146,8 @@ class ApplicationResource extends JsonResource
             'is_generated_caf' => $this->is_generated_caf,
             'chatbot_id' => $this->chatbot_id,
             'is_embedded' => $this->is_embedded,
+            'loading_address_info' => $this->loading_address_info,
+            'embedded_nmi' => $this->embedded_nmi,
         ];
     }
 

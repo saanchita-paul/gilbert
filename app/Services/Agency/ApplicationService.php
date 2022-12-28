@@ -2,6 +2,8 @@
 
 namespace App\Services\Agency;
 
+use App\Jobs\FetchAdditionalInfoAddressJob;
+use App\Jobs\FetchEmbeddedNetworkJob;
 use App\Jobs\GilbertToChatbotJob;
 use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
@@ -38,6 +40,8 @@ class ApplicationService
         $application['agency_id'] = $agentProfile->agency_id;
         $application['created_by'] = $agentProfile->id;
         $application['status'] = ConnectionApplication::STATUS_UNASSIGNED;
+        $application['loading_address_info'] = true;
+        $application['embedded_nmi'] = 2;
         $authizedPerson = $application['authorized_person'];
 
         if ($application['is_billing_same'] == 0 || $application['is_billing_same'] == null) {
@@ -136,9 +140,10 @@ class ApplicationService
         $existingApplication->postcode = $address['postcode'];
         $existingApplication->state = $address['state'];
         $existingApplication->country = $address['country'];
-        $existingApplication->mirn = $address['mirn'];
-        $existingApplication->nmi = $address['nmi'];
-        $existingApplication->is_embedded = $address['is_embedded'];
+        $existingApplication->mirn = null;
+        $existingApplication->nmi = null;
+        $existingApplication->embedded_nmi = 2;
+        $existingApplication->loading_address_info = true;
         $existingApplication->is_billing_same = $address['is_billing_same'];
 
 
@@ -446,7 +451,8 @@ class ApplicationService
         $isService = $application['isService'];
 
         if (array_key_exists('nmi', $application)) {
-            $application['is_embedded'] = MirnNmiService::fetchIsEmbedded($application['nmi'])['is_embedded'];
+            $application['embedded_nmi'] = 2;
+            FetchEmbeddedNetworkJob::dispatch($id);
         }
 
 

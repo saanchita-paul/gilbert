@@ -133,7 +133,7 @@ export default {
     data() {
         return {
             afterHourEffectedField: ['moving_date', 'plan_type'],
-            nmiMernFlag: true,
+            nmiMernFlag: false,
             leadId: null,
             leadSummary: null,
             notes: null,
@@ -217,6 +217,7 @@ export default {
             this.lead = this.leadSummary;
             this.services = this.leadSummary?.service_interests;
             this.planNoteFlag = true;
+            this.nmiMernFlag = this.leadSummary.loading_address_info;
             UtilityStoreService.setUtilityDetails(this.leadSummary.connection_services);
         },
         updateNote() {
@@ -398,15 +399,12 @@ export default {
             this.leadSummary.billing_street_name = address.billing_street_name_only
             this.leadSummary.billing_street_name_only = address.billing_street_name_only
             this.leadSummary.billing_unit_number = address.billing_unit_number
-            this.nmiMernFlag = true;
-            this.leadSummary.nmi = '';
-            this.leadSummary.mirn = '';
             let response = await LeadApplicationService.updateAddress(address, this.leadId);
             console.log('updateAddress response', response);
             this.leadSummary.nmi = response.nmi;
-            this.leadSummary.is_embedded = response.is_embedded;
+            this.leadSummary.embedded_nmi = response.embedded_nmi;
             this.leadSummary.mirn = response.mirn;
-            this.nmiMernFlag = false;
+            this.nmiMernFlag = response.loading_address_info;
 
             await this.getElectricityDistributor();
             await this.loadNextBusinessDay();
@@ -431,7 +429,8 @@ export default {
             const res = await LeadApplicationService.saveSoleField(field, value, this.leadId, isDate, identification, false);
 
             // Is embedded change
-            this.leadSummary.is_embedded = res.data.data.is_embedded;
+            this.leadSummary.embedded_nmi = res.data.data.embedded_nmi;
+            this.leadSummary.loading_address_info = res.data.data.loading_address_info;
 
             let [day, month, year] = [];
             if (isDate) {
@@ -465,7 +464,7 @@ export default {
                 const nmiMern = await LeadApplicationService.getNmiMern(this.leadId);
                 this.leadSummary.nmi = nmiMern.nmi;
                 this.leadSummary.mirn = nmiMern.mirn;
-                this.leadSummary.is_embedded = nmiMern.is_embedded;
+                this.leadSummary.embedded_nmi = nmiMern.embedded_nmi;
             }
         },
         closeAssignedToEmptyModal() {
@@ -539,6 +538,20 @@ export default {
         cancelSendToChatBotConfirmModal() {
             this.sentToChabotConfirmModal = false;
         },
+        listenMirnNmiNotification() {
+            this.$echo.channel(`fetchMirnNmi.${this.leadSummary.id}`)
+                .notification(async (res) => {
+                    this.nmiMernFlag = res.loading_address_info;
+                    await this.loadPlanNoteAndLead();
+                });
+        },
+        listenEmbeddedNetworkNotification() {
+            this.$echo.channel(`fetchEmbeddedNetwork.${this.leadSummary.id}`)
+                .notification(async (res) => {
+                    this.nmiMernFlag = res.loading_address_info;
+                    await this.loadPlanNoteAndLead();
+                });
+        }
     },
     watch: {
         powerPlan: {
@@ -549,6 +562,8 @@ export default {
         },
     },
     async mounted() {
+        this.leadId = this.$route.params.id;
+        await this.getIsLocked();
         const validateEvent = async (callback) => {
             let v = await this.validateLead();
             if (!v) return;
@@ -568,18 +583,17 @@ export default {
             this.$eventBus.$off("busUtilitySubmit", busUtilitySubmitEvent);
         });
 
-        this.leadId = this.$route.params.id;
         await this.loadPlanNoteAndLead();
         await this.loadNextBusinessDay();
-        await this.updateMernNmi();
-        this.nmiMernFlag = false;
-
-
-        await this.getIsLocked();
+        // await this.updateMernNmi();
+        // this.nmiMernFlag = false;
 
         this.$eventBus.$on("lock_app_auto_assign", async () => {
             await this.lockApp();
         });
+
+        this.listenMirnNmiNotification();
+        this.listenEmbeddedNetworkNotification();
     }
 };
 </script>

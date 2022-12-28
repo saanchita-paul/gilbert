@@ -138,14 +138,24 @@ class EmbeddedNetworkService
         ];
     }
 
-    public function fetchEmbeddedNetwork($nmi = null, $applicationFlag = false, $applicationId = null)
+    private static function makeMirnPayload($mirn)
+    {
+        return [
+            'mirn' => [
+                'mirn' => $mirn,
+                'lookup_provider_id' => 25,
+            ]
+        ];
+    }
+
+    public function fetchNmiEmbeddedNetwork($nmi = null, $applicationFlag = false, $applicationId = null)
     {
         try {
             $is_embedded = null;
 
             if (config('fastconnect.embedded_enabled') && $nmi) {
                 $payload = self::makeNmiPayload($nmi);
-                Log::info('Embedded Network Payload: ', $payload);
+                Log::info('Embedded Network NMI Payload: ', $payload);
 
                 $authorization = 'Bearer ' . $this->accessToken;
                 $response = Http::withHeaders([
@@ -154,12 +164,15 @@ class EmbeddedNetworkService
                     'authorization' => $authorization,
                 ])
                     ->withBody(json_encode($payload), 'application/json')
-                    ->post(config('fastconnect.root_url') . config('fastconnect.embedded_nmi_uri'));
+                    ->post(config('fastconnect.root_url') . config('fastconnect.embedded_uri'));
 
                 $responseData = $response->json();
 
-                Log::info('Embedded Network Response: ', $responseData);
+                Log::info('Embedded Network NMI Response: ', $responseData);
 
+                if (!empty($responseData['errors'])) {
+                    throw new \ErrorException($responseData['errors']);
+                }
 
                 if (!empty($responseData['nmi']['result'])) {
                     $is_embedded = $responseData['nmi']['result']['master_data']['embedded_network'];
@@ -175,18 +188,76 @@ class EmbeddedNetworkService
 
             if ($applicationFlag) {
                 $connectionApp = ConnectionApplication::find($applicationId);
-                $connectionApp->update(['is_embedded' => $is_embedded]);
+                $connectionApp->update(['embedded_nmi' => $is_embedded]);
             }
 
             return [
-                'is_embedded' => $is_embedded,
+                'embedded_nmi' => $is_embedded,
+            ];
+        } catch (\Exception $exception) {
+            if ($applicationFlag) {
+                $connectionApp = ConnectionApplication::find($applicationId);
+                $connectionApp->update(['embedded_nmi' => null]);
+            }
+
+            Log::info('Embedded Network NMI Error: '. $exception->getMessage());
+
+            return [
+                'embedded_nmi' => null
+            ];
+        }
+    }
+
+    public function fetchMirnEmbeddedNetwork($mirn = null, $applicationFlag = false, $applicationId = null)
+    {
+        try {
+            $is_embedded = null;
+
+            if (config('fastconnect.embedded_enabled') && $mirn) {
+                $payload = self::makeMirnPayload($mirn);
+                Log::info('Embedded Network MIRN Payload: ', $payload);
+
+                $authorization = 'Bearer ' . $this->accessToken;
+                $response = Http::withHeaders([
+                    'content-type' => 'application/json',
+                    'accept' => 'application/json',
+                    'authorization' => $authorization,
+                ])
+                    ->withBody(json_encode($payload), 'application/json')
+                    ->post(config('fastconnect.root_url') . config('fastconnect.embedded_uri'));
+
+                $responseData = $response->json();
+                dd($responseData);
+
+                Log::info('Embedded Network MIRN Response: ', $responseData);
+
+
+                if (!empty($responseData['mirn']['result'])) {
+                    $is_embedded = $responseData['mirn']['result']['master_data']['embedded_network'];
+                }
+
+                $error = $responseData['mirn']['error'];
+                $no_result = empty($is_embedded);
+
+                if ($no_result && !empty($error)) {
+                    throw new \ErrorException($error);
+                }
+            }
+
+            if ($applicationFlag) {
+                $connectionApp = ConnectionApplication::find($applicationId);
+                $connectionApp->update(['embedded_mirn' => $is_embedded]);
+            }
+
+            return [
+                'embedded_mirn' => $is_embedded,
             ];
         } catch (\Exception $exception) {
 
-            Log::info('Embedded Network Error: ', $exception->getMessage());
+            Log::info('Embedded Network MIRN Error: ', $exception->getMessage());
 
             return [
-                'is_embedded' => null
+                'embedded_mirn' => null
             ];
         }
     }

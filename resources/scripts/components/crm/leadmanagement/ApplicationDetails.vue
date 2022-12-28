@@ -122,7 +122,7 @@
            </v-col>
            <v-col cols="7" class="py-0 my-0">
                <p>{{lead.address_text}}</p>
-               <span class="error--text" v-if="lead.is_embedded">
+               <span class="error--text" v-if="lead.embedded_nmi == 1">
                   <v-icon color="error">
                       info
                   </v-icon>
@@ -288,7 +288,7 @@ export default {
             return dayJs(this.lead.moving_date,'YYYY-MM-DD').format('DD/MM/YYYY');
         }
     },
-    mounted(){
+     mounted(){
         // console.log('leads' ,  this.lead);
     }
 };
