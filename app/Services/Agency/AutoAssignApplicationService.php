@@ -82,7 +82,7 @@ class AutoAssignApplicationService
      */
     public function isAutoAssignable($application)
     {
-        $timeSlot = OfficeAutoAssignTimeSlot::first();
+        $timeSlot = OfficeAutoAssignTimeSlot::where('office_id', $application->office_id)->first();
 
         $currentTime = Carbon::now()->timezone(TimeZoneService::getTimeZoneArea());
 
