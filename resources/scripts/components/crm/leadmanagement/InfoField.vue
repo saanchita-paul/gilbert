@@ -574,10 +574,10 @@
                 ></v-progress-linear>
             </span>
             <span class="error--text" v-if="isEmbeddedNMI == 1">
-                  <v-icon color="error">
+                  <v-icon color="error" class="mt-4">
                       info
                   </v-icon>
-                  This address is in an <strong>Embedded network.</strong>
+                  <small v-html="embeddedText"></small>
             </span>
         </div>
       </div>
@@ -617,10 +617,10 @@
                     ></v-progress-linear>
                 </span>
                 <span class="error--text" v-if="isEmbeddedNMI == 1">
-                      <v-icon color="error">
+                      <v-icon color="error" class="mt-4">
                           info
                       </v-icon>
-                      This address is in an <strong>Embedded network.</strong>
+                      <small v-html="embeddedText"></small>
                 </span>
             </div>
         </div>
@@ -661,10 +661,10 @@
             </span>
 
             <span class="error--text" v-if="isEmbeddedMIRN == 1">
-                  <v-icon color="error">
+                  <v-icon color="error" class="mt-4">
                       info
                   </v-icon>
-                  This address is in an <strong>Embedded network.</strong>
+                  <small v-html="embeddedText"></small>
             </span>
         </div>
       </div>
@@ -704,10 +704,10 @@
                 </span>
 
                 <span class="error--text" v-if="isEmbeddedMIRN == 1">
-                      <v-icon color="error">
+                      <v-icon color="error" class="mt-4">
                           info
                       </v-icon>
-                      This address is in an <strong>Embedded network.</strong>
+                      <small v-html="embeddedText"></small>
                 </span>
             </div>
         </div>
@@ -1727,6 +1727,7 @@ export default {
         serviceAddressFlag: false,
         currentUser: null,
         manuallyVerified: false,
+        embeddedText: `The electricity at this address is in an <strong>Embedded network.</strong>`,
     };
   },
   methods: {
@@ -2194,5 +2195,8 @@ export default {
 }
 .primary-color {
     color: #5c229a;
+}
+.mt-4 {
+    margin-top: 4px !important;
 }
 </style>
