@@ -422,6 +422,68 @@
 
         <v-divider></v-divider>
 
+        <template >
+            <v-expansion-panels  style="box-shadow: none !important;">
+                <v-expansion-panel style="box-shadow: none !important;">
+                    <v-expansion-panel-header>
+                        Service Preference
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        <v-row>
+                            <v-col cols="4">
+                                <div  class="my-0 py-0 mx-0 border-all">
+                                    <p class="pt-2 pb-1 mb-0 services">
+                                  <span class="ml-0">
+                                      <v-icon  color="yellow" size="17">mdi-flash</v-icon> Power
+                                  </span>
+                                    </p>
+                                    <p class="py-0 my-0 service-status" >
+                                        <small>Current Status</small>
+                                        <v-select
+                                            placeholder="Please select"
+                                            v-model="formData.power_status"
+                                            item-text="text"
+                                            item-value="value"
+                                            :items="powerStatus"
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                        >
+                                        </v-select>
+                                    </p>
+                                </div>
+                            </v-col>
+                            <v-col cols="4">
+                                <div  class="my-0 py-0 mx-0 border-all">
+                                    <p class="pt-2 pb-1 mb-0 services">
+                                  <span class="ml-0">
+                                      <v-icon color="red" size="17">mdi-fire</v-icon> Gas
+                                  </span>
+                                    </p>
+                                    <p class="py-0 my-0 service-status" >
+                                        <small>Current Status</small>
+                                        <v-select
+                                            placeholder="Please select"
+                                            v-model="formData.gas_status"
+                                            item-text="text"
+                                            item-value="value"
+                                            :items="gasStatus"
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                        >
+                                        </v-select>
+                                    </p>
+                                </div>
+                            </v-col>
+                        </v-row>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
+        </template>
+
+        <v-divider ></v-divider>
+
         <template>
             <v-expansion-panels style="box-shadow:none !important;">
                 <v-expansion-panel>
@@ -550,6 +612,104 @@ export default {
                     value: 1,
                 },
             ],
+            formData : {
+                power_status: null,
+                gas_status: null,
+            },
+            powerStatus : [
+                {
+                    id: 13,
+                    type: "service",
+                    display_text: "Accepted",
+                    display_text_alias: "Connected",
+                    status_value: 5,
+                    text: "Accepted",
+                    value: 5
+                },
+                {
+                    id: 15,
+                    type: "service",
+                    display_text: "Not Submitted",
+                    display_text_alias: "In progress",
+                    status_value: 7,
+                    text: "Not Submitted",
+                    value: 7
+                },
+                {
+                    id: 17,
+                    type: "service",
+                    display_text: "Rejected",
+                    display_text_alias: "Rejected",
+                    status_value: 9,
+                    text: "Rejected",
+                    value: 9
+                },
+                {
+                    id: 19,
+                    type: "service",
+                    display_text: "Manual Processing",
+                    display_text_alias: "Manual Processing",
+                    status_value: 11,
+                    text: "Manual Processing",
+                    value: 11
+                },
+                {
+                    id: 20,
+                    type: "service",
+                    display_text: "In Progress",
+                    display_text_alias: "In Progress",
+                    status_value: 12,
+                    text: "In Progress",
+                    value: 12
+                }
+            ],
+            gasStatus : [
+                {
+                    id: 13,
+                    type: "service",
+                    display_text: "Accepted",
+                    display_text_alias: "Connected",
+                    status_value: 5,
+                    text: "Accepted",
+                    value: 5
+                },
+                {
+                    id: 15,
+                    type: "service",
+                    display_text: "Not Submitted",
+                    display_text_alias: "In progress",
+                    status_value: 7,
+                    text: "Not Submitted",
+                    value: 7
+                },
+                {
+                    id: 17,
+                    type: "service",
+                    display_text: "Rejected",
+                    display_text_alias: "Rejected",
+                    status_value: 9,
+                    text: "Rejected",
+                    value: 9
+                },
+                {
+                    id: 19,
+                    type: "service",
+                    display_text: "Manual Processing",
+                    display_text_alias: "Manual Processing",
+                    status_value: 11,
+                    text: "Manual Processing",
+                    value: 11
+                },
+                {
+                    id: 20,
+                    type: "service",
+                    display_text: "In Progress",
+                    display_text_alias: "In Progress",
+                    status_value: 12,
+                    text: "In Progress",
+                    value: 12
+                }
+            ]
         }
     },
     methods: {
