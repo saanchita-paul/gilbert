@@ -195,6 +195,10 @@ class EmbeddedNetworkService
                 'embedded_nmi' => $is_embedded,
             ];
         } catch (\Exception $exception) {
+            if ($applicationFlag) {
+                $connectionApp = ConnectionApplication::find($applicationId);
+                $connectionApp->update(['embedded_nmi' => null]);
+            }
 
             Log::info('Embedded Network NMI Error: '. $exception->getMessage());
 

@@ -133,7 +133,7 @@ export default {
     data() {
         return {
             afterHourEffectedField: ['moving_date', 'plan_type'],
-            nmiMernFlag: true,
+            nmiMernFlag: false,
             leadId: null,
             leadSummary: null,
             notes: null,
@@ -217,6 +217,7 @@ export default {
             this.lead = this.leadSummary;
             this.services = this.leadSummary?.service_interests;
             this.planNoteFlag = true;
+            this.nmiMernFlag = this.leadSummary.loading_address_info;
             UtilityStoreService.setUtilityDetails(this.leadSummary.connection_services);
         },
         updateNote() {
@@ -398,9 +399,6 @@ export default {
             this.leadSummary.billing_street_name = address.billing_street_name_only
             this.leadSummary.billing_street_name_only = address.billing_street_name_only
             this.leadSummary.billing_unit_number = address.billing_unit_number
-            this.nmiMernFlag = true;
-            this.leadSummary.nmi = '';
-            this.leadSummary.mirn = '';
             let response = await LeadApplicationService.updateAddress(address, this.leadId);
             console.log('updateAddress response', response);
             this.leadSummary.nmi = response.nmi;
@@ -588,7 +586,7 @@ export default {
         await this.loadPlanNoteAndLead();
         await this.loadNextBusinessDay();
         // await this.updateMernNmi();
-        this.nmiMernFlag = false;
+        // this.nmiMernFlag = false;
 
         this.$eventBus.$on("lock_app_auto_assign", async () => {
             await this.lockApp();
