@@ -51,11 +51,12 @@ class AutoAssignApplicationService
 
         Log::info('Auto assign application: ', $application->toArray());
 
+        $isAutoAssignable = $this->isAutoAssignable($application);
         Log::info('Auto assign application condition: ', [
-            'auto_assign_condition' => $this->isAutoAssignable($application)
+            'auto_assign_condition' => $isAutoAssignable
         ]);
 
-        if (!$this->isAutoAssignable($application)) {
+        if (!$isAutoAssignable) {
             throw new Exception('AutoAssignApplicationService: Application is not auto assignable!');
         }
 
@@ -83,7 +84,9 @@ class AutoAssignApplicationService
     public function isAutoAssignable($application)
     {
         $timeSlot = OfficeAutoAssignTimeSlot::where('office_id', $application->office_id)->first();
-
+        if (!$timeSlot) {
+            return false;
+        }
         $currentTime = Carbon::now()->timezone(TimeZoneService::getTimeZoneArea());
 
         $allowableTime = $this->isAllowableTime($timeSlot->start_time, $timeSlot->end_time, $currentTime);
