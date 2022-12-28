@@ -81,6 +81,7 @@ export default class ApplicationSummary {
 
     loading_address_info = false;
     embedded_nmi = null;
+    embedded_mirn = null;
 
     constructor(
         {
@@ -178,6 +179,7 @@ export default class ApplicationSummary {
             assigned_to = null,
             app_close_reason_id = null,
             embedded_nmi = null,
+            embedded_mirn = null,
             loading_address_info = false,
         }
     ) {
@@ -283,6 +285,7 @@ export default class ApplicationSummary {
         this.assigned_to = assigned_to;
         this.app_close_reason_id = app_close_reason_id;
         this.embedded_nmi = embedded_nmi;
+        this.embedded_mirn = embedded_mirn;
         this.loading_address_info = loading_address_info;
     }
 
