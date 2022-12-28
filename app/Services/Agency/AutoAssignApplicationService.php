@@ -3,13 +3,14 @@
 namespace App\Services\Agency;
 
 use App\Models\ConnectionApplication;
+use App\Models\OfficeAutoAssignTimeSlot;
 use App\Models\Setting;
 use App\Models\User;
-use App\Services\FastConnectService;
 use App\Services\SettingService;
 use App\Services\TimeZoneService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Exception;
 
 class AutoAssignApplicationService
 {
@@ -17,13 +18,12 @@ class AutoAssignApplicationService
      * Auto assign application to chatbot
      * @param $application
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function assignApplication($application)
     {
         try {
-            $result = $this->fetchMirnNmi($application);
-            if ($result['mirn'] && $result['nmi']) {
+            if ($application->mirn && $application->nmi) {
                 $this->assignUser($application);
             }
         } catch (\Exception $e) {
@@ -33,29 +33,39 @@ class AutoAssignApplicationService
         }
     }
 
+    /**
+     * @throws Exception
+     */
     private function assignUser($application)
     {
-        $chatbotUser = $this->getChatbotUser();
-        $applicationService = new ApplicationService();
-        if ($chatbotUser && $this->isAutoAssignable($application)) {
-            $applicationService->assignUser($chatbotUser->profile_id, $application->id);
-        }
-
-        if ($application->tenancy_type != ConnectionApplication::TENANCY_TYPE_HOME_OWNER) {
-            $autoSubmitService = new WaterAutoSubmitService($application->id);
-        }
-    }
-
-    /**
-     * Get chatbot user
-     * @return User|null
-     */
-    private function getChatbotUser()
-    {
-
-        return User::whereHas('roles', function ($query) {
+        $chatbotUser = User::whereHas('roles', function ($query) {
             $query->where('name', 'hood_chatbot_user');
         })->first();
+
+        if (!$chatbotUser) {
+            Log::error('Chatbot user not found!');
+            throw new Exception('AutoAssignApplicationService: Chatbot user not found!');
+        }
+
+        Log::info('Auto assign application to chatbot user: ', $chatbotUser->toArray());
+
+        Log::info('Auto assign application: ', $application->toArray());
+
+        $isAutoAssignable = $this->isAutoAssignable($application);
+        Log::info('Auto assign application condition: ', [
+            'auto_assign_condition' => $isAutoAssignable
+        ]);
+
+        if (!$isAutoAssignable) {
+            throw new Exception('AutoAssignApplicationService: Application is not auto assignable!');
+        }
+
+        $applicationService = new ApplicationService();
+        $applicationService->assignUser($chatbotUser->profile_id, $application->id);
+
+        if ($application->tenancy_type != ConnectionApplication::TENANCY_TYPE_HOME_OWNER) {
+            new WaterAutoSubmitService($application->id);
+        }
     }
 
     /**
@@ -71,31 +81,37 @@ class AutoAssignApplicationService
      * Check if auto assign is enabled
      * @return bool
      */
-    private function isAutoAssignable($application)
+    public function isAutoAssignable($application)
     {
-        $timeSlot = $application->office->timeSlots()
-            ->where('day', strtolower(date('l')))
-            ->first();
+        $timeSlot = OfficeAutoAssignTimeSlot::where('office_id', $application->office_id)->first();
+        if (!$timeSlot) {
+            return false;
+        }
+        $currentTime = Carbon::now()->timezone(TimeZoneService::getTimeZoneArea());
 
-        $allowableTime = Carbon::now()->timezone(TimeZoneService::getTimeZoneArea())
-            ->isBetween($timeSlot->start_time, $timeSlot->end_time);
+        $allowableTime = $this->isAllowableTime($timeSlot->start_time, $timeSlot->end_time, $currentTime);
+
+        Log::info('Auto assign application allowable time: ', [
+            'start_time' => $timeSlot->start_time,
+            'end_time' => $timeSlot->end_time,
+            'current_time' => $currentTime,
+            'allowable_time' => $allowableTime
+        ]);
 
         return $application->office->is_chatbot_office
             && $this->getAutoAssignGlobalSetting()->setting_value
             && $allowableTime;
     }
 
-    private function fetchMirnNmi($application)
+    public function isAllowableTime($startTime, $endTime, $currentTime)
     {
-        $result = [
-            'mirn' => $application->mirn,
-            'nmi' => $application->nmi
-        ];
-        if ($application->office->is_chatbot_office && (!$application->mirn || !$application->nmi)) {
-            $svcUtilities = new FastConnectService();
-            $result = $svcUtilities->authenticate()->searchAddress([], true, $application->id);
+        if ($startTime < $endTime) {
+            return $currentTime->gt($startTime) && $currentTime->lt($endTime);
+        }
+        if ($startTime > $endTime) {
+            return ($currentTime->gt($startTime) || $currentTime->lt($endTime));
         }
 
-        return $result;
+        return false;
     }
 }

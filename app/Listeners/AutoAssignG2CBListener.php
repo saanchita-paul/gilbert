@@ -2,12 +2,14 @@
 
 namespace App\Listeners;
 
-use App\Jobs\AutoAssignAppToChatbotJob;
 use App\Models\ConnectionApplication;
+use App\Services\Agency\AutoAssignApplicationService;
+use App\Services\Agency\MirnNmiService;
 use Exception;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
-class AutoAssignG2CBListener
+class  AutoAssignG2CBListener implements ShouldQueue
 {
     public const ALLOWED_SOURCES = [
         ConnectionApplication::SOURCE_HOOD,
@@ -37,7 +39,8 @@ class AutoAssignG2CBListener
      */
     public function handle($event)
     {
-        $application = ConnectionApplication::find($event->applicationId);
+        $application = MirnNmiService::dispatchAllService($event->applicationId);
+
         if (!$application) {
             throw new Exception(
                 'AutoAssignG2CBListener: Application not found for id '
@@ -52,9 +55,22 @@ class AutoAssignG2CBListener
                 . $application->source
                 . ' is not allowed for auto assign to chatbot!'
             );
-            return;
+            throw new Exception(
+                'AutoAssignG2CBListener: Application source '
+                . $application->source
+                . ' is not allowed for auto assign to chatbot!'
+            );
         }
 
-        AutoAssignAppToChatbotJob::dispatch($application);
+        try {
+            $autoAssignService = new AutoAssignApplicationService();
+            $autoAssignService->assignApplication($application);
+
+            Log::info('Auto assign application to chatbot successfully');
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            Log::error($e->getTraceAsString());
+            throw $e;
+        }
     }
 }
