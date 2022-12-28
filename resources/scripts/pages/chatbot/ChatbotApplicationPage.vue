@@ -200,16 +200,13 @@ name: "ChatbotApplicationPage",
         async fetchCafFiles() {
             let data = await ApplicationCafFileService.getApplicationCafFileData({...this.sort_search_meta, ...{page: this.page}}, this.advanceSearch);
             this.cafFiles = data.data;
-            if(this.cafFiles.length > 0) {
-                this.selectedApp = this.cafFiles[0];
-            }
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
             this.totalItem = data.pagination.total;
-
-            // allread chek
-
-
+            if(this.cafFiles.length > 0) {
+                const query = this.$route.query;
+                await this.$router.replace({query: {...query, app_id: this.cafFiles[0].id}});
+            }
         },
 
         async fetchGilbertApplications() {
