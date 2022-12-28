@@ -152,6 +152,7 @@ export default {
 
     getMovingUtilityData: async (id) => {
         const response = await axios.get(`${BOT_API}/utility-data/${id}`);
+        console.log("movingUtilityData", response);
         return ChatbotApplicationMapper.mapApplication(response.data);
     }
 }

@@ -14,12 +14,8 @@
 </template>
 
 <script>
-import Note from "@scripts/components/crm/leadmanagement/notes/Note";
-import InvalidNote from "@scripts/components/crm/leadmanagement/notes/InvalidNote";
-import SubmittedNote from "@scripts/components/crm/leadmanagement/notes/SubmittedNote";
-import SubmittedOriginNote from "@scripts/components/crm/leadmanagement/notes/SubmittedOriginNote";
-import SubmittedPowershopNote from "@scripts/components/crm/leadmanagement/notes/SubmittedPowershopNote";
-import StatusLog from "@scripts/components/crm/leadmanagement/notes/StatusLog";
+
+import ChatbotApplicationService from "@scripts/services/chatbot/ChatbotApplicationService";
 
 export default {
     name: "ChatbotApplicationNote",
@@ -29,6 +25,7 @@ export default {
             note: {
                 text:'',
                 title: '',
+                moving_utility_data_id : this.$route.query.app_id ?? null
             },
         }
     },
@@ -37,7 +34,7 @@ export default {
         async saveNote() {
             if (!this.note.text) return;
             //todo need to call note api in chatbot site
-
+            await ChatbotApplicationService.saveNote(this.note)
         },
     }
 };
