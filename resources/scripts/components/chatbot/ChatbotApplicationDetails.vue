@@ -549,7 +549,7 @@
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <v-row>
-                           <ChatbotApplicationNote ></ChatbotApplicationNote>
+                           <ChatbotApplicationNote :applications="chatbot_app.application_notes" ></ChatbotApplicationNote>
                         </v-row>
                     </v-expansion-panel-content>
                 </v-expansion-panel>

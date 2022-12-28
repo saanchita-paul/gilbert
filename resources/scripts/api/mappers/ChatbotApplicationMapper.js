@@ -6,20 +6,16 @@ import ApplicationNote from "@scripts/models/chatbot/ApplicationNote";
 
 export default {
     mapApplication: (application) => {
-
-        console.log('chatbot application', application.application_notes);
-
         const id_detail = new IdDetail(application);
         const personal_detail = new PersonalDetail(application);
         const property_detail = new PropertyDetail(application);
-        // const application_notes = new ApplicationNote(application.application_notes)
+        const application_note = application.application_notes.map(item => new ApplicationNote(item));
 
         return new ChatbotApplication({
             id_detail: id_detail,
             personal_details: personal_detail,
             property_details: property_detail,
-            // application_notes : application_notes
+            application_notes : application_note
         });
-
     }
 }
