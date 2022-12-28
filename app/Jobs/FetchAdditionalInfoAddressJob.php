@@ -36,11 +36,6 @@ class FetchAdditionalInfoAddressJob implements ShouldQueue
      */
     public function handle()
     {
-        $application = ConnectionApplication::find($this->applicationId);
-        MirnNmiService::fetchMirnNmi($application->id);
-        $application->notify(new FetchMirnNmiNotification($application->id));
-        MirnNmiService::fetchNmiIsEmbedded(null, true, $application->id);
-        $application->notify(new FetchEmbeddedNetworkNotification($application->id));
-        $application->update(['loading_address_info' => false]);
+        MirnNmiService::dispatchAllService($this->applicationId);
     }
 }

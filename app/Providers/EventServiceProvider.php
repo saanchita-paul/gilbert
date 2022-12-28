@@ -51,7 +51,6 @@ class EventServiceProvider extends ServiceProvider
 
         ],
         CreateApplicationEvent::class => [
-            FetchAdditionalInfoAddressListener::class,
             AutoAssignG2CBListener::class,
             CreateHubSpotContact::class,
         ],
