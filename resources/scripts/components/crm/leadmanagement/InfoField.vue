@@ -565,11 +565,13 @@
               </template>
             </v-text-field>
           </ValidationProvider>
-            <span class="warning--text" v-if="isEmbeddedNMI == 2">
-                  <v-icon color="warning">
-                      info
-                  </v-icon>
-                  <small>Checking for Embedded network</small>
+            <span class="mt-2" v-if="isEmbeddedNMI == 2">
+                <span><small>Checking Embedded..</small></span>
+                <v-progress-linear
+                    class="primary-color"
+                    indeterminate
+                    height="6"
+                ></v-progress-linear>
             </span>
             <span class="error--text" v-if="isEmbeddedNMI == 1">
                   <v-icon color="error">
@@ -606,11 +608,13 @@
                         </template>
                     </v-text-field>
                 </ValidationProvider>
-                <span class="info--text" v-if="isEmbeddedNMI==2">
-                      <v-icon color="info">
-                          info
-                      </v-icon>
-                      <small>Checking for Embedded network</small>
+                <span class="mt-2" v-if="isEmbeddedNMI == 2">
+                    <span><small>Checking Embedded..</small></span>
+                    <v-progress-linear
+                        class="primary-color"
+                        indeterminate
+                        height="6"
+                    ></v-progress-linear>
                 </span>
                 <span class="error--text" v-if="isEmbeddedNMI == 1">
                       <v-icon color="error">
@@ -647,6 +651,21 @@
               </template>
             </v-text-field>
           </ValidationProvider>
+            <span class="mt-2" v-if="isEmbeddedMIRN == 2">
+                <span><small>Checking Embedded..</small></span>
+                <v-progress-linear
+                    class="primary-color"
+                    indeterminate
+                    height="6"
+                ></v-progress-linear>
+            </span>
+
+            <span class="error--text" v-if="isEmbeddedMIRN == 1">
+                  <v-icon color="error">
+                      info
+                  </v-icon>
+                  This address is in an <strong>Embedded network.</strong>
+            </span>
         </div>
       </div>
 
@@ -675,6 +694,21 @@
                         </template>
                     </v-text-field>
                 </ValidationProvider>
+                <span class="mt-2" v-if="isEmbeddedMIRN == 2">
+                    <span><small>Checking Embedded..</small></span>
+                    <v-progress-linear
+                        class="primary-color"
+                        indeterminate
+                        height="6"
+                    ></v-progress-linear>
+                </span>
+
+                <span class="error--text" v-if="isEmbeddedMIRN == 1">
+                      <v-icon color="error">
+                          info
+                      </v-icon>
+                      This address is in an <strong>Embedded network.</strong>
+                </span>
             </div>
         </div>
 
@@ -1988,6 +2022,9 @@ export default {
         isEmbeddedNMI() {
             return this.lead.embedded_nmi;
         },
+        isEmbeddedMIRN() {
+            return this.lead.embedded_mirn;
+        },
         loadAddressLoader() {
             return this.lead.loading_address_info;
         },
@@ -2154,5 +2191,8 @@ export default {
 }
 .message-text {
     font-style: italic;
+}
+.primary-color {
+    color: #5c229a;
 }
 </style>
