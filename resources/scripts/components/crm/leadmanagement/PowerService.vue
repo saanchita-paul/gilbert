@@ -27,13 +27,17 @@
                 Which supplier would you like to connect with?
             </p>
             <div class="d-flex align-content-lg-space-around mt-2">
-                <ServiceProvider
-                    @onSelectProvider="onSelectProvider(provider.name)"
-                    v-for="provider in providers"
-                    :key="provider.name"
-                    :selectedProvider="selectedProvider"
-                    :provider="provider"
-                ></ServiceProvider>
+                <v-sheet>
+                    <v-slide-group center-active show-arrows>
+                        <v-slide-item v-for="provider in providers" :key="provider.name">
+                            <ServiceProvider
+                                @onSelectProvider="onSelectProvider(provider.name)"
+                                :selectedProvider="selectedProvider"
+                                :provider="provider"
+                            ></ServiceProvider>
+                        </v-slide-item>
+                    </v-slide-group>
+                </v-sheet>
             </div>
         </v-col>
         <v-col cols="12">
@@ -413,7 +417,7 @@ export default {
                 this.getOriginData();
             if (loadAll || this.selectedProvider == 'powershop')
                 this.getPowershopData();
-            if (loadAll || this.selectedProvider == 'sumo') 
+            if (loadAll || this.selectedProvider == 'sumo')
                 setTimeout(() => this.$eventBus.$emit("validate", this.fetchSumoPlans), 600);
         },
         async fetchEaPlans() {
@@ -456,7 +460,7 @@ export default {
         onSelectProvider(provider) {
             this.resetSelectedPlan();
             this.selectedProvider = provider;
-            
+
             this.loadSelectedProviderAndPlan();
         },
         selectEAPlan(plan, isManual = false) {
