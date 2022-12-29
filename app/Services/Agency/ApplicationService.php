@@ -574,7 +574,7 @@ class ApplicationService
 
     public function getNotSubmittedServices($id, $submitType) : array
     {
-        $providers = [ConnectionService::PROVIDER_EA, ConnectionService::PROVIDER_ORIGIN, ConnectionService::PROVIDER_POWER_SHOP];
+        $providers = [ConnectionService::PROVIDER_EA, ConnectionService::PROVIDER_ORIGIN, ConnectionService::PROVIDER_POWER_SHOP, ConnectionService::PROVIDER_FIRST_ENERGY];
 
         $services = match ($submitType) {
             'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],

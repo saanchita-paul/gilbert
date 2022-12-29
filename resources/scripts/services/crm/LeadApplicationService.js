@@ -224,6 +224,8 @@ export default {
                 return "Origin";
             case providerNameMapper.PROVIDER_POWERSHOP:
                 return "Powershop";
+            case providerNameMapper.PROVIDER_FIRST_ENERGY:
+                return "1st Energy";
             default:
                 return null;
         }

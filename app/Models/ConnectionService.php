@@ -62,6 +62,7 @@ class ConnectionService extends Model
     const PROVIDER_EA = 'ea';
     const PROVIDER_ORIGIN = 'origin';
     const PROVIDER_POWER_SHOP = 'powershop';
+    const PROVIDER_FIRST_ENERGY = 'first_energy';
 
 
     const STATUS_MAPPING = [
