@@ -2,12 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Events\FetchEmbeddedNetworkEvent;
 use App\Models\ConnectionApplication;
-use App\Notifications\FetchEmbeddedNetworkNotification;
-use App\Notifications\FetchMirnNmiNotification;
 use App\Services\Agency\MirnNmiService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -38,7 +36,7 @@ class FetchEmbeddedNetworkJob implements ShouldQueue
     {
         $application = ConnectionApplication::find($this->applicationId);
         MirnNmiService::fetchNmiIsEmbeddedWithNmi($application->nmi, true, $application->id);
-        $application->notify(new FetchEmbeddedNetworkNotification($application->id));
+        event(new FetchEmbeddedNetworkEvent($application->id));
         $application->update(['loading_address_info' => false]);
     }
 }

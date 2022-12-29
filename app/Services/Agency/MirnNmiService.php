@@ -2,9 +2,9 @@
 
 namespace App\Services\Agency;
 
+use App\Events\FetchEmbeddedNetworkEvent;
+use App\Events\FetchMirnNmiEvent;
 use App\Models\ConnectionApplication;
-use App\Notifications\FetchEmbeddedNetworkNotification;
-use App\Notifications\FetchMirnNmiNotification;
 use App\Services\Address\EmbeddedNetworkService;
 use App\Services\FastConnectService;
 
@@ -89,9 +89,9 @@ class MirnNmiService
     {
         $application = ConnectionApplication::find($applicationId);
         MirnNmiService::fetchMirnNmi($application->id);
-        $application->notify(new FetchMirnNmiNotification($application->id));
+        event(new FetchMirnNmiEvent($applicationId));
         MirnNmiService::fetchNmiIsEmbedded(null, true, $application->id);
-        $application->notify(new FetchEmbeddedNetworkNotification($application->id));
+        event(new FetchEmbeddedNetworkEvent($applicationId));
         $application->update(['loading_address_info' => false]);
         $application->refresh();
 

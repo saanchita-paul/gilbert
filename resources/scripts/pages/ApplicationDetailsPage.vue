@@ -538,16 +538,17 @@ export default {
         cancelSendToChatBotConfirmModal() {
             this.sentToChabotConfirmModal = false;
         },
-        listenMirnNmiNotification() {
+        listenMirnNmiEvent() {
             this.$echo.channel(`fetchMirnNmi.${this.leadSummary.id}`)
-                .notification(async (res) => {
+                .listen('FetchMirnNmiEvent', async (res) => {
                     this.nmiMernFlag = res.loading_address_info;
                     await this.loadPlanNoteAndLead();
                 });
         },
-        listenEmbeddedNetworkNotification() {
+        listenEmbeddedNetworkEvent() {
             this.$echo.channel(`fetchEmbeddedNetwork.${this.leadSummary.id}`)
-                .notification(async (res) => {
+                .listen('FetchEmbeddedNetworkEvent', async (res) => {
+                    console.log('FetchEmbeddedNetworkEvent', res);
                     this.nmiMernFlag = res.loading_address_info;
                     await this.loadPlanNoteAndLead();
                 });
@@ -592,8 +593,8 @@ export default {
             await this.lockApp();
         });
 
-        this.listenMirnNmiNotification();
-        this.listenEmbeddedNetworkNotification();
+        this.listenMirnNmiEvent();
+        this.listenEmbeddedNetworkEvent();
     }
 };
 </script>

@@ -13,7 +13,7 @@
                                          :showDuplicate="showDuplicates" :leads="leadTypes"
                                          @updateTotal="updateTotal"></ApplicationsMetrics>
                 </v-card>
-<!--                <BulkStatusChangeUploadButton class="mt-3 text-end" :reloadLeads="this.fetchLeads"/>-->
+                <!--                <BulkStatusChangeUploadButton class="mt-3 text-end" :reloadLeads="this.fetchLeads"/>-->
                 <ApplicationFilter v-model="advanceSearch"
                                    :isSearchEmpty="advanceSearch.isSearchEmpty()"></ApplicationFilter>
                 <router-view
@@ -138,7 +138,7 @@ export default {
             this.totalItem = data.pagination.total;
             this.selected_lead_id = this.leads[0]?.id;
             this.leads.length ? await this.loadLeadSummary() : "";
-            this.listenEmbeddedNetworkNotification();
+            this.listenEmbeddedNetworkEvent();
             // console.log('lead list', this.leads);
         },
 
@@ -154,7 +154,7 @@ export default {
         openLeadSummary(id) {
             this.selected_lead_id = id;
             this.loadLeadSummary();
-            this.listenEmbeddedNetworkNotification();
+            this.listenEmbeddedNetworkEvent();
         },
 
         refreshDataTable(meta) {
@@ -181,9 +181,9 @@ export default {
         async showDuplicateList(duplication_group_id) {
             let duplicatedData = await DuplicateLeadService.getDuplicateLeadData(duplication_group_id);
         },
-        listenEmbeddedNetworkNotification() {
+        listenEmbeddedNetworkEvent() {
             this.$echo.channel(`fetchEmbeddedNetwork.${this.selected_lead_id}`)
-                .notification( (res) => {
+                .listen('FetchEmbeddedNetworkEvent', (res) => {
                     this.loadLeadSummary();
                 });
         }

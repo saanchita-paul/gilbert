@@ -25,11 +25,12 @@ class AutoAssignApplicationService
         try {
             if ($application->mirn && $application->nmi) {
                 $this->assignUser($application);
+            } else {
+                Log::warning('AutoAssignApplicationService: MIRN or NMI is missing!');
             }
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            Log::error($e->getTraceAsString());
-            throw $e;
+            Log::warning($e->getMessage());
+            Log::warning($e->getTraceAsString());
         }
     }
 
@@ -43,8 +44,8 @@ class AutoAssignApplicationService
         })->first();
 
         if (!$chatbotUser) {
-            Log::error('Chatbot user not found!');
-            throw new Exception('AutoAssignApplicationService: Chatbot user not found!');
+            Log::warning('AutoAssignApplicationService: Chatbot user not found!');
+            return false;
         }
 
         Log::info('Auto assign application to chatbot user: ', $chatbotUser->toArray());
@@ -57,7 +58,8 @@ class AutoAssignApplicationService
         ]);
 
         if (!$isAutoAssignable) {
-            throw new Exception('AutoAssignApplicationService: Application is not auto assignable!');
+            Log::warning('AutoAssignApplicationService: Application is not auto assignable!');
+            return false;
         }
 
         $applicationService = new ApplicationService();
@@ -85,6 +87,7 @@ class AutoAssignApplicationService
     {
         $timeSlot = OfficeAutoAssignTimeSlot::where('office_id', $application->office_id)->first();
         if (!$timeSlot) {
+            Log::warning('Auto assign time slot not found for office: ' . $application->office_id);
             return false;
         }
         $currentTime = Carbon::now()->timezone(TimeZoneService::getTimeZoneArea());
