@@ -11,12 +11,17 @@
                         <v-row>
                             <v-col cols="12">
                                 <h3>Filters</h3>
-                                <ChatbotApplicationFilter :selected="selectedCaf"
-                                                          v-model="advanceSearch"
-                                                          :cafFiles="cafFiles"
-                                                          :isSearchEmpty="advanceSearch.isSearchEmpty()"
-                                                          listPage="true"
-                                                          @updateDate="updateDate"></ChatbotApplicationFilter>
+                                <ChatbotApplicationFilter
+                                    :selected="selectedCaf"
+                                    v-model="advanceSearch"
+                                    :cafFiles="cafFiles"
+                                    :isSearchEmpty="advanceSearch.isSearchEmpty()"
+                                    listPage="true"
+                                    @updateDate="updateDate"
+                                    @updateApplicationTypeFilter = "updateApplicationTypeFilter"
+                                    @updateProviderNameFilter = "updateProviderNameFilter"
+                                >
+                                </ChatbotApplicationFilter>
                             </v-col>
                             <v-col cols="12">
                                 <ChatbotCafTable
@@ -98,6 +103,9 @@ name: "ChatbotApplicationPage",
             handler(value) {
                 let params = {...this.$route.query, ...value}
                 if (isEqual(this.$route.query, value)) return;
+                if(params.is_gilbert && params.is_gilbert === 'chatbot'){
+                    delete params.is_gilbert
+                }
                 this.$router.push({
                     name: "chatbot.application",
                     query: params,
@@ -250,6 +258,14 @@ name: "ChatbotApplicationPage",
         updatePageOnFilterChange() {
             this.pages = 1;
         },
+
+        updateApplicationTypeFilter(applicationType){
+            this.advanceSearch.is_gilbert = applicationType
+        },
+        updateProviderNameFilter(provider_name){
+            this.advanceSearch.provider_name = provider_name
+        }
+
 
     },
 

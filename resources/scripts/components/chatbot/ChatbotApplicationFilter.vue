@@ -42,6 +42,32 @@
                             style="background-color: white"
                             class="mr-2"
                         />
+                        <v-select
+                            placeholder="Provider"
+                            v-model="filterApplication.provider"
+                            @change="filterProvider"
+                            item-text="text"
+                            item-value="value"
+                            :items="provider"
+                            outlined
+                            dense
+                            hide-details="auto"
+                            class="mr-2"
+                        >
+                        </v-select>
+                        <v-select
+                            placeholder="Application Type"
+                            v-model="filterApplication.applicationType"
+                            @change="filterApplicationType"
+                            item-text="text"
+                            item-value="value"
+                            :items="applicationType"
+                            outlined
+                            dense
+                            hide-details="auto"
+                            class="mr-2"
+                        >
+                        </v-select>
                         <div  class="py-0 mr-2">
                             <v-text-field
                                 solo
@@ -111,6 +137,34 @@ export default {
                 end:  this.$route.query?.end ?
                     this.$route.query?.end : getTodayString()
             },
+            provider : [
+                {
+                    text: "EA",
+                    value: "ea"
+                },
+                {
+                    text: "Powershop",
+                    value: "powershop"
+                },
+                {
+                    text: "Origin",
+                    value: "origin"
+                },
+            ],
+            applicationType : [
+                {
+                    text: "Chatbot",
+                    value: "chatbot"
+                },
+                {
+                    text: "Twiddle",
+                    value: "twiddle"
+                }
+            ],
+            filterApplication:{
+                provider : "",
+                applicationType : ""
+            }
         };
     },
     computed: {
@@ -170,7 +224,14 @@ export default {
                 '_blank'
             );
 
+        },
+        filterApplicationType(){
+            this.$emit("updateApplicationTypeFilter",this.filterApplication.applicationType)
+        },
+        filterProvider(){
+            this.$emit("updateProviderNameFilter",this.filterApplication.provider)
         }
+
 
     },
 
