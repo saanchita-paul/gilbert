@@ -2,8 +2,8 @@
     <v-row>
         <v-col cols="12" v-if="applications.length > 0" class="notes-container">
             <v-timeline dense>
-                <v-timeline-item color="primary" small v-for="(item, index) in applications.reverse()" :color="getColor(index)" :key="index">
-                    <v-card class="elevation-2 timeline-card" color="gray" :class="{active:false}">
+                <v-timeline-item color="primary" small v-for="(item, index) in applications" :color="getColor(index)" :key="index">
+                    <v-card class="elevation-2 timeline-card" color="gray" :class="{active:index===0}">
                     <!--need to make this title dynamic according to note title-->
                         <p class="title">Note by [Hood][HOOD ADMIN]</p>
                         <p>{{item.created_at}}</p>
@@ -48,6 +48,8 @@ export default {
             if (!this.note.text) return;
             //todo need to call note api in chatbot site
             await ChatbotApplicationService.saveNote(this.note)
+            this.note.text = ''
+            this.$emit("newNote");
         },
         getColor(index) {
             if(index === 0) return 'primary';

@@ -1,8 +1,8 @@
 <template>
     <div v-if="chatbot_app" class="hood-card" style="padding: 0px !important; max-height: 100%;" >
         <template >
-            <v-expansion-panels  style="box-shadow: none !important;">
-                <v-expansion-panel style="box-shadow: none !important;">
+            <v-expansion-panels  v-model="expansionPanel.profile" multiple style="box-shadow: none !important;">
+                <v-expansion-panel  style="box-shadow: none !important;">
                     <v-expansion-panel-header>
                         Profile Details
                     </v-expansion-panel-header>
@@ -145,8 +145,8 @@
         <v-divider ></v-divider>
 
         <template>
-            <v-expansion-panels>
-                <v-expansion-panel style="box-shadow:none !important;">
+            <v-expansion-panels  v-model="expansionPanel.property" multiple>
+                <v-expansion-panel  style="box-shadow:none !important;">
                     <v-expansion-panel-header>
                         Property Details
                     </v-expansion-panel-header>
@@ -323,7 +323,7 @@
         <v-divider></v-divider>
 
         <template>
-            <v-expansion-panels>
+            <v-expansion-panels  v-model="expansionPanel.identification" multiple>
                 <v-expansion-panel style="box-shadow:none !important;">
                     <v-expansion-panel-header>
                         Identification Details
@@ -480,7 +480,7 @@
         <v-divider></v-divider>
 
         <template >
-            <v-expansion-panels  style="box-shadow: none !important;">
+            <v-expansion-panels v-model="expansionPanel.service" multiple style="box-shadow: none !important;">
                 <v-expansion-panel style="box-shadow: none !important;">
                     <v-expansion-panel-header>
                         Service Preference
@@ -542,14 +542,14 @@
         <v-divider ></v-divider>
 
         <template>
-            <v-expansion-panels style="box-shadow:none !important;">
+            <v-expansion-panels v-model="expansionPanel.application" multiple style="box-shadow:none !important;">
                 <v-expansion-panel>
                     <v-expansion-panel-header>
                         Application Notes
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <v-row>
-                           <ChatbotApplicationNote :applications="chatbot_app.application_notes" ></ChatbotApplicationNote>
+                           <ChatbotApplicationNote @newNote="loadApplication"  :applications="chatbot_app.application_notes" ></ChatbotApplicationNote>
                         </v-row>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -769,13 +769,18 @@ export default {
             showDateOfBirth : false,
             dob : null,
             showMovingDate : false,
-            moved_at : null
-
+            moved_at : null,
+            expansionPanel : {
+                profile: [],
+                property: [],
+                identification: [],
+                service : [],
+                application : []
+            },
         }
     },
     methods: {
-        propertyDetails()
-        {
+        propertyDetails(){
             this.isProfileEditMode = false;
         },
         updateExpireDatePicker() {
@@ -794,9 +799,82 @@ export default {
                 ).format("YYYY-MM-DD");
             }
         },
-       async loadApplication() {
+        async loadApplication() {
            this.chatbot_app =  await CustomerService.getMovingData(this.app_id);
+        },
+        handleNewApplication(){
+            const app_id = this.$route.query?.app_id;
+            if(this.app_id !== app_id) {
+                this.app_id = app_id;
+                this.loadApplication();
+            }
+        },
+        updateExpansionPanel(){
+            if("profile" in this.$route.query){
+                this.expansionPanel.profile = [0]
+            }
+
+            if("property" in this.$route.query){
+                this.expansionPanel.property = [0]
+            }
+
+            if("identification" in this.$route.query){
+                this.expansionPanel.identification = [0]
+            }
+
+            if("service" in this.$route.query){
+                this.expansionPanel.service = [0]
+            }
+
+            if("application" in this.$route.query){
+                this.expansionPanel.application = [0]
+            }
+        },
+        handleExpansionPanel(value, query){
+            //for personal details
+            if(value.profile.length > 0){
+                this.$router.replace({query: {...query, profile:'true'}});
+            }else if(query.profile){
+                delete query.profile
+                this.$router.replace({query: {...query}});
+            }
+
+            // for property details
+            if(value.property.length > 0){
+                this.$router.replace({query: {...query, property:'true'}});
+            }else if(query.property){
+                delete query.property;
+                this.$router.replace({query: {...query}});
+            }
+
+            //for identification details
+            if(value.identification.length > 0){
+                this.$router.replace({query: {...query, identification:'true'}});
+            }else if(query.identification){
+                delete query.identification;
+                this.$router.replace({query: {...query}});
+            }
+
+            //for service details
+            if(value.service.length > 0){
+                this.$router.replace({query: {...query, service:'true'}});
+            }else if(query.service){
+                delete query.service;
+                this.$router.replace({query: {...query}});
+            }
+
+            //for application details
+            if(value.application.length > 0){
+                this.$router.replace({query: {...query, application:'true'}});
+            }else if(query.application){
+                delete query.application;
+                this.$router.replace({query: {...query}});
+            }
         }
+    },
+    mounted(){
+        this.handleNewApplication()
+        this.updateExpansionPanel()
     },
     watch: {
         expire_date() {
@@ -817,14 +895,19 @@ export default {
                 "DD/MM/YYYY"
             );
         },
+        expansionPanel:{
+            handler(newValue){
+                const query = Object.assign({}, this.$route.query);
+                this.handleExpansionPanel(newValue, query)
+            },
+            deep : true
+        },
         '$route': {
             handler() {
-                const app_id = this.$route.query?.app_id;
-                if(this.app_id !== app_id) {
-                    this.app_id = app_id;
-                    this.loadApplication();
-                }
-            }
+                this.handleNewApplication()
+                this.updateExpansionPanel()
+            },
+            deep : true
         }
 
     },

@@ -36,8 +36,8 @@
                     </v-card-text>
                 </v-card>
             </v-col>
-            <v-col cols="5">
-                <ChatbotApplicationDetails></ChatbotApplicationDetails>
+            <v-col cols="5" v-if="cafFiles.length">
+                <ChatbotApplicationDetails ></ChatbotApplicationDetails>
             </v-col>
         </v-row>
     </v-container>

@@ -9,7 +9,7 @@ export default class {
         this.id_detail = id_detail;
         this.personal_details = personal_details;
         this.property_details = property_details;
-        this.application_notes = application_notes;
+        this.application_notes = application_notes.reverse();
     }
 
     setIdDetails(idDetail) {
