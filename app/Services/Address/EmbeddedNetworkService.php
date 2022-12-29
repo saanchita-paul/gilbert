@@ -105,7 +105,11 @@ class EmbeddedNetworkService
                 $no_result = empty($nmi) && empty($mirn);
 
                 if ($no_result && !empty($error)) {
-                    throw new \ErrorException($error);
+                    Log::warning('EmbeddedNetworkService: ' . $error);
+                    return [
+                        'mirn' => $mirn,
+                        'nmi' => $nmi,
+                    ];
                 }
             }
 
@@ -121,6 +125,8 @@ class EmbeddedNetworkService
                 'nmi' => $nmi,
             ];
         } catch (\Exception $exception) {
+            Log::warning('EmbeddedNetworkService: ' . $exception->getMessage());
+            Log::warning('EmbeddedNetworkService: ' . $exception->getTraceAsString());
             return [
                 'mirn' => null,
                 'nmi' => null,
@@ -171,7 +177,10 @@ class EmbeddedNetworkService
                 Log::info('Embedded Network NMI Response: ', $responseData);
 
                 if (!empty($responseData['errors'])) {
-                    throw new \ErrorException($responseData['errors']);
+                    Log::warning("EmbeddedNetworkService: " . $responseData['errors']);
+                    return [
+                        'embedded_nmi' => null
+                    ];
                 }
 
                 if (!empty($responseData['nmi']['result'])) {
@@ -182,7 +191,10 @@ class EmbeddedNetworkService
                 $no_result = empty($is_embedded);
 
                 if ($no_result && !empty($error)) {
-                    throw new \ErrorException($error);
+                    Log::warning("EmbeddedNetworkService: " . $error);
+                    return [
+                        'embedded_nmi' => null
+                    ];
                 }
             }
 
@@ -200,7 +212,7 @@ class EmbeddedNetworkService
                 $connectionApp->update(['embedded_nmi' => null]);
             }
 
-            Log::info('Embedded Network NMI Error: '. $exception->getMessage());
+            Log::warning('Embedded Network NMI Error: ' . $exception->getMessage());
 
             return [
                 'embedded_nmi' => null

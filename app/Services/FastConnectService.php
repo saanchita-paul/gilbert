@@ -62,7 +62,11 @@ class FastConnectService
             $no_result = empty($nmi) && empty($mirn);
 
             if ($no_result && !empty($error)) {
-                throw new \ErrorException($error);
+                Log::warning("FastConnectService: " . $error);
+                return [
+                    'mirn' => null,
+                    'nmi' => null,
+                ];
             }
 
             if ($applicationFlag) {
@@ -77,6 +81,8 @@ class FastConnectService
                 'nmi' => $nmi,
             ];
         } catch (\Exception $exception) {
+            Log::warning("FastConnectService: " . $exception->getMessage());
+            Log::warning("FastConnectService: " . $exception->getTraceAsString());
             return [
                 'mirn' => null,
                 'nmi' => null,

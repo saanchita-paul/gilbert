@@ -9,7 +9,7 @@ use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
-class  AutoAssignG2CBListener implements ShouldQueue
+class  FetchAdditioanlInfoAddressListener implements ShouldQueue
 {
     public const ALLOWED_SOURCES = [
         ConnectionApplication::SOURCE_HOOD,
@@ -34,7 +34,7 @@ class  AutoAssignG2CBListener implements ShouldQueue
      * Handle the event.
      *
      * @param object $event
-     * @return void
+     * @return false
      * @throws Exception
      */
     public function handle($event)
@@ -42,35 +42,30 @@ class  AutoAssignG2CBListener implements ShouldQueue
         $application = MirnNmiService::dispatchAllService($event->applicationId);
 
         if (!$application) {
-            throw new Exception(
-                'AutoAssignG2CBListener: Application not found for id '
-                . $event->applicationId
-                . ' !'
+            Log::warning(
+                'FetchAdditioanlInfoAddressListener: Application not found for id - '
+                . $event->applicationId . '!'
             );
+            return false;
         }
 
         if (!in_array($application->source, self::ALLOWED_SOURCES)) {
-            Log::info(
+            Log::warning(
                 'AutoAssignG2CBListener: Application source '
                 . $application->source
                 . ' is not allowed for auto assign to chatbot!'
             );
-            throw new Exception(
-                'AutoAssignG2CBListener: Application source '
-                . $application->source
-                . ' is not allowed for auto assign to chatbot!'
-            );
+            return false;
         }
 
         try {
             $autoAssignService = new AutoAssignApplicationService();
             $autoAssignService->assignApplication($application);
 
-            Log::info('Auto assign application to chatbot successfully');
+            Log::info('Auto assign application to chatbot successfully.');
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            Log::error($e->getTraceAsString());
-            throw $e;
+            Log::warning($e->getMessage());
+            Log::warning($e->getTraceAsString());
         }
     }
 }

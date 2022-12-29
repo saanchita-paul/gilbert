@@ -2,12 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Models\ConnectionApplication;
-use App\Notifications\FetchEmbeddedNetworkNotification;
-use App\Notifications\FetchMirnNmiNotification;
 use App\Services\Agency\MirnNmiService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
