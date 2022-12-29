@@ -1,3 +1,5 @@
+
+
 export default class ApplicationCafFile {
     constructor({
                     id,
@@ -19,7 +21,8 @@ export default class ApplicationCafFile {
                     to_address,
                     connection_date,
                     service,
-                    additional_instruction
+                    additional_instruction,
+                    connection_type
                 } = {}) {
         this.id = id;
         this.title = title;
@@ -41,5 +44,11 @@ export default class ApplicationCafFile {
         this.to_address = to_address;
         this.service = service;
         this.additional_instruction = additional_instruction;
+        this.connection_type = this.generateConnectionType(abn, business_name)
     }
+    generateConnectionType(abn, business_name){
+        if(abn || business_name) return "Temporary";
+        return "Regular"
+    }
+
 }

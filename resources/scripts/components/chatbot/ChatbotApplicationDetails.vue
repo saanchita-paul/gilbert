@@ -771,7 +771,7 @@ export default {
             showMovingDate : false,
             moved_at : null,
             expansionPanel : {
-                profile: [],
+                profile: [0],
                 property: [],
                 identification: [],
                 service : [],
@@ -905,7 +905,6 @@ export default {
         '$route': {
             handler() {
                 this.handleNewApplication()
-                this.updateExpansionPanel()
             },
             deep : true
         }

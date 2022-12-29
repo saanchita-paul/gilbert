@@ -5,7 +5,7 @@
                 <h2>Chatbot Application</h2>
             </v-col>
 
-            <v-col cols="7">
+            <v-col cols="8">
                 <v-card>
                     <v-card-text>
                         <v-row>
@@ -36,7 +36,7 @@
                     </v-card-text>
                 </v-card>
             </v-col>
-            <v-col cols="5" v-if="cafFiles.length">
+            <v-col cols="4" v-if="cafFiles.length">
                 <ChatbotApplicationDetails ></ChatbotApplicationDetails>
             </v-col>
         </v-row>
