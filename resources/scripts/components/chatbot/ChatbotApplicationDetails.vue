@@ -13,6 +13,14 @@
                             </v-col>
                             <v-col cols="7"  class="py-0 my-1">
                                 <div class="text-field">
+
+                                    <v-select
+                                        outlined
+                                        dense
+                                        :items="titlesDropDown"
+                                        v-model="chatbot_app.personal_details.title"
+                                        class="mr-2 item-value"
+                                    ></v-select>
                                         <v-text-field
                                             v-model="chatbot_app.personal_details.title"
                                             outlined
@@ -563,6 +571,7 @@
 import DayJs from "dayjs";
 
 const SPECIAL_NUMBER = require('@scripts/data/constants/SPECIAL_NUMBER');
+const {titlesMapperForDropdownCb} = require("@scripts/data/titleMapper");
 import ChatbotApplicationNote from "@scripts/components/chatbot/ChatbotApplicationNote";
 import {isNull} from "lodash-es";
 import CustomerService from "@scripts/services/CustomerService";
@@ -580,6 +589,7 @@ export default {
             specialNumberDD: SPECIAL_NUMBER,
             showExpireDate: false,
             expire_date:  '',
+            titlesDropDown: titlesMapperForDropdownCb,
             accessRequirement: [
                 {
                     text: "Yes",
