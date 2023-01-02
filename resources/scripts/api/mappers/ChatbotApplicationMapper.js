@@ -41,4 +41,12 @@ export default {
     },
 
 
+    mapTosaveIdData : data=> {
+        return {
+            ...data,
+            identification_expire_date:dayjs(data.identification_expire_date,'DD/MM/YYYY').isValid()?
+                dayjs(data.identification_expire_date,'DD/MM/YYYY')
+                    .format('YYYY-MM-DD'): ''
+        }
+    }
 }

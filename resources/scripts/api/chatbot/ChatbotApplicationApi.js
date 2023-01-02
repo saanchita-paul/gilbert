@@ -31,9 +31,10 @@ export default {
             return null;
         }
     },
-    async updateIdDetails(data) {
+    async updateIdDetails(utilityId, data) {
         try {
-            return (await axios.post(`${ROOT}/application-note`, note)).data;
+            const mappedData = ChatbotApplicationMapper.mapTosaveIdData(data);
+            return (await axios.put(`${ROOT}/utility-data/${utilityId}/update`, {...mappedData})).data;
         } catch (error) {
             console.log('error', error);
             return null;

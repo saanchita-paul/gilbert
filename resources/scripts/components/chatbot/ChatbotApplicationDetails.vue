@@ -21,13 +21,6 @@
                                         v-model="chatbot_app.personal_details.title"
                                         class="mr-2 item-value"
                                     ></v-select>
-                                        <v-text-field
-                                            v-model="chatbot_app.personal_details.title"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            placeholder="Card Number"
-                                        ></v-text-field>
                                 </div>
 
 
@@ -364,7 +357,6 @@
                                         outlined
                                         dense
                                         hide-details="auto"
-                                        placeholder="Card Number"
                                     ></v-text-field>
                                 </div>
                             </v-col>
@@ -375,7 +367,6 @@
                                         outlined
                                         dense
                                         hide-details="auto"
-                                        placeholder="Card Number"
                                     ></v-text-field>
                                 </div>
                             </v-col>
@@ -386,7 +377,6 @@
                                         outlined
                                         dense
                                         hide-details="auto"
-                                        placeholder="Card Number"
                                     ></v-text-field>
                                 </div>
                             </v-col>
@@ -488,7 +478,7 @@
                                         <v-select
                                             v-model="chatbot_app.id_detail.driving_license_state"
                                             item-text="text"
-                                            item-value="value"
+                                            item-value="text"
                                             :items="statesDD"
                                             outlined
                                             dense
@@ -616,7 +606,7 @@ export default {
             chatbot_app: null,
             app_id: null,
             isProfileEditMode: false,
-            specialNumberDD: SPECIAL_NUMBER,
+            specialNumberDD: [1,2,3,4,5,6,7,8],
             showExpireDate: false,
             expire_date:  '',
             titlesDropDown: titlesMapperForDropdownCb,
@@ -657,15 +647,15 @@ export default {
             colorDD: [
                 {
                     text: "Green",
-                    value: "GREEN",
+                    value: "green",
                 },
                 {
                     text: "Blue",
-                    value: "BLUE",
+                    value: "blue",
                 },
                 {
                     text: "Yellow",
-                    value: "YELLOW",
+                    value: "yellow",
                 },
                 ],
             statesDD: [
