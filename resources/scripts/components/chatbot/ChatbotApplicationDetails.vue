@@ -13,13 +13,14 @@
                             </v-col>
                             <v-col cols="7"  class="py-0 my-1">
                                 <div class="text-field">
-                                        <v-text-field
-                                            v-model="chatbot_app.personal_details.title"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            placeholder="Card Number"
-                                        ></v-text-field>
+
+                                    <v-select
+                                        outlined
+                                        dense
+                                        :items="titlesDropDown"
+                                        v-model="chatbot_app.personal_details.title"
+                                        class="mr-2 item-value"
+                                    ></v-select>
                                 </div>
 
 
@@ -133,7 +134,7 @@
 
                             </v-col>
                             <v-col cols="2">
-                                <v-btn small right> Save</v-btn>
+                                <v-btn small right @click="savePersonalDetails"> Save</v-btn>
                             </v-col>
 
                         </v-row>
@@ -158,7 +159,7 @@
                             <v-col cols ="7" class="py-0 my-1">
                                 <div class="text-field">
                                     <v-select
-                                        v-model="chatbot_app.property_details.tenancy_type"
+                                        v-model="chatbot_app.property_details.rent"
                                         :items="tenantTypeDD"
                                         item-text="text"
                                         item-value="value"
@@ -297,11 +298,10 @@
                             <v-col cols ="7" class="py-0 my-1">
                                 <div class="text-field">
                                     <v-text-field
-                                        v-model="chatbot_app.personal_details.to_address"
+                                        v-model="chatbot_app.property_details.to_address"
                                         outlined
                                         dense
                                         hide-details="auto"
-                                        placeholder="Card Number"
                                     ></v-text-field>
                                 </div>
                             </v-col>
@@ -311,7 +311,7 @@
 
                             </v-col>
                             <v-col cols="2">
-                                <v-btn small right> Save</v-btn>
+                                <v-btn small right @click="savePropertyDetails"> Save</v-btn>
                             </v-col>
 
                         </v-row>
@@ -336,7 +336,7 @@
                             <v-col cols ="7" class="py-0 my-1">
                                 <div class="text-field">
                                     <v-select
-                                        v-model="chatbot_app.id_detail.type"
+                                        v-model="chatbot_app.id_detail.identification_type"
                                         item-text="text"
                                         item-value="value"
                                         :items="idenficationTypeDD"
@@ -350,14 +350,33 @@
                             <v-col cols ="5"  class="py-0 my-1">
                                 <p class="font-weight-bold">ID Number</p>
                             </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
+                            <v-col v-if="chatbot_app.id_detail.identification_type === 'identity_driving_license'" cols ="7" class="py-0 my-1">
                                 <div class="text-field">
                                     <v-text-field
-                                        v-model="chatbot_app.id_detail.id_number"
+                                        v-model="chatbot_app.id_detail.driving_license_number"
                                         outlined
                                         dense
                                         hide-details="auto"
-                                        placeholder="Card Number"
+                                    ></v-text-field>
+                                </div>
+                            </v-col>
+                            <v-col v-if="chatbot_app.id_detail.identification_type === 'identity_medicare'" cols ="7" class="py-0 my-1">
+                                <div class="text-field">
+                                    <v-text-field
+                                        v-model="chatbot_app.id_detail.medicare_card_number"
+                                        outlined
+                                        dense
+                                        hide-details="auto"
+                                    ></v-text-field>
+                                </div>
+                            </v-col>
+                            <v-col v-if="chatbot_app.id_detail.identification_type === 'identity_passport'" cols ="7" class="py-0 my-1">
+                                <div class="text-field">
+                                    <v-text-field
+                                        v-model="chatbot_app.id_detail.passport_number"
+                                        outlined
+                                        dense
+                                        hide-details="auto"
                                     ></v-text-field>
                                 </div>
                             </v-col>
@@ -396,13 +415,15 @@
                                     </v-menu>
                                 </div>
                             </v-col>
+
+                            <template v-if="chatbot_app.id_detail.identification_type === 'identity_medicare'" >
                             <v-col cols ="5"  class="py-0 my-1">
                                 <p class="font-weight-bold">ID Special Number</p>
                             </v-col>
                             <v-col cols ="7" class="py-0 my-1">
                                 <div class="text-field">
                                     <v-select
-                                        v-model="chatbot_app.id_detail.id_special_number"
+                                        v-model="chatbot_app.id_detail.individual_reference_number"
                                         :items="specialNumberDD"
                                         outlined
                                         dense
@@ -411,56 +432,62 @@
                                     </v-select>
                                 </div>
                             </v-col>
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">Passport Country</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <div class="text-field">
-                                    <v-text-field
-                                        v-model="chatbot_app.id_detail.passport_country"
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                        placeholder="Card Number"
-                                    ></v-text-field>
-                                </div>
-                            </v-col>
+                            </template>
 
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">Card Color</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <div class="text-field">
-                                    <v-select
-                                        v-model="chatbot_app.id_detail.type"
-                                        item-text="text"
-                                        item-value="value"
-                                        :items="colorDD"
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                    >
-                                    </v-select>
-                                </div>
-                            </v-col>
-
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">DL</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <div class="text-field">
-                                    <v-select
-                                        v-model="chatbot_app.id_detail.id_state"
-                                        item-text="text"
-                                        item-value="value"
-                                        :items="statesDD"
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                    >
-                                    </v-select>
-                                </div>
-                            </v-col>
+                            <template v-if="chatbot_app.id_detail.identification_type === 'identity_passport'" >
+                                <v-col cols ="5"  class="py-0 my-1">
+                                    <p class="font-weight-bold">Passport Country</p>
+                                </v-col>
+                                <v-col cols ="7" class="py-0 my-1">
+                                    <div class="text-field">
+                                        <v-text-field
+                                            v-model="chatbot_app.id_detail.passport_country"
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            placeholder="Card Number"
+                                        ></v-text-field>
+                                    </div>
+                                </v-col>
+                            </template>
+                            <template v-if="chatbot_app.id_detail.identification_type === 'identity_medicare'" >
+                                <v-col cols ="5"  class="py-0 my-1">
+                                    <p class="font-weight-bold">Card Color</p>
+                                </v-col>
+                                <v-col cols ="7" class="py-0 my-1">
+                                    <div class="text-field">
+                                        <v-select
+                                            v-model="chatbot_app.id_detail.medicare_card_color"
+                                            item-text="text"
+                                            item-value="value"
+                                            :items="colorDD"
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                        >
+                                        </v-select>
+                                    </div>
+                                </v-col>
+                            </template>
+                            <template v-if="chatbot_app.id_detail.identification_type === 'identity_driving_license'" >
+                                <v-col cols ="5"  class="py-0 my-1">
+                                    <p class="font-weight-bold">DL</p>
+                                </v-col>
+                                <v-col cols ="7" class="py-0 my-1">
+                                    <div class="text-field">
+                                        <v-select
+                                            v-model="chatbot_app.id_detail.driving_license_state"
+                                            item-text="text"
+                                            item-value="text"
+                                            :items="statesDD"
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                        >
+                                        </v-select>
+                                    </div>
+                                </v-col>
+                            </template>
 
                         </v-row>
                         <v-row>
@@ -468,7 +495,7 @@
 
                             </v-col>
                             <v-col cols="2">
-                                <v-btn small right> Save</v-btn>
+                                <v-btn small right @click=" saveIdDetails"> Save</v-btn>
                             </v-col>
 
                         </v-row>
@@ -590,7 +617,9 @@
 import DayJs from "dayjs";
 
 const SPECIAL_NUMBER = require('@scripts/data/constants/SPECIAL_NUMBER');
+const {titlesMapperForDropdownCb} = require("@scripts/data/titleMapper");
 import ChatbotApplicationNote from "@scripts/components/chatbot/ChatbotApplicationNote";
+import ChatbotApplicationService from "@scripts/services/chatbot/ChatbotApplicationService";
 import {isNull} from "lodash-es";
 import CustomerService from "@scripts/services/CustomerService";
 import dayJs from "dayjs";
@@ -606,9 +635,10 @@ export default {
             chatbot_app: null,
             app_id: null,
             isProfileEditMode: false,
-            specialNumberDD: SPECIAL_NUMBER,
+            specialNumberDD: [1,2,3,4,5,6,7,8],
             showExpireDate: false,
             expire_date:  '',
+            titlesDropDown: titlesMapperForDropdownCb,
             accessRequirement: [
                 {
                     text: "Yes",
@@ -622,39 +652,39 @@ export default {
             solarPowerDD: [
                 {
                     text: "Yes",
-                    value: 1,
+                    value: 'solar',
                 },
                 {
                     text: "No",
-                    value: 2,
+                    value: "no_solar",
                 },
             ],
             idenficationTypeDD: [
                 {
                     text: "Passport",
-                    value: 1,
+                    value: 'identity_passport',
                 },
                 {
                     text: "Driver's License",
-                    value: 2,
+                    value: 'identity_driving_license',
                 },
                 {
                     text: "Medicare Card",
-                    value: 3,
+                    value: 'identity_medicare',
                 },
             ],
             colorDD: [
                 {
                     text: "Green",
-                    value: "GREEN",
+                    value: "green",
                 },
                 {
                     text: "Blue",
-                    value: "BLUE",
+                    value: "blue",
                 },
                 {
                     text: "Yellow",
-                    value: "YELLOW",
+                    value: "yellow",
                 },
                 ],
             statesDD: [
@@ -670,11 +700,15 @@ export default {
             tenantTypeDD: [
                 {
                     text: "Renter",
-                    value: 1,
+                    value: "1",
                 },
                 {
                     text: "Owner",
-                    value: 2,
+                    value: "0",
+                },
+                {
+                    text: "Rea Partner",
+                    value: "2",
                 },
             ],
             homeRenovationDD: [
@@ -825,6 +859,22 @@ export default {
         }
     },
     methods: {
+
+        savePersonalDetails() {
+
+            ChatbotApplicationService.updatePersonalDetails(this.app_id, this.chatbot_app.personal_details);
+        },
+
+        savePropertyDetails() {
+            ChatbotApplicationService.updatePropertyDetails(this.app_id, this.chatbot_app.property_details);
+        },
+
+        saveIdDetails() {
+            ChatbotApplicationService.updateIdDetails(this.app_id, this.chatbot_app.id_detail);
+        },
+
+
+
         propertyDetails(){
             this.isProfileEditMode = false;
         },
