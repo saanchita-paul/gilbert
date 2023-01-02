@@ -86,6 +86,11 @@ export default {
     /**
      * @param id
      */
-    getMovingData: (id) => CustomerAPI.getMovingUtilityData(id)
+    getMovingData: (id) => CustomerAPI.getMovingUtilityData(id),
+
+    /**
+     * @param connectionServiceId
+     */
+    getRejection: (connectionServiceId) => CustomerAPI.getRejectionReasonData(connectionServiceId)
 
 }

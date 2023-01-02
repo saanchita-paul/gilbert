@@ -3,13 +3,16 @@ export default class {
                     id_detail = null,
                     personal_details = null,
                     property_details = null,
-                    application_notes = null
+                    application_notes = null,
+                    connection_services = null,
+
                 }) {
 
         this.id_detail = id_detail;
         this.personal_details = personal_details;
         this.property_details = property_details;
         this.application_notes = application_notes.reverse();
+        this.connection_services = connection_services.reverse();
     }
 
     setIdDetails(idDetail) {

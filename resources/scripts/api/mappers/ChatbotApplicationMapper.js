@@ -4,6 +4,7 @@ import PropertyDetail from "@scripts/models/chatbot/PropertyDetail";
 import ChatbotApplication from "@scripts/models/chatbot/ChatbotApplication";
 import ApplicationNote from "@scripts/models/chatbot/ApplicationNote";
 import * as dayjs from "dayjs";
+import ConnectionService from "@scripts/models/chatbot/ConnectionService";
 
 export default {
     mapApplication: (application) => {
@@ -11,12 +12,14 @@ export default {
         const personal_detail = new PersonalDetail(application);
         const property_detail = new PropertyDetail(application);
         const application_note = application.application_notes.map(item => new ApplicationNote(item));
+        const connection_service = application.connection_services.map(item => new ConnectionService(item));
 
         return new ChatbotApplication({
             id_detail: id_detail,
             personal_details: personal_detail,
             property_details: property_detail,
-            application_notes : application_note
+            application_notes : application_note,
+            connection_services : connection_service,
         });
     },
 

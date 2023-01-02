@@ -541,7 +541,7 @@
                                     <p class="item-title">Electricity</p>
                                     <p class="item-value">{{ electricityService.status }}</p>
                                     <v-btn v-if="electricityService.status === 'Rejected'"
-                                           @click="dialog=true"  :loading = "loading"
+                                           @click="openRejection(electricityService)"
                                            small
                                            style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;"
                                            outlined
@@ -578,14 +578,14 @@
                                 <p class="item-title">Gas</p>
                                 <p class="item-value">{{ gasService.status }}</p>
                                 <v-btn v-if="gasService.status === 'Rejected'"
-                                       @click="dialog=true"
+                                       @click="openRejection(gasService)"
                                        small
                                        style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;"
                                        outlined
                                 >
                                     Reason
                                 </v-btn>
-                                <RejectionReasonModal :dialog="dialog" @close="onCloseReject"></RejectionReasonModal>
+
                             </div>
                         </v-row>
                     </v-expansion-panel-content>
@@ -609,6 +609,8 @@
                 </v-expansion-panel>
             </v-expansion-panels>
         </template>
+        <RejectionReasonModal :dialog="dialog"
+                              :service="selectedRejectedService"  @close="onCloseReject" ></RejectionReasonModal>
 
     </div>
 </template>
@@ -623,10 +625,11 @@ import ChatbotApplicationService from "@scripts/services/chatbot/ChatbotApplicat
 import {isNull} from "lodash-es";
 import CustomerService from "@scripts/services/CustomerService";
 import dayJs from "dayjs";
-
+import RejectionReasonModal from "@scripts/components/crm/modals/RejectionReasonModal";
 export default {
     name: "ChatbotApplicationDetails",
     components: {
+        RejectionReasonModal,
         ChatbotApplicationNote,
     },
     data() {
@@ -840,20 +843,22 @@ export default {
                 service : [],
                 application : []
             },
+            selectedRejectedService : null,
+
         }
     },
     computed: {
 
         electricityService()
         {
-            return this.chatbot_app.service.find((dt)=>  {
+            return this.chatbot_app.connection_services.find((dt)=>  {
                 return dt.service_type === 'electricity';
             });
         },
 
         gasService()
         {
-            return this.chatbot_app.service.find((dt)=>  {
+            return this.chatbot_app.connection_services.find((dt)=>  {
                 return dt.service_type === 'gas';
             });
         }
@@ -897,6 +902,7 @@ export default {
         async loadApplication() {
            this.chatbot_app =  await CustomerService.getMovingData(this.app_id);
         },
+
         handleNewApplication(){
             const app_id = this.$route.query?.app_id;
             if(this.app_id !== app_id) {
@@ -968,7 +974,13 @@ export default {
         },
         onCloseReject() {
             this.dialog = false;
+            this.selectedRejectedService = null;
         },
+
+        openRejection(service) {
+            this.selectedRejectedService = service;
+            this.dialog = true;
+        }
     },
     mounted(){
         this.handleNewApplication()

@@ -265,32 +265,32 @@
                         @change="updateSelelectedService"
                     ></v-select>
                 </div>
-                <div class="item" v-if="electricityService.service_type === 'electricity'">
-                    <p class="item-title">Electricity</p>
-                    <p class="item-value">{{ electricityService.status }}</p>
-                    <v-btn v-if="electricityService.status === 'Rejected'"
-                        @click="dialog=true"  :loading = "loading"
-                        small
-                        style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;"
-                        outlined
-                    >
-                        Reason
-                    </v-btn>
-                </div>
+<!--                <div class="item" v-if="electricityService.service_type === 'electricity'">-->
+<!--                    <p class="item-title">Electricity</p>-->
+<!--                    <p class="item-value">{{ electricityService.status }}</p>-->
+<!--                    <v-btn v-if="electricityService.status === 'Rejected'"-->
+<!--                        @click="dialog=true"  :loading = "loading"-->
+<!--                        small-->
+<!--                        style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;"-->
+<!--                        outlined-->
+<!--                    >-->
+<!--                        Reason-->
+<!--                    </v-btn>-->
+<!--                </div>-->
 
-                <div class="item" v-if="gasService.service_type === 'gas'">
-                    <p class="item-title">Gas</p>
-                    <p class="item-value">{{ gasService.status }}</p>
-                    <v-btn v-if="gasService.status === 'Rejected'"
-                        @click="dialog=true"
-                        small
-                        style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;"
-                        outlined
-                    >
-                        Reason
-                    </v-btn>
-                    <RejectionReasonModal :dialog="dialog" @close="onCloseReject"></RejectionReasonModal>
-                </div>
+<!--                <div class="item" v-if="gasService.service_type === 'gas'">-->
+<!--                    <p class="item-title">Gas</p>-->
+<!--                    <p class="item-value">{{ gasService.status }}</p>-->
+<!--                    <v-btn v-if="gasService.status === 'Rejected'"-->
+<!--                        @click="dialog=true"-->
+<!--                        small-->
+<!--                        style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;"-->
+<!--                        outlined-->
+<!--                    >-->
+<!--                        Reason-->
+<!--                    </v-btn>-->
+<!--&lt;!&ndash;                    <RejectionReasonModal :dialog="dialog" @close="onCloseReject"></RejectionReasonModal>&ndash;&gt;-->
+<!--                </div>-->
             </v-col>
         </v-row>
 
@@ -307,11 +307,11 @@ import SuccessfullyUpdateCloseConfirmModal from "@scripts/components/crm/modals/
 import {capitalize} from "lodash-es";
 import {titlesMapperForDropdown} from "@scripts/data/titleMapper";
 import DayJs from "dayjs";
-import RejectionReasonModal from "@scripts/components/crm/modals/RejectionReasonModal";
+// import RejectionReasonModal from "@scripts/components/crm/modals/RejectionReasonModal";
 
 export default {
     name: "ApplicationCafFileDetails",
-    components: {SuccessfullyUpdateCloseConfirmModal, RejectionReasonModal},
+    components: {SuccessfullyUpdateCloseConfirmModal},
     props: ["cafFileData"],
 
     data() {
@@ -369,19 +369,19 @@ export default {
             return dayJs(dayJs(this.cafFileData.dob,'YYYY-MM-DD').format('DD/MM/YYYY')).isValid() ? dayJs(this.cafFileData.dob,'YYYY-MM-DD').format('DD/MM/YYYY') : null;
         },
 
-        electricityService()
-        {
-            return this.cafFileData.service.find((dt)=>  {
-                return dt.service_type === 'electricity';
-            });
-        },
-
-        gasService()
-        {
-            return this.cafFileData.service.find((dt)=>  {
-                return dt.service_type === 'gas';
-            });
-        }
+        // electricityService()
+        // {
+        //     return this.cafFileData.service.find((dt)=>  {
+        //         return dt.service_type === 'electricity';
+        //     });
+        // },
+        //
+        // gasService()
+        // {
+        //     return this.cafFileData.service.find((dt)=>  {
+        //         return dt.service_type === 'gas';
+        //     });
+        // }
     },
     watch: {
         cafFileData: {
@@ -462,9 +462,9 @@ export default {
             this.loading = false;
 
         },
-        onCloseReject() {
-            this.dialog = false;
-        },
+        // onCloseReject() {
+        //     this.dialog = false;
+        // },
 
         // isDisabled(services) {
         //    return ApplicationCafFileService.isPossibleToCreateCaf(this.cafFileData.selected_service, services);

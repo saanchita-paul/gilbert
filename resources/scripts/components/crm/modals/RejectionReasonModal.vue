@@ -32,23 +32,37 @@
 </template>
 
 <script>
+import CustomerService from "@scripts/services/CustomerService";
+
 export default {
     name: "RejectionReasonModal",
     props: {
         dialog: {
             require: true,
         },
+        service: {
+            require: true,
+        },
     },
     data() {
         return {
-
+            // rejection_reason: null,
         }
     },
     methods: {
         done() {
 
+        },
+
+        async loadRejectionReason() {
+            this.chatbot_app =  await CustomerService.getRejection(this.app_id);
         }
+
+    },
+    mounted() {
+        this.loadRejectionReason();
     }
+
 }
 </script>
 
