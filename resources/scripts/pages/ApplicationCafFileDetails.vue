@@ -276,8 +276,6 @@
                     >
                         Reason
                     </v-btn>
-
-
                 </div>
 
                 <div class="item" v-if="gasService.service_type === 'gas'">
@@ -291,9 +289,7 @@
                     >
                         Reason
                     </v-btn>
-
                     <RejectionReasonModal :dialog="dialog" @close="onCloseReject"></RejectionReasonModal>
-
                 </div>
             </v-col>
         </v-row>

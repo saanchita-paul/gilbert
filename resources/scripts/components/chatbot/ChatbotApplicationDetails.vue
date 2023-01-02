@@ -487,7 +487,7 @@
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <v-row>
-                            <v-col cols="4">
+                            <v-col cols="12">
                                 <div  class="my-0 py-0 mx-0 border-all">
                                     <p class="pt-2 pb-1 mb-0 services">
                                   <span class="ml-0">
@@ -509,8 +509,21 @@
                                         </v-select>
                                     </p>
                                 </div>
+
+                                <div class="item" v-if="electricityService.service_type === 'electricity'">
+                                    <p class="item-title">Electricity</p>
+                                    <p class="item-value">{{ electricityService.status }}</p>
+                                    <v-btn v-if="electricityService.status === 'Rejected'"
+                                           @click="dialog=true"  :loading = "loading"
+                                           small
+                                           style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;"
+                                           outlined
+                                    >
+                                        Reason
+                                    </v-btn>
+                                </div>
                             </v-col>
-                            <v-col cols="4">
+                            <v-col cols="12">
                                 <div  class="my-0 py-0 mx-0 border-all">
                                     <p class="pt-2 pb-1 mb-0 services">
                                   <span class="ml-0">
@@ -533,6 +546,20 @@
                                     </p>
                                 </div>
                             </v-col>
+
+                            <div class="item" v-if="gasService.service_type === 'gas'">
+                                <p class="item-title">Gas</p>
+                                <p class="item-value">{{ gasService.status }}</p>
+                                <v-btn v-if="gasService.status === 'Rejected'"
+                                       @click="dialog=true"
+                                       small
+                                       style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;"
+                                       outlined
+                                >
+                                    Reason
+                                </v-btn>
+                                <RejectionReasonModal :dialog="dialog" @close="onCloseReject"></RejectionReasonModal>
+                            </div>
                         </v-row>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -567,6 +594,7 @@ import ChatbotApplicationNote from "@scripts/components/chatbot/ChatbotApplicati
 import {isNull} from "lodash-es";
 import CustomerService from "@scripts/services/CustomerService";
 import dayJs from "dayjs";
+
 export default {
     name: "ChatbotApplicationDetails",
     components: {
@@ -574,6 +602,7 @@ export default {
     },
     data() {
         return {
+            dialog: false,
             chatbot_app: null,
             app_id: null,
             isProfileEditMode: false,
@@ -779,6 +808,22 @@ export default {
             },
         }
     },
+    computed: {
+
+        electricityService()
+        {
+            return this.chatbot_app.service.find((dt)=>  {
+                return dt.service_type === 'electricity';
+            });
+        },
+
+        gasService()
+        {
+            return this.chatbot_app.service.find((dt)=>  {
+                return dt.service_type === 'gas';
+            });
+        }
+    },
     methods: {
         propertyDetails(){
             this.isProfileEditMode = false;
@@ -870,7 +915,10 @@ export default {
                 delete query.application;
                 this.$router.replace({query: {...query}});
             }
-        }
+        },
+        onCloseReject() {
+            this.dialog = false;
+        },
     },
     mounted(){
         this.handleNewApplication()
