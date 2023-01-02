@@ -19,7 +19,8 @@ export default {
                 'EA',
                 'Sumo',
                 'Origin',
-                'PowerShop'
+                'PowerShop',
+                'First Energy',
             ];
 
             let toolTips = [
@@ -64,6 +65,14 @@ export default {
                     //     key: 'PowerShop Switch Saver', value: data?.switch_saver,
                     // },
                 ],
+                [
+                    {
+                        key: '1st Super Saver', value: data.hasOwnProperty('1st_super_saver') ? data['1st_super_saver'] : 0,
+                    },
+                    // {
+                    //     key: 'PowerShop Switch Saver', value: data?.switch_saver,
+                    // },
+                ],
             ];
 
             const totalEaData =
@@ -75,8 +84,9 @@ export default {
             const totalSumoData = data?.sumo_gas_freedom;
             const totalPowerShopData = data?.powershop_gas_carbon_neutral;
             const totalOriginData = data?.origin_advantage_variable + data?.origin_supply + data?.origin_basic;
+            const totalFirstEnergyData = data.hasOwnProperty('1st_super_saver') ? data['1st_super_saver'] : 0;
 
-            const chartData = [totalEaData, totalSumoData, totalOriginData, totalPowerShopData];
+            const chartData = [totalEaData, totalSumoData, totalOriginData, totalPowerShopData, totalFirstEnergyData];
             const plan = PLAN;
             const charBackGround = getProviderBackgound(plan)
             console.log('char ', chartData);
@@ -85,6 +95,7 @@ export default {
                 '#03A9F4',
                 '#FFC72C',
                 '#FA0E6A',
+                '#42B5E8',
             ];
 
             const rejectedbackgroundColor = [
@@ -92,13 +103,14 @@ export default {
                 '#03A9F4',
                 '#FFC72C',
                 '#FA0E6A',
+                '#42B5E8',
             ]
 
 
             return {
                 labels: lables,
                 toolTips: toolTips,
-                total: totalEaData + totalSumoData + totalOriginData + totalPowerShopData,
+                total: totalEaData + totalSumoData + totalOriginData + totalPowerShopData + totalFirstEnergyData,
                 datasets: [{
                     label: 'My First Dataset',
                     data: chartData,
@@ -114,7 +126,8 @@ export default {
                 'EA',
                 'Sumo',
                 'Origin',
-                'PowerSHop'
+                'PowerSHop',
+                'First Energy',
             ];
 
             let toolTips = [
@@ -156,6 +169,12 @@ export default {
                         key: 'PowerShop Switch Saver', value: data?.powershop_power_switch_saver,
                     },
                 ],
+                [
+                    {
+                        key: 'First Super Saver', value: data['1st_super_saver'],
+                    },
+                ],
+
             ];
 
             const totalEaData = data?.ea_power_no_frills
@@ -166,26 +185,29 @@ export default {
             const totalSumoData = data?.sumo_power_freedom;
             const totalPowerShopData = data?.powershop_power_carbon_neutral +  data?.powershop_power_switch_saver;
             const totalOriginData = data?.origin_home_assist + data?.origin_home_support;
+            const totalFirstEnergyData = data.hasOwnProperty('1st_super_saver') ? data['1st_super_saver'] : 0;
 
 
-            const chartData = [totalEaData, totalSumoData, totalOriginData, totalPowerShopData];
+            const chartData = [totalEaData, totalSumoData, totalOriginData, totalPowerShopData, totalFirstEnergyData];
             const backgroundColorList = [
                 '#542E89',
                 '#03A9F4',
                 '#FFC72C',
                 '#FA0E6A',
+                '#42B5E8',
             ];
             const rejectedbackgroundColor = [
                 '#542E89',
                 '#03A9F4',
                 '#FFC72C',
                 '#FA0E6A',
+                '#42B5E8',
             ];
 
             return {
                 labels: lables,
                 toolTips: toolTips,
-                total: totalEaData + totalSumoData + totalOriginData + totalPowerShopData,
+                total: totalEaData + totalSumoData + totalOriginData + totalPowerShopData + totalFirstEnergyData,
                 datasets: [{
                     label: 'My First Dataset',
                     data: chartData,

@@ -96,6 +96,7 @@ class ConnectionService extends Model
     public const POWER_SHOP_100_PERCENT_CARBON_NEUTRAL = 'powershop_100%_carbon_neutral';
     public const POWER_SHOP_SWITCH_SAVER = 'switch_saver';
 
+    public const FIRST_SUPER_SAVER = '1st_super_saver';
 
     public const ENERGY_PLAN_MAPPER = [
         'basic_plan' => self::ENERGY_AUSTRALIA_BASIC_PLAN,
