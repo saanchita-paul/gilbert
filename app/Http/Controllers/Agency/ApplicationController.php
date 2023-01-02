@@ -25,6 +25,7 @@ use App\Services\Application\ApplicationLockUnlockService;
 use App\Services\Application\ApplicationsMetricsService;
 use App\Services\Application\SearchConnectionApplication;
 use App\Services\Ea\SetEaDistributorService;
+use App\Services\FirstEnergy\FirstEnergyService;
 use App\Services\GBGEmailValidationService;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -236,6 +237,10 @@ class ApplicationController extends Controller
                         case ConnectionService::PROVIDER_POWER_SHOP:
                             $setPowershopDistributorService = new SetPowershopDistributorService($res, $ids, $submitType);
                             $setPowershopDistributorService->setDistributor();
+                            break;
+                        case ConnectionService::PROVIDER_FIRST_ENERGY:
+                            $firstEnergyService = new FirstEnergyService($res, $ids, $submitType);
+                            $firstEnergyService->setServiceStatus();
                     }
                 }
             }
