@@ -47,8 +47,8 @@ export default {
         async saveNote() {
             if (!this.note.text) return;
             //todo need to call note api in chatbot site
-            await ChatbotApplicationService.saveNote(this.note)
-            this.note.text = ''
+            await ChatbotApplicationService.saveNote(this.note);
+            this.note.text = '';
             this.$emit("newNote");
         },
         getColor(index) {

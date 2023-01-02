@@ -20,6 +20,7 @@ export default class PropertyDetail{
                     concession_card_type = null,
                     concession_card_value = null,
                     concession_card_start_date = null,
+                    to_address = null,
                 }) {
 
         this.which_utility = which_utility;
@@ -39,5 +40,6 @@ export default class PropertyDetail{
         this.concession_card_value = concession_card_value;
         this.concession_card_start_date = concession_card_start_date;
         this.concession_card_start_date = concession_card_start_date;
+        this.to_address = to_address;
     }
 }
