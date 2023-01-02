@@ -105,6 +105,8 @@ name: "ChatbotApplicationPage",
                 if (isEqual(this.$route.query, value)) return;
                 if(params.is_gilbert && params.is_gilbert === 'chatbot'){
                     delete params.is_gilbert
+                }else{
+                    params.is_gilbert = 'true'
                 }
                 this.$router.push({
                     name: "chatbot.application",
