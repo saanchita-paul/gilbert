@@ -515,7 +515,6 @@ export default {
         }
 
         this.$eventBus.$on("nbn_submit_validate", async () => {
-            console.log("nbn_submit_validate");
             return await this.validateLead();
         });
     }

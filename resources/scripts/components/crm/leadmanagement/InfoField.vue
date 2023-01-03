@@ -106,7 +106,7 @@
                     >
                         <template v-slot:activator="{ on, attrs }">
                             <ValidationProvider
-                                name="Bate Of Birth"
+                                name="Date Of Birth"
                                 :rules="`${isTenancyHomeOwner?'':'required|'}valid-date|adult`"
                                 v-slot="{ errors }"
                             >

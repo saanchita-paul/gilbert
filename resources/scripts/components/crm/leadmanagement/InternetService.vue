@@ -267,6 +267,13 @@
                             </div>
 
                             <div class="crm-text-field">
+                                <v-btn outlined color="primary">
+                                    Send payment link
+                                    <v-icon class="ml-4">mdi-email</v-icon>
+                                </v-btn>
+                            </div>
+
+                            <div class="crm-text-field">
                                 <div class="field-label">
                                     <span>Payment Status</span>
                                 </div>
@@ -429,9 +436,9 @@ export default {
         },
         submit() {
             let v = this.$eventBus.$emit('nbn_submit_validate');
-
-            console.log(!v);
-            return;
+            if (!v) {
+                return;
+            }
             this.showInternetSubmitModal = true;
         },
         backToEdit() {
