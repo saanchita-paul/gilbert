@@ -189,9 +189,13 @@ class TAppServices
         $this->connectionApplicaton->unit_number = $this->userRequestData->tenancy_unit_number ?? null;
         $this->connectionApplicaton->street_number = $this->userRequestData->tenancy_street_number ?? null;
         $this->connectionApplicaton->street_name = $this->userRequestData->tenancy_street_name ?? null;
+        $this->connectionApplicaton->street_name_only = $this->userRequestData->tenancy_street_name ?? null;
+        $this->connectionApplicaton->street_type = $this->userRequestData->tenancy_street_type ?? null;
+        $this->connectionApplicaton->billing_street_type = $this->userRequestData->tenancy_billing_street_type ?? null;
         $this->connectionApplicaton->billing_unit_number = $this->userRequestData->tenancy_billing_unit_number ?? null;
         $this->connectionApplicaton->billing_street_number = $this->userRequestData->tenancy_billing_street_number ?? null;
         $this->connectionApplicaton->billing_street_name = $this->userRequestData->tenancy_billing_street_name ?? null;
+        $this->connectionApplicaton->billing_street_name_only = $this->userRequestData->tenancy_billing_street_name ?? null;
         $this->connectionApplicaton->billing_address_text = $this->userRequestData->tenancy_billing_address_text ?? null;
         // $this->connectionApplicaton->billing_street_address = $this->userRequestData->tenancy_billing_street_address ?? null;;
         $this->connectionApplicaton->billing_city = $this->userRequestData->tenancy_billing_city ?? null;
