@@ -93,12 +93,12 @@ class EmbeddedNetworkService
 
 
                 if (!empty($response_decoded['mirn']['result']) && count($response_decoded['mirn']['result']) > 0) {
-                    $mirn = $response_decoded['mirn']['result'][0]['mirn'];
+                    $mirn = self::maxMatch($response_decoded['mirn']['result'])['mirn'];
                 }
 
                 if (!empty($response_decoded['nmi']['result']) && count($response_decoded['nmi']['result']) > 0) {
                     Log::info('Get ' . count($response_decoded['nmi']['result']) . ' NMI result.');
-                    $nmi = $response_decoded['nmi']['result'][0]['nmi'];
+                    $nmi = self::maxMatch($response_decoded['nmi']['result'])['nmi'];
                 }
 
                 $error = $response_decoded['mirn']['error'] ?? $response_decoded['nmi']['error'];
@@ -112,13 +112,6 @@ class EmbeddedNetworkService
                     ];
                 }
             }
-
-            /*if ($applicationFlag) {
-                $connectionApp = ConnectionApplication::find($id);
-                $connectionApp->nmi = $nmi;
-                $connectionApp->mirn = $mirn;
-                $connectionApp->save();
-            }*/
 
             return [
                 'mirn' => $mirn,
@@ -272,5 +265,12 @@ class EmbeddedNetworkService
                 'embedded_mirn' => null
             ];
         }
+    }
+
+    public static function maxMatch($data = [])
+    {
+        return array_reduce($data, function ($carry, $item) {
+            return @$carry['match_type_percentage'] > $item['match_type_percentage'] ? $carry : $item;
+        });
     }
 }
