@@ -26,7 +26,7 @@
                             <v-col cols="12">
                                 <ChatbotCafTable
                                     v-model="selectedCaf"
-                                    :cafFiles="cafFiles"
+                                    :cafFiles="chatbotApps"
                                     :totalItem="totalItem"
                                     @updateDataTable="updateDataTable"
                                     @refreshDataTable="refreshDataTable"
@@ -41,7 +41,7 @@
                     </v-card-text>
                 </v-card>
             </v-col>
-            <v-col cols="4" v-if="cafFiles.length">
+            <v-col cols="4" v-if="chatbotApps.length">
                 <ChatbotApplicationDetails ></ChatbotApplicationDetails>
             </v-col>
         </v-row>
@@ -59,6 +59,7 @@ import {forEach, isEqual, isNull, omit} from "lodash-es";
 import ChatbotApplicationDetails from "@scripts/components/chatbot/ChatbotApplicationDetails";
 import ChatbotApplicationFilter from "@scripts/components/chatbot/ChatbotApplicationFilter";
 import ChatbotCafTable from "@scripts/components/chatbot/ChatbotCafTable";
+import Store from '@scripts/store/index';
 
 export default {
 name: "ChatbotApplicationPage",
@@ -208,14 +209,13 @@ name: "ChatbotApplicationPage",
         },
 
         async fetchCafFiles() {
-            let data = await ApplicationCafFileService.getApplicationCafFileData({...this.sort_search_meta, ...{page: this.page}}, this.advanceSearch);
-            this.cafFiles = data.data;
+            let data = await ApplicationCafFileService.getChatbotApplication({...this.sort_search_meta, ...{page: this.page}}, this.advanceSearch);
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
             this.totalItem = data.pagination.total;
-            if(this.cafFiles.length > 0) {
+            if(data.data.length > 0) {
                 const query = this.$route.query;
-                await this.$router.replace({query: {...query, app_id: this.cafFiles[0].id}});
+                await this.$router.replace({query: {...query, app_id: data.data[0].id}});
             }
         },
 
@@ -268,8 +268,12 @@ name: "ChatbotApplicationPage",
             this.advanceSearch.provider_name = provider_name
         }
 
-
     },
+    computed: {
+        chatbotApps() {
+           return Store.getters.applications;
+        }
+    }
 
 }
 </script>

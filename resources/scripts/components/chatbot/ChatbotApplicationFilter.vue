@@ -3,106 +3,109 @@
     <div>
         <v-form ref="form" autocomplete="off">
             <v-row>
-                <v-col cols="9">
-                    <div class="d-flex">
-                        <v-text-field
-                            autocomplete="off"
-                            v-model="$attrs.value.name"
-                            outlined
-                            dense
-                            hide-details="auto"
-                            placeholder="Name"
-                            style="background-color: white"
-                            class="mr-2"
-                        />
-                        <v-text-field
-                            v-model="$attrs.value.address"
-                            outlined
-                            dense
-                            hide-details="auto"
-                            placeholder="Address"
-                            style="background-color: white"
-                            class="mr-2"
-                        />
-                        <v-text-field
-                            v-model="$attrs.value.business_name"
-                            outlined
-                            dense
-                            hide-details="auto"
-                            placeholder="Business Name"
-                            style="background-color: white"
-                            class="mr-2"
-                        />
-                        <v-text-field
-                            v-model="$attrs.value.abn"
-                            outlined
-                            dense
-                            hide-details="auto"
-                            placeholder="ABN"
-                            style="background-color: white"
-                            class="mr-2"
-                        />
-                        <v-select
-                            placeholder="Provider"
-                            v-model="filterApplication.provider"
-                            @change="filterProvider"
-                            item-text="text"
-                            item-value="value"
-                            :items="provider"
-                            outlined
-                            dense
-                            hide-details="auto"
-                            class="mr-2"
-                        >
-                        </v-select>
-                        <v-select
-                            placeholder="Application Type"
-                            v-model="filterApplication.applicationType"
-                            @change="filterApplicationType"
-                            item-text="text"
-                            item-value="value"
-                            :items="applicationType"
-                            outlined
-                            dense
-                            hide-details="auto"
-                            class="mr-2"
-                        >
-                        </v-select>
-                        <div  class="py-0 mr-2">
-                            <v-text-field
-                                solo
-                                dense
-                                label="Calender"
-                                placeholder="Today"
-                                v-model="selectedDate"
-                                append-icon="mdi-calendar-range"
-                                readonly
-                                hide-details
-                                style="background-color: white;"
-                                @click="showDatePickerModal = true"
-                                @click:append="showDatePickerModal = true"
-                            ></v-text-field>
-                        </div>
-
-                        <div
-                            style="display: flex; align-items: center">
-                            <v-btn
-                                v-show="!isSearchEmpty"
-                                small
-                                tile
-                                color="#e0e0e0"
-                                @click="clearSearch">
-                                <v-icon small left> mdi mdi-close</v-icon>
-                                Reset
-                            </v-btn>
-                        </div>
-                    </div>
-                </v-col>
-                <v-col cols="3">
+                <v-col cols="12">
                     <v-btn class="float-right" :disabled="isDisabledCafBtn" @click="generateCafFIle">
                         Generate CAF File
                     </v-btn>
                 </v-col>
+                <v-col cols="12">
+                    <v-row class="my-1">
+                        <div class="d-flex flex-wrap">
+                            <v-text-field
+                                autocomplete="off"
+                                v-model="$attrs.value.name"
+                                outlined
+                                dense
+                                hide-details="auto"
+                                placeholder="Name"
+                                style="background-color: white"
+                                class="mr-2"
+                            />
+                            <v-text-field
+                                v-model="$attrs.value.address"
+                                outlined
+                                dense
+                                hide-details="auto"
+                                placeholder="Address"
+                                style="background-color: white"
+                                class="mr-2"
+                            />
+                            <v-text-field
+                                v-model="$attrs.value.business_name"
+                                outlined
+                                dense
+                                hide-details="auto"
+                                placeholder="Business Name"
+                                style="background-color: white"
+                                class="mr-2"
+                            />
+                            <v-text-field
+                                v-model="$attrs.value.abn"
+                                outlined
+                                dense
+                                hide-details="auto"
+                                placeholder="ABN"
+                                style="background-color: white"
+                                class="mr-2"
+                            />
+                            <v-select
+                                placeholder="Provider"
+                                v-model="filterApplication.provider"
+                                @change="filterProvider"
+                                item-text="text"
+                                item-value="value"
+                                :items="provider"
+                                outlined
+                                dense
+                                hide-details="auto"
+                                class="mr-2"
+                            >
+                            </v-select>
+                            <v-select
+                                placeholder="Application Type"
+                                v-model="filterApplication.applicationType"
+                                @change="filterApplicationType"
+                                item-text="text"
+                                item-value="value"
+                                :items="applicationType"
+                                outlined
+                                dense
+                                hide-details="auto"
+                                class="mr-2"
+                            >
+                            </v-select>
+
+                            <div  class="py-0 mr-2">
+                                <v-text-field
+                                    solo
+                                    dense
+                                    label="Calender"
+                                    placeholder="Today"
+                                    v-model="selectedDate"
+                                    append-icon="mdi-calendar-range"
+                                    readonly
+                                    hide-details
+                                    style="background-color: white;"
+                                    @click="showDatePickerModal = true"
+                                    @click:append="showDatePickerModal = true"
+                                ></v-text-field>
+                            </div>
+                            <div
+                                style="display: flex; align-items: center">
+                                <v-btn
+                                    v-show="!isSearchEmpty"
+                                    small
+                                    tile
+                                    color="#e0e0e0"
+                                    @click="clearSearch">
+                                    <v-icon small left> mdi mdi-close</v-icon>
+                                    Reset
+                                </v-btn>
+                            </div>
+                        </div>
+                    </v-row>
+                </v-col>
+
             </v-row>
 
             <DatePickerModal

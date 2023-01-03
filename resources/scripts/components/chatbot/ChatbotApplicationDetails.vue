@@ -128,6 +128,122 @@
                                 </div>
                             </v-col>
 
+                            <v-col cols ="5"  class="py-0 my-1">
+                                <p class="font-weight-bold">Concession Card</p>
+                            </v-col>
+                            <v-col cols ="7" class="py-0 my-1">
+                                <div class="text-field">
+                                    <v-select
+                                        v-model="chatbot_app.personal_details.concession_card_type"
+                                        :items="concessionCard"
+                                        item-text="text"
+                                        item-value="value"
+                                        outlined
+                                        dense
+                                        hide-details="auto"
+                                        clearable
+                                    >
+                                    </v-select>
+                                </div>
+                            </v-col>
+
+
+                            <v-col cols ="5"  class="py-0 my-1">
+                                <p class="font-weight-bold">Card Number</p>
+                            </v-col>
+                            <v-col cols ="7" class="py-0 my-1">
+                                <div class="text-field">
+                                    <v-text-field
+                                        v-model="chatbot_app.personal_details.concession_card_number"
+                                        outlined
+                                        dense
+                                        hide-details="auto"
+                                    ></v-text-field>
+                                </div>
+                            </v-col>
+
+
+                            <v-col cols ="5"  class="py-0 my-1">
+                                <p class="font-weight-bold">Card Start Date</p>
+                            </v-col>
+                            <v-col cols ="7" class="py-0 my-1">
+                                <v-menu
+                                    v-model="isConcessionStartDate"
+                                    :close-on-content-click="false"
+                                    :nudge-right="40"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <ValidationProvider
+                                            name="Start Date"
+                                            v-slot="{ errors }"
+                                        >
+                                            <v-text-field
+                                                placeholder="DD/MM/YYYY"
+                                                outlined
+                                                dense
+                                                append-icon="mdi-calendar"
+                                                v-model="chatbot_app.personal_details.concession_card_start_date"
+                                                v-bind="attrs"
+                                                :error-messages="errors[0]"
+                                                hide-details="auto"
+                                            >
+                                                <template slot="append">
+                                                    <v-icon v-on="on">mdi-calendar</v-icon>
+                                                </template>
+                                            </v-text-field>
+                                        </ValidationProvider>
+                                    </template>
+                                    <v-date-picker
+                                        v-model="concession_start_date"
+                                        @input="isConcessionStartDate = false"
+                                    ></v-date-picker>
+                                </v-menu>
+                            </v-col>
+
+
+                            <v-col cols ="5"  class="py-0 my-1">
+                                <p class="font-weight-bold">Card End Date</p>
+                            </v-col>
+                            <v-col cols ="7" class="py-0 my-1">
+                                <v-menu
+                                    v-model="isConcessionEndDate"
+                                    :close-on-content-click="false"
+                                    :nudge-right="40"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <ValidationProvider
+                                            name="Start Date"
+                                            v-slot="{ errors }"
+                                        >
+                                            <v-text-field
+                                                placeholder="DD/MM/YYYY"
+                                                outlined
+                                                dense
+                                                append-icon="mdi-calendar"
+                                                v-model="chatbot_app.personal_details.concession_end_date"
+                                                v-bind="attrs"
+                                                :error-messages="errors[0]"
+                                                hide-details="auto"
+                                            >
+                                                <template slot="append">
+                                                    <v-icon v-on="on">mdi-calendar</v-icon>
+                                                </template>
+                                            </v-text-field>
+                                        </ValidationProvider>
+                                    </template>
+                                    <v-date-picker
+                                        v-model="concession_end_date"
+                                        @input="isConcessionEndDate = false"
+                                    ></v-date-picker>
+                                </v-menu>
+                            </v-col>
+
                         </v-row>
                         <v-row>
                             <v-col cols="10">
@@ -182,8 +298,7 @@
                                         item-value="value"
                                         outlined
                                         dense
-                                        hide-details="auto"
-                                    >
+                                        hide-details="auto">
                                     </v-select>
                                 </div>
                             </v-col>
@@ -506,6 +621,8 @@
 
         <v-divider></v-divider>
 
+        <v-divider></v-divider>
+
         <template >
             <v-expansion-panels v-model="expansionPanel.service" multiple style="box-shadow: none !important;">
                 <v-expansion-panel style="box-shadow: none !important;">
@@ -587,15 +704,13 @@
 </template>
 
 <script>
-import DayJs from "dayjs";
 
-const SPECIAL_NUMBER = require('@scripts/data/constants/SPECIAL_NUMBER');
+import DayJs from "dayjs";
 const {titlesMapperForDropdownCb} = require("@scripts/data/titleMapper");
 import ChatbotApplicationNote from "@scripts/components/chatbot/ChatbotApplicationNote";
 import ChatbotApplicationService from "@scripts/services/chatbot/ChatbotApplicationService";
 import {isNull} from "lodash-es";
 import CustomerService from "@scripts/services/CustomerService";
-import dayJs from "dayjs";
 export default {
     name: "ChatbotApplicationDetails",
     components: {
@@ -809,8 +924,31 @@ export default {
                 property: [],
                 identification: [],
                 service : [],
-                application : []
+                application : [],
+                concession: []
             },
+            concessionCard: [
+                {
+                    text: "DVA Health",
+                    value: "1",
+                },
+                {
+                    text: "Health Care Card",
+                    value: "2",
+                },
+                {
+                    text: "Pensioner Concession",
+                    value: "3",
+                },
+                {
+                    text: "Queensland Seniors",
+                    value: "4",
+                },
+            ],
+            isConcessionStartDate: false,
+            isConcessionEndDate: false,
+            concession_start_date: null,
+            concession_end_date: null,
         }
     },
     methods: {
@@ -945,6 +1083,20 @@ export default {
                 "DD/MM/YYYY"
             );
         },
+
+        concession_start_date() {
+            if (isNull(this.concession_start_date) || this.concession_start_date === '' || this.concession_start_date === undefined ) return;
+            this.chatbot_app.personal_details.concession_card_start_date = new DayJs(this.concession_start_date).format(
+                "DD/MM/YYYY"
+            );
+        },
+        concession_end_date() {
+            if (isNull(this.concession_end_date) || this.concession_end_date === '' || this.concession_end_date === undefined ) return;
+            this.chatbot_app.personal_details.concession_end_date = new DayJs(this.concession_end_date).format(
+                "DD/MM/YYYY"
+            );
+        },
+
         expansionPanel:{
             handler(newValue){
                 const query = Object.assign({}, this.$route.query);
@@ -965,10 +1117,6 @@ export default {
 </script>
 
 <style scoped>
-.layout-fixed-table{
-    table-layout: fixed;
-    width: 100%
-}
 .service-status{
     font-size: 14px !important;
 }
@@ -976,37 +1124,9 @@ export default {
     font-size: 15px !important;
     font-weight: 700;
 }
-.unassigned, .assigned, .escalated, .processing, .common_color, .closed, .can\'t_connect{
-    color: black !important;
-}
-.submitted{
-    color: #0CC4ED !important;
-}
-.accepted{
-    color: #15DB64 !important;
-}
-.rejected{
-    color: #E91E63 !important;
-}
-.need_more_info{
-    color: #FF5722 !important;
-}
-
-.view_application {
-    background: #FFC104
-}
-
 .border-all{
     /* border: 1px solid black; */
     flex-basis: 31%;
 }
 
-.flex-wrap-100{
-    flex-wrap: wrap;
-    width: 100%;
-}
-
-.v-expansion-panel::before {
-    box-shadow:none !important;
-}
 </style>

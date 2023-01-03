@@ -1,4 +1,5 @@
 import ApplicationCafFileAPI from "@scripts/api/crm/ApplicationCafFileAPI";
+import Store from '@scripts/store/index';
 
 export default {
     getApplicationCafFileData: (sort_search_meta, params) => ApplicationCafFileAPI.getApplicationCafFileData(sort_search_meta, params),
@@ -12,4 +13,11 @@ export default {
     },
     getGilbertApplicationData: (sort_search_meta, params) => ApplicationCafFileAPI.getGilbertApplicationData(sort_search_meta, params),
     generateGilbertCafFIle: (data) => ApplicationCafFileAPI.generateGilbertCafFIle(data),
+
+    getChatbotApplication : async (sort_search_meta, params) => {
+        const data = await ApplicationCafFileAPI.getApplicationCafFileData(sort_search_meta, params);
+        Store.commit('setchatbotApplications', data.data);
+        return data;
+    }
+
 }

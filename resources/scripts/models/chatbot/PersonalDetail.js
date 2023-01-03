@@ -10,7 +10,11 @@ export default class PersonalDetail{
                     phone= null,
                     dob= null,
                     phone_type = null,
-                    homephone =null
+                    homephone =null,
+                    concession_card_type =  null,
+                    concession_card_number =  null,
+                    concession_card_start_date =  null,
+                    concession_end_date =  null,
                 }) {
 
         this.title = title;
@@ -22,6 +26,10 @@ export default class PersonalDetail{
         this.dob = dayJs(dob).format("DD/MM/YYYY");
         this.phone_type = phone_type;
         this.homephone = homephone;
+        this.concession_card_type = concession_card_type;
+        this.concession_card_number = concession_card_number;
+        this.concession_end_date = concession_end_date;
+        this.concession_card_start_date = concession_card_start_date;
 
     }
 }
