@@ -50,9 +50,6 @@ export default {
         }
     },
     methods: {
-        done() {
-
-        },
 
         async loadRejectionReason() {
             const res  =  await CustomerService.getRejection(this.service.id);
