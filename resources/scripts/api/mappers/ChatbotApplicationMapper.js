@@ -11,8 +11,8 @@ export default {
         const id_detail = new IdDetail(application);
         const personal_detail = new PersonalDetail(application);
         const property_detail = new PropertyDetail(application);
-        const application_note = application.application_notes.map(item => new ApplicationNote(item));
-        const connection_service = application.connection_services.map(item => new ConnectionService(item));
+        const application_note = application.application_notes?.map(item => new ApplicationNote(item));
+        const connection_service = application.connection_services?.map(item => new ConnectionService(item));
 
         return new ChatbotApplication({
             id_detail: id_detail,

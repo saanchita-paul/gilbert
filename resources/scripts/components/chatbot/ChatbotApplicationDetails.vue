@@ -130,11 +130,12 @@
 
                         </v-row>
                         <v-row>
-                            <v-col cols="10">
+                            <v-col cols="9">
 
                             </v-col>
-                            <v-col cols="2">
-                                <v-btn small right @click="savePersonalDetails"> Save</v-btn>
+                            <v-col cols="3">
+                                <v-btn small right @click="savePersonalDetails"  :loading="isloading"
+                                       :disabled="isloading"> Save</v-btn>
                             </v-col>
 
                         </v-row>
@@ -538,12 +539,12 @@
                                 </div>
 
                                 <div class="item" v-if="electricityService.service_type === 'electricity'">
-                                    <p class="item-title">Electricity</p>
-                                    <p class="item-value">{{ electricityService.status }}</p>
+<!--                                    <p class="item-title">Electricity</p>-->
+<!--                                    <p class="item-value">{{ electricityService.status }}</p>-->
                                     <v-btn v-if="electricityService.status === 'Rejected'"
                                            @click="openRejection(electricityService)"
                                            small
-                                           style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;"
+                                           style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a; margin-top: 15px;"
                                            outlined
                                     >
                                         Reason
@@ -572,21 +573,22 @@
                                         </v-select>
                                     </p>
                                 </div>
+                                <div class="item" v-if="gasService.service_type === 'gas'">
+                                    <!--                                <p class="item-title">Gas</p>-->
+                                    <!--                                <p class="item-value">{{ gasService.status }}</p>-->
+                                    <v-btn v-if="gasService.status === 'Rejected'"
+                                           @click="openRejection(gasService)"
+                                           small
+                                           style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;margin-top: 15px;"
+                                           outlined
+                                    >
+                                        Reason
+                                    </v-btn>
+
+                                </div>
                             </v-col>
 
-                            <div class="item" v-if="gasService.service_type === 'gas'">
-                                <p class="item-title">Gas</p>
-                                <p class="item-value">{{ gasService.status }}</p>
-                                <v-btn v-if="gasService.status === 'Rejected'"
-                                       @click="openRejection(gasService)"
-                                       small
-                                       style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;"
-                                       outlined
-                                >
-                                    Reason
-                                </v-btn>
 
-                            </div>
                         </v-row>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -609,7 +611,7 @@
                 </v-expansion-panel>
             </v-expansion-panels>
         </template>
-        <RejectionReasonModal :dialog="dialog"
+        <RejectionReasonModal v-if="dialog" :dialog="dialog"
                               :service="selectedRejectedService"  @close="onCloseReject" ></RejectionReasonModal>
 
     </div>
@@ -634,6 +636,7 @@ export default {
     },
     data() {
         return {
+            isloading: false,
             dialog: false,
             chatbot_app: null,
             app_id: null,
@@ -868,6 +871,8 @@ export default {
         savePersonalDetails() {
 
             ChatbotApplicationService.updatePersonalDetails(this.app_id, this.chatbot_app.personal_details);
+            this.isloading = true;
+
         },
 
         savePropertyDetails() {

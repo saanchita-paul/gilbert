@@ -157,6 +157,6 @@ export default {
 
     getRejectionReasonData: async (connectionServiceId) => {
         const response = await axios.get(`${BOT_API}/rejection-reasons/${connectionServiceId}`);
-        return ChatbotApplicationMapper.mapApplication(response.data);
+        return response.data;
     }
 }

@@ -14,7 +14,7 @@
                             </div>
 
                             <div class="d-flex justify-center">
-                                <p class="text-center">Invalid Something</p>
+                                <p class="text-center"> {{this.rejection_reason}}</p>
                             </div>
                             <div class="d-flex justify-center">
                                 <v-btn @click="$emit('close')" block
@@ -46,7 +46,7 @@ export default {
     },
     data() {
         return {
-            // rejection_reason: null,
+            rejection_reason: [],
         }
     },
     methods: {
@@ -55,7 +55,10 @@ export default {
         },
 
         async loadRejectionReason() {
-            this.chatbot_app =  await CustomerService.getRejection(this.app_id);
+            const res  =  await CustomerService.getRejection(this.service.id);
+            this.rejection_reason = res.reason_text;
+            console.log(this.rejection_reason,res);
+
         }
 
     },
