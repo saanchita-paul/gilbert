@@ -1,9 +1,9 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col cols="12">
-                <h2>Chatbot Application</h2>
-            </v-col>
+<!--            <v-col cols="12">-->
+<!--                <h2>Chatbot Application</h2>-->
+<!--            </v-col>-->
 
             <v-col cols="8">
                 <v-card>
@@ -102,7 +102,7 @@ name: "ChatbotApplicationPage",
                 let params = {...this.$route.query, ...value}
                 if (isEqual(this.$route.query, value)) return;
                 this.$router.push({
-                    name: "chatbot.application",
+                    // name: "chatbot.application",
                     query: params,
                 });
                 this.resetPage();
@@ -115,7 +115,7 @@ name: "ChatbotApplicationPage",
                 let params = {...this.$route.query, ...value}
                 if (isEqual(this.$route.query, value)) return;
                 this.$router.push({
-                    name: "chatbot.application",
+                    // name: "chatbot.application",
                     query: params,
                 });
                 this.resetPage();

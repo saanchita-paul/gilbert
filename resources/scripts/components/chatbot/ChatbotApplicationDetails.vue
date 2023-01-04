@@ -27,7 +27,10 @@
                                         dense
                                         :items="titlesDropDown"
                                         v-model="chatbot_app.personal_details.title"
-                                        class="mr-2 item-value"
+                                        class="item-value"
+                                        item-text="text"
+                                        item-value="value"
+                                        hide-details="auto"
                                     ></v-select>
                                 </div>
                             </v-col>
@@ -147,7 +150,6 @@
                                         outlined
                                         dense
                                         hide-details="auto"
-                                        clearable
                                     >
                                     </v-select>
                                 </div>
@@ -838,7 +840,7 @@ export default {
         async cancelPersonalDetails(){
             this.cancelPersonalLoading = true;
             await ChatbotApplicationService.updatePersonalDetails(this.app_id, this.chatbot_app_backup.personal_details);
-            await this.loadApplication();
+            this.chatbot_app = JSON.parse(JSON.stringify(this.chatbot_app_backup));
             this.cancelPersonalLoading = false;
         },
 
@@ -851,7 +853,7 @@ export default {
         async cancelPropertyDetails(){
             this.cancelPropertyLoading = true;
             await ChatbotApplicationService.updatePropertyDetails(this.app_id, this.chatbot_app_backup.property_details);
-            await this.loadApplication();
+            this.chatbot_app = JSON.parse(JSON.stringify(this.chatbot_app_backup));
             this.cancelPropertyLoading = false;
         },
 
@@ -864,7 +866,7 @@ export default {
         async cancelIdDetails(){
             this.cancelIdLoading = true;
             await ChatbotApplicationService.updateIdDetails(this.app_id, this.chatbot_app_backup.id_detail);
-            await this.loadApplication();
+            this.chatbot_app = JSON.parse(JSON.stringify(this.chatbot_app_backup));
             this.cancelIdLoading = false;
         },
 
@@ -893,7 +895,7 @@ export default {
         },
         async loadApplication() {
            this.chatbot_app =  await CustomerService.getMovingData(this.app_id);
-           this.chatbot_app_backup = await CustomerService.getMovingData(this.app_id);
+           this.chatbot_app_backup = JSON.parse(JSON.stringify(this.chatbot_app));
         },
 
         handleNewApplication(){
