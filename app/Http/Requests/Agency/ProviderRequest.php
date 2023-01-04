@@ -24,7 +24,6 @@ class ProviderRequest extends FormRequest
     public function rules()
     {
         return [
-            'service_type' => 'required',
             'provider_name' => 'required|string',
             'plan_type' => 'required|string'
         ];
