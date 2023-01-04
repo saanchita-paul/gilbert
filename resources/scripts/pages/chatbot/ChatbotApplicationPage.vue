@@ -260,13 +260,6 @@ name: "ChatbotApplicationPage",
             this.pages = 1;
         },
 
-        updateApplicationTypeFilter(applicationType){
-            this.advanceSearch.is_gilbert = applicationType
-        },
-        updateProviderNameFilter(provider_name){
-            this.advanceSearch.provider_name = provider_name
-        }
-
     },
     computed: {
         chatbotApps() {
