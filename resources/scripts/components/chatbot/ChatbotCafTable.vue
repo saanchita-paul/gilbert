@@ -53,9 +53,10 @@ export default {
             disabledCount: 0,
             headers: [
                 {text: 'App ID', align: 'start', sortable: true, value: 'id', class: 'black--text', shouldShow: true },
-                {text: 'Name', align: 'start', sortable: true, value: 'full_name', class: 'black--text', shouldShow: true},
+                {text: 'Tenant Name', align: 'start', sortable: true, value: 'full_name', class: 'black--text', shouldShow: true},
                 {text: 'Address', align: 'start', sortable: true, value: 'to_address', class: 'black--text', shouldShow: true},
-                {text: 'Connection type', align: 'start', sortable: true, value: 'connection_type', class: 'black--text', shouldShow: true},
+                {text: 'Connection Date', align: 'start', sortable: true, value: 'connection_date', class: 'black--text', shouldShow: true},
+                {text: 'Connection Type', align: 'start', sortable: true, value: 'connection_type', class: 'black--text', shouldShow: true},
                 {text: 'Supplier', align: 'start', sortable: true, value: 'supplier', class: 'black--text', shouldShow: true},
                 {text: '', value: 'data-table-select', sortable: false}
             ],

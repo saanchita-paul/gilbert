@@ -10,7 +10,6 @@
                     <v-card-text>
                         <v-row>
                             <v-col cols="12">
-                                <h3>Filters</h3>
                                 <ChatbotApplicationFilter
                                     :selected="selectedCaf"
                                     v-model="advanceSearch"
