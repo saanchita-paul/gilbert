@@ -5,6 +5,8 @@ export default class {
                     property_details = null,
                     application_notes = null,
                     connection_services = null,
+                    eleService = null,
+                    gasService = null,
 
                 }) {
 
@@ -13,6 +15,8 @@ export default class {
         this.property_details = property_details;
         this.application_notes = application_notes?.reverse();
         this.connection_services = connection_services?.reverse();
+        this.eleService = eleService;
+        this.gasService = gasService;
     }
 
     setIdDetails(idDetail) {
@@ -26,7 +30,6 @@ export default class {
     setPropertyDetails(propertyDetails) {
         this.property_details = propertyDetails;
     }
-
 
 
 }

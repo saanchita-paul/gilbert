@@ -91,6 +91,8 @@ export default {
     /**
      * @param connectionServiceId
      */
-    getRejection: (connectionServiceId) => CustomerAPI.getRejectionReasonData(connectionServiceId)
+    getRejection: (connectionServiceId) => CustomerAPI.getRejectionReasonData(connectionServiceId),
+
+
 
 }

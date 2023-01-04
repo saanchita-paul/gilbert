@@ -251,7 +251,7 @@
                             </v-col>
                             <v-col cols="3">
                                 <v-btn small right @click="savePersonalDetails"  :loading="savePersonDloading"
-                                       :disabled="isloading"> Save</v-btn>
+                                       > Save</v-btn>
                             </v-col>
 
                         </v-row>
@@ -423,10 +423,10 @@
                             </v-col>
                         </v-row>
                         <v-row>
-                            <v-col cols="10">
+                            <v-col cols="9">
 
                             </v-col>
-                            <v-col cols="2">
+                            <v-col cols="3">
                                 <v-btn small right @click="savePropertyDetails" :loading="saveProDloading"> Save</v-btn>
                             </v-col>
 
@@ -607,10 +607,10 @@
 
                         </v-row>
                         <v-row>
-                            <v-col cols="10">
+                            <v-col cols="9">
 
                             </v-col>
-                            <v-col cols="2">
+                            <v-col cols="3">
                                 <v-btn small right @click=" saveIdDetails"  :loading="saveIDDloading"> Save</v-btn>
                             </v-col>
 
@@ -639,11 +639,11 @@
                                     </p>
                                     <p class="py-0 my-0 service-status" >
                                         <small>Current Status</small>
-                                        <v-select
+                                        <v-select @change="changeServiceStatus(chatbot_app.eleService)"
                                             placeholder="Please select"
-                                            v-model="formData.power_status"
+                                            v-model="chatbot_app.eleService.status"
                                             item-text="text"
-                                            item-value="value"
+                                            item-value="text"
                                             :items="powerStatus"
                                             outlined
                                             dense
@@ -653,10 +653,10 @@
                                     </p>
                                 </div>
 
-                                <div class="item" v-if="electricityService.service_type === 'electricity'">
+                                <div class="item" v-if="chatbot_app.eleService.service_type === 'electricity'">
 <!--                                    <p class="item-title">Electricity</p>-->
 <!--                                    <p class="item-value">{{ electricityService.status }}</p>-->
-                                    <v-btn v-if="electricityService.status === 'Rejected'"
+                                    <v-btn v-if="chatbot_app.eleService.status === 'Rejected'"
                                            @click="openRejection(electricityService)"
                                            small
                                            style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a; margin-top: 15px;"
@@ -675,11 +675,11 @@
                                     </p>
                                     <p class="py-0 my-0 service-status" >
                                         <small>Current Status</small>
-                                        <v-select
+                                        <v-select @change="changeServiceStatus(chatbot_app.gasService)"
                                             placeholder="Please select"
-                                            v-model="formData.gas_status"
+                                            v-model="chatbot_app.gasService.status"
                                             item-text="text"
-                                            item-value="value"
+                                            item-value="text"
                                             :items="gasStatus"
                                             outlined
                                             dense
@@ -688,10 +688,10 @@
                                         </v-select>
                                     </p>
                                 </div>
-                                <div class="item" v-if="gasService.service_type === 'gas'">
+                                <div class="item" v-if="chatbot_app.gasService.service_type === 'gas'">
                                     <!--                                <p class="item-title">Gas</p>-->
                                     <!--                                <p class="item-value">{{ gasService.status }}</p>-->
-                                    <v-btn v-if="gasService.status === 'Rejected'"
+                                    <v-btn v-if="chatbot_app.gasService.status === 'Rejected'"
                                            @click="openRejection(gasService)"
                                            small
                                            style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;margin-top: 15px;"
@@ -749,7 +749,6 @@ export default {
     },
     data() {
         return {
-            isloading: false,
             dialog: false,
             chatbot_app: null,
             app_id: null,
@@ -1023,8 +1022,9 @@ export default {
         async saveIdDetails() {
             this.saveIDDloading = true;
             await ChatbotApplicationService.updateIdDetails(this.app_id, this.chatbot_app.id_detail);
-            this.saveIDDloading = true;
+            this.saveIDDloading = false;
         },
+
 
 
 
@@ -1128,7 +1128,11 @@ export default {
         openRejection(service) {
             this.selectedRejectedService = service;
             this.dialog = true;
+        },
+        async changeServiceStatus(service) {
+            const res  =  await ChatbotApplicationService.saveServiceStatus(service);
         }
+
     },
     mounted(){
         this.handleNewApplication()

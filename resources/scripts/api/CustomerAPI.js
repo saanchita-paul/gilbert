@@ -159,4 +159,5 @@ export default {
         const response = await axios.get(`${BOT_API}/rejection-reasons/${connectionServiceId}`);
         return response.data;
     }
+
 }
