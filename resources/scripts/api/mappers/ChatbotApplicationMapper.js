@@ -13,6 +13,12 @@ export default {
         const property_detail = new PropertyDetail(application);
         const application_note = application.application_notes?.map(item => new ApplicationNote(item));
         const connection_service = application.connection_services?.map(item => new ConnectionService(item));
+        const eleService= new ConnectionService(application.connection_services.find((item) => {
+            return item.service_type === 'electricity'
+        }));
+        const gasService = new ConnectionService(application.connection_services.find((item) => {
+            return item.service_type === 'gas'
+        }));
 
         return new ChatbotApplication({
             id_detail: id_detail,
@@ -20,6 +26,8 @@ export default {
             property_details: property_detail,
             application_notes : application_note,
             connection_services : connection_service,
+            eleService : eleService,
+            gasService : gasService,
         });
     },
 

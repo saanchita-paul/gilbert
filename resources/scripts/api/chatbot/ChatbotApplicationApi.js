@@ -47,4 +47,14 @@ export default {
         }
     },
 
+    async saveServiceStatus(serviceId, data) {
+        try {
+            const response = await axios.post(`${BOT_API}/service-status/${serviceId}`,  data);
+            return response.data;
+        } catch (error) {
+            console.log('error', error);
+            return null;
+        }
+    },
+
 }
