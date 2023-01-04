@@ -15,6 +15,7 @@ export default {
         const connection_service = application.connection_services?.map(item => new ConnectionService(item));
         const eleService= new ConnectionService(application.connection_services.find((item) => {
             return item.service_type === 'electricity'
+
         }));
         const gasService = new ConnectionService(application.connection_services.find((item) => {
             return item.service_type === 'gas'

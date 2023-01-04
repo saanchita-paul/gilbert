@@ -1,8 +1,17 @@
 <template>
     <div v-if="chatbot_app" class="hood-card" style="padding: 0px !important; max-height: 100%;" >
+
         <template >
             <v-expansion-panels  v-model="expansionPanel.profile" multiple style="box-shadow: none !important;">
                 <v-expansion-panel  style="box-shadow: none !important;">
+                    <v-row style=" padding: 20px">
+                        <v-col cols="12">
+                            <p style="margin-bottom: unset">Chatbot Application Details</p>
+                            <p class="font-weight-bold" style="font-size: 25px; margin-bottom: unset">{{ chatbot_app.personal_details.title }} {{ chatbot_app.personal_details.first_name }} {{ chatbot_app.personal_details.last_name }}</p>
+                            <IdCopyToClipboard :applicationId="app_id"></IdCopyToClipboard>
+                        </v-col>
+
+                    </v-row>
                     <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
                         Profile Details
                     </v-expansion-panel-header>
@@ -13,7 +22,6 @@
                             </v-col>
                             <v-col cols="7"  class="py-0 my-1">
                                 <div class="text-field">
-
                                     <v-select
                                         outlined
                                         dense
@@ -22,8 +30,6 @@
                                         class="mr-2 item-value"
                                     ></v-select>
                                 </div>
-
-
                             </v-col>
                             <v-col cols="5" class="py-0 my-1">
                                 <p class="font-weight-bold">FirstName</p>
@@ -164,7 +170,7 @@
 
 
                             <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">Card Start Date</p>
+                                <p class="font-weight-bold">Start Date*</p>
                             </v-col>
                             <v-col cols ="7" class="py-0 my-1">
                                 <v-menu
@@ -205,7 +211,7 @@
 
 
                             <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">Card End Date</p>
+                                <p class="font-weight-bold">End Date</p>
                             </v-col>
                             <v-col cols ="7" class="py-0 my-1">
                                 <v-menu
@@ -244,6 +250,34 @@
                                 </v-menu>
                             </v-col>
 
+                            <v-col cols="5" class="py-0 my-1">
+                                <p class="font-weight-bold">Business Name</p>
+                            </v-col>
+                            <v-col cols="7"  class="py-0 my-1">
+                                <div  class="text-field">
+                                    <v-text-field
+                                        v-model="chatbot_app.personal_details.business_name"
+                                        outlined
+                                        dense
+                                        hide-details="auto"
+                                        placeholder="Please type..."
+                                    ></v-text-field>
+                                </div>
+                            </v-col>
+                            <v-col cols="5" class="py-0 my-1">
+                                <p class="font-weight-bold">ABN</p>
+                            </v-col>
+                            <v-col cols="7"  class="py-0 my-1">
+                                <div  class="text-field">
+                                    <v-text-field
+                                        v-model="chatbot_app.personal_details.abn"
+                                        outlined
+                                        dense
+                                        hide-details="auto"
+                                        placeholder="Please type..."
+                                    ></v-text-field>
+                                </div>
+                            </v-col>
                         </v-row>
                         <v-row>
                             <v-col cols="9">
@@ -741,11 +775,13 @@ import ChatbotApplicationService from "@scripts/services/chatbot/ChatbotApplicat
 import {isNull} from "lodash-es";
 import CustomerService from "@scripts/services/CustomerService";
 import RejectionReasonModal from "@scripts/components/crm/modals/RejectionReasonModal";
+import IdCopyToClipboard from "@scripts/components/common/IdCopyToClipboard";
 export default {
     name: "ChatbotApplicationDetails",
     components: {
         RejectionReasonModal,
         ChatbotApplicationNote,
+        IdCopyToClipboard
     },
     data() {
         return {
@@ -1201,6 +1237,10 @@ export default {
 .border-all{
     /* border: 1px solid black; */
     flex-basis: 31%;
+}
+
+.heading.col.col-12 {
+    padding: 28px;
 }
 
 </style>

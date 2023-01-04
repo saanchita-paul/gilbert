@@ -15,6 +15,9 @@ export default class PersonalDetail{
                     concession_card_number =  null,
                     concession_card_start_date =  null,
                     concession_end_date =  null,
+                    business_name =  null,
+                    abn =  null,
+
                 }) {
 
         this.title = title;
@@ -30,6 +33,8 @@ export default class PersonalDetail{
         this.concession_card_number = concession_card_number;
         this.concession_end_date = concession_end_date;
         this.concession_card_start_date = concession_card_start_date;
+        this.business_name = business_name;
+        this.abn = abn;
 
     }
 }
