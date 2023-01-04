@@ -24,7 +24,7 @@ class FetchEmbeddedNetworkJob implements ShouldQueue
      */
     public function __construct($applicationId)
     {
-        $this->onQueue('fast-connect');
+        $this->onQueue('fc-address');
         $this->applicationId = $applicationId;
     }
 

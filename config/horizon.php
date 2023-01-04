@@ -200,8 +200,8 @@ return [
                 'balanceCooldown' => 3,
             ],
             'fc-address' => [
-                'minProcesses' => 2,
-                'maxProcesses' => 2,
+                'minProcesses' => 1,
+                'maxProcesses' => 5,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
                 'tries' => 3,
@@ -225,14 +225,13 @@ return [
         'local' => [
             'main' => [
                 'minProcesses' => 1,
-                'maxProcesses' => 1,
+                'maxProcesses' => 5,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
             ],
             'fc-address' => [
-                'queue' => ['fc-address'],
                 'minProcesses' => 1,
-                'maxProcesses' => 1,
+                'maxProcesses' => 2,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
             ],

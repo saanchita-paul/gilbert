@@ -19,7 +19,7 @@ class GetAddressInfoAndAutoAssign implements ShouldQueue
         ConnectionApplication::SOURCE_PROPERTY_ME,
         ConnectionApplication::SOURCE_T_APP
     ];
-    public $queue = 'fast-connect';
+    public string $queue = 'fc-address';
     /**
      * Create the event listener.
      *
