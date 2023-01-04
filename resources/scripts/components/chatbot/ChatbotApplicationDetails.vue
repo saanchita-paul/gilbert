@@ -103,7 +103,7 @@
                                             min-width="290px"
                                         >
                                             <template v-slot:activator="{ on, attrs }">
-                                                <ValidationProvider name="Bate Of Birth" rules="required" v-slot="{ errors }">
+                                                <ValidationProvider name="Bate Of Birth" rules="required|valid-date" v-slot="{ errors }">
                                                     <v-text-field
                                                         placeholder="DD/MM/YYYY"
                                                         outlined
@@ -487,183 +487,211 @@
         </template>
 
         <v-divider></v-divider>
+        <ValidationObserver ref="id_details_ref">
+            <template>
+                <v-expansion-panels  v-model="expansionPanel.identification" multiple>
+                    <v-expansion-panel style="box-shadow:none !important;">
+                        <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
+                            Identification Details
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <v-row>
+                                <v-col cols ="5"  class="py-0 my-1">
+                                    <p class="font-weight-bold">Identification</p>
+                                </v-col>
+                                <v-col cols ="7" class="py-0 my-1">
+                                    <div class="text-field">
+                                        <ValidationProvider name="Identification" rules="required" v-slot="{ errors }">
+                                            <v-select
+                                                v-model="chatbot_app.id_detail.identification_type"
+                                                item-text="text"
+                                                item-value="value"
+                                                :items="idenficationTypeDD"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                :error-messages="errors[0]"
+                                            >
+                                            </v-select>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+                                <v-col cols ="5"  class="py-0 my-1">
+                                    <p class="font-weight-bold">Card Number</p>
+                                </v-col>
+                                <v-col v-if="chatbot_app.id_detail.identification_type === 'identity_driving_license'" cols ="7" class="py-0 my-1">
+                                    <div class="text-field">
+                                        <ValidationProvider name="Card Number" rules="required" v-slot="{ errors }">
+                                            <v-text-field
+                                                v-model="chatbot_app.id_detail.driving_license_number"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                :error-messages="errors[0]"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+                                <v-col v-if="chatbot_app.id_detail.identification_type === 'identity_medicare'" cols ="7" class="py-0 my-1">
+                                    <div class="text-field">
+                                        <ValidationProvider name="Card Number" rules="required" v-slot="{ errors }">
+                                            <v-text-field
+                                                v-model="chatbot_app.id_detail.medicare_card_number"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                :error-messages="errors[0]"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+                                <v-col v-if="chatbot_app.id_detail.identification_type === 'identity_passport'" cols ="7" class="py-0 my-1">
+                                    <div class="text-field">
+                                        <ValidationProvider name="Card Number" rules="required" v-slot="{ errors }">
+                                            <v-text-field
+                                                v-model="chatbot_app.id_detail.passport_number"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                :error-messages="errors[0]"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+                                <v-col cols ="5"  class="py-0 my-1">
+                                    <p class="font-weight-bold">Expiry Date</p>
+                                </v-col>
+                                <v-col cols ="7" class="py-0 my-1">
+                                    <div class="text-field" >
+                                        <v-menu
+                                            v-model="showExpireDate"
+                                            :close-on-content-click="false"
+                                            :nudge-right="40"
+                                            transition="scale-transition"
+                                            offset-y
+                                            min-width="290px"
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <ValidationProvider name="Expiry Date" rules="required|valid-date" v-slot="{ errors }">
+                                                    <v-text-field
+                                                        placeholder="DD/MM/YYYY"
+                                                        outlined
+                                                        dense
+                                                        v-model="chatbot_app.id_detail.identification_expire_date"
+                                                        v-bind="attrs"
+                                                        hide-details="auto"
+                                                        @change="updateExpireDatePicker"
+                                                        :error-messages="errors[0]"
+                                                    >
+                                                        <template slot="append">
+                                                            <v-icon v-on="on">mdi-calendar</v-icon>
+                                                        </template>
+                                                    </v-text-field>
+                                                </ValidationProvider>
+                                            </template>
+                                            <v-date-picker
+                                                v-model="expire_date"
+                                                @input="showExpireDate = false"
+                                            ></v-date-picker>
+                                        </v-menu>
+                                    </div>
+                                </v-col>
 
-        <template>
-            <v-expansion-panels  v-model="expansionPanel.identification" multiple>
-                <v-expansion-panel style="box-shadow:none !important;">
-                    <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
-                        Identification Details
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                        <v-row>
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">ID Type</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <div class="text-field">
-                                    <v-select
-                                        v-model="chatbot_app.id_detail.identification_type"
-                                        item-text="text"
-                                        item-value="value"
-                                        :items="idenficationTypeDD"
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                    >
-                                    </v-select>
-                                </div>
-                            </v-col>
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">ID Number</p>
-                            </v-col>
-                            <v-col v-if="chatbot_app.id_detail.identification_type === 'identity_driving_license'" cols ="7" class="py-0 my-1">
-                                <div class="text-field">
-                                    <v-text-field
-                                        v-model="chatbot_app.id_detail.driving_license_number"
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                    ></v-text-field>
-                                </div>
-                            </v-col>
-                            <v-col v-if="chatbot_app.id_detail.identification_type === 'identity_medicare'" cols ="7" class="py-0 my-1">
-                                <div class="text-field">
-                                    <v-text-field
-                                        v-model="chatbot_app.id_detail.medicare_card_number"
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                    ></v-text-field>
-                                </div>
-                            </v-col>
-                            <v-col v-if="chatbot_app.id_detail.identification_type === 'identity_passport'" cols ="7" class="py-0 my-1">
-                                <div class="text-field">
-                                    <v-text-field
-                                        v-model="chatbot_app.id_detail.passport_number"
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                    ></v-text-field>
-                                </div>
-                            </v-col>
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">ID Expire Date</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <div class="text-field" >
-                                    <v-menu
-                                        v-model="showExpireDate"
-                                        :close-on-content-click="false"
-                                        :nudge-right="40"
-                                        transition="scale-transition"
-                                        offset-y
-                                        min-width="290px"
-                                    >
-                                        <template v-slot:activator="{ on, attrs }">
+                                <template v-if="chatbot_app.id_detail.identification_type === 'identity_medicare'" >
+                                <v-col cols ="5"  class="py-0 my-1">
+                                    <p class="font-weight-bold">Special Number</p>
+                                </v-col>
+                                <v-col cols ="7" class="py-0 my-1">
+                                    <div class="text-field">
+                                        <ValidationProvider name="Special Number"  v-slot="{ errors }">
+                                            <v-select
+                                                v-model="chatbot_app.id_detail.individual_reference_number"
+                                                :items="specialNumberDD"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                :error-messages="errors[0]"
+                                            >
+                                        </v-select>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+                                </template>
+
+                                <template v-if="chatbot_app.id_detail.identification_type === 'identity_passport'" >
+                                    <v-col cols ="5"  class="py-0 my-1">
+                                        <p class="font-weight-bold">Passport Country</p>
+                                    </v-col>
+                                    <v-col cols ="7" class="py-0 my-1">
+                                        <div class="text-field">
+                                            <ValidationProvider name="Passport Country"  v-slot="{ errors }">
                                                 <v-text-field
-                                                    placeholder="DD/MM/YYYY"
+                                                    v-model="chatbot_app.id_detail.passport_country"
                                                     outlined
                                                     dense
-                                                    v-model="chatbot_app.id_detail.identification_expire_date"
-                                                    v-bind="attrs"
                                                     hide-details="auto"
-                                                    @change="updateExpireDatePicker"
+                                                    placeholder="Passport Country"
+                                                    :error-messages="errors[0]"
+                                                ></v-text-field>
+                                            </ValidationProvider>
+                                        </div>
+                                    </v-col>
+                                </template>
+                                <template v-if="chatbot_app.id_detail.identification_type === 'identity_medicare'" >
+                                    <v-col cols ="5"  class="py-0 my-1">
+                                        <p class="font-weight-bold">Card Colour</p>
+                                    </v-col>
+                                    <v-col cols ="7" class="py-0 my-1">
+                                        <div class="text-field">
+                                            <ValidationProvider name="Card Colour"  v-slot="{ errors }">
+                                                <v-select
+                                                    v-model="chatbot_app.id_detail.medicare_card_color"
+                                                    item-text="text"
+                                                    item-value="value"
+                                                    :items="colorDD"
+                                                    outlined
+                                                    dense
+                                                    hide-details="auto"
+                                                    :error-messages="errors[0]"
                                                 >
-                                                    <template slot="append">
-                                                        <v-icon v-on="on">mdi-calendar</v-icon>
-                                                    </template>
-                                                </v-text-field>
-                                        </template>
-                                        <v-date-picker
-                                            v-model="expire_date"
-                                            @input="showExpireDate = false"
-                                        ></v-date-picker>
-                                    </v-menu>
-                                </div>
-                            </v-col>
+                                                </v-select>
+                                            </ValidationProvider>
+                                        </div>
+                                    </v-col>
+                                </template>
+                                <template v-if="chatbot_app.id_detail.identification_type === 'identity_driving_license'" >
+                                    <v-col cols ="5"  class="py-0 my-1">
+                                        <p class="font-weight-bold">State</p>
+                                    </v-col>
+                                    <v-col cols ="7" class="py-0 my-1">
+                                        <div class="text-field">
+                                            <ValidationProvider name="State"  v-slot="{ errors }">
+                                                <v-select
+                                                    v-model="chatbot_app.id_detail.driving_license_state"
+                                                    item-text="text"
+                                                    item-value="text"
+                                                    :items="statesDD"
+                                                    outlined
+                                                    dense
+                                                    hide-details="auto"
+                                                    :error-messages="errors[0]"
+                                                >
+                                                </v-select>
+                                            </ValidationProvider>
+                                        </div>
+                                    </v-col>
+                                </template>
 
-                            <template v-if="chatbot_app.id_detail.identification_type === 'identity_medicare'" >
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">ID Special Number</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <div class="text-field">
-                                    <v-select
-                                        v-model="chatbot_app.id_detail.individual_reference_number"
-                                        :items="specialNumberDD"
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                    >
-                                    </v-select>
-                                </div>
-                            </v-col>
-                            </template>
-
-                            <template v-if="chatbot_app.id_detail.identification_type === 'identity_passport'" >
-                                <v-col cols ="5"  class="py-0 my-1">
-                                    <p class="font-weight-bold">Passport Country</p>
-                                </v-col>
-                                <v-col cols ="7" class="py-0 my-1">
-                                    <div class="text-field">
-                                        <v-text-field
-                                            v-model="chatbot_app.id_detail.passport_country"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            placeholder="Card Number"
-                                        ></v-text-field>
-                                    </div>
-                                </v-col>
-                            </template>
-                            <template v-if="chatbot_app.id_detail.identification_type === 'identity_medicare'" >
-                                <v-col cols ="5"  class="py-0 my-1">
-                                    <p class="font-weight-bold">Card Color</p>
-                                </v-col>
-                                <v-col cols ="7" class="py-0 my-1">
-                                    <div class="text-field">
-                                        <v-select
-                                            v-model="chatbot_app.id_detail.medicare_card_color"
-                                            item-text="text"
-                                            item-value="value"
-                                            :items="colorDD"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                        >
-                                        </v-select>
-                                    </div>
-                                </v-col>
-                            </template>
-                            <template v-if="chatbot_app.id_detail.identification_type === 'identity_driving_license'" >
-                                <v-col cols ="5"  class="py-0 my-1">
-                                    <p class="font-weight-bold">DL</p>
-                                </v-col>
-                                <v-col cols ="7" class="py-0 my-1">
-                                    <div class="text-field">
-                                        <v-select
-                                            v-model="chatbot_app.id_detail.driving_license_state"
-                                            item-text="text"
-                                            item-value="text"
-                                            :items="statesDD"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                        >
-                                        </v-select>
-                                    </div>
-                                </v-col>
-                            </template>
-
-                        </v-row>
-                        <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
-                            <v-btn small  @click="cancelIdDetails"  :loading="cancelIdLoading"> Cancel</v-btn>
-                            <v-btn color="primary" small right @click="saveIdDetails"  :loading="saveIDDloading"> Save</v-btn>
-                        </v-row>
-                    </v-expansion-panel-content>
-                </v-expansion-panel>
-            </v-expansion-panels>
-        </template>
+                            </v-row>
+                            <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
+                                <v-btn small  @click="cancelIdDetails"  :loading="cancelIdLoading"> Cancel</v-btn>
+                                <v-btn color="primary" small right @click="saveIdDetails"  :loading="saveIDDloading"> Save</v-btn>
+                            </v-row>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+            </template>
+        </ValidationObserver>
 
         <v-divider></v-divider>
 
