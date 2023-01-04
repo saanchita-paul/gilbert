@@ -152,7 +152,7 @@
                                 </v-col>
                                 <v-col cols ="7" class="py-0 my-1">
                                     <div class="text-field">
-                                        <ValidationProvider name="Concession Card" rules="required" v-slot="{ errors }">
+                                        <ValidationProvider name="Concession Card"  v-slot="{ errors }">
                                             <v-select
                                                 v-model="chatbot_app.personal_details.concession_card_type"
                                                 :items="concessionCard"
@@ -170,7 +170,7 @@
 
 
                                 <v-col cols ="5"  class="py-0 my-1">
-                                    <p class="font-weight-bold">Card Number</p>
+                                    <p class="font-weight-bold">Card Number*</p>
                                 </v-col>
                                 <v-col cols ="7" class="py-0 my-1">
                                     <div class="text-field">
@@ -202,7 +202,7 @@
                                     >
                                         <template v-slot:activator="{ on, attrs }">
                                             <ValidationProvider
-                                                name="Start Date"
+                                                name="Start Date" rules="required"
                                                 v-slot="{ errors }"
                                             >
                                                 <v-text-field
