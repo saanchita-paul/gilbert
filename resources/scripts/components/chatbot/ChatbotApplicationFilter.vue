@@ -2,10 +2,10 @@
 <template>
     <div>
         <v-form ref="form" autocomplete="off">
-            <v-row>
-                <v-col cols="12">
-                    <v-row class="my-1">
-                        <v-col cols="3" >
+            <v-row class="px-3">
+                <v-col cols="12" class="pa-0 px-1">
+                    <v-row>
+                        <v-col cols="2" class="px-1">
                             <v-text-field
                                 autocomplete="off"
                                 v-model="$attrs.value.name"
@@ -14,10 +14,9 @@
                                 hide-details="auto"
                                 placeholder="Name"
                                 style="background-color: white"
-                                class="mr-2"
                             />
                         </v-col>
-                        <v-col cols="3" >
+                        <v-col cols="2" class="px-1">
                             <v-text-field
                                 v-model="$attrs.value.address"
                                 outlined
@@ -25,10 +24,9 @@
                                 hide-details="auto"
                                 placeholder="Address"
                                 style="background-color: white"
-                                class="mr-2"
                             />
                         </v-col>
-                        <v-col cols="3" >
+                        <v-col cols="2" class="px-1">
                             <v-text-field
                                 v-model="$attrs.value.business_name"
                                 outlined
@@ -36,10 +34,9 @@
                                 hide-details="auto"
                                 placeholder="Business Name"
                                 style="background-color: white"
-                                class="mr-2"
                             />
                         </v-col>
-                        <v-col cols="3" >
+                        <v-col cols="2" class="px-1">
                             <v-text-field
                                 v-model="$attrs.value.abn"
                                 outlined
@@ -47,10 +44,9 @@
                                 hide-details="auto"
                                 placeholder="ABN"
                                 style="background-color: white"
-                                class="mr-2"
                             />
                         </v-col>
-                        <v-col cols="3" >
+                        <v-col cols="2" class="px-1">
                             <v-select
                                 placeholder="Provider"
                                 v-model="$attrs.value.provider_name"
@@ -60,11 +56,10 @@
                                 outlined
                                 dense
                                 hide-details="auto"
-                                class="mr-2"
                             >
                             </v-select>
                         </v-col>
-                        <v-col cols="3" >
+                        <v-col cols="2" class="px-1">
                             <v-select
                                 placeholder="Application Type"
                                 v-model="$attrs.value.app_type"
@@ -74,14 +69,13 @@
                                 outlined
                                 dense
                                 hide-details="auto"
-                                class="mr-2"
                             >
                             </v-select>
                         </v-col>
-                        <v-col cols="3">
+                        <v-col cols="2" class="px-1">
                             <v-select
-                                placeholder="Power Status"
-                                v-model="$attrs.value.power_status"
+                                placeholder="Status"
+                                v-model="$attrs.value.status"
                                 item-text="text"
                                 item-value="value"
                                 :items="powerStatus"
@@ -91,20 +85,7 @@
                             >
                             </v-select>
                         </v-col>
-                        <v-col cols="3">
-                            <v-select
-                                placeholder="Gas Status"
-                                v-model="$attrs.value.gas_status"
-                                item-text="text"
-                                item-value="value"
-                                :items="gasStatus"
-                                outlined
-                                dense
-                                hide-details="auto"
-                            >
-                            </v-select>
-                        </v-col>
-                        <v-col cols="3" >
+                        <v-col cols="2" class="px-1">
                             <v-text-field
                                 solo
                                 dense
@@ -119,7 +100,7 @@
                                 @click:append="showDatePickerModal = true"
                             ></v-text-field>
                         </v-col>
-                        <v-col cols="3" >
+                        <v-col cols="2" class="px-1">
                             <div
                                 style="display: flex; align-items: center">
                                 <v-btn
@@ -135,7 +116,7 @@
                         </v-col>
                     </v-row>
                 </v-col>
-                <v-col cols="12">
+                <v-col cols="12" class="pa-0">
                     <v-btn class="float-right" :disabled="isDisabledCafBtn" @click="generateCafFIle">
                         Generate CAF File
                     </v-btn>
