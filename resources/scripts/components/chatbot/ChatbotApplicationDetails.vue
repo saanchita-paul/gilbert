@@ -279,15 +279,10 @@
                                 </div>
                             </v-col>
                         </v-row>
-                        <v-row>
-                            <v-col cols="9">
-
-                            </v-col>
-                            <v-col cols="3">
-                                <v-btn small right @click="savePersonalDetails"  :loading="savePersonDloading"
-                                       > Save</v-btn>
-                            </v-col>
-
+                        <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
+                            <v-btn small @click="cancelPersonalDetails" :loading="cancelPersonalLoading"> Cancel</v-btn>
+                            <v-btn color="primary" small right @click="savePersonalDetails"  :loading="savePersonDloading"
+                            > Save</v-btn>
                         </v-row>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -456,14 +451,9 @@
                                 </div>
                             </v-col>
                         </v-row>
-                        <v-row>
-                            <v-col cols="9">
-
-                            </v-col>
-                            <v-col cols="3">
-                                <v-btn small right @click="savePropertyDetails" :loading="saveProDloading"> Save</v-btn>
-                            </v-col>
-
+                        <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
+                            <v-btn small @click="cancelPropertyDetails" :loading="cancelPropertyLoading"> Cancel</v-btn>
+                            <v-btn color="primary" small right @click="savePropertyDetails" :loading="saveProDloading"> Save</v-btn>
                         </v-row>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -640,14 +630,9 @@
                             </template>
 
                         </v-row>
-                        <v-row>
-                            <v-col cols="9">
-
-                            </v-col>
-                            <v-col cols="3">
-                                <v-btn small right @click=" saveIdDetails"  :loading="saveIDDloading"> Save</v-btn>
-                            </v-col>
-
+                        <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
+                            <v-btn small  @click="cancelIdDetails"  :loading="cancelIdLoading"> Cancel</v-btn>
+                            <v-btn color="primary" small right @click="saveIdDetails"  :loading="saveIDDloading"> Save</v-btn>
                         </v-row>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -787,6 +772,7 @@ export default {
         return {
             dialog: false,
             chatbot_app: null,
+            chatbot_app_backup : null,
             app_id: null,
             isProfileEditMode: false,
             specialNumberDD: [1,2,3,4,5,6,7,8],
@@ -1021,7 +1007,9 @@ export default {
             savePersonDloading: false,
             saveProDloading: false,
             saveIDDloading: false,
-
+            cancelPersonalLoading : false,
+            cancelPropertyLoading : false,
+            cancelIdLoading : false
         }
     },
     computed: {
@@ -1049,10 +1037,24 @@ export default {
 
         },
 
+        async cancelPersonalDetails(){
+            this.cancelPersonalLoading = true;
+            await ChatbotApplicationService.updatePersonalDetails(this.app_id, this.chatbot_app_backup.personal_details);
+            await this.loadApplication();
+            this.cancelPersonalLoading = false;
+        },
+
         async savePropertyDetails() {
             this.saveProDloading = true;
             await ChatbotApplicationService.updatePropertyDetails(this.app_id, this.chatbot_app.property_details);
             this.saveProDloading = false;
+        },
+
+        async cancelPropertyDetails(){
+            this.cancelPropertyLoading = true;
+            await ChatbotApplicationService.updatePropertyDetails(this.app_id, this.chatbot_app_backup.property_details);
+            await this.loadApplication();
+            this.cancelPropertyLoading = false;
         },
 
         async saveIdDetails() {
@@ -1060,6 +1062,14 @@ export default {
             await ChatbotApplicationService.updateIdDetails(this.app_id, this.chatbot_app.id_detail);
             this.saveIDDloading = false;
         },
+
+        async cancelIdDetails(){
+            this.cancelIdLoading = true;
+            await ChatbotApplicationService.updateIdDetails(this.app_id, this.chatbot_app_backup.id_detail);
+            await this.loadApplication();
+            this.cancelIdLoading = false;
+        },
+
 
 
 
@@ -1085,6 +1095,7 @@ export default {
         },
         async loadApplication() {
            this.chatbot_app =  await CustomerService.getMovingData(this.app_id);
+           this.chatbot_app_backup = await CustomerService.getMovingData(this.app_id);
         },
 
         handleNewApplication(){

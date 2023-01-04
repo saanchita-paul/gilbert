@@ -2,21 +2,38 @@
 <template>
     <div>
         <v-form ref="form" autocomplete="off">
-            <v-row class="px-3">
+            <v-row class="px-5 mb-4 d-flex justify-end align-center" style="gap: 10px">
+                <h3 class="flex-grow-1">Filters</h3>
+                <div style="display: flex; align-items: center">
+                    <v-btn
+                        v-show="!isSearchEmpty"
+                        small
+                        tile
+                        color="#e0e0e0"
+                        @click="clearSearch">
+                        <v-icon small left> mdi mdi-close</v-icon>
+                        Reset
+                    </v-btn>
+                </div>
+                <v-btn class="float-right" color="primary" :disabled="isDisabledCafBtn" @click="generateCafFIle">
+                    Generate CAF File
+                </v-btn>
+            </v-row>
+            <v-row class="px-3"  no-gutters>
                 <v-col cols="12" class="pa-0 px-1">
                     <v-row>
-                        <v-col cols="2" class="px-1">
+                        <v-col cols="4" class="pa-1">
                             <v-text-field
                                 autocomplete="off"
                                 v-model="$attrs.value.name"
                                 outlined
                                 dense
                                 hide-details="auto"
-                                placeholder="Name"
+                                placeholder="Tenant Name"
                                 style="background-color: white"
                             />
                         </v-col>
-                        <v-col cols="2" class="px-1">
+                        <v-col cols="4" class="pa-1">
                             <v-text-field
                                 v-model="$attrs.value.address"
                                 outlined
@@ -26,7 +43,7 @@
                                 style="background-color: white"
                             />
                         </v-col>
-                        <v-col cols="2" class="px-1">
+                        <v-col cols="4" class="pa-1">
                             <v-text-field
                                 v-model="$attrs.value.business_name"
                                 outlined
@@ -36,7 +53,7 @@
                                 style="background-color: white"
                             />
                         </v-col>
-                        <v-col cols="2" class="px-1">
+                        <v-col cols="4" class="pa-1">
                             <v-text-field
                                 v-model="$attrs.value.abn"
                                 outlined
@@ -46,9 +63,9 @@
                                 style="background-color: white"
                             />
                         </v-col>
-                        <v-col cols="2" class="px-1">
+                        <v-col cols="4" class="pa-1">
                             <v-select
-                                placeholder="Provider"
+                                placeholder="Supplier"
                                 v-model="$attrs.value.provider_name"
                                 item-text="text"
                                 item-value="value"
@@ -59,7 +76,7 @@
                             >
                             </v-select>
                         </v-col>
-                        <v-col cols="2" class="px-1">
+                        <v-col cols="4" class="pa-1">
                             <v-select
                                 placeholder="Application Type"
                                 v-model="$attrs.value.app_type"
@@ -72,20 +89,21 @@
                             >
                             </v-select>
                         </v-col>
-                        <v-col cols="2" class="px-1">
+                        <v-col cols="4" class="pa-1">
                             <v-select
                                 placeholder="Status"
                                 v-model="$attrs.value.status"
                                 item-text="text"
                                 item-value="value"
-                                :items="powerStatus"
+                                :items="status"
                                 outlined
                                 dense
+                                clearable
                                 hide-details="auto"
                             >
                             </v-select>
                         </v-col>
-                        <v-col cols="2" class="px-1">
+                        <v-col cols="4" class="pa-1">
                             <v-text-field
                                 solo
                                 dense
@@ -100,26 +118,7 @@
                                 @click:append="showDatePickerModal = true"
                             ></v-text-field>
                         </v-col>
-                        <v-col cols="2" class="px-1">
-                            <div
-                                style="display: flex; align-items: center">
-                                <v-btn
-                                    v-show="!isSearchEmpty"
-                                    small
-                                    tile
-                                    color="#e0e0e0"
-                                    @click="clearSearch">
-                                    <v-icon small left> mdi mdi-close</v-icon>
-                                    Reset
-                                </v-btn>
-                            </div>
-                        </v-col>
                     </v-row>
-                </v-col>
-                <v-col cols="12" class="pa-0">
-                    <v-btn class="float-right" :disabled="isDisabledCafBtn" @click="generateCafFIle">
-                        Generate CAF File
-                    </v-btn>
                 </v-col>
             </v-row>
 
@@ -171,15 +170,19 @@ export default {
             ],
             applicationType : [
                 {
-                    text: "Chatbot",
+                    text: "Chatbot Default",
                     value: "chatbot"
+                },
+                {
+                    text: "Temporary",
+                    value: "temporary"
                 },
                 {
                     text: "Twiddle",
                     value: "twiddle"
-                }
+                },
             ],
-            powerStatus : [
+            status : [
                 {
                     id: 13,
                     type: "service",
@@ -188,15 +191,6 @@ export default {
                     status_value: 5,
                     text: "Accepted",
                     value: 5
-                },
-                {
-                    id: 15,
-                    type: "service",
-                    display_text: "Not Submitted",
-                    display_text_alias: "In progress",
-                    status_value: 7,
-                    text: "Not Submitted",
-                    value: 7
                 },
                 {
                     id: 17,
@@ -216,62 +210,6 @@ export default {
                     text: "Manual Processing",
                     value: 11
                 },
-                {
-                    id: 20,
-                    type: "service",
-                    display_text: "In Progress",
-                    display_text_alias: "In Progress",
-                    status_value: 12,
-                    text: "In Progress",
-                    value: 12
-                }
-            ],
-            gasStatus : [
-                {
-                    id: 13,
-                    type: "service",
-                    display_text: "Accepted",
-                    display_text_alias: "Connected",
-                    status_value: 5,
-                    text: "Accepted",
-                    value: 5
-                },
-                {
-                    id: 15,
-                    type: "service",
-                    display_text: "Not Submitted",
-                    display_text_alias: "In progress",
-                    status_value: 7,
-                    text: "Not Submitted",
-                    value: 7
-                },
-                {
-                    id: 17,
-                    type: "service",
-                    display_text: "Rejected",
-                    display_text_alias: "Rejected",
-                    status_value: 9,
-                    text: "Rejected",
-                    value: 9
-                },
-                {
-                    id: 19,
-                    type: "service",
-                    display_text: "Manual Processing",
-                    display_text_alias: "Manual Processing",
-                    status_value: 11,
-                    text: "Manual Processing",
-                    value: 11
-                },
-                {
-                    id: 20,
-                    type: "service",
-                    display_text: "In Progress",
-                    display_text_alias: "In Progress",
-                    status_value: 12,
-                    text: "In Progress",
-                    value: 12
-                }
             ],
         };
     },

@@ -48,7 +48,7 @@ export default class ApplicationCafFile {
     }
     generateConnectionType(abn, business_name){
         if(abn || business_name) return "Temporary";
-        return "Regular"
+        return "Default"
     }
 
 }
