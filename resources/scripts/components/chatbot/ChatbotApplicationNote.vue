@@ -14,12 +14,21 @@
         </v-col>
         <v-col cols="12" >
             <p class="sub-title">Notes</p>
-            <v-textarea
-                v-model ="note.text"
-                outlined
-                hide-details="auto"
-                placeholder="Notes goes here."
-            ></v-textarea>
+            <ValidationObserver>
+                <ValidationProvider
+                    name="Application Notes"
+                    rules="required"
+                    v-slot="{ errors }"
+                >
+                    <v-textarea
+                        v-model ="note.text"
+                        outlined
+                        hide-details="auto"
+                        placeholder="Notes goes here."
+                        :error-messages="errors[0]"
+                    ></v-textarea>
+                </ValidationProvider>
+            </ValidationObserver>
             <v-btn class="mt-2 float-right white--text note-button" @click="saveNote" color="#542E89">Submit Note</v-btn>
         </v-col>
     </v-row>
