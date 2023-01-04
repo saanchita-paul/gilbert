@@ -153,5 +153,10 @@ export default {
     getMovingUtilityData: async (id) => {
         const response = await axios.get(`${BOT_API}/utility-data/${id}`);
         return ChatbotApplicationMapper.mapApplication(response.data);
+    },
+
+    getRejectionReasonData: async (connectionServiceId) => {
+        const response = await axios.get(`${BOT_API}/rejection-reasons/${connectionServiceId}`);
+        return response.data;
     }
 }

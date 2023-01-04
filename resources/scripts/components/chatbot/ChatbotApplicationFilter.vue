@@ -216,8 +216,8 @@ export default {
             let selectedId = this.selected.map(dt => dt.id);
 
             let selectedLeads = this.cafFiles.filter(cf => selectedId.includes(cf.id));
-            let selectedRow = selectedLeads.map(dt => {
-                return dt.id + '-' + dt.selected_service
+            let selectedRow = this.selected.map(dt => {
+                return dt.id + '-' + 'both'
             });
             let query = selectedRow.join('_');
             console.log('selected rows', query);

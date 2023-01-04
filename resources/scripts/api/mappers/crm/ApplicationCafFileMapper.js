@@ -67,8 +67,7 @@ function mapServiceStatus(service) {
 
 
 }
-
-const mapApplicationCafFile = data => {
+ const mapApplicationCafFile = data => {
     let model = new ApplicationCafFile({...data});
     model.service_type = mapService(model.service);
     model.supplier = mapProvider(model.service);
@@ -151,5 +150,9 @@ export default {
             return null;
 
         }
+    },
+
+    mapChatbotSingleApplication(app) {
+        return mapApplicationCafFile(app);
     }
 }

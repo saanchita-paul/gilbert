@@ -42,7 +42,7 @@
                 </v-card>
             </v-col>
             <v-col cols="4" v-if="chatbotApps.length">
-                <ChatbotApplicationDetails ></ChatbotApplicationDetails>
+                <ChatbotApplicationDetails  ></ChatbotApplicationDetails>
             </v-col>
         </v-row>
     </v-container>
@@ -176,6 +176,12 @@ name: "ChatbotApplicationPage",
         {
             const query = {...this.$route.query, app_id: item.id};
             this.$router.replace({ query: {...query} });
+            let index = this.selectedCaf.findIndex(dt => dt.id === item.id);
+            if(index === -1) {
+                this.selectedCaf.push(item);
+            } else {
+                this.selectedCaf.splice(index, 1);
+            }
         },
 
         selectRowCafFiles(item) {
@@ -271,6 +277,8 @@ name: "ChatbotApplicationPage",
     },
     computed: {
         chatbotApps() {
+
+            console.log('chatbot application updated', );
            return Store.getters.applications;
         }
     }

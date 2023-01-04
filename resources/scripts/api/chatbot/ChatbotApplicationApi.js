@@ -1,5 +1,7 @@
 import axios from "axios";
 import ChatbotApplicationMapper from "@scripts/api/mappers/ChatbotApplicationMapper";
+import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
+import ApplicationCafFileMapper from "@scripts/api/mappers/crm/ApplicationCafFileMapper";
 
 const ROOT = `${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api`;
 
@@ -16,7 +18,9 @@ export default {
    async updatePersonalData(utilityId, data) {
         try {
             const mappedData = ChatbotApplicationMapper.mapTosavePersonalData(data);
-            return (await axios.put(`${ROOT}/utility-data/${utilityId}/update`, {...mappedData})).data;
+            const response =  (await axios.put(`${ROOT}/utility-data/${utilityId}/update`,
+                {...mappedData})).data;
+            return ApplicationCafFileMapper.mapChatbotSingleApplication(response.data);
         } catch (error) {
             console.log('error', error);
             return null;
@@ -25,7 +29,8 @@ export default {
     async updatePropertyDetails(utilityId, data) {
         try {
             const mappedData = ChatbotApplicationMapper.mapTosavePropertyData(data);
-            return (await axios.put(`${ROOT}/utility-data/${utilityId}/update`, {...mappedData})).data;
+            const response = (await axios.put(`${ROOT}/utility-data/${utilityId}/update`, {...mappedData})).data;
+            return ApplicationCafFileMapper.mapChatbotSingleApplication(response.data);
         } catch (error) {
             console.log('error', error);
             return null;
@@ -34,7 +39,8 @@ export default {
     async updateIdDetails(utilityId, data) {
         try {
             const mappedData = ChatbotApplicationMapper.mapTosaveIdData(data);
-            return (await axios.put(`${ROOT}/utility-data/${utilityId}/update`, {...mappedData})).data;
+            const response = (await axios.put(`${ROOT}/utility-data/${utilityId}/update`, {...mappedData})).data;
+            return ApplicationCafFileMapper.mapChatbotSingleApplication(response.data);
         } catch (error) {
             console.log('error', error);
             return null;

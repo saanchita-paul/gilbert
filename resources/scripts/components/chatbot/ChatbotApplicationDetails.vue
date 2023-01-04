@@ -246,11 +246,12 @@
 
                         </v-row>
                         <v-row>
-                            <v-col cols="10">
+                            <v-col cols="9">
 
                             </v-col>
-                            <v-col cols="2">
-                                <v-btn small right @click="savePersonalDetails"> Save</v-btn>
+                            <v-col cols="3">
+                                <v-btn small right @click="savePersonalDetails"  :loading="savePersonDloading"
+                                       :disabled="isloading"> Save</v-btn>
                             </v-col>
 
                         </v-row>
@@ -426,7 +427,7 @@
 
                             </v-col>
                             <v-col cols="2">
-                                <v-btn small right @click="savePropertyDetails"> Save</v-btn>
+                                <v-btn small right @click="savePropertyDetails" :loading="saveProDloading"> Save</v-btn>
                             </v-col>
 
                         </v-row>
@@ -610,7 +611,7 @@
 
                             </v-col>
                             <v-col cols="2">
-                                <v-btn small right @click=" saveIdDetails"> Save</v-btn>
+                                <v-btn small right @click=" saveIdDetails"  :loading="saveIDDloading"> Save</v-btn>
                             </v-col>
 
                         </v-row>
@@ -631,7 +632,7 @@
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <v-row>
-                            <v-col cols="4">
+                            <v-col cols="12">
                                 <div  class="my-0 py-0 mx-0 border-all">
                                     <p class="pt-2 pb-1 mb-0 services">
                                   <span class="ml-0">
@@ -653,8 +654,21 @@
                                         </v-select>
                                     </p>
                                 </div>
+
+                                <div class="item" v-if="electricityService.service_type === 'electricity'">
+<!--                                    <p class="item-title">Electricity</p>-->
+<!--                                    <p class="item-value">{{ electricityService.status }}</p>-->
+                                    <v-btn v-if="electricityService.status === 'Rejected'"
+                                           @click="openRejection(electricityService)"
+                                           small
+                                           style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a; margin-top: 15px;"
+                                           outlined
+                                    >
+                                        Reason
+                                    </v-btn>
+                                </div>
                             </v-col>
-                            <v-col cols="4">
+                            <v-col cols="12">
                                 <div  class="my-0 py-0 mx-0 border-all">
                                     <p class="pt-2 pb-1 mb-0 services">
                                   <span class="ml-0">
@@ -676,7 +690,22 @@
                                         </v-select>
                                     </p>
                                 </div>
+                                <div class="item" v-if="gasService.service_type === 'gas'">
+                                    <!--                                <p class="item-title">Gas</p>-->
+                                    <!--                                <p class="item-value">{{ gasService.status }}</p>-->
+                                    <v-btn v-if="gasService.status === 'Rejected'"
+                                           @click="openRejection(gasService)"
+                                           small
+                                           style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;margin-top: 15px;"
+                                           outlined
+                                    >
+                                        Reason
+                                    </v-btn>
+
+                                </div>
                             </v-col>
+
+
                         </v-row>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -699,6 +728,8 @@
                 </v-expansion-panel>
             </v-expansion-panels>
         </template>
+        <RejectionReasonModal v-if="dialog" :dialog="dialog"
+                              :service="selectedRejectedService"  @close="onCloseReject" ></RejectionReasonModal>
 
     </div>
 </template>
@@ -711,13 +742,17 @@ import ChatbotApplicationNote from "@scripts/components/chatbot/ChatbotApplicati
 import ChatbotApplicationService from "@scripts/services/chatbot/ChatbotApplicationService";
 import {isNull} from "lodash-es";
 import CustomerService from "@scripts/services/CustomerService";
+import RejectionReasonModal from "@scripts/components/crm/modals/RejectionReasonModal";
 export default {
     name: "ChatbotApplicationDetails",
     components: {
+        RejectionReasonModal,
         ChatbotApplicationNote,
     },
     data() {
         return {
+            isloading: false,
+            dialog: false,
             chatbot_app: null,
             app_id: null,
             isProfileEditMode: false,
@@ -949,21 +984,48 @@ export default {
             isConcessionEndDate: false,
             concession_start_date: null,
             concession_end_date: null,
+            selectedRejectedService : null,
+            savePersonDloading: false,
+            saveProDloading: false,
+            saveIDDloading: false,
+
+        }
+    },
+    computed: {
+
+        electricityService()
+        {
+            return this.chatbot_app.connection_services.find((dt)=>  {
+                return dt.service_type === 'electricity';
+            });
+        },
+
+        gasService()
+        {
+            return this.chatbot_app.connection_services.find((dt)=>  {
+                return dt.service_type === 'gas';
+            });
         }
     },
     methods: {
 
-        savePersonalDetails() {
+        async savePersonalDetails() {
+            this.savePersonDloading = true;
+            await ChatbotApplicationService.updatePersonalDetails(this.app_id, this.chatbot_app.personal_details);
+            this.savePersonDloading = false;
 
-            ChatbotApplicationService.updatePersonalDetails(this.app_id, this.chatbot_app.personal_details);
         },
 
-        savePropertyDetails() {
-            ChatbotApplicationService.updatePropertyDetails(this.app_id, this.chatbot_app.property_details);
+        async savePropertyDetails() {
+            this.saveProDloading = true;
+            await ChatbotApplicationService.updatePropertyDetails(this.app_id, this.chatbot_app.property_details);
+            this.saveProDloading = false;
         },
 
-        saveIdDetails() {
-            ChatbotApplicationService.updateIdDetails(this.app_id, this.chatbot_app.id_detail);
+        async saveIdDetails() {
+            this.saveIDDloading = true;
+            await ChatbotApplicationService.updateIdDetails(this.app_id, this.chatbot_app.id_detail);
+            this.saveIDDloading = true;
         },
 
 
@@ -990,6 +1052,7 @@ export default {
         async loadApplication() {
            this.chatbot_app =  await CustomerService.getMovingData(this.app_id);
         },
+
         handleNewApplication(){
             const app_id = this.$route.query?.app_id;
             if(this.app_id !== app_id) {
@@ -1058,6 +1121,15 @@ export default {
                 delete query.application;
                 this.$router.replace({query: {...query}});
             }
+        },
+        onCloseReject() {
+            this.dialog = false;
+            this.selectedRejectedService = null;
+        },
+
+        openRejection(service) {
+            this.selectedRejectedService = service;
+            this.dialog = true;
         }
     },
     mounted(){

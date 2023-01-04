@@ -57,6 +57,7 @@ export default {
                 {text: 'Address', align: 'start', sortable: true, value: 'to_address', class: 'black--text', shouldShow: true},
                 {text: 'Connection type', align: 'start', sortable: true, value: 'connection_type', class: 'black--text', shouldShow: true},
                 {text: 'Supplier', align: 'start', sortable: true, value: 'supplier', class: 'black--text', shouldShow: true},
+                {text: '', value: 'data-table-select', sortable: false}
             ],
             cafFileSearch: '',
             options: {

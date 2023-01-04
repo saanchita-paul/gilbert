@@ -10,8 +10,17 @@ export default {
             state.applications = applications;
         },
 
-        updateApp(state, i, app) {
-            state.application[i] = app;
+        updateApp(state, app) {
+            let allapp = state.applications;
+            let index = allapp.findIndex(dt => dt.id == app.id);
+            console.log('getting app', app, index);
+
+            if(index !== -1 ) {
+                allapp[index] = app;
+
+            }
+            state.applications = allapp;
+
         }
     }
 }

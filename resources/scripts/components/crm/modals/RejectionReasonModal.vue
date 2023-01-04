@@ -14,7 +14,7 @@
                             </div>
 
                             <div class="d-flex justify-center">
-                                <p class="text-center">Invalid Something</p>
+                                <p class="text-center"> {{this.rejection_reason}}</p>
                             </div>
                             <div class="d-flex justify-center">
                                 <v-btn @click="$emit('close')" block
@@ -32,23 +32,40 @@
 </template>
 
 <script>
+import CustomerService from "@scripts/services/CustomerService";
+
 export default {
     name: "RejectionReasonModal",
     props: {
         dialog: {
             require: true,
         },
+        service: {
+            require: true,
+        },
     },
     data() {
         return {
-
+            rejection_reason: [],
         }
     },
     methods: {
         done() {
 
+        },
+
+        async loadRejectionReason() {
+            const res  =  await CustomerService.getRejection(this.service.id);
+            this.rejection_reason = res.reason_text;
+            console.log(this.rejection_reason,res);
+
         }
+
+    },
+    mounted() {
+        this.loadRejectionReason();
     }
+
 }
 </script>
 
