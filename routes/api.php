@@ -352,11 +352,13 @@ Route::get('/applications/{applicationId}/{submitType}/same-day-connection', [Po
 
 
 Route::get('/kaka', function () {
-    $dateTimeZone = new DateTimeZone("Australia/Melbourne");
-    $date = new DateTime(null, $dateTimeZone);
-//    dd($date);
-    return $dateTimeZone->getOffset($date) / 60 / 60;
-
+    foreach(range(1,6) as $r) {
+        \App\Jobs\SlowJob::dispatch($r);
+    }
+    foreach(range(1,50) as $r) {
+        \App\Jobs\QuickJob::dispatch($r);
+    }
+    return 'ok';
 });
 
 

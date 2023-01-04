@@ -23,6 +23,7 @@
         "jaybizzle/crawler-detect": "^1.2",
         "laravel-notification-channels/twilio": "^3.2",
         "laravel/framework": "^v8.83.0",
+        "laravel/horizon": "^5.10",
         "laravel/sanctum": "^2.6",
         "laravel/telescope": "^4.2.0",
         "laravel/tinker": "^2.0",
