@@ -251,7 +251,7 @@
                             </v-col>
                             <v-col cols="3">
                                 <v-btn small right @click="savePersonalDetails"  :loading="savePersonDloading"
-                                       :disabled="isloading"> Save</v-btn>
+                                       > Save</v-btn>
                             </v-col>
 
                         </v-row>
@@ -749,7 +749,6 @@ export default {
     },
     data() {
         return {
-            isloading: false,
             dialog: false,
             chatbot_app: null,
             app_id: null,
@@ -1023,7 +1022,7 @@ export default {
         async saveIdDetails() {
             this.saveIDDloading = true;
             await ChatbotApplicationService.updateIdDetails(this.app_id, this.chatbot_app.id_detail);
-            this.saveIDDloading = true;
+            this.saveIDDloading = false;
         },
 
 
