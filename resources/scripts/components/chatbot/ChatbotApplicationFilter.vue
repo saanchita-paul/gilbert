@@ -4,13 +4,8 @@
         <v-form ref="form" autocomplete="off">
             <v-row>
                 <v-col cols="12">
-                    <v-btn class="float-right" :disabled="isDisabledCafBtn" @click="generateCafFIle">
-                        Generate CAF File
-                    </v-btn>
-                </v-col>
-                <v-col cols="12">
                     <v-row class="my-1">
-                        <div class="d-flex flex-wrap">
+                        <v-col cols="3" >
                             <v-text-field
                                 autocomplete="off"
                                 v-model="$attrs.value.name"
@@ -21,6 +16,8 @@
                                 style="background-color: white"
                                 class="mr-2"
                             />
+                        </v-col>
+                        <v-col cols="3" >
                             <v-text-field
                                 v-model="$attrs.value.address"
                                 outlined
@@ -30,6 +27,8 @@
                                 style="background-color: white"
                                 class="mr-2"
                             />
+                        </v-col>
+                        <v-col cols="3" >
                             <v-text-field
                                 v-model="$attrs.value.business_name"
                                 outlined
@@ -39,6 +38,8 @@
                                 style="background-color: white"
                                 class="mr-2"
                             />
+                        </v-col>
+                        <v-col cols="3" >
                             <v-text-field
                                 v-model="$attrs.value.abn"
                                 outlined
@@ -48,10 +49,11 @@
                                 style="background-color: white"
                                 class="mr-2"
                             />
+                        </v-col>
+                        <v-col cols="3" >
                             <v-select
                                 placeholder="Provider"
-                                v-model="filterApplication.provider"
-                                @change="filterProvider"
+                                v-model="$attrs.value.provider_name"
                                 item-text="text"
                                 item-value="value"
                                 :items="provider"
@@ -61,10 +63,11 @@
                                 class="mr-2"
                             >
                             </v-select>
+                        </v-col>
+                        <v-col cols="3" >
                             <v-select
                                 placeholder="Application Type"
-                                v-model="filterApplication.applicationType"
-                                @change="filterApplicationType"
+                                v-model="$attrs.value.app_type"
                                 item-text="text"
                                 item-value="value"
                                 :items="applicationType"
@@ -74,22 +77,49 @@
                                 class="mr-2"
                             >
                             </v-select>
-
-                            <div  class="py-0 mr-2">
-                                <v-text-field
-                                    solo
-                                    dense
-                                    label="Calender"
-                                    placeholder="Today"
-                                    v-model="selectedDate"
-                                    append-icon="mdi-calendar-range"
-                                    readonly
-                                    hide-details
-                                    style="background-color: white;"
-                                    @click="showDatePickerModal = true"
-                                    @click:append="showDatePickerModal = true"
-                                ></v-text-field>
-                            </div>
+                        </v-col>
+                        <v-col cols="3">
+                            <v-select
+                                placeholder="Power Status"
+                                v-model="$attrs.value.power_status"
+                                item-text="text"
+                                item-value="value"
+                                :items="powerStatus"
+                                outlined
+                                dense
+                                hide-details="auto"
+                            >
+                            </v-select>
+                        </v-col>
+                        <v-col cols="3">
+                            <v-select
+                                placeholder="Gas Status"
+                                v-model="$attrs.value.gas_status"
+                                item-text="text"
+                                item-value="value"
+                                :items="gasStatus"
+                                outlined
+                                dense
+                                hide-details="auto"
+                            >
+                            </v-select>
+                        </v-col>
+                        <v-col cols="3" >
+                            <v-text-field
+                                solo
+                                dense
+                                label="Calender"
+                                placeholder="Today"
+                                v-model="selectedDate"
+                                append-icon="mdi-calendar-range"
+                                readonly
+                                hide-details
+                                style="background-color: white;"
+                                @click="showDatePickerModal = true"
+                                @click:append="showDatePickerModal = true"
+                            ></v-text-field>
+                        </v-col>
+                        <v-col cols="3" >
                             <div
                                 style="display: flex; align-items: center">
                                 <v-btn
@@ -102,10 +132,14 @@
                                     Reset
                                 </v-btn>
                             </div>
-                        </div>
+                        </v-col>
                     </v-row>
                 </v-col>
-
+                <v-col cols="12">
+                    <v-btn class="float-right" :disabled="isDisabledCafBtn" @click="generateCafFIle">
+                        Generate CAF File
+                    </v-btn>
+                </v-col>
             </v-row>
 
             <DatePickerModal
@@ -164,10 +198,100 @@ export default {
                     value: "twiddle"
                 }
             ],
-            filterApplication:{
-                provider : "",
-                applicationType : ""
-            }
+            powerStatus : [
+                {
+                    id: 13,
+                    type: "service",
+                    display_text: "Accepted",
+                    display_text_alias: "Connected",
+                    status_value: 5,
+                    text: "Accepted",
+                    value: 5
+                },
+                {
+                    id: 15,
+                    type: "service",
+                    display_text: "Not Submitted",
+                    display_text_alias: "In progress",
+                    status_value: 7,
+                    text: "Not Submitted",
+                    value: 7
+                },
+                {
+                    id: 17,
+                    type: "service",
+                    display_text: "Rejected",
+                    display_text_alias: "Rejected",
+                    status_value: 9,
+                    text: "Rejected",
+                    value: 9
+                },
+                {
+                    id: 19,
+                    type: "service",
+                    display_text: "Manual Processing",
+                    display_text_alias: "Manual Processing",
+                    status_value: 11,
+                    text: "Manual Processing",
+                    value: 11
+                },
+                {
+                    id: 20,
+                    type: "service",
+                    display_text: "In Progress",
+                    display_text_alias: "In Progress",
+                    status_value: 12,
+                    text: "In Progress",
+                    value: 12
+                }
+            ],
+            gasStatus : [
+                {
+                    id: 13,
+                    type: "service",
+                    display_text: "Accepted",
+                    display_text_alias: "Connected",
+                    status_value: 5,
+                    text: "Accepted",
+                    value: 5
+                },
+                {
+                    id: 15,
+                    type: "service",
+                    display_text: "Not Submitted",
+                    display_text_alias: "In progress",
+                    status_value: 7,
+                    text: "Not Submitted",
+                    value: 7
+                },
+                {
+                    id: 17,
+                    type: "service",
+                    display_text: "Rejected",
+                    display_text_alias: "Rejected",
+                    status_value: 9,
+                    text: "Rejected",
+                    value: 9
+                },
+                {
+                    id: 19,
+                    type: "service",
+                    display_text: "Manual Processing",
+                    display_text_alias: "Manual Processing",
+                    status_value: 11,
+                    text: "Manual Processing",
+                    value: 11
+                },
+                {
+                    id: 20,
+                    type: "service",
+                    display_text: "In Progress",
+                    display_text_alias: "In Progress",
+                    status_value: 12,
+                    text: "In Progress",
+                    value: 12
+                }
+            ],
         };
     },
     computed: {
@@ -227,15 +351,7 @@ export default {
                 '_blank'
             );
 
-        },
-        filterApplicationType(){
-            this.$emit("updateApplicationTypeFilter",this.filterApplication.applicationType)
-        },
-        filterProvider(){
-            this.$emit("updateProviderNameFilter",this.filterApplication.provider)
         }
-
-
     },
 
 };

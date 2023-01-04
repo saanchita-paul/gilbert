@@ -3,7 +3,7 @@
         <template >
             <v-expansion-panels  v-model="expansionPanel.profile" multiple style="box-shadow: none !important;">
                 <v-expansion-panel  style="box-shadow: none !important;">
-                    <v-expansion-panel-header>
+                    <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
                         Profile Details
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
@@ -265,7 +265,7 @@
         <template>
             <v-expansion-panels  v-model="expansionPanel.property" multiple>
                 <v-expansion-panel  style="box-shadow:none !important;">
-                    <v-expansion-panel-header>
+                    <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
                         Property Details
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
@@ -441,7 +441,7 @@
         <template>
             <v-expansion-panels  v-model="expansionPanel.identification" multiple>
                 <v-expansion-panel style="box-shadow:none !important;">
-                    <v-expansion-panel-header>
+                    <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
                         Identification Details
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
@@ -622,12 +622,10 @@
 
         <v-divider></v-divider>
 
-        <v-divider></v-divider>
-
         <template >
             <v-expansion-panels v-model="expansionPanel.service" multiple style="box-shadow: none !important;">
                 <v-expansion-panel style="box-shadow: none !important;">
-                    <v-expansion-panel-header>
+                    <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
                         Service Preference
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
@@ -717,7 +715,7 @@
         <template>
             <v-expansion-panels v-model="expansionPanel.application" multiple style="box-shadow:none !important;">
                 <v-expansion-panel>
-                    <v-expansion-panel-header>
+                    <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
                         Application Notes
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
