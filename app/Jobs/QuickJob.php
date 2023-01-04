@@ -31,6 +31,7 @@ class QuickJob implements ShouldQueue
     {
 //        info('QuickJob:Start: ' . $this->id);
         sleep(2);
+//        SlowJob::dispatch($this->id);
         info('QuickJob:Done: ' . $this->id);
     }
 }

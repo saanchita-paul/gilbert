@@ -6,7 +6,7 @@ use App\Events\ConnectionApplicationStatusChangeEvent;
 use App\Events\NotifyAgentAfterLeadCreation;
 use App\Listeners\Agency\CreatePlanNoteListener;
 use App\Listeners\ConnectionApplicationClosedOrEscalatedListener;
-use App\Listeners\FetchAdditioanlInfoAddressListener;
+use App\Listeners\GetAddressInfoAndAutoAssign;
 use App\Listeners\FetchAdditionalInfoAddressListener;
 use App\Listeners\NotifyAgentAfterLeadCreationListener;
 use App\Listeners\Agency\EnergySubmitListener;
@@ -51,7 +51,7 @@ class EventServiceProvider extends ServiceProvider
 
         ],
         CreateApplicationEvent::class => [
-            FetchAdditioanlInfoAddressListener::class,
+            GetAddressInfoAndAutoAssign::class,
             CreateHubSpotContact::class,
         ],
         NotifyAgentAfterLeadCreation::class => [

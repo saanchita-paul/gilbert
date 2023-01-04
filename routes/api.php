@@ -355,9 +355,10 @@ Route::get('/kaka', function () {
     foreach(range(1,6) as $r) {
         \App\Jobs\SlowJob::dispatch($r);
     }
-    foreach(range(1,50) as $r) {
+    foreach(range(1,6) as $r) {
         \App\Jobs\QuickJob::dispatch($r);
     }
+//    \App\Jobs\QuickJob::dispatch(1);
     return 'ok';
 });
 
