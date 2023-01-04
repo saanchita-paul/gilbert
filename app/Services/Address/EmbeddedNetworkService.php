@@ -171,6 +171,7 @@ class EmbeddedNetworkService
 
                 if (!empty($responseData['errors'])) {
                     Log::warning("EmbeddedNetworkService: " . $responseData['errors']);
+                    $is_embedded = null;
                     return [
                         'embedded_nmi' => null
                     ];
@@ -185,31 +186,28 @@ class EmbeddedNetworkService
 
                 if ($no_result && !empty($error)) {
                     Log::warning("EmbeddedNetworkService: " . $error);
+                    $is_embedded = null;
                     return [
                         'embedded_nmi' => null
                     ];
                 }
             }
 
-            if ($applicationFlag) {
-                $connectionApp = ConnectionApplication::find($applicationId);
-                $connectionApp->update(['embedded_nmi' => $is_embedded]);
-            }
-
             return [
                 'embedded_nmi' => $is_embedded,
             ];
         } catch (\Exception $exception) {
-            if ($applicationFlag) {
-                $connectionApp = ConnectionApplication::find($applicationId);
-                $connectionApp->update(['embedded_nmi' => null]);
-            }
+            $is_embedded = null;
 
             Log::warning('Embedded Network NMI Error: ' . $exception->getMessage());
 
             return [
                 'embedded_nmi' => null
             ];
+        } finally {
+            if ($applicationFlag) {
+                self::saveEmbeddedNmi($applicationId, $is_embedded);
+            }
         }
     }
 
@@ -272,5 +270,11 @@ class EmbeddedNetworkService
         return array_reduce($data, function ($carry, $item) {
             return @$carry['match_type_percentage'] > $item['match_type_percentage'] ? $carry : $item;
         });
+    }
+
+    public static function saveEmbeddedNmi($applicationId, $isEmbedded)
+    {
+        $connectionApp = ConnectionApplication::find($applicationId);
+        $connectionApp->update(['embedded_nmi' => $isEmbedded]);
     }
 }
