@@ -18,8 +18,6 @@
                                     :isSearchEmpty="advanceSearch.isSearchEmpty()"
                                     listPage="true"
                                     @updateDate="updateDate"
-                                    @updateApplicationTypeFilter = "updateApplicationTypeFilter"
-                                    @updateProviderNameFilter = "updateProviderNameFilter"
                                 >
                                 </ChatbotApplicationFilter>
                             </v-col>
@@ -104,11 +102,6 @@ name: "ChatbotApplicationPage",
             handler(value) {
                 let params = {...this.$route.query, ...value}
                 if (isEqual(this.$route.query, value)) return;
-                if(params.is_gilbert && params.is_gilbert === 'chatbot'){
-                    delete params.is_gilbert
-                }else{
-                    params.is_gilbert = 'true'
-                }
                 this.$router.push({
                     name: "chatbot.application",
                     query: params,
@@ -266,13 +259,6 @@ name: "ChatbotApplicationPage",
         updatePageOnFilterChange() {
             this.pages = 1;
         },
-
-        updateApplicationTypeFilter(applicationType){
-            this.advanceSearch.is_gilbert = applicationType
-        },
-        updateProviderNameFilter(provider_name){
-            this.advanceSearch.provider_name = provider_name
-        }
 
     },
     computed: {
