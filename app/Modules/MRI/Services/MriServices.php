@@ -104,4 +104,10 @@ class MriServices
         $mapNoteService = new MapNoteService();
         $mapNoteService->run();
     }
+
+    public static function handleFetchTaggedTenancies()
+    {
+        $taggedService = new GetTaggedTenanciesService();
+        $taggedService->run();
+    }
 }

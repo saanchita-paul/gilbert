@@ -33,7 +33,9 @@ class MriApplication extends Model
     ];
 
 
-    protected $casts = ['has_process_note' => 'boolean'];
+    protected $casts = [
+        'has_process_note' => 'boolean',
+    ];
 
     public function mriProperty()
     {

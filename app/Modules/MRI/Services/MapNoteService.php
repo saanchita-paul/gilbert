@@ -99,7 +99,7 @@ class MapNoteService
         if ($mriNoteData) {
             $this->noteData = $mriNoteData->description;
             $descData = explode("\n", $mriNoteData->description);
-            if ($descData[0] === 'HOOD_DATA') {
+            if (trim($descData[0] ?? '') === 'HOOD_DATA') {
                 array_shift($descData);
                 foreach ($descData as $line) {
                     $field = explode(":", $line);

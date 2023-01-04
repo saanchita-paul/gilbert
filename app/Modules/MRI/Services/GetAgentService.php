@@ -10,6 +10,7 @@ use GuzzleHttp\Psr7\Response;
 use App\Models\MriAgent;
 use App\Models\MriOffice;
 use Illuminate\Support\Carbon;
+use App\Models\MriProperty;
 
 class GetAgentService
 {
@@ -74,26 +75,10 @@ class GetAgentService
         return $this;
     }
 
-    private function getMriOffices()
-    {
-        $updateOfficesService = new GetOfficeService();
-        $updateOfficesService->run();
-        if (isset($this->officeId) && !empty($this->officeId)) {
-            $mriOffices = MriOffice::where('office_id', $this->officeId)->get();
-            if (count($mriOffices) == 0) {
-                throw new \Exception('Unable to find MRI office with Gilbert office id = ' . $this->officeId);
-            }
-        } else {
-            $mriOffices = MriOffice::get();
-        }
-
-        return $mriOffices;
-    }
-
     public function run()
     {
         try {
-            $mriOffices = $this->getMriOffices();
+            $mriOffices = (new GetOfficeService())->getMriOffices(true, $this->officeId ?? null);
             foreach ($mriOffices as $office) {
                 $token = $office->key;
                 $response = $this->fetch($token);
@@ -172,6 +157,7 @@ class GetAgentService
                 $mriAgent->mri_office_id = $officeId;
 
                 $mriAgent->save();
+                $this->saveAgentProperty($mriAgent);
                 $updatedAgentIds[] = $mriAgent->id;
             } catch (\Exception $e) {
                 $this->exceptionHandler->addException($e, $agentData);
@@ -180,9 +166,16 @@ class GetAgentService
 
         if (!empty($updatedAgentIds)) {
             $successMessage = sprintf('Created %s mri agents', count($updatedAgentIds));
-            // dump($successMessage);
             info($successMessage, ['mri_agent_ids' => $updatedAgentIds]);
         }
         return $updatedAgentIds;
+    }
+
+    private function saveAgentProperty($mriAgent)
+    {
+        $mriProperties = MriProperty::where('agents', 'LIKE', "%$mriAgent->agent_id%")->get();
+        foreach ($mriProperties as $mriProperty) {
+            $mriProperty->mriAgents()->sync($mriAgent->id);
+        }
     }
 }
