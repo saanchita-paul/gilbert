@@ -188,7 +188,7 @@ class ApplicationService
         }
 
         if (!$this->checkAllowableForAssign($connectionApplication)) {
-            throw new \Exception('assignUser: Application has no phone number or suburb/city or is embedded network!');
+            throw new \Exception('assignUser: Application has no phone number or suburb/city!');
         }
 
         $connectionApplication->update(['assigned_to' => $agentId, 'status' => ConnectionApplication::STATUS_ASSIGNED]);
@@ -209,8 +209,7 @@ class ApplicationService
 
     private function checkAllowableForAssign($connectionApplication)
     {
-        $isNotEmbeddedNmi = $connectionApplication->embedded_nmi != 1;
-        return $connectionApplication->phone && $connectionApplication->city && $isNotEmbeddedNmi;
+        return $connectionApplication->phone && $connectionApplication->city;
     }
 
     public function sendToChatbot($appId, $hoodUserId)
