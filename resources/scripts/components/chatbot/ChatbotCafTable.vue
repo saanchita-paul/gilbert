@@ -10,7 +10,6 @@
             :expanded.sync="expanded"
             :item-class="isSelectedClass"
             item-key="id"
-            :show-expand="!listPage"
             class="row-pointer"
             @click:row="onRowSelect"
         >
@@ -21,6 +20,13 @@
                     v-model="item.is_selected"
                     @input="onchangeRow(item)"
                 ></v-simple-checkbox>
+            </template>
+
+
+            <template v-slot:item.caf_generation_status="{item}">
+                <div class="d-flex align-center">
+                    <span class="service-status"> {{item.caf_generation_status}}</span>
+                </div>
             </template>
 
             <template v-slot:item.services="{ item}">
@@ -57,7 +63,7 @@ import {isEqual} from "lodash-es";
 export default {
     name: "ChatbotCafTable",
     components: {ApplicationCafFileDetails},
-    props: ["value", "cafFiles", "totalItem", "listPage"],
+    props: ["value", "cafFiles", "totalItem"],
     data() {
         return {
             selected: [],
@@ -71,7 +77,7 @@ export default {
                 {text: 'Connection Date', align: 'start', sortable: true, value: 'connection_date', class: 'black--text', shouldShow: true},
                 {text: 'Created Date', align: 'start', sortable: true, value: 'created_date', class: 'black--text', shouldShow: true},
                 {text: 'Services', align: 'start', sortable: true, value: 'services', class: 'black--text', shouldShow: true},
-                {text: 'Status', align: 'start', sortable: true, value: 'is_caf_file_generated', class: 'black--text', shouldShow: true},
+                {text: 'Status', align: 'start', sortable: true, value: 'caf_generation_status', class: 'black--text', shouldShow: true},
                 {text: '', value: 'data-table-select', sortable: false}
             ],
             cafFileSearch: '',
@@ -109,23 +115,6 @@ export default {
             this.$emit('selectRowCafFile', item);
         },
 
-        updateSelectedService(item)
-        {
-            let moving_id = item.id;
-            let services = item.services;
-            let selectedServiceType = '';
-            services.forEach(svc => {
-                if(svc.is_active) {
-                    selectedServiceType = svc.service_type;
-                }
-            });
-
-            this.updateSelectedMovingData(moving_id, selectedServiceType);
-        },
-
-        updateServiceType(data, id) {
-            this.$emit('updateServiceType', data, id);
-        },
         onRowSelect(item) {
             let params = { ...this.$route.query, app_id: item.id}
             this.$router.replace({ query: {...params} });
@@ -153,11 +142,6 @@ export default {
 
             console.log('updated item', item);
             return false;
-        },
-
-        updateSelectedMovingData(moving_id, selectedServiceType) {
-
-            this.$emit('updateSelectedMovingData', moving_id, selectedServiceType);
         },
 
         getStatus(item) {

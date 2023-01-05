@@ -21,13 +21,8 @@
                                     v-model="selectedCaf"
                                     :cafFiles="chatbotApps"
                                     :totalItem="totalItem"
-                                    @updateDataTable="updateDataTable"
                                     @refreshDataTable="refreshDataTable"
-                                    @updateServiceType="updateServiceType"
-                                    @updateSelectedMovingData="updateSelectedMovingData"
                                     @selectRowCafFile="selectRowCafFile"
-                                    listPage="true"
-
                                 >
                                 </ChatbotCafTable>
                             </v-col>
@@ -128,38 +123,6 @@ name: "ChatbotApplicationPage",
 
 
     methods: {
-        updateDataTable(data)
-        {
-
-            let index = this.cafFiles.findIndex((dt)=> {
-                return dt.id === data.id;
-            });
-
-
-            if(index !== -1) {
-
-
-                this.cafFiles[index].full_name = data.full_name;
-                this.cafFiles[index].business_name = data.business_name;
-                this.cafFiles[index].abn = data.abn;
-                this.cafFiles[index].first_name = data.first_name;
-                this.cafFiles[index].last_name = data.last_name;
-                this.cafFiles[index].middle_name = data.middle_name;
-                this.cafFiles[index].nmi = data.nmi;
-                this.cafFiles[index].mirn = data.mirn;
-                this.cafFiles[index].title = data.title;
-
-                if(!isNull(data.connection_date)) {
-                    this.cafFiles[index].connection_date = data.connection_date;
-                }
-                if(!isNull(data.plan)) {
-                    this.cafFiles[index].plan = data.plan;
-                }
-
-
-
-            }
-        },
 
         selectRowCafFile(item)
         {
@@ -259,8 +222,6 @@ name: "ChatbotApplicationPage",
     },
     computed: {
         chatbotApps() {
-
-            console.log('chatbot application updated', );
            return Store.getters.applications;
         }
     }

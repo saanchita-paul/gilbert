@@ -41,11 +41,11 @@
 
 
             <!--  Chatbot Application start-->
-            <v-tab href="#chatbotApplication1">
+            <v-tab href="#chatbotApplication">
                 <v-icon left>mdi-facebook-messenger</v-icon>
                 Chatbot Applications
             </v-tab>
-            <v-tab-item value="chatbotApplication1" style="max-height: 87vh !important;">
+            <v-tab-item value="chatbotApplication" style="max-height: 87vh !important;">
               <ChatbotApplicationPage></ChatbotApplicationPage>
             </v-tab-item>
             <!--  Chatbot Application end-->

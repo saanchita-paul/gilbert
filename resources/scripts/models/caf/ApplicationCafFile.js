@@ -24,7 +24,7 @@ export default class ApplicationCafFile {
                     service,
                     additional_instruction,
                     connection_type,
-                    is_caf_file_generated
+                    caf_generation_status
                 } = {}) {
         this.id = id;
         this.title = title;
@@ -48,7 +48,7 @@ export default class ApplicationCafFile {
         this.additional_instruction = additional_instruction;
         this.connection_type = this.generateConnectionType(abn, business_name);
         this.service_provider = this.getServiceProvider(service);
-        this.is_caf_file_generated = this.generateCafFileStatus(is_caf_file_generated)
+        this.caf_generation_status = caf_generation_status
 
     }
     generateConnectionType(abn, business_name){
