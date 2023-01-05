@@ -1,3 +1,4 @@
+import dayJs from "dayjs";
 
 
 export default class ApplicationCafFile {
@@ -31,7 +32,7 @@ export default class ApplicationCafFile {
         this.last_name = last_name;
         this.full_name = full_name;
         this.dob = dob;
-        this.created_date = created_at;
+        this.created_date = dayJs(created_at).format("DD/MM/YYYY");
         this.connection_date = connection_date;
         this.occupancy_type = occupancy_type;
         this.phone = phone;

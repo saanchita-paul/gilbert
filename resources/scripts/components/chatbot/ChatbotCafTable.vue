@@ -56,8 +56,9 @@ export default {
                 {text: 'Tenant Name', align: 'start', sortable: true, value: 'full_name', class: 'black--text', shouldShow: true},
                 {text: 'Address', align: 'start', sortable: true, value: 'to_address', class: 'black--text', shouldShow: true},
                 {text: 'Connection Date', align: 'start', sortable: true, value: 'connection_date', class: 'black--text', shouldShow: true},
-                {text: 'Connection Type', align: 'start', sortable: true, value: 'connection_type', class: 'black--text', shouldShow: true},
-                {text: 'Supplier', align: 'start', sortable: true, value: 'supplier', class: 'black--text', shouldShow: true},
+                {text: 'Created Date', align: 'start', sortable: true, value: 'created_date', class: 'black--text', shouldShow: true},
+                {text: 'Services', align: 'start', sortable: true, value: 'created_date', class: 'black--text', shouldShow: true},
+                {text: 'Status', align: 'start', sortable: true, value: 'created_date', class: 'black--text', shouldShow: true},
                 {text: '', value: 'data-table-select', sortable: false}
             ],
             cafFileSearch: '',
@@ -157,5 +158,10 @@ export default {
 .row-pointer >>> tbody tr :hover {
     /*cursor: pointer;*/
 }
-
+.row-pointer >>> tbody tr td:nth-child(3){
+    background-color: green;
+    /*white-space: nowrap;*/
+    /*overflow: hidden;*/
+    /*text-overflow: ellipsis;*/
+}
 </style>
