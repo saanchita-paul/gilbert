@@ -61,8 +61,6 @@ class GetAddressInfoAndAutoAssign implements ShouldQueue
         try {
             $autoAssignService = new AutoAssignApplicationService();
             $autoAssignService->assignApplication($application);
-
-            Log::info('Auto assign application to chatbot successfully.');
         } catch (\Exception $e) {
             Log::warning($e->getMessage());
             Log::warning($e->getTraceAsString());
