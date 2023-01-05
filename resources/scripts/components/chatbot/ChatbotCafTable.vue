@@ -43,10 +43,6 @@
                 </div>
             </template>
 
-            <template v-slot:item.is_caf_file_generated="{item}">
-                <span v-if="item">{{item}}</span>
-                <span v-else>--</span>
-            </template>
         </v-data-table>
     </div>
 </template>
