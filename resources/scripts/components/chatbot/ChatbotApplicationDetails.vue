@@ -907,7 +907,9 @@ export default {
     },
     methods: {
         handleExpansionPanel(){
-            this.expansionPanel.shift()
+            if(this.expansionPanel.length > 1){
+                this.expansionPanel.shift();
+            }
         },
         async savePersonalDetails() {
             if(!await this.validateFormData('personal_details_ref')) return;
