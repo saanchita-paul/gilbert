@@ -23,12 +23,40 @@
                 ></v-simple-checkbox>
             </template>
 
-            <!-- row expend start-->
-            <template v-slot:expanded-item="{ headers, item }">
-                <td :colspan="headers.length" style="padding: 0">
-                    <ApplicationCafFileDetails @refreshTable="updateTableData" :cafFileData='item' @updateServiceType="updateServiceType"></ApplicationCafFileDetails>
-                </td>
+            <template v-slot:item.services="{ item}">
+                <div class="d-flex ">
+                    <div>
+<!--                        <v-img src="{{'images\\logo\\provider\\ea.png'}}"></v-img>-->
+                        <v-img  height="30px" width="30px" src="/assets/images/logo/providers/ea_transperent.png"/>
+                    </div>
+                    <div>
+                        <p class="pt-2 pb-1 mb-0 services">
+                                            <span class="ml-1">
+                                                <v-icon
+                                                    :disabled="isServiceAllowed(item.services, 'electricity')"
+                                                    color="yellow">mdi-flash</v-icon>
+                                            </span>
+                                            {{getServiceStatus(item.services, 'electricity')}}
+                        </p>
+                        <p class="pt-2 pb-1 mb-0 services">
+                                            <span class="ml-1">
+                                                <v-icon
+                                                    :disabled="isServiceAllowed(item.services, 'gas')"
+                                                    color="yellow">mdi-fire</v-icon>
+                                            </span>
+                            {{getServiceStatus(item.services, 'gas')}}
+                        </p>
+
+                    </div>
+                </div>
             </template>
+
+            <!-- row expend start-->
+<!--            <template v-slot:expanded-item="{ headers, item }">-->
+<!--                <td :colspan="headers.length" style="padding: 0">-->
+<!--                    <ApplicationCafFileDetails @refreshTable="updateTableData" :cafFileData='item' @updateServiceType="updateServiceType"></ApplicationCafFileDetails>-->
+<!--                </td>-->
+<!--            </template>-->
             <!-- row expend end-->
         </v-data-table>
     </div>
@@ -149,7 +177,21 @@ export default {
 
         getStatus(item) {
             return !item.is_possible_caf_file;
-        }
+        },
+
+        isServiceAllowed(services, type) {
+            const pp =  services.find((dt) => dt.service_type === type);
+            console.log(pp, services,  type);
+            return !pp;
+
+        },
+        getServiceStatus(services, type) {
+            let selectedService =  services.find((dt) => dt.service_type === type);
+            if(selectedService) {
+                return selectedService.status;
+            }
+            return '--';
+        },
     },
 }
 </script>

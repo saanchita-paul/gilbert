@@ -23,7 +23,7 @@ export default class ApplicationCafFile {
                     connection_date,
                     service,
                     additional_instruction,
-                    connection_type
+                    connection_type,
                 } = {}) {
         this.id = id;
         this.title = title;
@@ -45,11 +45,20 @@ export default class ApplicationCafFile {
         this.to_address = to_address;
         this.service = service;
         this.additional_instruction = additional_instruction;
-        this.connection_type = this.generateConnectionType(abn, business_name)
+        this.connection_type = this.generateConnectionType(abn, business_name),
+        this.service_provider = this.getServiceProvider(service)
+
     }
     generateConnectionType(abn, business_name){
         if(abn || business_name) return "Temporary";
         return "Default"
     }
 
+    getServiceProvider(services) {
+        if(services.length > 0) {
+            return services[0].provider_name;
+        }
+        return '';
+
+    }
 }
