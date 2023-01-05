@@ -1,10 +1,6 @@
 <template>
-    <v-container fluid>
+    <v-container fluid style="max-height: 80vh">
         <v-row>
-<!--            <v-col cols="12">-->
-<!--                <h2>Chatbot Application</h2>-->
-<!--            </v-col>-->
-
             <v-col cols="8">
                 <v-card>
                     <v-card-text>
@@ -20,7 +16,7 @@
                                 >
                                 </ChatbotApplicationFilter>
                             </v-col>
-                            <v-col cols="12">
+                            <v-col cols="12" style="max-height: 44vh" class="overflow-auto">
                                 <ChatbotCafTable
                                     v-model="selectedCaf"
                                     :cafFiles="chatbotApps"
@@ -31,6 +27,7 @@
                                     @updateSelectedMovingData="updateSelectedMovingData"
                                     @selectRowCafFile="selectRowCafFile"
                                     listPage="true"
+
                                 >
                                 </ChatbotCafTable>
                             </v-col>
@@ -38,7 +35,7 @@
                     </v-card-text>
                 </v-card>
             </v-col>
-            <v-col cols="4" v-if="chatbotApps.length">
+            <v-col cols="4" v-if="chatbotApps.length" style="max-height: 75vh" class="overflow-auto">
                 <ChatbotApplicationDetails  ></ChatbotApplicationDetails>
             </v-col>
         </v-row>

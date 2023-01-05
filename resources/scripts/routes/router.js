@@ -67,16 +67,16 @@ const router = new VueRouter({
 
                     }
                 },
-                {
-                    path: '/chatbot-application',
-                    component: ChatbotApplicationPage,
-                    name: 'chatbot.application',
-                    meta: {
-                        isProtected: true,
-                        roles: ['hood_admin'],
-
-                    }
-                },
+                // {
+                //     path: '/chatbot-application',
+                //     component: ChatbotApplicationPage,
+                //     name: 'chatbot.application',
+                //     meta: {
+                //         isProtected: true,
+                //         roles: ['hood_admin'],
+                //
+                //     }
+                // },
                 {
                     path: '/customers',
                     component: CustomerListPage,

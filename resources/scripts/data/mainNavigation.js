@@ -29,13 +29,13 @@ export default [
                 disabled: true,
                 permissions: permissions.P_HOOD_ADMIN_CORE
             },
-            {
-                type: 'route',
-                title: 'Chatbot Application',
-                route_name: 'chatbot.application',
-                disabled: true,
-                permissions: permissions.P_HOOD_ADMIN_CORE
-            }
+            // {
+            //     type: 'route',
+            //     title: 'Chatbot Application',
+            //     route_name: 'chatbot.application',
+            //     disabled: true,
+            //     permissions: permissions.P_HOOD_ADMIN_CORE
+            // }
         ]
     },
     {
