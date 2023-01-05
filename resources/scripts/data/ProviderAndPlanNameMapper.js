@@ -3,6 +3,7 @@ export const providerNameMapper = {
     'PROVIDER_ORIGIN': 'origin',
     'PROVIDER_SUMO': 'sumo',
     'PROVIDER_POWERSHOP': 'powershop',
+    'PROVIDER_FIRST_ENERGY': 'first_energy',
 }
 
 
