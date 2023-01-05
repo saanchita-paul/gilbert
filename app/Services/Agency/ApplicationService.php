@@ -456,7 +456,6 @@ class ApplicationService
         }
 
 
-
         unset($application['identification']);
         unset($application['isService']);
 

@@ -89,10 +89,11 @@ class MirnNmiService
     {
         $application = ConnectionApplication::find($applicationId);
         MirnNmiService::fetchMirnNmi($application->id);
+        $application->update(['loading_address_info' => false]);
         event(new FetchMirnNmiEvent($applicationId));
+
         MirnNmiService::fetchNmiIsEmbedded(null, true, $application->id);
         event(new FetchEmbeddedNetworkEvent($applicationId));
-        $application->update(['loading_address_info' => false]);
         $application->refresh();
 
         return $application;

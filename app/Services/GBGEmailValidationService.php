@@ -23,7 +23,10 @@ class GBGEmailValidationService
         $emailTobeChecked = $email;
 
         try {
-            $authorization_header = "Basic aG9vZG1vdmV0ZWNoX3Rlc3RfdXNlcjpmM3NlN04xNEdyQ3hIV1FEZ0FKVHU3d2x1Rnc3akRXOQ==";
+            $userId = config('address.gbgUserId');
+            $password = config('address.gbgPassword');
+            $token = base64_encode("$userId:$password");
+            $authorization_header = "Basic $token";
             $response = Http::withHeaders([
                 "Authorization" => $authorization_header,
             ])->get($url, [ 'address' => $emailTobeChecked, 'sourceOfTruth' => $sourceOfTruth, 'locale' => $locale ]);
@@ -31,7 +34,7 @@ class GBGEmailValidationService
             $response = json_decode($response->body(), true);
 
             $payloadData = $response['payload'];
-            $attributes = $payloadData[0]['attributes'];
+            $attributes = $payloadData[0]['attributes'] ?? null;
 
             info('API response data', [$payloadData]);
 

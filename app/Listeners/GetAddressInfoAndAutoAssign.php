@@ -9,7 +9,7 @@ use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
-class  FetchAdditioanlInfoAddressListener implements ShouldQueue
+class GetAddressInfoAndAutoAssign implements ShouldQueue
 {
     public const ALLOWED_SOURCES = [
         ConnectionApplication::SOURCE_HOOD,
@@ -19,7 +19,7 @@ class  FetchAdditioanlInfoAddressListener implements ShouldQueue
         ConnectionApplication::SOURCE_PROPERTY_ME,
         ConnectionApplication::SOURCE_T_APP
     ];
-
+    public string $queue = 'fc-address';
     /**
      * Create the event listener.
      *
@@ -27,7 +27,7 @@ class  FetchAdditioanlInfoAddressListener implements ShouldQueue
      */
     public function __construct()
     {
-        //
+
     }
 
     /**
@@ -43,7 +43,7 @@ class  FetchAdditioanlInfoAddressListener implements ShouldQueue
 
         if (!$application) {
             Log::warning(
-                'FetchAdditioanlInfoAddressListener: Application not found for id - '
+                'FetchAdditionalInfoAddressListener: Application not found for id - '
                 . $event->applicationId . '!'
             );
             return false;
@@ -61,8 +61,6 @@ class  FetchAdditioanlInfoAddressListener implements ShouldQueue
         try {
             $autoAssignService = new AutoAssignApplicationService();
             $autoAssignService->assignApplication($application);
-
-            Log::info('Auto assign application to chatbot successfully.');
         } catch (\Exception $e) {
             Log::warning($e->getMessage());
             Log::warning($e->getTraceAsString());

@@ -2,29 +2,24 @@
 
 namespace App\Jobs;
 
-use App\Services\Agency\MirnNmiService;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class FetchAdditionalInfoAddressJob implements ShouldQueue
+class QuickJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    private $applicationId;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($applicationId)
+    public function __construct(public int $id)
     {
-        $this->onQueue('fc-address');
-
-        $this->applicationId = $applicationId;
     }
 
     /**
@@ -34,6 +29,9 @@ class FetchAdditionalInfoAddressJob implements ShouldQueue
      */
     public function handle()
     {
-        MirnNmiService::dispatchAllService($this->applicationId);
+//        info('QuickJob:Start: ' . $this->id);
+        sleep(2);
+//        SlowJob::dispatch($this->id);
+        info('QuickJob:Done: ' . $this->id);
     }
 }
