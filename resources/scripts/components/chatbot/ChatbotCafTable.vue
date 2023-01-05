@@ -42,6 +42,11 @@
                     </div>
                 </div>
             </template>
+
+            <template v-slot:item.is_caf_file_generated="{item}">
+                <span v-if="item">{{item}}</span>
+                <span v-else>--</span>
+            </template>
         </v-data-table>
     </div>
 </template>
@@ -70,7 +75,7 @@ export default {
                 {text: 'Connection Date', align: 'start', sortable: true, value: 'connection_date', class: 'black--text', shouldShow: true},
                 {text: 'Created Date', align: 'start', sortable: true, value: 'created_date', class: 'black--text', shouldShow: true},
                 {text: 'Services', align: 'start', sortable: true, value: 'services', class: 'black--text', shouldShow: true},
-                {text: 'Status', align: 'start', sortable: true, value: 'created_date', class: 'black--text', shouldShow: true},
+                {text: 'Status', align: 'start', sortable: true, value: 'is_caf_file_generated', class: 'black--text', shouldShow: true},
                 {text: '', value: 'data-table-select', sortable: false}
             ],
             cafFileSearch: '',
