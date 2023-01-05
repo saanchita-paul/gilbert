@@ -159,9 +159,9 @@ export default {
     /*cursor: pointer;*/
 }
 .row-pointer >>> tbody tr td:nth-child(3){
-    background-color: green;
-    /*white-space: nowrap;*/
-    /*overflow: hidden;*/
-    /*text-overflow: ellipsis;*/
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 203px !important;
 }
 </style>
