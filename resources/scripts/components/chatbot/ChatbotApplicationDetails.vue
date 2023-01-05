@@ -6,7 +6,7 @@
                 <v-row style=" padding: 20px">
                     <v-col cols="12">
                         <p style="margin-bottom: unset">Chatbot Application Details</p>
-                        <p class="font-weight-bold" style="font-size: 25px; margin-bottom: unset">{{ chatbot_app.personal_details.title.charAt(0).toUpperCase() + chatbot_app.personal_details.title.slice(1) }}. {{ chatbot_app.personal_details.first_name }} {{ chatbot_app.personal_details.last_name }}</p>
+                        <p class="font-weight-bold" style="font-size: 25px; margin-bottom: unset">{{ chatbot_app.personal_details.title.charAt(0).toUpperCase() + chatbot_app.personal_details.title.slice(1) }}. {{ chatbot_app.personal_details.first_name.charAt(0).toUpperCase() + chatbot_app.personal_details.first_name.slice(1) }} {{ chatbot_app.personal_details.last_name.charAt(0).toUpperCase() + chatbot_app.personal_details.last_name.slice(1) }}</p>
                         <IdCopyToClipboard :applicationId="app_id"></IdCopyToClipboard>
                     </v-col>
                 </v-row>
