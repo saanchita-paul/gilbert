@@ -24,40 +24,24 @@
             </template>
 
             <template v-slot:item.services="{ item}">
-                <div class="d-flex ">
-                    <div>
-<!--                        <v-img src="{{'images\\logo\\provider\\ea.png'}}"></v-img>-->
-                        <v-img  height="30px" width="30px" src="/assets/images/logo/providers/ea_transperent.png"/>
+                <div class="d-flex pa-2" style="gap : 8px">
+                    <div class="d-flex justify-center align-center">
+                        <v-img v-if="item.service_provider === 'ea'"   src="/assets/images/logo/providers/ea_small.png" />
+                        <v-img v-if="item.service_provider === 'origin'"  src="/assets/images/logo/providers/origin_small.png" />
+                        <v-img v-if="item.service_provider === 'powershop'"  src="/assets/images/logo/providers/powershop_small.png" />
                     </div>
                     <div>
-                        <p class="pt-2 pb-1 mb-0 services">
-                                            <span class="ml-1">
-                                                <v-icon
-                                                    :disabled="isServiceAllowed(item.services, 'electricity')"
-                                                    color="yellow">mdi-flash</v-icon>
-                                            </span>
-                                            {{getServiceStatus(item.services, 'electricity')}}
-                        </p>
-                        <p class="pt-2 pb-1 mb-0 services">
-                                            <span class="ml-1">
-                                                <v-icon
-                                                    :disabled="isServiceAllowed(item.services, 'gas')"
-                                                    color="yellow">mdi-fire</v-icon>
-                                            </span>
-                            {{getServiceStatus(item.services, 'gas')}}
-                        </p>
-
+                        <div class="d-flex  ">
+                            <v-icon :disabled="isServiceAllowed(item.services, 'electricity')" color="yellow">mdi-flash</v-icon>
+                            <span class="service-status">{{getServiceStatus(item.services, 'electricity')}}</span>
+                        </div>
+                        <div class="d-flex align-center">
+                            <v-icon :disabled="isServiceAllowed(item.services, 'gas')" color="red">mdi-fire</v-icon>
+                            <span class="service-status"> {{getServiceStatus(item.services, 'gas')}}</span>
+                        </div>
                     </div>
                 </div>
             </template>
-
-            <!-- row expend start-->
-<!--            <template v-slot:expanded-item="{ headers, item }">-->
-<!--                <td :colspan="headers.length" style="padding: 0">-->
-<!--                    <ApplicationCafFileDetails @refreshTable="updateTableData" :cafFileData='item' @updateServiceType="updateServiceType"></ApplicationCafFileDetails>-->
-<!--                </td>-->
-<!--            </template>-->
-            <!-- row expend end-->
         </v-data-table>
     </div>
 </template>
@@ -85,7 +69,7 @@ export default {
                 {text: 'Address', align: 'start', sortable: true, value: 'to_address', class: 'black--text', shouldShow: true},
                 {text: 'Connection Date', align: 'start', sortable: true, value: 'connection_date', class: 'black--text', shouldShow: true},
                 {text: 'Created Date', align: 'start', sortable: true, value: 'created_date', class: 'black--text', shouldShow: true},
-                {text: 'Services', align: 'start', sortable: true, value: 'created_date', class: 'black--text', shouldShow: true},
+                {text: 'Services', align: 'start', sortable: true, value: 'services', class: 'black--text', shouldShow: true},
                 {text: 'Status', align: 'start', sortable: true, value: 'created_date', class: 'black--text', shouldShow: true},
                 {text: '', value: 'data-table-select', sortable: false}
             ],
@@ -181,7 +165,6 @@ export default {
 
         isServiceAllowed(services, type) {
             const pp =  services.find((dt) => dt.service_type === type);
-            console.log(pp, services,  type);
             return !pp;
 
         },
@@ -205,5 +188,11 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 203px !important;
+}
+.service-status{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 82px !important;
 }
 </style>
