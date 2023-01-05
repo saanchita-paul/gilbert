@@ -13,13 +13,25 @@ export default {
         const property_detail = new PropertyDetail(application);
         const application_note = application.application_notes?.map(item => new ApplicationNote(item));
         const connection_service = application.connection_services?.map(item => new ConnectionService(item));
-        const eleService= new ConnectionService(application.connection_services.find((item) => {
-            return item.service_type === 'electricity'
+        let eleService = null;
+        let gasService = null;
 
-        }));
-        const gasService = new ConnectionService(application.connection_services.find((item) => {
+        let electricityServiceOnly = application.connection_services.find((item) => {
+            return item.service_type === 'electricity'
+        })
+
+        if(electricityServiceOnly){
+            eleService = new ConnectionService(electricityServiceOnly);
+        }
+
+        let gasServiceOnly = application.connection_services.find((item) => {
             return item.service_type === 'gas'
-        }));
+        })
+
+        if(gasServiceOnly){
+            gasService = new ConnectionService(gasServiceOnly);
+        }
+
 
         return new ChatbotApplication({
             id_detail: id_detail,

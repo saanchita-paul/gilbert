@@ -190,14 +190,7 @@ export default {
             value: 12
         }
     ],
-    EXPANSION_PANEL : {
-        profile: [0],
-        property: [],
-        identification: [],
-        service : [],
-        application : [],
-        concession: []
-    },
+    EXPANSION_PANEL : [0],
     CONCESSION_CARD: [
         {
             text: "DVA Health",

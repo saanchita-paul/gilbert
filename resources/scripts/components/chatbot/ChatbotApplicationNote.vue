@@ -14,7 +14,7 @@
         </v-col>
         <v-col cols="12" >
             <p class="sub-title">Notes</p>
-            <ValidationObserver>
+            <ValidationObserver ref="application_note_ref">
                 <ValidationProvider
                     name="Application Notes"
                     rules="required"
@@ -54,7 +54,7 @@ export default {
     },
     methods: {
         async saveNote() {
-            if (!this.note.text) return;
+            if(!await this.validateFormData('application_note_ref')) return;
             //todo need to call note api in chatbot site
             await ChatbotApplicationService.saveNote(this.note);
             this.note.text = '';
@@ -63,6 +63,9 @@ export default {
         getColor(index) {
             if(index === 0) return 'primary';
             return 'gray';
+        },
+        async validateFormData(reference){
+            return await this.$refs[reference].validate();
         },
     }
 };

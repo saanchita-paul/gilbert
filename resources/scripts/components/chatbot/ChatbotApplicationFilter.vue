@@ -193,6 +193,15 @@ export default {
                     value: 5
                 },
                 {
+                    id: 15,
+                    type: "service",
+                    display_text: "Not Submitted",
+                    display_text_alias: "In progress",
+                    status_value: 7,
+                    text: "Not Submitted",
+                    value: 7
+                },
+                {
                     id: 17,
                     type: "service",
                     display_text: "Rejected",
