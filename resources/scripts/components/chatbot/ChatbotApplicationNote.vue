@@ -17,7 +17,7 @@
                     ></v-textarea>
                 </ValidationProvider>
             </ValidationObserver>
-            <v-btn class="mt-2 float-right white--text note-button" @click="saveNote" color="#542E89">Submit Note</v-btn>
+            <v-btn class="mt-2 float-right white--text note-button" @click="saveNote" color="#542E89" :disabled="isNoteTextEmpty">Submit Note</v-btn>
         </v-col>
         <v-col cols="12" v-if="applications.length > 0" class="notes-container">
             <v-timeline dense>
@@ -38,6 +38,7 @@
 
 import ChatbotApplicationService from "@scripts/services/chatbot/ChatbotApplicationService";
 import Note from "@scripts/components/crm/leadmanagement/notes/Note";
+import {isEmpty} from "lodash-es";
 
 export default {
     name: "ChatbotApplicationNote",
@@ -51,6 +52,11 @@ export default {
                 moving_utility_data_id : this.$route.query.app_id ?? null,
             },
         }
+    },
+    computed: {
+      isNoteTextEmpty(){
+          return isEmpty(this.note.text)
+      }
     },
     methods: {
         async saveNote() {
