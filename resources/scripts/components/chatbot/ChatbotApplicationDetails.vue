@@ -152,129 +152,6 @@
                                     </ValidationProvider>
                                 </div>
                             </v-col>
-
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">Concession Card</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <div class="text-field">
-                                    <ValidationProvider name="Concession Card"  v-slot="{ errors }">
-                                        <v-select
-                                            v-model="chatbot_app.personal_details.concession_card_type"
-                                            :items="concessionCard"
-                                            item-text="text"
-                                            item-value="value"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            :error-messages="errors[0]"
-                                        >
-                                        </v-select>
-                                    </ValidationProvider>
-                                </div>
-                            </v-col>
-
-
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">Card Number*</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <div class="text-field">
-                                    <ValidationProvider name="Card Number" rules="required" v-slot="{ errors }">
-                                        <v-text-field
-                                            v-model="chatbot_app.personal_details.concession_card_number"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            placeholder="Card Number"
-                                            :error-messages="errors[0]"
-                                        ></v-text-field>
-                                    </ValidationProvider>
-                                </div>
-                            </v-col>
-
-
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">Start Date*</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <v-menu
-                                    v-model="isConcessionStartDate"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    transition="scale-transition"
-                                    offset-y
-                                    min-width="290px"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <ValidationProvider
-                                            name="Start Date" rules="required"
-                                            v-slot="{ errors }"
-                                        >
-                                            <v-text-field
-                                                placeholder="DD/MM/YYYY"
-                                                outlined
-                                                dense
-                                                append-icon="mdi-calendar"
-                                                v-model="chatbot_app.personal_details.concession_card_start_date"
-                                                v-bind="attrs"
-                                                :error-messages="errors[0]"
-                                                hide-details="auto"
-                                            >
-                                                <template slot="append">
-                                                    <v-icon v-on="on">mdi-calendar</v-icon>
-                                                </template>
-                                            </v-text-field>
-                                        </ValidationProvider>
-                                    </template>
-                                    <v-date-picker
-                                        v-model="concession_start_date"
-                                        @input="isConcessionStartDate = false"
-                                    ></v-date-picker>
-                                </v-menu>
-                            </v-col>
-
-
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">End Date</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <v-menu
-                                    v-model="isConcessionEndDate"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    transition="scale-transition"
-                                    offset-y
-                                    min-width="290px"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <ValidationProvider
-                                            name="End Date"
-                                            v-slot="{ errors }"
-                                        >
-                                            <v-text-field
-                                                placeholder="DD/MM/YYYY"
-                                                outlined
-                                                dense
-                                                append-icon="mdi-calendar"
-                                                v-model="chatbot_app.personal_details.concession_end_date"
-                                                v-bind="attrs"
-                                                :error-messages="errors[0]"
-                                                hide-details="auto"
-                                            >
-                                                <template slot="append">
-                                                    <v-icon v-on="on">mdi-calendar</v-icon>
-                                                </template>
-                                            </v-text-field>
-                                        </ValidationProvider>
-                                    </template>
-                                    <v-date-picker
-                                        v-model="concession_end_date"
-                                        @input="isConcessionEndDate = false"
-                                    ></v-date-picker>
-                                </v-menu>
-                            </v-col>
-
                             <v-col cols="5" class="py-0 my-1">
                                 <p class="font-weight-bold">Business Name</p>
                             </v-col>
@@ -751,6 +628,143 @@
                 </v-expansion-panel-content>
             </v-expansion-panel>
             <v-divider></v-divider>
+            <v-expansion-panel  style="box-shadow:none !important;">
+                <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
+                    Concession Card
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                    <ValidationObserver ref="concession_card_ref">
+                        <v-row>
+                            <v-col cols ="5"  class="py-0 my-1">
+                                <p class="font-weight-bold">Concession Card</p>
+                            </v-col>
+                            <v-col cols ="7" class="py-0 my-1">
+                                <div class="text-field">
+                                    <ValidationProvider name="Concession Card"  v-slot="{ errors }">
+                                        <v-select
+                                            v-model="chatbot_app.concession_details.concession_card_type"
+                                            :items="concessionCard"
+                                            item-text="text"
+                                            item-value="value"
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :error-messages="errors[0]"
+                                        >
+                                        </v-select>
+                                    </ValidationProvider>
+                                </div>
+                            </v-col>
+
+
+                            <v-col cols ="5"  class="py-0 my-1">
+                                <p class="font-weight-bold">Card Number*</p>
+                            </v-col>
+                            <v-col cols ="7" class="py-0 my-1">
+                                <div class="text-field">
+                                    <ValidationProvider name="Card Number" rules="required" v-slot="{ errors }">
+                                        <v-text-field
+                                            v-model="chatbot_app.concession_details.concession_card_value"
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            placeholder="Card Number"
+                                            :error-messages="errors[0]"
+                                        ></v-text-field>
+                                    </ValidationProvider>
+                                </div>
+                            </v-col>
+
+
+                            <v-col cols ="5"  class="py-0 my-1">
+                                <p class="font-weight-bold">Start Date*</p>
+                            </v-col>
+                            <v-col cols ="7" class="py-0 my-1">
+                                <v-menu
+                                    v-model="isConcessionStartDate"
+                                    :close-on-content-click="false"
+                                    :nudge-right="40"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <ValidationProvider
+                                            name="Start Date" rules="required"
+                                            v-slot="{ errors }"
+                                        >
+                                            <v-text-field
+                                                placeholder="DD/MM/YYYY"
+                                                outlined
+                                                dense
+                                                append-icon="mdi-calendar"
+                                                v-model="chatbot_app.concession_details.concession_card_start_date"
+                                                v-bind="attrs"
+                                                :error-messages="errors[0]"
+                                                hide-details="auto"
+                                            >
+                                                <template slot="append">
+                                                    <v-icon v-on="on">mdi-calendar</v-icon>
+                                                </template>
+                                            </v-text-field>
+                                        </ValidationProvider>
+                                    </template>
+                                    <v-date-picker
+                                        v-model="concession_start_date"
+                                        @input="isConcessionStartDate = false"
+                                    ></v-date-picker>
+                                </v-menu>
+                            </v-col>
+
+
+                            <v-col cols ="5"  class="py-0 my-1">
+                                <p class="font-weight-bold">End Date</p>
+                            </v-col>
+                            <v-col cols ="7" class="py-0 my-1">
+                                <v-menu
+                                    v-model="isConcessionEndDate"
+                                    :close-on-content-click="false"
+                                    :nudge-right="40"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <ValidationProvider
+                                            name="End Date"
+                                            v-slot="{ errors }"
+                                        >
+                                            <v-text-field
+                                                placeholder="DD/MM/YYYY"
+                                                outlined
+                                                dense
+                                                append-icon="mdi-calendar"
+                                                v-model="chatbot_app.concession_details.concession_end_date"
+                                                v-bind="attrs"
+                                                :error-messages="errors[0]"
+                                                hide-details="auto"
+                                            >
+                                                <template slot="append">
+                                                    <v-icon v-on="on">mdi-calendar</v-icon>
+                                                </template>
+                                            </v-text-field>
+                                        </ValidationProvider>
+                                    </template>
+                                    <v-date-picker
+                                        v-model="concession_end_date"
+                                        @input="isConcessionEndDate = false"
+                                    ></v-date-picker>
+                                </v-menu>
+                            </v-col>
+                        </v-row>
+                        <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
+                            <v-btn small @click="cancelConcessionDetails" :loading="cancelConcessionLoading"> Cancel</v-btn>
+                            <v-btn color="primary" small right @click="saveConcessionDetails" :loading="saveConcessionLoading"> Save</v-btn>
+                        </v-row>
+                    </ValidationObserver>
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-divider ></v-divider>
 
             <v-expansion-panel style="box-shadow: none !important;">
                 <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
@@ -914,7 +928,9 @@ export default {
             personalDetailsFlag : [],
             propertyDetailsFlag : [],
             idDetailsFlag : [],
-            applicationNoteFlag : []
+            applicationNoteFlag : [],
+            cancelConcessionLoading: false,
+            saveConcessionLoading: false,
         }
     },
     computed: {
@@ -994,6 +1010,19 @@ export default {
             await ChatbotApplicationService.updateIdDetails(this.app_id, this.chatbot_app_backup.id_detail);
             this.chatbot_app = JSON.parse(JSON.stringify(this.chatbot_app_backup));
             this.cancelIdLoading = false;
+        },
+        async saveConcessionDetails() {
+            if(!await this.validateFormData('concession_card_ref')) return;
+            this.saveConcessionLoading = true;
+            await ChatbotApplicationService.updateConcessionDetails(this.app_id, this.chatbot_app.concession_details);
+            this.saveConcessionLoading = false;
+        },
+
+        async cancelConcessionDetails(){
+            this.cancelConcessionLoading = true;
+            await ChatbotApplicationService.updateConcessionDetails(this.app_id, this.chatbot_app_backup.concession_details);
+            this.chatbot_app = JSON.parse(JSON.stringify(this.chatbot_app_backup));
+            this.cancelConcessionLoading = false;
         },
 
         async validateFormData(reference){
@@ -1122,13 +1151,13 @@ export default {
 
         concession_start_date() {
             if (isNull(this.concession_start_date) || this.concession_start_date === '' || this.concession_start_date === undefined ) return;
-            this.chatbot_app.personal_details.concession_card_start_date = new DayJs(this.concession_start_date).format(
+            this.chatbot_app.concession_details.concession_card_start_date = new DayJs(this.concession_start_date).format(
                 "DD/MM/YYYY"
             );
         },
         concession_end_date() {
             if (isNull(this.concession_end_date) || this.concession_end_date === '' || this.concession_end_date === undefined ) return;
-            this.chatbot_app.personal_details.concession_end_date = new DayJs(this.concession_end_date).format(
+            this.chatbot_app.concession_details.concession_end_date = new DayJs(this.concession_end_date).format(
                 "DD/MM/YYYY"
             );
         },

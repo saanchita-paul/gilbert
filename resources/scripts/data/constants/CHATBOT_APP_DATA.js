@@ -194,19 +194,19 @@ export default {
     CONCESSION_CARD: [
         {
             text: "DVA Health",
-            value: "1",
+            value: 1,
         },
         {
             text: "Health Care Card",
-            value: "2",
+            value: 2,
         },
         {
             text: "Pensioner Concession",
-            value: "3",
+            value: 3,
         },
         {
             text: "Queensland Seniors",
-            value: "4",
+            value: 4,
         },
     ],
 }
