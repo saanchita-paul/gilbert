@@ -24,13 +24,13 @@
 
 
             <template v-slot:item.caf_generation_status="{item}">
-                <div class="d-flex align-center">
+                <div class="d-flex align-center"  style="font-size: 12px!important;">
                     <span class="service-status"> {{item.caf_generation_status}}</span>
                 </div>
             </template>
 
             <template v-slot:item.services="{ item}">
-                <div class="d-flex pa-2" style="gap : 8px">
+                <div class="d-flex pa-2" style="gap : 8px;">
                     <div class="d-flex justify-center align-center">
                         <v-img v-if="item.service_provider === 'ea'"   src="/assets/images/logo/providers/ea_small.png" />
                         <v-img v-if="item.service_provider === 'origin'"  src="/assets/images/logo/providers/origin_small.png" />
@@ -180,4 +180,25 @@ export default {
     text-overflow: ellipsis;
     max-width: 82px !important;
 }
+
+.row-pointer >>> tbody tr td{
+   font-size: 12px !important;
+}
+.row-pointer >>> thead tr th{
+   white-space: nowrap;
+
+}
+
+.row-pointer >>> tbody tr td:nth-child(1) {
+    padding: 0px 0px  0px 16px !important;
+}
+.row-pointer >>> tbody tr td:not(:nth-child(1)) {
+    padding: 0px 0px  0px 0px !important;
+}
+
+.row-pointer >>> thead tr th:not(:nth-child(1)) {
+    padding: 0px 8px  0px 0px !important;
+}
+
+
 </style>

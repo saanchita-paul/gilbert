@@ -20,6 +20,12 @@ export default {
         Store.commit('updateApp', application);
     },
 
+    updateConcessionDetails: async (utilityId, data) =>
+    {
+        const application =  await ChatbotApplicationApi.updateConcessionDetails(utilityId, data);
+        Store.commit('updateApp', application);
+    },
+
 
     saveServiceStatus: async (service) => {
       return  await ChatbotApplicationApi.saveServiceStatus(service.id, {status: service.status});

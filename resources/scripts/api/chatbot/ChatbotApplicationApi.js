@@ -47,6 +47,19 @@ export default {
         }
     },
 
+    async updateConcessionDetails(utilityId, data) {
+        try {
+            const mappedData = ChatbotApplicationMapper.mapTosaveConcessionData(data);
+            console.log('mapData', mappedData);
+            const response = (await axios.put(`${ROOT}/utility-data/${utilityId}/update`, {...mappedData})).data;
+            console.log('response', response);
+            return ApplicationCafFileMapper.mapChatbotSingleApplication(response.data);
+        } catch (error) {
+            console.log('error', error);
+            return null;
+        }
+    },
+
     async saveServiceStatus(serviceId, data) {
         try {
             const response = await axios.post(`${BOT_API}/service-status/${serviceId}`,  data);

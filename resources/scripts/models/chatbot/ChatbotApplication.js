@@ -7,6 +7,8 @@ export default class {
                     connection_services = null,
                     eleService = null,
                     gasService = null,
+                    concession_details = null,
+
 
                 }) {
 
@@ -17,6 +19,7 @@ export default class {
         this.connection_services = connection_services?.reverse();
         this.eleService = eleService;
         this.gasService = gasService;
+        this.concession_details = concession_details;
     }
 
     setIdDetails(idDetail) {
