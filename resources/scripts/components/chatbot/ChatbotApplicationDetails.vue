@@ -1,15 +1,16 @@
 <template>
-    <div v-if="chatbot_app" class="hood-card" style="padding: 0px !important; max-height: 100%;" >
 
-        <v-expansion-panels v-model="expansionPanel" @change="handleExpansionPanel" multiple accordion style="box-shadow: none !important;">
+    <div v-if="chatbot_app" class="hood-card" style=" padding: 0px !important; " >
+        <v-row style=" padding: 25px;">
+            <v-col cols="12">
+                <p style="margin-bottom: unset">Chatbot Application Details</p>
+                <p class="font-weight-bold" style="font-size: 25px; margin-bottom: unset">{{ chatbot_app.personal_details.title.charAt(0).toUpperCase() + chatbot_app.personal_details.title.slice(1) }}. {{ chatbot_app.personal_details.first_name.charAt(0).toUpperCase() + chatbot_app.personal_details.first_name.slice(1) }} {{ chatbot_app.personal_details.last_name.charAt(0).toUpperCase() + chatbot_app.personal_details.last_name.slice(1) }}</p>
+                <IdCopyToClipboard :applicationId="app_id"></IdCopyToClipboard>
+            </v-col>
+        </v-row>
+        <v-divider ></v-divider>
+        <v-expansion-panels class=" overflow-auto" v-model="expansionPanel" @change="handleExpansionPanel" multiple accordion style="box-shadow: none !important; max-height: 54.8vh;">
             <v-expansion-panel style="box-shadow: none !important;">
-                <v-row style=" padding: 20px">
-                    <v-col cols="12">
-                        <p style="margin-bottom: unset">Chatbot Application Details</p>
-                        <p class="font-weight-bold" style="font-size: 25px; margin-bottom: unset">{{ chatbot_app.personal_details.title.charAt(0).toUpperCase() + chatbot_app.personal_details.title.slice(1) }}. {{ chatbot_app.personal_details.first_name.charAt(0).toUpperCase() + chatbot_app.personal_details.first_name.slice(1) }} {{ chatbot_app.personal_details.last_name.charAt(0).toUpperCase() + chatbot_app.personal_details.last_name.slice(1) }}</p>
-                        <IdCopyToClipboard :applicationId="app_id"></IdCopyToClipboard>
-                    </v-col>
-                </v-row>
                 <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
                     Profile Details
                 </v-expansion-panel-header>
@@ -927,6 +928,7 @@ export default {
             concessionDetailsFlag : [],
             cancelConcessionLoading: false,
             saveConcessionLoading: false,
+            sticky : true,
         }
     },
     computed: {
