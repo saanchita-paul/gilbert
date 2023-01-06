@@ -651,6 +651,7 @@
                                             dense
                                             hide-details="auto"
                                             :error-messages="errors[0]"
+                                            @change="concessionDetailsChanged('concession_card_type')"
                                         >
                                         </v-select>
                                     </ValidationProvider>
@@ -671,6 +672,7 @@
                                             hide-details="auto"
                                             placeholder="Card Number"
                                             :error-messages="errors[0]"
+                                            @change="concessionDetailsChanged('concession_card_value')"
                                         ></v-text-field>
                                     </ValidationProvider>
                                 </div>
@@ -703,6 +705,7 @@
                                                 v-bind="attrs"
                                                 :error-messages="errors[0]"
                                                 hide-details="auto"
+                                                @change="updateConcessionStartDatePicker"
                                             >
                                                 <template slot="append">
                                                     <v-icon v-on="on">mdi-calendar</v-icon>
@@ -713,6 +716,7 @@
                                     <v-date-picker
                                         v-model="concession_start_date"
                                         @input="isConcessionStartDate = false"
+                                        @change="concessionDetailsChanged('concession_card_start_date')"
                                     ></v-date-picker>
                                 </v-menu>
                             </v-col>
@@ -759,8 +763,8 @@
                             </v-col>
                         </v-row>
                         <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
-                            <v-btn small @click="cancelConcessionDetails" :loading="cancelConcessionLoading"> Cancel</v-btn>
-                            <v-btn color="primary" small right @click="saveConcessionDetails" :loading="saveConcessionLoading"> Save</v-btn>
+                            <v-btn small @click="cancelConcessionDetails" :loading="cancelConcessionLoading" :disabled="shouldActiveConcessionDetailsAction"> Cancel</v-btn>
+                            <v-btn color="primary" small right @click="saveConcessionDetails" :loading="saveConcessionLoading" :disabled="shouldActiveConcessionDetailsAction"> Save</v-btn>
                         </v-row>
                     </ValidationObserver>
                 </v-expansion-panel-content>
@@ -886,7 +890,7 @@ export default {
             isProfileEditMode: false,
             specialNumberDD: CHATBOT_APP_DATA.SPECIAL_NUMBER_DD,
             showExpireDate: false,
-            expire_date:  '',
+            expire_date:  null,
             titlesDropDown: titlesMapperForDropdownCb,
             accessRequirement: CHATBOT_APP_DATA.ACCESS_REQUIREMENT,
             solarPowerDD: CHATBOT_APP_DATA.SOLAR_POWER_DD,
@@ -920,6 +924,7 @@ export default {
             propertyDetailsFlag : [],
             idDetailsFlag : [],
             applicationNoteFlag : [],
+            concessionDetailsFlag : [],
             cancelConcessionLoading: false,
             saveConcessionLoading: false,
         }
@@ -950,6 +955,10 @@ export default {
 
         shouldActiveIdDetailsAction(){
             return this.idDetailsFlag.length <= 0;
+        },
+
+        shouldActiveConcessionDetailsAction(){
+            return this.concessionDetailsFlag.length <= 0;
         }
 
 
@@ -1021,33 +1030,38 @@ export default {
         },
 
         updateExpireDatePicker() {
-            if (DayJs(this.application.expire_date, "DD/MM/YYYY").isValid()) {
-                this.expire_date = DayJs(
-                    this.this.application.expire_date,
-                    "DD/MM/YYYY"
-                ).format("YYYY-MM-DD");
+            if (DayJs(this.chatbot_app.id_detail.identification_expire_date, "DD/MM/YYYY").isValid()) {
+                this.expire_date = DayJs(this.chatbot_app.id_detail.identification_expire_date,"DD/MM/YYYY").format("YYYY-MM-DD");
             }
             this.idDetailsChanged('identification_expire_date');
         },
 
         updateDobPicker() {
-            if (DayJs(this.chatbot_app.dob, "DD/MM/YYYY").isValid()) {
-                this.chatbot_app.personal_details.dob = DayJs(
-                    this.this.chatbot_app.dob,
-                    "DD/MM/YYYY"
-                ).format("YYYY-MM-DD");
+            if (DayJs(this.chatbot_app.personal_details.dob, "DD/MM/YYYY").isValid()) {
+                this.dob = DayJs(this.chatbot_app.personal_details.dob,"DD/MM/YYYY").format("YYYY-MM-DD");
             }
             this.personalDetailsChanged('dob');
         },
 
         updateMovingDatePicker() {
-            if (DayJs(this.chatbot_app.moved_at, "DD/MM/YYYY").isValid()) {
-                this.chatbot_app.property_details.moved_at = DayJs(
-                    this.this.chatbot_app.moved_at,
-                    "DD/MM/YYYY"
-                ).format("YYYY-MM-DD");
+            if (DayJs(this.chatbot_app.property_details.moved_at, "DD/MM/YYYY").isValid()) {
+                this.moved_at = DayJs(this.chatbot_app.property_details.moved_at,"DD/MM/YYYY").format("YYYY-MM-DD");
             }
             this.propertyDetailsChanged('moved_at');
+        },
+
+        updateConcessionStartDatePicker() {
+            if (DayJs(this.chatbot_app.concession_details.concession_card_start_date, "DD/MM/YYYY").isValid()) {
+                this.concession_card_start_date = DayJs(this.chatbot_app.concession_details.concession_card_start_date,"DD/MM/YYYY").format("YYYY-MM-DD");
+            }
+            this.concessionDetailsChanged('concession_card_start_date');
+        },
+
+        updateConcessionEndDatePicker() {
+            if (DayJs(this.chatbot_app.concession_details.concession_card_end_date, "DD/MM/YYYY").isValid()) {
+                this.concession_card_end_date = DayJs(this.chatbot_app.concession_details.concession_card_end_date,"DD/MM/YYYY").format("YYYY-MM-DD");
+            }
+            this.concessionDetailsChanged('concession_card_end_date');
         },
 
         async loadApplication() {
@@ -1109,6 +1123,18 @@ export default {
                 if(this.idDetailsFlag.includes(attribute)){
                     let index = this.idDetailsFlag.indexOf(attribute);
                     this.idDetailsFlag.splice(index, 1);
+                }
+            }
+        },
+
+        concessionDetailsChanged(attribute){
+            if(this.chatbot_app.concession_details[attribute] !== this.chatbot_app_backup.concession_details[attribute]){
+                if(!this.concessionDetailsFlag.includes(attribute))
+                    this.concessionDetailsFlag.push(attribute);
+            }else{
+                if(this.concessionDetailsFlag.includes(attribute)){
+                    let index = this.concessionDetailsFlag.indexOf(attribute);
+                    this.concessionDetailsFlag.splice(index, 1);
                 }
             }
         },
