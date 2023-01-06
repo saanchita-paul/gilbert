@@ -628,6 +628,7 @@
                 </v-expansion-panel-content>
             </v-expansion-panel>
             <v-divider></v-divider>
+
             <v-expansion-panel  style="box-shadow:none !important;">
                 <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
                     Concession Card
@@ -796,16 +797,12 @@
                             </div>
 
                             <div class="item" v-if="chatbot_app.eleService.service_type === 'electricity'">
-                                <!--                                    <p class="item-title">Electricity</p>-->
-                                <!--                                    <p class="item-value">{{ electricityService.status }}</p>-->
                                 <v-btn v-if="chatbot_app.eleService.status === 'Rejected'"
                                        @click="openRejection(electricityService)"
                                        small
                                        style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a; margin-top: 15px;"
                                        outlined
-                                >
-                                    Reason
-                                </v-btn>
+                                > Reason </v-btn>
                             </div>
                         </v-col>
                         <v-col cols="12" v-if="chatbot_app.gasService">
@@ -831,21 +828,14 @@
                                 </p>
                             </div>
                             <div class="item" v-if="chatbot_app.gasService.service_type === 'gas'">
-                                <!--                                <p class="item-title">Gas</p>-->
-                                <!--                                <p class="item-value">{{ gasService.status }}</p>-->
                                 <v-btn v-if="chatbot_app.gasService.status === 'Rejected'"
                                        @click="openRejection(gasService)"
                                        small
                                        style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;margin-top: 15px;"
                                        outlined
-                                >
-                                    Reason
-                                </v-btn>
-
+                                >Reason</v-btn>
                             </div>
                         </v-col>
-
-
                     </v-row>
                 </v-expansion-panel-content>
             </v-expansion-panel>
@@ -874,11 +864,12 @@ import DayJs from "dayjs";
 const {titlesMapperForDropdownCb} = require("@scripts/data/titleMapper");
 import ChatbotApplicationNote from "@scripts/components/chatbot/ChatbotApplicationNote";
 import ChatbotApplicationService from "@scripts/services/chatbot/ChatbotApplicationService";
-import {isNull} from "lodash-es";
+import {isNull, cloneDeep} from "lodash-es";
 import CustomerService from "@scripts/services/CustomerService";
 import RejectionReasonModal from "@scripts/components/crm/modals/RejectionReasonModal";
 import IdCopyToClipboard from "@scripts/components/common/IdCopyToClipboard";
 import CHATBOT_APP_DATA from "@scripts/data/constants/CHATBOT_APP_DATA";
+
 export default {
     name: "ChatbotApplicationDetails",
     components: {
@@ -980,7 +971,7 @@ export default {
         async cancelPersonalDetails(){
             this.cancelPersonalLoading = true;
             await ChatbotApplicationService.updatePersonalDetails(this.app_id, this.chatbot_app_backup.personal_details);
-            this.chatbot_app = JSON.parse(JSON.stringify(this.chatbot_app_backup));
+            this.chatbot_app = cloneDeep(this.chatbot_app_backup);
             this.cancelPersonalLoading = false;
         },
 
@@ -994,7 +985,7 @@ export default {
         async cancelPropertyDetails(){
             this.cancelPropertyLoading = true;
             await ChatbotApplicationService.updatePropertyDetails(this.app_id, this.chatbot_app_backup.property_details);
-            this.chatbot_app = JSON.parse(JSON.stringify(this.chatbot_app_backup));
+            this.chatbot_app = cloneDeep(this.chatbot_app_backup);
             this.cancelPropertyLoading = false;
         },
 
@@ -1008,7 +999,7 @@ export default {
         async cancelIdDetails(){
             this.cancelIdLoading = true;
             await ChatbotApplicationService.updateIdDetails(this.app_id, this.chatbot_app_backup.id_detail);
-            this.chatbot_app = JSON.parse(JSON.stringify(this.chatbot_app_backup));
+            this.chatbot_app = cloneDeep(this.chatbot_app_backup);
             this.cancelIdLoading = false;
         },
         async saveConcessionDetails() {
@@ -1021,7 +1012,7 @@ export default {
         async cancelConcessionDetails(){
             this.cancelConcessionLoading = true;
             await ChatbotApplicationService.updateConcessionDetails(this.app_id, this.chatbot_app_backup.concession_details);
-            this.chatbot_app = JSON.parse(JSON.stringify(this.chatbot_app_backup));
+            this.chatbot_app = cloneDeep(this.chatbot_app_backup);
             this.cancelConcessionLoading = false;
         },
 
@@ -1029,9 +1020,6 @@ export default {
             return await this.$refs[reference].validate();
         },
 
-        propertyDetails(){
-            this.isProfileEditMode = false;
-        },
         updateExpireDatePicker() {
             if (DayJs(this.application.expire_date, "DD/MM/YYYY").isValid()) {
                 this.expire_date = DayJs(
@@ -1064,7 +1052,7 @@ export default {
 
         async loadApplication() {
            this.chatbot_app =  await CustomerService.getMovingData(this.app_id);
-           this.chatbot_app_backup = JSON.parse(JSON.stringify(this.chatbot_app));
+           this.chatbot_app_backup = cloneDeep(this.chatbot_app);
         },
 
         handleNewApplication(){
