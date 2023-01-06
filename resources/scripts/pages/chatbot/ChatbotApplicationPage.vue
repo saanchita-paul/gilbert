@@ -30,7 +30,7 @@
                     </v-card-text>
                 </v-card>
             </v-col>
-            <v-col cols="4" v-if="chatbotApps.length" style="max-height: 75vh" class="overflow-auto">
+            <v-col cols="4" v-if="chatbotApps.length" >
                 <ChatbotApplicationDetails  ></ChatbotApplicationDetails>
             </v-col>
         </v-row>
