@@ -1,6 +1,6 @@
 <template>
 
-    <div v-if="chatbot_app" class="hood-card" style=" padding: 0px !important; " >
+    <div v-if="chatbot_app" class="hood-card" style=" padding: 0px !important; background-color: #f8f8f8" >
         <v-row style=" padding: 25px;">
             <v-col cols="12">
                 <p style="margin-bottom: unset">Chatbot Application Details</p>
@@ -10,7 +10,7 @@
         </v-row>
         <v-divider ></v-divider>
         <v-expansion-panels class=" overflow-auto" v-model="expansionPanel" @change="handleExpansionPanel" multiple accordion style="box-shadow: none !important; max-height: 54.8vh;">
-            <v-expansion-panel style="box-shadow: none !important;">
+            <v-expansion-panel style="box-shadow: none !important;  background-color: #f8f8f8">
                 <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
                     Profile Details
                 </v-expansion-panel-header>
@@ -199,7 +199,7 @@
             </v-expansion-panel>
             <v-divider ></v-divider>
 
-            <v-expansion-panel  style="box-shadow:none !important;">
+            <v-expansion-panel  style="box-shadow:none !important; background-color: #f8f8f8">
                     <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
                         Property Details
                     </v-expansion-panel-header>
@@ -418,7 +418,7 @@
                 </v-expansion-panel>
             <v-divider ></v-divider>
 
-            <v-expansion-panel style="box-shadow:none !important;">
+            <v-expansion-panel style="box-shadow:none !important; background-color: #f8f8f8">
                 <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
                     Identification Details
                 </v-expansion-panel-header>
@@ -630,7 +630,7 @@
             </v-expansion-panel>
             <v-divider></v-divider>
 
-            <v-expansion-panel  style="box-shadow:none !important;">
+            <v-expansion-panel  style="box-shadow:none !important; background-color: #f8f8f8">
                 <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
                     Concession Card
                 </v-expansion-panel-header>
@@ -772,7 +772,7 @@
             </v-expansion-panel>
             <v-divider ></v-divider>
 
-            <v-expansion-panel style="box-shadow: none !important;">
+            <v-expansion-panel style="box-shadow: none !important; background-color: #f8f8f8">
                 <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
                     Service Preference
                 </v-expansion-panel-header>
@@ -846,7 +846,7 @@
             </v-expansion-panel>
             <v-divider></v-divider>
 
-            <v-expansion-panel>
+            <v-expansion-panel style="background-color: #f8f8f8">
                 <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
                     Application Notes
                 </v-expansion-panel-header>

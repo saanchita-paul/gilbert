@@ -2,7 +2,7 @@
     <v-container fluid style="max-height: 80vh">
         <v-row>
             <v-col cols="8">
-                <v-card>
+                <v-card style="background-color: #f8f8f8">
                     <v-card-text>
                         <v-row>
                             <v-col cols="12">

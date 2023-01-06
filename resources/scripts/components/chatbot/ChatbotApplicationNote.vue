@@ -1,6 +1,6 @@
 <template>
     <v-row>
-        <v-col cols="12" >
+        <v-col cols="12" style="background-color: #f8f8f8">
             <p class="sub-title">Notes</p>
             <ValidationObserver ref="application_note_ref">
                 <ValidationProvider
@@ -19,7 +19,7 @@
             </ValidationObserver>
             <v-btn class="mt-2 float-right white--text note-button" @click="saveNote" color="#542E89" :disabled="isNoteTextEmpty">Submit Note</v-btn>
         </v-col>
-        <v-col cols="12" v-if="applications.length > 0" class="notes-container">
+        <v-col cols="12" v-if="applications.length > 0" class="notes-container" style="background-color: #f8f8f8">
             <v-timeline dense>
                 <v-timeline-item color="primary" small v-for="(item, index) in applications" :color="getColor(index)" :key="index">
                     <v-card class="elevation-2 timeline-card" color="gray" :class="{active:index===0}">

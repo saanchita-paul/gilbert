@@ -12,6 +12,7 @@
             item-key="id"
             class="row-pointer"
             @click:row="onRowSelect"
+            single-select
         >
             <template v-slot:item.data-table-select="{ item, isSelected, select }">
                 <v-simple-checkbox
@@ -115,9 +116,10 @@ export default {
             this.$emit('selectRowCafFile', item);
         },
 
-        onRowSelect(item) {
+        onRowSelect(item, row) {
             let params = { ...this.$route.query, app_id: item.id}
             this.$router.replace({ query: {...params} });
+            row.select(true);
         },
         isSelectedClass(item) {
             if (item.id === this.selectedRowId) {
