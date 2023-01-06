@@ -10,6 +10,7 @@
                         <IdCopyToClipboard :applicationId="app_id"></IdCopyToClipboard>
                     </v-col>
                 </v-row>
+                <v-divider></v-divider><v-divider></v-divider><v-divider></v-divider>
                 <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
                     Profile Details
                 </v-expansion-panel-header>
