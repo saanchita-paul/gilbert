@@ -1001,7 +1001,6 @@ export default {
         async changeServiceStatus(service) {
             const res  =  await ChatbotApplicationService.saveServiceStatus(service);
         }
-
     },
     mounted(){
         this.handleNewApplication()
