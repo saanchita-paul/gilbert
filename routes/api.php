@@ -25,8 +25,6 @@ use PropertyMe\services\FetchContacts;
 use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\GilbertLeadAPIController;
 use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
-use App\Http\Controllers\Agency\MriOfficeController;
-use MRI\Controllers\TestMriController;
 use App\Http\Controllers\ApplicationEventController;
 
 /*
@@ -46,7 +44,6 @@ Route::middleware('auth:sanctum')
     ->get('/user', [AuthController::class, 'authUser']);
 
 Route::get('/logout', [AuthController::class, 'logout']);
-
 /**
  * @Module AGENCY CRM
  */
@@ -108,10 +105,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     // Assign Applications Routes
     Route::get('/all-offices-for-assign-applications', [OfficeController::class, 'getOfficesForAssignApplications'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
-    Route::get(
-        '/offices/{officeId}/all-agents-for-assign-applications',
-        [AgentProfileController::class, 'getAgentsForAssignApplications']
-    );
+    Route::get('/offices/{officeId}/all-agents-for-assign-applications', [AgentProfileController::class, 'getAgentsForAssignApplications']);
     Route::post('/offices/assign-applications', [OfficeController::class, 'assignApplications']);
 
     /**
@@ -165,6 +159,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 
 
+
+
     //todo: make a  separate controller for notes
     Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_NOTES);
@@ -206,11 +202,6 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::get('/applications/{id}/send-to-chatbot', [SendApplicationToChatbotController::class, 'sendApplication']);
     Route::get('/applications/{id}/is-sent-to-chatbot', [ApplicationController::class, 'isSentToChatBot']);
-
-    // Lock/unlock application routes
-    Route::post('/applications/{id}/lock-or-unlock', [ApplicationController::class, 'lockUnlockApp']);
-
-
      /***
      * Application closing reasons route
      */
@@ -237,6 +228,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      * api for powershop payment
      */
     Route::post('/powershop/payment', [PaymentInfoController::class, 'updateCost']);
+
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
@@ -298,12 +290,7 @@ Route::get('/applications/{id}/email-manually-verified', [ApplicationController:
 /**
  * gilbert to chatbot sync
  */
-Route::post('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syncProperty']);
-
-/**
- * MRI Office
- */
-Route::get('/mri-offices', [MriOfficeController::class, 'getMriOffices']);
+Route::get('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syncProperty']);
 
 /**
  * application events
@@ -351,15 +338,15 @@ Route::get('/applications/{applicationId}/{submitType}/same-day-connection', [Po
 // });
 
 
+
+
+
+
 Route::get('/kaka', function () {
-    foreach(range(1,6) as $r) {
-        \App\Jobs\SlowJob::dispatch($r);
-    }
-    foreach(range(1,6) as $r) {
-        \App\Jobs\QuickJob::dispatch($r);
-    }
-//    \App\Jobs\QuickJob::dispatch(1);
-    return 'ok';
+    $m = new \App\Services\Address\AddressModel(connection_application_id: 2);
+    $s= new \App\Services\Address\GBGServices($m);
+    dd($s->findAddressByText());
+
 });
 
 
@@ -369,9 +356,48 @@ Route::get('powers-api', function () {
     dd($re);
 });
 
+//Route::get('/exceltest', function () {
+//    return FastExcel::data(collect([['name'=> 'sanchita'], ['name'=> 'paul']]))->download('file.xlsx');
+//});
 
 
+//Route::post('/gbg-validate-email', function() {
+//
+//    $email = "admin@mail.com";
+//    $service = new GBGEmailValidationService();
+//
+//    return $service->validateEmail($email);
+//
+//});
 
-Route::get('/test/mri/agents', [TestMriController::class, 'fetchAgents']);
 
-Route::get('/test/mri/tenancies', [TestMriController::class, 'fetchTenancies']);
+Route::get('/nmi-mirn', function() {
+//    dd('hello');
+    $app = ConnectionApplication::firstOrFail();
+    $app->first_name = 'helllllo';
+    $app->updateOrFail();
+    info('testing' , [$app]);
+//    return true;
+//    $app = ConnectionApplication::where('id', 1)->firstOrFail();
+//    $app->update([
+//        'nmi' => 349379
+//    ]);
+
+});
+
+Route::get('/test', function() {
+//    dd('hello');
+    $service = \App\Models\ConnectionService::where('id', 12)->firstOrFail();
+    $service->update([
+        'service_type' => 'electricity',
+        'connection_application_id' => 4,
+        'status' => 1
+    ]);
+//    $service = ConnectionService::update([
+//        'service_type' => 'hgfhg',
+//        'connection_application_id' => 4
+//    ]);
+//    dd($service);
+//    ApplicationFromGilbertJob::dispatch(3);
+
+});

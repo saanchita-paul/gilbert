@@ -5,6 +5,7 @@ namespace App\Modules\PropertyMe\Commands;
 use App\Models\Office;
 use App\Modules\PropertyMe\Services\SaveToConnectionApplication;
 use App\Notifications\ErrorLogNotification;
+use App\Services\Address\GBGAddressCleanse;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -115,15 +116,16 @@ class SavePropertyMeLeadsCommand extends Command
 
         $pm = new SaveContacts($office->property_me_refresh_token);
         $leads = $pm->fetch()->createLead()->getSavedLeads();
+        $leadCleanseAddresses = $this->getCleanseAddress($leads);
 
 
         $this->line("[$office->name]  Saved in property_me_leads: " . sizeof($leads));
 
         $saveService = new SaveToConnectionApplication($office);
 
-        foreach ($leads as $lead) {
+        foreach ($leads as $key =>  $lead) {
             try {
-                $saveService->run($lead);
+                $saveService->run($lead, $leadCleanseAddresses[$key] ?? null);
             } catch (Exception $e) {
                 Log::error($e->getMessage());
                 Log::error($e->getTraceAsString());
@@ -137,6 +139,16 @@ class SavePropertyMeLeadsCommand extends Command
             }
         }
         $this->info("[$office->name] Complete");
+    }
+
+    private function getCleanseAddress($leads): array
+    {
+        $addresses = [];
+        foreach ($leads as $lead) {
+            $addresses[] = data_get($lead, 'PrimaryContactPerson.PhysicalAddress.Text');
+        }
+
+        return (new GBGAddressCleanse())->run($addresses);
     }
 
 

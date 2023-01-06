@@ -2,8 +2,8 @@
 
 namespace App\Modules\PropertyMe\Services;
 
-use App\Events\Agency\CreateApplicationEvent;
 use App\Events\NotifyAgentAfterLeadCreation;
+use App\Jobs\CreateHubspotProperty;
 use App\Models\AgentProfile;
 use App\Models\User;
 use App\Models\ConnectionApplication;
@@ -11,10 +11,14 @@ use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\Identification;
 use App\Models\Office;
 use App\Notifications\ErrorLogNotification;
+use App\Services\Address\AddressModel;
+use App\Services\Address\StreetTypeMapper;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Notification;
 use PropertyMe\PropertyMeLead;
+use App\Modules\PropertyMe\Services\DobIdentificationService;
 use App\Models\ApplicationNote;
 use App\Models\ConnectionService;
 use App\Services\NotifyBadAgentMailService;
@@ -24,7 +28,7 @@ class SaveToConnectionApplication
 
     public function __construct(private Office $office) {}
 
-    public function run(PropertyMeLead $lead)
+    public function run(PropertyMeLead $lead, ?array $cleanseAddress)
     {
         $leadData = json_decode($lead->all_fields_dump, true);
 
@@ -39,7 +43,8 @@ class SaveToConnectionApplication
         $movingDate = data_get($lead, 'movingDate');
         unset($lead->movingDate);
 
-        $application = ConnectionApplication::query()->create([
+        $customerAddress = $this->mapAddresses($leadData, $cleanseAddress);
+        $application = ConnectionApplication::query()->create(array_merge($customerAddress, [
             'source' => ConnectionApplication::SOURCE_PROPERTY_ME,
             'office_id' => $this->office->id,
             'agency_id' => $this->office->agency->id,
@@ -80,7 +85,7 @@ class SaveToConnectionApplication
             'billing_country' => $this->extractContact($leadData, 'PostalAddress.Country'),
             'billing_address_text' => $this->extractContact($leadData, 'PostalAddress.Text'),
 
-        ]);
+        ]));
 
         // auto adding water service to connection application
         if ($application->id) {
@@ -141,10 +146,38 @@ class SaveToConnectionApplication
 
         $this->saveApplicationId($application->id, $lead);
         NotifyAgentAfterLeadCreation::dispatch($application->id);
-
-        CreateApplicationEvent::dispatch($application->id);
+        CreateHubspotProperty::dispatch($application->id);
 
         return $application;
+    }
+
+    private function mapAddresses($leadData, $address): array
+    {
+        if ($address) {
+            return [
+                'unit_number' => data_get($address, 'flatUnitNumber'),
+                'street_number' => data_get($leadData, 'streetNumber'),
+                'street_name_only' => data_get($leadData, 'streetName'),
+                'street_type' => StreetTypeMapper::getShortForm(data_get($leadData, 'streetType')) ,
+                'postcode' => data_get($leadData, 'postcode'),
+                'city' => data_get($leadData, 'locality'),
+                'state' => AddressModel::mapStateToLong(data_get($leadData, 'state')),
+                'country' => data_get($leadData, 'country'),
+                'address_text' => data_get($leadData, 'fullAddress'),
+            ];
+        }
+        return [
+            'unit_number' => $this->extractContact($leadData, 'PhysicalAddress.Unit'),
+            'street_number' => $this->extractContact($leadData, 'PhysicalAddress.Number'),
+            'street_name' => $this->extractContact($leadData, 'PhysicalAddress.Street'),
+            'street_address' => $this->getStreetAddress($leadData),
+            'postcode' => $this->extractContact($leadData, 'PhysicalAddress.PostalCode'),
+            'city' => $this->extractContact($leadData, 'PhysicalAddress.Suburb'),
+            'state' => $this->extractContact($leadData, 'PhysicalAddress.State'),
+            'country' => $this->extractContact($leadData, 'PhysicalAddress.Country'),
+            'address_text' => $this->extractContact($leadData, 'PhysicalAddress.Text'),
+        ];
+
     }
 
 
