@@ -149,12 +149,19 @@ export default {
     updateNMIAndMIRN: (movingUtilityId, params) => {
         return axios.put(`${BOT_API}/moving-utility/${movingUtilityId}`, params);
     },
+    /**
+     *
+     * @param id
+     */
 
     getMovingUtilityData: async (id) => {
         const response = await axios.get(`${BOT_API}/utility-data/${id}`);
         return ChatbotApplicationMapper.mapApplication(response.data);
     },
-
+    /**
+     *
+     * @param connectionServiceId
+     */
     getRejectionReasonData: async (connectionServiceId) => {
         const response = await axios.get(`${BOT_API}/rejection-reasons/${connectionServiceId}`);
         return response.data;
