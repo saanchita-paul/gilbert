@@ -23,8 +23,6 @@
                         <p>Application is locked because it is being handled by our chatbot. <br>
                             Click the <span class="font-weight-bolder">"Unlock Application"</span> button below to
                             manually process this application.</p>
-                        <p><span class="font-weight-bolder">Pro Tip: </span> Unlocking will assign this application to
-                            this role <span class="font-weight-bolder">"Unlocked Chatbot"</span></p>
                     </div>
                 </v-card-text>
                 <v-card-actions>
