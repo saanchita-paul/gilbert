@@ -136,6 +136,7 @@ class SaveToConnectionApplication
 
     private function mapAddress($leadData, $address): array
     {
+        $country = $this->extractContact($leadData, 'PhysicalAddress.Country');
         if ($address) {
             return [
                 'unit_number' => data_get($address, 'flatUnitNumber'),
@@ -145,8 +146,8 @@ class SaveToConnectionApplication
                 'postcode' => data_get($address, 'postcode'),
                 'city' => data_get($address, 'locality'),
                 'state' => AddressModel::mapStateToLong(data_get($address, 'state')),
-                'country' => 'Australia',
-                'address_text' => data_get($address, 'fullAddress'),
+                'country' => $country,
+                'address_text' => data_get($address, 'fullAddress') . " $country",
             ];
         }
         return [
@@ -164,6 +165,8 @@ class SaveToConnectionApplication
     }
     private function mapBillingAddress($leadData, $address): array
     {
+        $country = $this->extractContact($leadData, 'PostalAddress.Country');
+
         if ($address) {
             return [
                 'billing_unit_number' => data_get($address, 'flatUnitNumber'),
@@ -173,7 +176,7 @@ class SaveToConnectionApplication
                 'billing_postcode' => data_get($address, 'postcode'),
                 'billing_city' => data_get($address, 'locality'),
                 'billing_state' => AddressModel::mapStateToLong(data_get($address, 'state')),
-                'billing_address_text' => data_get($address, 'fullAddress'),
+                'billing_address_text' => data_get($address, 'fullAddress') . ' Australia',
             ];
         }
         return [
@@ -184,7 +187,7 @@ class SaveToConnectionApplication
             'billing_postcode' => $this->extractContact($leadData, 'PostalAddress.PostalCode'),
             'billing_city' => $this->extractContact($leadData, 'PostalAddress.Suburb'),
             'billing_state' => $this->extractContact($leadData, 'PostalAddress.State'),
-            'billing_address_text' => $this->extractContact($leadData, 'PostalAddress.Text'),
+            'billing_address_text' => $this->extractContact($leadData, 'PostalAddress.Text') . " $country",
         ];
 
     }
