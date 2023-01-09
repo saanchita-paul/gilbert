@@ -161,7 +161,7 @@ class ApplicationServiceStatusService
         $this->setConnectionServicesNewStatus();
     }
 
-    // Make old status json for services
+    // Make old status json for Services
     private function setConnectionServicesOldStatus()
     {
         foreach ($this->connectionApplication->connectionServices as $connectionService) {
@@ -171,7 +171,7 @@ class ApplicationServiceStatusService
         }
     }
 
-    // Make new status json for services
+    // Make new status json for Services
     private function setConnectionServicesNewStatus()
     {
         // Get array_keys of validated data

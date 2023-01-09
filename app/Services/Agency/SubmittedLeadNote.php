@@ -40,7 +40,7 @@ class SubmittedLeadNote
            'plan_type' => $planType,
            'post_code' => $postCode,
            'state' => $state,
-           'services' => $submittedService,
+           'Services' => $submittedService,
            'first_name' => $this->existLead?->first_name,
            'last_name' => $this->existLead?->last_name,
            'application_id' => $this->existLead?->id,

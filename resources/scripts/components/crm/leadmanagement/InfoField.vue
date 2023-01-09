@@ -1889,11 +1889,11 @@ export default {
     computed: {
         isNMIRequired() {
             return !this.isWaterTabFocused && (this.isPowerTabFocused || this.isBothEnergySubmit);
-            // return !this.isWaterTabFocused && !!(Array.isArray(this.services) && this.services.some(n => n === 'power'));
+            // return !this.isWaterTabFocused && !!(Array.isArray(this.Services) && this.Services.some(n => n === 'power'));
         },
         isMERNRequired() {
             return !this.isWaterTabFocused && (this.isGasTabFocused || this.isBothEnergySubmit);
-            // return !this.isWaterTabFocused && !!(Array.isArray(this.services) && this.services.some(n => n === 'gas'));
+            // return !this.isWaterTabFocused && !!(Array.isArray(this.Services) && this.Services.some(n => n === 'gas'));
         },
         billingAddressMsg() {
             return this.property_details.is_billing_same ? "Same as service address" : this.property_details.billing_address_text;
@@ -2063,7 +2063,7 @@ export default {
 
   },
   async mounted() {
-    // console.log('services', this.services);
+    // console.log('Services', this.Services);
     await this.synFormData();
     await this.formatDate();
     await this.updateLeads();
