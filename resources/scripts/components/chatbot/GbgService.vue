@@ -123,7 +123,7 @@
                                                                   v-model="propertyDetails.state"
                                                                   :items="states"
                                                                   item-value="text"
-                                                                  item-text="value"
+                                                                  item-text="text"
                                                                   :readonly="!propertyDetails.mannual_address"
                                                                   label="State/Territory*"
                                                                   :error-messages=" errors[0]"
@@ -263,6 +263,8 @@
                                                         <v-select outlined dense
                                                                   v-model="propertyDetails.billing_state"
                                                                   :items="states"
+                                                                  item-text="text"
+                                                                  item-value="text"
                                                                   :readonly="!propertyDetails.billing_mannual_address"
                                                                   label="State/Territory*"
                                                                   :error-messages=" errors[0]"
@@ -342,30 +344,6 @@ export default {
     },
     data () {
         return {
-            // propertyDetails: {
-            //     street_address : null,
-            //     city : null,
-            //     postcode : null,
-            //     state : null,
-            //     state_short : null,
-            //     street_number : null,
-            //     unit_number : null,
-            //     street_name : null,
-            //     street_name_only : null,
-            //     street_type  :null,
-            //     mannual_address : true,
-            //     billing_street_address : null,
-            //     billing_city : null,
-            //     billing_postcode : null,
-            //     billing_state : null,
-            //     billing_street_number : null,
-            //     billing_unit_number : null,
-            //     billing_street_name : null,
-            //     billing_street_name_only : null,
-            //     billing_street_type : null,
-            //     billing_mannual_address :true,
-            //     is_billing_same: false,
-            // },
             currentAddress: {},
             checkbox: true,
             showMenu: false,

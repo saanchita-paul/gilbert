@@ -409,6 +409,7 @@
                                                     dense
                                                     hide-details="auto"
                                                     :error-messages="errors[0]"
+                                                    :loading="address_loader"
                                                 ></v-text-field>
                                             </ValidationProvider>
                                         </div>
@@ -942,7 +943,8 @@ export default {
             sticky : true,
             isLoadSkeleton : false,
             skeletonAttribute: SkeletonLoaderData.attribute,
-            skeletonType : SkeletonLoaderData.type
+            skeletonType : SkeletonLoaderData.type,
+            address_loader: false,
         }
     },
     computed: {
@@ -1161,6 +1163,7 @@ export default {
 
         saveAddress(address) {
             console.log(address);
+            this.address_loader = true;
             console.log('address part is here');
         },
 
