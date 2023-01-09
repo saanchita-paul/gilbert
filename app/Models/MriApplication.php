@@ -32,6 +32,7 @@ class MriApplication extends Model
         'MEDICARE_CARD_NUMBER' => Identification::TYPE_MEDICARE,
     ];
 
+    protected $guarded = ['id'];
 
     protected $casts = [
         'has_process_note' => 'boolean',

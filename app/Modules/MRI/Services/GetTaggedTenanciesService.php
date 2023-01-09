@@ -59,6 +59,11 @@ class GetTaggedTenanciesService
         $this->tagName = !empty(config('mri.hood_tag_name')) ? config('mri.hood_tag_name') : self::TAG_NAME;
     }
 
+    public function setOfficeId(int $officeId)
+    {
+        $this->officeId = $officeId;
+    }
+
     private function setToken(string $token)
     {
         $this->accessToken = $token;

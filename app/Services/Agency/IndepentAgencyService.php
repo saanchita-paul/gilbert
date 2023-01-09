@@ -16,16 +16,16 @@ class IndepentAgencyService
         $ofcAndAgencySvc = new CreateOfficeAndAgency();
         $agentAndUserSvc = new CreateAgentAndUser();
 
-        $officeData = $inputData['office'];
-        $agencyData = $inputData['agency'];
-        $officeCommissionsData = $inputData['office_commissions'];
-        $mriOffice = $inputData['mri_office'];
+        $officeData = $inputData['office'] ?? null;
+        $agencyData = $inputData['agency'] ?? null;
+        $officeCommissionsData = $inputData['office_commissions'] ?? null;
+        $mriOffice = $inputData['mri_office'] ?? null;
         $agency = $agencySvc->createAgency($agencyData);
 
         $officeData['agency_id'] = $agency->id;
         $office = $ofcAndAgencySvc->createOffice($officeData);
         // Save MRI office
-        if ($mriOffice) {
+        if (!empty($mriOffice)) {
             $service = new HandleMRIOfficeService($office->id);
             $service->saveMRIOffice($mriOffice);
         }

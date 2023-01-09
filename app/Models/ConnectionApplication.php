@@ -608,7 +608,9 @@ class ConnectionApplication extends Model
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agent_name,
             ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agent_name,
             ConnectionApplication::SOURCE_T_APP => $this->createdBy?->first_name . ' ' . $this->createdBy?->last_name,
-            ConnectionApplication::SOURCE_MRI => $this->createdBy?->first_name . ' ' . $this->createdBy?->last_name,
+            ConnectionApplication::SOURCE_MRI =>
+                $this->createdBy ? $this->createdBy->first_name . ' ' . $this->createdBy->last_name :
+                $this->mriApplication?->mriProperty?->mriAgents()?->first()?->agent_name,
             default => ''
         };
     }

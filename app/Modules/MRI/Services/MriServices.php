@@ -105,9 +105,12 @@ class MriServices
         $mapNoteService->run();
     }
 
-    public static function handleFetchTaggedTenancies()
+    public static function handleFetchTaggedTenancies($officeId)
     {
         $taggedService = new GetTaggedTenanciesService();
+        if (!empty($officeId)) {
+            $taggedService->setOfficeId(intval($officeId));
+        }
         $taggedService->run();
     }
 }

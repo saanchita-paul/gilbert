@@ -95,7 +95,6 @@ class ApplicationController extends Controller
             NotifyAgentAfterLeadCreation::dispatch($application->id);
 
             return ApplicationResource::make($application);
-
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
