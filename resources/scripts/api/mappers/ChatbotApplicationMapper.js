@@ -6,6 +6,34 @@ import ApplicationNote from "@scripts/models/chatbot/ApplicationNote";
 import * as dayjs from "dayjs";
 import ConnectionService from "@scripts/models/chatbot/ConnectionService";
 import ConcessionDetail from "@scripts/models/chatbot/ConcessionDetail";
+import GBGAddress from "@scripts/models/chatbot/GBGAddress";
+
+function mapPropertyAddress(dt) {
+    return {
+        street_address :dt?.street_address,
+        city : dt?.suburb,
+        postcode : dt?.to_postcode,
+        state : dt?.state,
+        state_short : dt?.state,
+        street_number : dt?.street_number,
+        unit_number : dt?.flat_or_unit_number,
+        street_name : dt?.street_name,
+        street_name_only : dt?.street_name_only,
+        street_type : dt?.street_type,
+        mannual_address : false,
+        billing_street_address : dt?.billing_street_address,
+        billing_city : dt?.billing_city,
+        billing_postcode : dt?.billing_postcode,
+        billing_state : dt?.billing_state,
+        billing_street_number : dt?.billing_street_number,
+        billing_unit_number : dt?.billing_unit_number,
+        billing_street_name : dt?.billing_street_name,
+        billing_street_name_only : dt?.billing_street_name_only,
+        billing_street_type : dt?.billing_street_type,
+        billing_mannual_address : false,
+        is_billing_same : dt.is_billing_same,
+    };
+}
 
 export default {
     mapApplication: (application) => {
@@ -15,6 +43,7 @@ export default {
         const concession_details = new ConcessionDetail(application);
         const application_note = application.application_notes?.map(item => new ApplicationNote(item));
         const connection_service = application.connection_services?.map(item => new ConnectionService(item));
+        const property_address = new GBGAddress(mapPropertyAddress(application));
         let eleService = null;
         let gasService = null;
 
@@ -44,6 +73,7 @@ export default {
             concession_details: concession_details,
             eleService : eleService,
             gasService : gasService,
+            property_address: property_address
         });
     },
 

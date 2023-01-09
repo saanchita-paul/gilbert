@@ -398,6 +398,7 @@
                                         >
                                             <v-text-field
                                                 v-model="chatbot_app.property_details.to_address"
+                                                @click="openGbGAddress"
                                                 outlined
                                                 dense
                                                 hide-details="auto"
@@ -855,6 +856,7 @@
 
         <RejectionReasonModal v-if="dialog" :dialog="dialog" :service="selectedRejectedService"  @close="onCloseReject" ></RejectionReasonModal>
 
+        <GgbService v-if="showGbg" :dialog="showGbg"  :propertyDetails="chatbot_app.property_address" @close="showGbg = false" @saveAddress="saveAddress"></GgbService>
     </div>
 </template>
 
@@ -869,10 +871,12 @@ import CustomerService from "@scripts/services/CustomerService";
 import RejectionReasonModal from "@scripts/components/crm/modals/RejectionReasonModal";
 import IdCopyToClipboard from "@scripts/components/common/IdCopyToClipboard";
 import CHATBOT_APP_DATA from "@scripts/data/constants/CHATBOT_APP_DATA";
+import GgbService from "@scripts/components/chatbot/GbgService";
 
 export default {
     name: "ChatbotApplicationDetails",
     components: {
+        GgbService,
         RejectionReasonModal,
         ChatbotApplicationNote,
         IdCopyToClipboard
@@ -922,6 +926,7 @@ export default {
             applicationNoteFlag : [],
             cancelConcessionLoading: false,
             saveConcessionLoading: false,
+            showGbg: false
         }
     },
     computed: {
@@ -1112,6 +1117,14 @@ export default {
                 }
             }
         },
+        openGbGAddress() {
+            this.showGbg = true;
+        },
+
+        saveAddress(address) {
+            console.log(address);
+            console.log('address part is here');
+        }
 
     },
     mounted(){

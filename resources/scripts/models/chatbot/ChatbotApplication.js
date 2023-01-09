@@ -8,6 +8,7 @@ export default class {
                     eleService = null,
                     gasService = null,
                     concession_details = null,
+                    property_address= null,
 
 
                 }) {
@@ -20,6 +21,7 @@ export default class {
         this.eleService = eleService;
         this.gasService = gasService;
         this.concession_details = concession_details;
+        this.property_address = property_address;
     }
 
     setIdDetails(idDetail) {
