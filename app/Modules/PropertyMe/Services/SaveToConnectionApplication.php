@@ -13,6 +13,7 @@ use App\Models\Identification;
 use App\Models\Office;
 use App\Notifications\ErrorLogNotification;
 use App\Services\Address\AddressModel;
+use App\Services\Address\GBGAddressMapper;
 use App\Services\Address\StreetTypeMapper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -23,6 +24,8 @@ use App\Modules\PropertyMe\Services\DobIdentificationService;
 use App\Models\ApplicationNote;
 use App\Models\ConnectionService;
 use App\Services\NotifyBadAgentMailService;
+
+use function Sodium\add;
 
 class SaveToConnectionApplication
 {
@@ -135,20 +138,17 @@ class SaveToConnectionApplication
         return $application;
     }
 
+    /**
+     *  Mapping Address
+     *
+     * @param $leadData
+     * @param $address
+     * @return array
+     */
     private function mapAddress($leadData, $address): array
     {
         if ($address) {
-            return [
-                'unit_number' => data_get($address, 'flatUnitNumber'),
-                'street_number' => data_get($address, 'streetNumber'),
-                'street_name_only' => data_get($address, 'streetName'),
-                'street_type' => StreetTypeMapper::getShortForm(data_get($address, 'streetType')) ,
-                'postcode' => data_get($address, 'postcode'),
-                'city' => data_get($address, 'locality'),
-                'state' => AddressModel::mapStateToLong(data_get($address, 'state')),
-                'country' => 'Australia',
-                'address_text' => data_get($address, 'fullAddress'),
-            ];
+            return GBGAddressMapper::toAppAddress($address);
         }
         return [
             'unit_number' => $this->extractContact($leadData, 'PhysicalAddress.Unit'),
@@ -163,19 +163,20 @@ class SaveToConnectionApplication
         ];
 
     }
+
+    /**
+     * Mapping Address
+     *
+     * @param $leadData
+     * @param $address
+     * @return array
+     */
     private function mapBillingAddress($leadData, $address): array
     {
+        $country = $this->extractContact($leadData, 'PostalAddress.Country');
+
         if ($address) {
-            return [
-                'billing_unit_number' => data_get($address, 'flatUnitNumber'),
-                'billing_street_number' => data_get($address, 'streetNumber'),
-                'billing_street_name_only' => data_get($address, 'streetName'),
-                'billing_street_type' => StreetTypeMapper::getShortForm(data_get($address, 'streetType')) ,
-                'billing_postcode' => data_get($address, 'postcode'),
-                'billing_city' => data_get($address, 'locality'),
-                'billing_state' => AddressModel::mapStateToLong(data_get($address, 'state')),
-                'billing_address_text' => data_get($address, 'fullAddress'),
-            ];
+            return GBGAddressMapper::toBillingAddress($address);
         }
         return [
             'billing_unit_number' => $this->extractContact($leadData, 'PostalAddress.Unit'),
@@ -185,7 +186,7 @@ class SaveToConnectionApplication
             'billing_postcode' => $this->extractContact($leadData, 'PostalAddress.PostalCode'),
             'billing_city' => $this->extractContact($leadData, 'PostalAddress.Suburb'),
             'billing_state' => $this->extractContact($leadData, 'PostalAddress.State'),
-            'billing_address_text' => $this->extractContact($leadData, 'PostalAddress.Text'),
+            'billing_address_text' => $this->extractContact($leadData, 'PostalAddress.Text') . " $country",
         ];
 
     }

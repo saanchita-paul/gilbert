@@ -32,7 +32,8 @@
         "pusher/pusher-php-server": "~4.0",
         "rap2hpoutre/fast-excel": "^3.1",
         "spatie/laravel-permission": "^4.2",
-        "twilio/sdk": "^6.41"
+        "twilio/sdk": "^6.41",
+        "ext-intl": "*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.10",
