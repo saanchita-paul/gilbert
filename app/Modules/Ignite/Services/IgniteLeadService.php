@@ -4,6 +4,8 @@ namespace Ignite\Services;
 
 use App\Events\Agency\CreateApplicationEvent;
 use App\Events\NotifyAgentAfterLeadCreation;
+use App\Services\Address\GBGAddressCleanse;
+use App\Services\Address\GBGAddressMapper;
 use Ignite\Models\IgniteLead;
 use App\Models\Agency;
 use App\Models\Identification;
@@ -92,24 +94,16 @@ class IgniteLeadService
         $this->connectionApplication->tenancy_type = ConnectionApplication::TENANCY_TYPE_RENTER;
 
         //property
-        $street   =  $leadInfo['property']['street'] ?? '';
-        $state    = self::MAP_STATE[strtolower( $leadInfo['property']['state'] )] ?? '';
-        $postcode = $leadInfo['property']['postcode'] ?? '';
-        $city     = $leadInfo['property']['suburb'] ?? '';
-
-        $this->connectionApplication->street_address = $street;
-        $this->connectionApplication->state          = $state;
-        $this->connectionApplication->postcode       = $postcode;
-        $this->connectionApplication->city           = $city;
         $this->connectionApplication->moving_date    = date("Y-m-d", strtotime(  $leadInfo['property']['moveInDate'] ))  ?? '2021/10/02';
 
-        $this->connectionApplication->address_text   = $street . ' ' . $city . ' ' . $state  . ' ' . $postcode;
 
         $this->connectionApplication->created_by = AgentProfile::whereHas(
             'user',
             fn(Builder $user) => $user->where('email', $this->lead->agent_email)
         )->first()?->id ?? null;
     }
+
+
 
     private function setIdentification(array $leadInfo) : void
     {
@@ -217,10 +211,12 @@ class IgniteLeadService
      * @return bool
      * @throws Exception
      */
-    private function insertLead(array $leadInfo): bool
+    private function insertLead(array $leadInfo, ?array $cleanseAddress = null): bool
     {
         try {
             $this->connectionApplication = new ConnectionApplication;
+            $this->connectionApplication->fill(GBGAddressMapper::toAppAddress($cleanseAddress));
+
             $this->lead = new IgniteLead();
 
             $this->setAttributeToIgniteLead($leadInfo);
@@ -291,13 +287,16 @@ class IgniteLeadService
      * @return void
      * @throws Exception
      */
-    public function dummyCreate() {
+    public function dummyCreate(): void
+    {
         try {
             $leads = json_decode(file_get_contents(storage_path('app/ignite_lead_response.json')), true);
-            foreach ($leads as $leadInfo) {
+            $cleanseAddress = $this->addressCleanse($leads);
+
+            foreach ($leads as $key =>  $leadInfo) {
                 $igniteLead = IgniteLead::where('lead_id' ,  $leadInfo['application']['id'])->first();
                 if(!$igniteLead){
-                    $this->insertLead($leadInfo);
+                    $this->insertLead($leadInfo, $cleanseAddress[$key] ?? null);
                 }
             };
         } catch (\Exception $exception) {
@@ -316,12 +315,14 @@ class IgniteLeadService
      */
     private function verifyData(array $allLead , IgniteConnectionLeadService $service)
     {
+        $cleanseAddress = $this->addressCleanse($allLead);
 
-        foreach ($allLead  as $leadInfo) {
+        foreach ($allLead  as $key => $leadInfo) {
             try {
                 $igniteLead = IgniteLead::where('lead_id' ,  $leadInfo['application']['id'])->first();
                 if(!$igniteLead){
-                    $this->insertLead($leadInfo);
+                    $address = $cleanseAddress[$key] ?? null;
+                    $this->insertLead($leadInfo, $address);
                 }
             } catch (\Exception $exception) {
                 \Log::error($exception->getMessage());
@@ -336,6 +337,22 @@ class IgniteLeadService
             $this->verifyData($allLead , $service);
         }
 
+    }
+
+    private function addressCleanse(array $leads): array
+    {
+        $addresses = [];
+        foreach ($leads as $lead) {
+            $street = $lead['property']['street'] ?? "";
+            $city = $lead['property']['suburb'] ?? "";
+            $state = $lead['property']['state'] ?? "";
+            $postcode = $lead['property']['postcode'] ?? "";
+
+            $address = "$street, $city $state $postcode, Australia";
+
+            $addresses[] = ['fullAddress' => $address];
+        }
+        return (new GBGAddressCleanse())->run($addresses);
     }
 
     private function setAttributeToIgniteLead(array $leadInfo)
