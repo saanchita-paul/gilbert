@@ -3,8 +3,10 @@
 namespace CafExporter\Services;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use App\Models\OriginPlan;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Origin\Services\StoreProductInfoAPI;
 use Rap2hpoutre\FastExcel\Facades\FastExcel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -25,12 +27,35 @@ class OriginExporterService
      * @var array
      */
     private array $mappedApplicationList;
+    /**
+     * @var array
+     */
     private array $gasPromotionData;
+    /**
+     * @var array
+     */
     private array $elePromotionData;
+    /**
+     * @var
+     */
     private $cafToken;
+    /**
+     * @var \Illuminate\Config\Repository|\Illuminate\Contracts\Foundation\Application|mixed
+     */
     private $chatbotUri;
 
+    /**
+     *
+     */
+    public const HAS_UNRESTING_ANIMAL = 1;
+    /**
+     *
+     */
+    public const NO_UNRESTING_ANIMAL = 0;
 
+    /**
+     * @param array $applicationIdList
+     */
     public function __construct(array $applicationIdList)
     {
         $this->chatbotUri = config('bot.root_url');
@@ -42,6 +67,13 @@ class OriginExporterService
         $this->mapApplications();
     }
 
+    /**
+     * @return StreamedResponse
+     * @throws \Box\Spout\Common\Exception\IOException
+     * @throws \Box\Spout\Common\Exception\InvalidArgumentException
+     * @throws \Box\Spout\Common\Exception\UnsupportedTypeException
+     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException
+     */
     public function downloadCAF(): StreamedResponse
     {
         return FastExcel::data(collect($this->mappedApplicationList))->download(now()->unix().'.xlsx');
@@ -64,6 +96,20 @@ class OriginExporterService
 
     public function mapApplications()
     {
+        $base = config('bot.root_url');
+        $endpoint = '/hood-dashboard/api/origin-campaign-codes';
+        $url = $base . $endpoint;
+        $headers = [
+            "Accept" => "application/json",
+        ];
+        $response = Http::withOptions([
+            "headers" => $headers,
+            "verify" => false,
+        ])->get($url);
+
+        $response->throw();
+
+        $this->campaignInfo = json_decode($response->body(), true);
 
         $selectedId = [];
         foreach ($this->applicationList as $app) {
@@ -127,15 +173,15 @@ class OriginExporterService
                     'Life Support Flag Requirement' => $this->checkLifeSupport($app),
                     'Life Support Note' => '',
                     'Sale Type' => 'Move in',
-                    'Nominated MOVE IN DATE' => date('d/m/Y', strtotime($app->moved_at)),
+                    'Nominated MOVE IN DATE' => date('d/m/Y', strtotime($app->moving_date)),
                     'Electricity NMI' => $app->nmi,
                     'Electricity Meter Number' => '',
-                    'Electricity Campaign Code' => $this->getElectricityCampaignCode($app),
+                    'Electricity Campaign Code' => $this->getCampaignCode($app->state, ConnectionService::TYPE_ELECTRICITY),
                     'Electricity Plan' => $this->getElectricityPlanName($app),
                     'Electricity Green Option chosen' => $this->checkOptOption($app),
                     'Gas MIRN' => $app->mirn,
                     'Gas Meter Number' => '',
-                    'Gas Campaign Code' => $this->getGasCampaignCode($app),
+                    'Gas Campaign Code' => $this->getCampaignCode($app->state, ConnectionService::TYPE_GAS),
                     'Gas Plan' => $this->getGasPlanName($app),
                     'Electrical Work Planned (VIC ONLY)' => $this->checkElectricalPlan($app),
                     'Site access and hazard information' => $this->checkHazard($app),
@@ -143,7 +189,7 @@ class OriginExporterService
                     'Term' => '',
                     'Network' => '',
                     'Marketing Opt Out' => $this->checkEmailBilling($app),
-                    'Fuels selected' => $this->getFuel($app),
+                    'Fuels selected' => $this->getFuelType($app),
                     'BP' => '',
                     'Business Agreement - Electricity' => '',
                     'SAP Contract Number - Electricity' =>'',
@@ -158,64 +204,6 @@ class OriginExporterService
                     'Gas Notes (Offshore)' => '',
                     'Gas Notes (Onshore)' => '',
                     'Close_Date' => '',
-
-
-                    'Brand' => 'PowerShop',
-                    'Channel ID' => 'Hood Move Tech',
-                    'Customer Type' => 'Residential',
-                    'NMI' => $app->nmi,
-                    'MIRN' => $app->mirn,
-                    'Connection Date' => date('m/d/Y', strtotime($app->moving_date)),
-                    'Type of Sale' => 'Moving',
-                    'Signup Type' => $this->getSignUpType($app),
-                    'Title' => $app->title,
-                    'First Name' => $app->first_name,
-                    'Last Name' => $app->last_name,
-                    'Date of Birth' => date('m/d/Y', strtotime($app->dob)),
-                    'Business Name' => null,
-                    'Phone - Home' => $app->homephone,
-                    'Phone - Office' => null,
-                    'Phone - Mobile' => $app->phone,
-                    'E-mail' => $app->email,
-                    'ABN' => null,
-                    'ACN' => null,
-                    'ID Number' => $this->getIDNumber($app),
-                    'ID Expiry date' => $this->getExpiryDate($app),
-                    'Type of ID' =>  $this->getIDType($app),
-                    'Concession Card Number' => null,
-                    'Concession Card Type' => $this->getConcessionCardType($app),
-                    'Concession Card Expiry Date' => null,
-                    'Name on Concession Card' => null,
-                    'Second Person Title' =>  $this->getSecondTitle($app),
-                    'Second First Name' => $this->getSecondFirstName($app),
-                    'Second Last Name' => $this->getSecondLastName($app),
-                    'Second Person DOB' => $this->getSecondDob($app),
-                    'Supply Address' => $this->getSupplyAddress($app),
-                    'Supply Suburb' => $app->city,
-                    'State/Territory' => $app->state,
-                    'Postal Code' => $app->postcode,
-                    'Mailing Address' => $this->getMailingAddress($app),
-                    'Mailing Suburb' => $app->billing_city,
-                    'Mailing State/Territory' => $app->billing_state,
-                    'Mailing Postal Code' => $app->billing_postcode,
-                    'Owner/Renter' => $this->getTenancyType($app),
-                    'Electricity Promo' => $this->getPromo($app, ConnectionService::TYPE_ELECTRICITY),
-                    'Gas Promo' => $this->getPromo($app, ConnectionService::TYPE_GAS),
-                    'Electricity Already On? (Y/N)' => $this->checkElectricity($app),
-                    'Meter Number(s)' => null,
-                    'Any Hazards' => $this->getHazard($app->is_any_unrestrained_animal, $app->is_renovation_on),
-                    'Any Access Requirements?' => $this->getAccessReq($app->is_access_require, $app->additional_access_information),
-                    'Life Support/Sensitive Load' => $this->getLifeSensitive($app),
-                    'Advised Main Switch Needs Turning Off?' => 'Yes',
-                    'Safety Certificate Required?' => 'No',
-                    'Token' => $cafToken,
-                    'Electricity Offer Status' => null,
-                    'Electricity Reference Number' => null,
-                    'Electricity Rejection/Incomplete Reason' => null,
-                    'Gas Offer Status' => null,
-                    'Gas Reference Number' => null,
-                    'Gas Rejection/Incomplete Reason' => null,
-                    'Other Comments' => null,
 
                 ];
                 $selectedId[] = $app->id;
@@ -354,6 +342,11 @@ class OriginExporterService
     {
         return date('d-M', strtotime($app->identification?->expire_date));
     }
+
+    /**
+     * @param $app
+     * @return null
+     */
     private function getIdState($app)
     {
         return $app->identification?->expire_date;
@@ -409,10 +402,19 @@ class OriginExporterService
         return $app->authorizedPerson?->dob ? date('d/m/Y', strtotime($app->authorizedPerson?->dob)) : null;
     }
 
+    /**
+     * @param $app
+     * @return null
+     */
     private function getSecondPhone($app)
     {
         return $app->authorizedPerson?->phone;
     }
+
+    /**
+     * @param $app
+     * @return null
+     */
     private function getSecondEmail($app)
     {
         return $app->authorizedPerson?->email;
@@ -423,22 +425,27 @@ class OriginExporterService
      * @return string
      * @throws \Exception
      */
-    private function getSignUpType(ConnectionApplication $app): string
+
+    private function getFuelType(ConnectionApplication $app) : string
     {
         $services = $app->connectionServices;
 
-        $serviceType = $services->filter(function($type) {
-            return $type->provider_name === 'powershop';
-        })?->pluck('service_type')->toArray();
-
+        if(!empty($services)) {
+            $serviceType = $services->filter(function($type) {
+                return $type->provider_name === 'origin';
+            })->pluck('service_type')->toArray();
+        }
         if(in_array(ConnectionService::TYPE_GAS, $serviceType )
-            && in_array(ConnectionService::TYPE_ELECTRICITY, $serviceType )){
-            return 'Two Fuel';
-        } elseif(in_array(ConnectionService::TYPE_ELECTRICITY, $serviceType )){
-            return 'Electricity';
-        } else{
+            && in_array(ConnectionService::TYPE_ELECTRICITY, $serviceType )) {
+            return 'electricity and gas';
+        } elseif(in_array(ConnectionService::TYPE_ELECTRICITY, $serviceType )) {
+            return 'electricity';
+        } elseif(in_array(ConnectionService::TYPE_GAS, $serviceType )) {
+            return 'gas';
+        } else {
+            \Log::alert('Something Wrong');
             return '';
-            throw new \Exception('Only gas not supported!');
+
         }
     }
 
@@ -559,6 +566,10 @@ class OriginExporterService
         return $promo;
     }
 
+    /**
+     * @param $state
+     * @return mixed|string
+     */
     private function stateMap($state)
     {
         $stateList = ['New South Wales'=>'NSW','Victoria'=>'VIC','Queensland'=>'QLD',
@@ -571,38 +582,116 @@ class OriginExporterService
 
     }
 
+    /**
+     * @param $app
+     * @return string
+     */
     private function getPowerShopCafToken($app): string
     {
         return (string) $app?->powershopPaymentInfo?->px_dps_billing_id;
     }
 
+    /**
+     * @param $app
+     * @return string|null
+     */
     private function checkEmailBilling($app): ?string
     {
         return $app->is_email_marketing? 'Yes': 'No';
     }
 
-    private function getFulfillment($app)
-    {
-        switch ($app->is_email_billing) {
-            case Plan::BILLING_PREFERENCE_EMAIL:
-                return 'Email';
-            case Plan::BILLING_PREFERENCE_CONNECTION_ADDRESS:
-                return 'Post';
-            default:
-                Log::error('Unknown');
-                return  '';
-        }
 
+    /**
+     * @param $app
+     * @return string|null
+     */
+    private function getFulfillment($app): ?string
+    {
+        return $app->is_email_billing?'EMAIL':'POST';
     }
 
-//    private function getFulfillment($app): ?string
-//    {
-////        return match($app->is_email_billing) {
-////            1 => 'passport',
-////            2 => 'driving licence',
-////            3 => 'medicare',
-////            default => null
-////        };
-//        return $app->is_access_require? 'Yes': 'No';
-//    }
+    /**
+     * @param $app
+     * @return string|null
+     */
+    private function checkLifeSupport($app): ?string
+    {
+        return $app->is_power_life_support? 'Yes': 'No';
+    }
+
+    /**
+     * @param $app
+     * @return string|null
+     */
+    private function checkOptOption($app): ?string
+    {
+        return $app->ea_go_neutral? 'Yes': 'No';
+    }
+
+    /**
+     * @param $app
+     * @return string|null
+     */
+    private function checkHazard($app): ?string
+    {
+        switch ($app->is_any_unrestrained_animal) {
+            case self::HAS_UNRESTING_ANIMAL:
+                return 'dog on property';
+            case self::NO_UNRESTING_ANIMAL:
+                return '';
+            default:
+                Log::error('Unknown Hazard');
+                return  '';
+        }
+    }
+
+    /**
+     * @param $app
+     * @return string|null
+     */
+    private function checkElectricalPlan($app): ?string
+    {
+        return $app->is_access_require? 'Yes': 'No';
+    }
+
+    /**
+     * @param ConnectionApplication $app
+     * @return string
+     */
+    private function getElectricityPlanName(ConnectionApplication $app): string
+    {
+        $electricity = ConnectionService::query()->where('connection_application_id', $app->id)
+            ->where('service_type', ConnectionService::TYPE_ELECTRICITY)->first();
+        if(empty($electricity)) {
+            return '';
+        }
+        return $electricity->plan_type;
+    }
+
+    /**
+     * @param ConnectionApplication $app
+     * @return string
+     */
+    private function getGasPlanName(ConnectionApplication $app): string
+    {
+        $gas = ConnectionService::query()->where('connection_application_id', $app->id)
+            ->where('service_type', ConnectionService::TYPE_GAS)->first();
+        if(empty($gas)) {
+            return '';
+        }
+        return $gas->plan_type;
+    }
+
+    private function getCampaignCode(string $state, string $fueltype = '')
+    {
+        $filteredCode = array_filter($this->campaignInfo, function ($data) use ($state) {
+            return $data['state'] === $state;
+        });
+        if(count($filteredCode)) {
+            return $filteredCode[0]->campaign_code;
+        }
+        return  '';
+    }
+
+
 }
