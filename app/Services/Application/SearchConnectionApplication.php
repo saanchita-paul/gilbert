@@ -356,9 +356,13 @@ class SearchConnectionApplication
      */
     private function applyFilterByProvider(): static
     {
-        if ($this->provider) {
+        if ($this->provider ===  'powershop_origin') {
             $this->builder = $this->builder->whereHas('connectionServices', function (Builder $query) {
-                $query->where('provider_name', $this->provider);
+                $query->whereIn('provider_name', [ConnectionService::PROVIDER_POWER_SHOP, ConnectionService::PROVIDER_ORIGIN]);
+            });
+        }else{
+            $this->builder = $this->builder->whereHas('connectionServices', function (Builder $query) {
+                $query->where('provider_name', [$this->provider]);
             });
         }
         return $this;

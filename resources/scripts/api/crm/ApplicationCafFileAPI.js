@@ -50,7 +50,7 @@ export default {
     },
 
     getGilbertApplicationData: async (sort_search_meta, params) => {
-        const data = await axios.get('/api/powershop/applications',{params:{...sort_search_meta, ...params}});
+        const data = await axios.get('/api/gilbert/applications',{params:{...sort_search_meta, ...params}});
 
         return {
             data: GilbertApplicationCafFileMapper.mapGilbertApplicationList(data.data),
@@ -65,7 +65,7 @@ export default {
 
     generateGilbertCafFIle: async (params) => {
         try{
-            const url = `/api/powershop/generate-caf?ids=`+ params;
+            const url = `/api/gilbert/generate-caf?ids=`+ params;
 
             window.open(
                 url,
