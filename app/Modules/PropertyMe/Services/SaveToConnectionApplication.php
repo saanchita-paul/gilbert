@@ -2,6 +2,7 @@
 
 namespace App\Modules\PropertyMe\Services;
 
+use App\Events\Agency\CreateApplicationEvent;
 use App\Events\NotifyAgentAfterLeadCreation;
 use App\Jobs\CreateHubspotProperty;
 use App\Models\AgentProfile;
@@ -22,6 +23,8 @@ use App\Modules\PropertyMe\Services\DobIdentificationService;
 use App\Models\ApplicationNote;
 use App\Models\ConnectionService;
 use App\Services\NotifyBadAgentMailService;
+
+use function Sodium\add;
 
 class SaveToConnectionApplication
 {
@@ -129,7 +132,7 @@ class SaveToConnectionApplication
 
         $this->saveApplicationId($application->id, $lead);
         NotifyAgentAfterLeadCreation::dispatch($application->id);
-        CreateHubspotProperty::dispatch($application->id);
+        CreateApplicationEvent::dispatch($application->id);
 
         return $application;
     }
@@ -147,7 +150,7 @@ class SaveToConnectionApplication
                 'city' => data_get($address, 'locality'),
                 'state' => AddressModel::mapStateToLong(data_get($address, 'state')),
                 'country' => $country,
-                'address_text' => data_get($address, 'fullAddress') . " $country",
+                'address_text' => $this->fullAddress($address)
             ];
         }
         return [
@@ -176,7 +179,7 @@ class SaveToConnectionApplication
                 'billing_postcode' => data_get($address, 'postcode'),
                 'billing_city' => data_get($address, 'locality'),
                 'billing_state' => AddressModel::mapStateToLong(data_get($address, 'state')),
-                'billing_address_text' => data_get($address, 'fullAddress') . ' Australia',
+                'billing_address_text' => $this->fullAddress($address)
             ];
         }
         return [
@@ -192,6 +195,20 @@ class SaveToConnectionApplication
 
     }
 
+    private function fullAddress(array $address)
+    {
+        $text = data_get($address, 'flatUnitNumber');
+        $text .= !empty($text)
+            ? '/'.  data_get($address, 'streetNumber')
+            : data_get($address, 'streetNumber') ?? "";
+        $text .= data_get($address, 'streetNumber') ? " " .  data_get($address, 'streetName') : "";
+        $text .= data_get($address, 'streetNumber') ? " " .  data_get($address, 'streetType') . "," : "";
+        $text .= data_get($address, 'streetNumber') ? " " .  data_get($address, 'locality') : "";
+        $text .= data_get($address, 'streetNumber') ? " " .  data_get($address, 'state') : "";
+        $text .= data_get($address, 'streetNumber') ? " " .  data_get($address, 'postcode') . "," : "";
+
+        return trim($text . " Australia");
+    }
 
     private function getTenancyType($leadData): ?int
     {
