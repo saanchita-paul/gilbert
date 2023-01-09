@@ -32,8 +32,8 @@
             </v-col>
             <v-col cols="4"  >
                 <v-skeleton-loader
-                    v-bind="attrs"
-                    type="article, actions , article,  actions, article, actions"
+                    v-bind="skeletonAttribute"
+                    :type="skeletonType"
                     v-if="isLoadSkeleton"
                 ></v-skeleton-loader>
                 <ChatbotApplicationDetails v-if="shouldShowApplicationDetails" @applicationDetailsUpdated="fetchCafFiles" ></ChatbotApplicationDetails>
@@ -93,7 +93,8 @@ name: "ChatbotApplicationPage",
             advanceSearchModel: new CafFileSearchFilterModel(),
             selectedApp: null,
             isLoadSkeleton : false,
-            attrs: SkeletonLoaderData,
+            skeletonAttribute: SkeletonLoaderData.attribute,
+            skeletonType : SkeletonLoaderData.type
         }
     },
 

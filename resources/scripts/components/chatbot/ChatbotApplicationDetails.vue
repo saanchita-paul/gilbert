@@ -1,8 +1,8 @@
 <template>
     <div>
         <v-skeleton-loader
-            v-bind="attrs"
-            type="article, actions , article,  actions, article, actions"
+            v-bind="skeletonAttribute"
+            :type="skeletonType"
             v-if="isLoadSkeleton"
         ></v-skeleton-loader>
         <div v-if="shouldShowExpansionPanel" class="hood-card pa-0 custom-card-color" >
@@ -936,7 +936,8 @@ export default {
             saveConcessionLoading: false,
             sticky : true,
             isLoadSkeleton : false,
-            attrs: SkeletonLoaderData,
+            skeletonAttribute: SkeletonLoaderData.attribute,
+            skeletonType : SkeletonLoaderData.type
         }
     },
     computed: {
