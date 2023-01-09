@@ -1,503 +1,696 @@
 <template>
-    <div v-if="chatbot_app" class="hood-card" style="padding: 0px !important; max-height: 100%;" >
-
-        <v-expansion-panels v-model="expansionPanel" @change="handleExpansionPanel" multiple accordion style="box-shadow: none !important;">
-            <v-expansion-panel style="box-shadow: none !important;">
-                <v-row style=" padding: 20px">
-                    <v-col cols="12">
-                        <p style="margin-bottom: unset">Chatbot Application Details</p>
-                        <p class="font-weight-bold" style="font-size: 25px; margin-bottom: unset">{{ chatbot_app.personal_details.title.charAt(0).toUpperCase() + chatbot_app.personal_details.title.slice(1) }}. {{ chatbot_app.personal_details.first_name.charAt(0).toUpperCase() + chatbot_app.personal_details.first_name.slice(1) }} {{ chatbot_app.personal_details.last_name.charAt(0).toUpperCase() + chatbot_app.personal_details.last_name.slice(1) }}</p>
-                        <IdCopyToClipboard :applicationId="app_id"></IdCopyToClipboard>
-                    </v-col>
-                </v-row>
-                <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
-                    Profile Details
-                </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                    <ValidationObserver ref="personal_details_ref">
-                        <v-row>
-                            <v-col cols="5" class="py-0 my-1">
-                                <p class="font-weight-bold">Title</p>
-                            </v-col>
-                            <v-col cols="7"  class="py-0 my-1">
-                                <div class="text-field">
-                                    <ValidationProvider name="Title" rules="required" v-slot="{ errors }">
-                                    <v-select
-                                        outlined
-                                        dense
-                                        :items="titlesDropDown"
-                                        v-model="chatbot_app.personal_details.title"
-                                        class="item-value"
-                                        item-text="text"
-                                        item-value="value"
-                                        hide-details="auto"
-                                        :error-messages="errors[0]"
-                                        @change="personalDetailsChanged('title')"
-                                    ></v-select>
-                                    </ValidationProvider>
-                                </div>
-                            </v-col>
-                            <v-col cols="5" class="py-0 my-1">
-                                <p class="font-weight-bold">FirstName</p>
-                            </v-col>
-                            <v-col cols="7"  class="py-0 my-1">
-                                <div  class="text-field">
-                                    <ValidationProvider name="Firstname" rules="required" v-slot="{ errors }">
-                                    <v-text-field
-                                        v-model="chatbot_app.personal_details.first_name"
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                        placeholder="First Name"
-                                        :error-messages="errors[0]"
-                                        @change="personalDetailsChanged('first_name')"
-                                    ></v-text-field>
-                                    </ValidationProvider>
-                                </div>
-                            </v-col>
-                            <v-col cols="5" class="py-0 my-1">
-                                <p class="font-weight-bold">LastName</p>
-                            </v-col>
-                            <v-col cols="7"  class="py-0 my-1">
-                                <div class="text-field">
-                                    <ValidationProvider name="Lastname" rules="required" v-slot="{ errors }">
-                                    <v-text-field
-                                        v-model="chatbot_app.personal_details.last_name"
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                        placeholder="Last Name"
-                                        :error-messages="errors[0]"
-                                        @change="personalDetailsChanged('last_name')"
-                                    ></v-text-field>
-                                    </ValidationProvider>
-                                </div>
-                            </v-col>
-
-                            <v-col cols="5" class="py-0 my-1">
-                                <p class="font-weight-bold">Email</p>
-                            </v-col>
-                            <v-col cols="7"  class="py-0 my-1">
-                                <div class="text-field">
-                                    <ValidationProvider name="Email" rules="required|email" v-slot="{ errors }">
-                                        <v-text-field
-                                            v-model="chatbot_app.personal_details.email"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            placeholder="Email"
-                                            :error-messages="errors[0]"
-                                            @change="personalDetailsChanged('email')"
-                                        ></v-text-field>
-                                    </ValidationProvider>
-                                </div>
-                            </v-col>
-
-                            <v-col cols="5" class="py-0 my-1">
-                                <p class="font-weight-bold">Date of Birth</p>
-                            </v-col>
-                            <v-col cols="7"  class="py-0 my-1">
-                                <div class="text-field">
-                                    <v-menu
-                                        v-model="showDateOfBirth"
-                                        :close-on-content-click="false"
-                                        :nudge-right="40"
-                                        transition="scale-transition"
-                                        offset-y
-                                        min-width="290px"
-                                    >
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <ValidationProvider name="Bate Of Birth" rules="required|valid-date" v-slot="{ errors }">
-                                                <v-text-field
-                                                    placeholder="DD/MM/YYYY"
-                                                    outlined
-                                                    dense
-                                                    append-icon="mdi-calendar"
-                                                    v-model="chatbot_app.personal_details.dob"
-                                                    v-bind="attrs"
-                                                    :error-messages="errors[0]"
-                                                    hide-details="auto"
-                                                    @change="updateDobPicker"
-                                                >
-                                                    <template slot="append">
-                                                        <v-icon v-on="on">mdi-calendar</v-icon>
-                                                    </template>
-                                                </v-text-field>
-                                            </ValidationProvider>
-                                        </template>
-                                        <v-date-picker
-                                            v-model="dob"
-                                            @input="showDateOfBirth = false"
-                                            @change="personalDetailsChanged('dob')"
-                                        ></v-date-picker>
-                                    </v-menu>
-                                </div>
-                            </v-col>
-
-                            <v-col   cols="5"  class="py-0 my-1">
-                                <p class="font-weight-bold"> Mobile </p>
-                            </v-col>
-                            <v-col  cols="7"  class="py-0 my-1">
-                                <div  class="text-field">
-                                    <ValidationProvider name="Mobile" rules="required|cv-phone|length:10" v-slot="{ errors }">
-                                        <v-text-field
-                                            v-model="chatbot_app.personal_details.phone"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            placeholder="Mobile"
-                                            :error-messages="errors[0]"
-                                            @change="personalDetailsChanged('phone')"
-                                        ></v-text-field>
-                                    </ValidationProvider>
-                                </div>
-                            </v-col>
-                            <v-col cols="5" class="py-0 my-1">
-                                <p class="font-weight-bold">Business Name</p>
-                            </v-col>
-                            <v-col cols="7"  class="py-0 my-1">
-                                <div  class="text-field">
-                                    <ValidationProvider name="Business Name" v-slot="{ errors }">
-                                        <v-text-field
-                                            v-model="chatbot_app.personal_details.business_name"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            placeholder="Please type..."
-                                            :error-messages="errors[0]"
-                                            @change="personalDetailsChanged('business_name')"
-                                        ></v-text-field>
-                                    </ValidationProvider>
-                                </div>
-                            </v-col>
-                            <v-col cols="5" class="py-0 my-1">
-                                <p class="font-weight-bold">ABN</p>
-                            </v-col>
-                            <v-col cols="7"  class="py-0 my-1">
-                                <div  class="text-field">
-                                    <ValidationProvider name="ABN"  v-slot="{ errors }">
-                                        <v-text-field
-                                            v-model="chatbot_app.personal_details.abn"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            placeholder="Please type..."
-                                            :error-messages="errors[0]"
-                                            @change="personalDetailsChanged('abn')"
-                                        ></v-text-field>
-                                    </ValidationProvider>
-                                </div>
-                            </v-col>
-                        </v-row>
-                        <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
-                        <v-btn small @click="cancelPersonalDetails" :loading="cancelPersonalLoading" :disabled="shouldActivePersonalDetailsAction"> Cancel</v-btn>
-                        <v-btn color="primary" small right @click="savePersonalDetails"  :loading="savePersonDloading" :disabled="shouldActivePersonalDetailsAction"> Save</v-btn>
-                    </v-row>
-                    </ValidationObserver>
-                </v-expansion-panel-content>
-            </v-expansion-panel>
+    <div>
+        <v-skeleton-loader
+            v-bind="skeletonAttribute"
+            :type="skeletonType"
+            v-if="isLoadSkeleton"
+        ></v-skeleton-loader>
+        <div v-if="shouldShowExpansionPanel" class="hood-card pa-0 custom-card-color" >
+            <v-row class="pa-5">
+                <v-col cols="12">
+                    <p style="margin-bottom: unset">Chatbot Application Details</p>
+                    <p class="font-weight-bold" style="font-size: 25px; margin-bottom: unset">{{ chatbot_app.personal_details.title.charAt(0).toUpperCase() + chatbot_app.personal_details.title.slice(1) }}. {{ chatbot_app.personal_details.first_name.charAt(0).toUpperCase() + chatbot_app.personal_details.first_name.slice(1) }} {{ chatbot_app.personal_details.last_name.charAt(0).toUpperCase() + chatbot_app.personal_details.last_name.slice(1) }}</p>
+                    <IdCopyToClipboard :applicationId="app_id"></IdCopyToClipboard>
+                </v-col>
+            </v-row>
             <v-divider ></v-divider>
-
-            <v-expansion-panel  style="box-shadow:none !important;">
-                    <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
-                        Property Details
+            <v-expansion-panels class=" overflow-auto" v-model="expansionPanel" @change="handleExpansionPanel" multiple accordion style="box-shadow: none !important; max-height: 54.8vh;">
+                <v-expansion-panel class="custom-card-color" elevation="0" >
+                    <v-expansion-panel-header class="expansion-header">
+                        Profile Details
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
-                        <ValidationObserver ref="property_details_ref">
+                        <ValidationObserver ref="personal_details_ref">
                             <v-row>
-                                <v-col cols ="5"  class="py-0 my-1">
-                                    <p class="font-weight-bold">Property Type</p>
+                                <v-col cols="5" class="py-0 my-1">
+                                    <p class="font-weight-bold">Title</p>
                                 </v-col>
-                                <v-col cols ="7" class="py-0 my-1">
+                                <v-col cols="7"  class="py-0 my-1">
                                     <div class="text-field">
-                                        <ValidationProvider
-                                            name="Property Type"
-                                            rules="required"
-                                            v-slot="{ errors }"
-                                        >
-                                            <v-select
-                                                v-model="chatbot_app.property_details.rent"
-                                                :items="tenantTypeDD"
-                                                item-text="text"
-                                                item-value="value"
-                                                outlined
-                                                dense
-                                                hide-details="auto"
-                                                :error-messages="errors[0]"
-                                                @change="propertyDetailsChanged('rent')"
-                                            >
-                                            </v-select>
-                                        </ValidationProvider>
-                                    </div>
-                                </v-col>
-                                <v-col cols ="5"  class="py-0 my-1">
-                                    <p class="font-weight-bold">Solar Power</p>
-                                </v-col>
-                                <v-col cols ="7" class="py-0 my-1">
-                                    <div class="text-field">
-                                        <ValidationProvider
-                                            name="Solar Power"
-                                            rules="required"
-                                            v-slot="{ errors }"
-                                        >
-                                            <v-select
-                                                v-model="chatbot_app.property_details.solar_panel"
-                                                :items="solarPowerDD"
-                                                item-text="text"
-                                                item-value="value"
-                                                outlined
-                                                dense
-                                                hide-details="auto"
-                                                :error-messages="errors[0]"
-                                                @change="propertyDetailsChanged('solar_panel')"
-                                            >
-                                            </v-select>
-                                        </ValidationProvider>
-                                    </div>
-                                </v-col>
-                                <v-col cols ="5"  class="py-0 my-1">
-                                    <p class="font-weight-bold">NMI (Power)</p>
-                                </v-col>
-                                <v-col cols ="7" class="py-0 my-1">
-                                    <div class="text-field">
-                                        <ValidationProvider
-                                            name="NMI"
-                                            rules="numeric"
-                                            v-slot="{ errors }"
-                                        >
-                                            <v-text-field
-                                                v-model="chatbot_app.property_details.nmi"
-                                                outlined
-                                                dense
-                                                hide-details="auto"
-                                                placeholder="NMI"
-                                                :error-messages="errors[0]"
-                                                @change="propertyDetailsChanged('nmi')"
-                                            ></v-text-field>
-                                        </ValidationProvider>
-                                    </div>
-                                </v-col>
-                                <v-col cols ="5"  class="py-0 my-1">
-                                    <p class="font-weight-bold">MIRN (Gas)</p>
-                                </v-col>
-                                <v-col cols ="7" class="py-0 my-1">
-                                    <div class="text-field">
-                                        <ValidationProvider
-                                            name="NMI"
-                                            rules="numeric"
-                                            v-slot="{ errors }"
-                                        >
-                                            <v-text-field
-                                                v-model="chatbot_app.property_details.mirn"
-                                                outlined
-                                                dense
-                                                hide-details="auto"
-                                                placeholder="MIRN"
-                                                :error-messages="errors[0]"
-                                                @change="propertyDetailsChanged('mirn')"
-                                            ></v-text-field>
-                                        </ValidationProvider>
-                                    </div>
-                                </v-col>
-                                <v-col cols ="5"  class="py-0 my-1">
-                                    <p class="font-weight-bold">Is renovation going on?</p>
-                                </v-col>
-                                <v-col cols ="7" class="py-0 my-1">
-                                    <div class="text-field">
+                                        <ValidationProvider name="Title" rules="required" v-slot="{ errors }">
                                         <v-select
-                                            v-model="chatbot_app.property_details.is_renovation_on"
-                                            :items="accessRequirement"
-                                            item-text="text"
-                                            item-value="value"
                                             outlined
                                             dense
-                                            hide-details="auto"
-                                            @change="propertyDetailsChanged('is_renovation_on')"
-                                        >
-                                        </v-select>
-                                    </div>
-                                </v-col>
-                                <v-col cols ="5"  class="py-0 my-1">
-                                    <p class="font-weight-bold">Access requirement</p>
-                                </v-col>
-                                <v-col cols ="7" class="py-0 my-1">
-                                    <div class="text-field">
-                                        <v-select
-                                            v-model="chatbot_app.property_details.has_access_req"
-                                            :items="accessRequirement"
+                                            :items="titlesDropDown"
+                                            v-model="chatbot_app.personal_details.title"
+                                            class="item-value"
                                             item-text="text"
                                             item-value="value"
-                                            outlined
-                                            dense
                                             hide-details="auto"
-                                            @change="propertyDetailsChanged('has_access_req')"
-                                        >
-                                        </v-select>
+                                            :error-messages="errors[0]"
+                                            @change="personalDetailsChanged('title')"
+                                        ></v-select>
+                                        </ValidationProvider>
                                     </div>
                                 </v-col>
-                                <v-col cols ="5"  class="py-0 my-1">
-                                    <p  class="font-weight-bold">Moving Date</p>
+                                <v-col cols="5" class="py-0 my-1">
+                                    <p class="font-weight-bold">FirstName</p>
                                 </v-col>
-                                <v-col cols ="7" class="py-0 my-1">
+                                <v-col cols="7"  class="py-0 my-1">
                                     <div  class="text-field">
-                                        <ValidationProvider
-                                            name="Moving date"
-                                            rules="required"
-                                            v-slot="{ errors }"
-                                        >
-                                            <v-menu
-                                                v-model="showMovingDate"
-                                                :close-on-content-click="false"
-                                                :nudge-right="40"
-                                                transition="scale-transition"
-                                                offset-y
-                                                min-width="290px"
-                                            >
-                                                <template v-slot:activator="{ on, attrs }">
-                                                    <ValidationProvider
-                                                        name="Moving Date"
-                                                        rules="required|valid-date|not-holiday:@h_state"
-                                                        v-slot="{ errors }"
-                                                    >
-                                                        <v-text-field
-                                                            placeholder="DD/MM/YYYY"
-                                                            outlined
-                                                            dense
-                                                            append-icon="mdi-calendar"
-                                                            v-model="chatbot_app.property_details.moved_at"
-                                                            v-bind="attrs"
-                                                            :error-messages="errors[0]"
-                                                            hide-details="auto"
-                                                            @change="updateMovingDatePicker"
-                                                        >
-                                                            <template slot="append">
-                                                                <v-icon v-on="on">mdi-calendar</v-icon>
-                                                            </template>
-                                                        </v-text-field>
-                                                    </ValidationProvider>
-                                                </template>
-                                                <v-date-picker
-                                                    v-model="moved_at"
-                                                    @input="showMovingDate = false"
-                                                    @change="propertyDetailsChanged('moved_at')"
-                                                ></v-date-picker>
-                                            </v-menu>
+                                        <ValidationProvider name="Firstname" rules="required" v-slot="{ errors }">
+                                        <v-text-field
+                                            v-model="chatbot_app.personal_details.first_name"
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            placeholder="First Name"
+                                            :error-messages="errors[0]"
+                                            @change="personalDetailsChanged('first_name')"
+                                        ></v-text-field>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+                                <v-col cols="5" class="py-0 my-1">
+                                    <p class="font-weight-bold">LastName</p>
+                                </v-col>
+                                <v-col cols="7"  class="py-0 my-1">
+                                    <div class="text-field">
+                                        <ValidationProvider name="Lastname" rules="required" v-slot="{ errors }">
+                                        <v-text-field
+                                            v-model="chatbot_app.personal_details.last_name"
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            placeholder="Last Name"
+                                            :error-messages="errors[0]"
+                                            @change="personalDetailsChanged('last_name')"
+                                        ></v-text-field>
                                         </ValidationProvider>
                                     </div>
                                 </v-col>
 
-                                <v-col cols ="5"  class="py-0 my-1">
-                                    <p class="font-weight-bold">Service Address:</p>
+                                <v-col cols="5" class="py-0 my-1">
+                                    <p class="font-weight-bold">Email</p>
                                 </v-col>
-                                <v-col cols ="7" class="py-0 my-1">
+                                <v-col cols="7"  class="py-0 my-1">
                                     <div class="text-field">
-                                        <ValidationProvider
-                                            name="Service Address"
-                                            rules="required"
-                                            v-slot="{ errors }"
-                                        >
+                                        <ValidationProvider name="Email" rules="required|email" v-slot="{ errors }">
                                             <v-text-field
-                                                v-model="chatbot_app.property_details.to_address"
-                                                @click="openGbGAddress"
+                                                v-model="chatbot_app.personal_details.email"
                                                 outlined
                                                 dense
                                                 hide-details="auto"
+                                                placeholder="Email"
                                                 :error-messages="errors[0]"
-                                                @change="propertyDetailsChanged('to_address')"
+                                                @change="personalDetailsChanged('email')"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+
+                                <v-col cols="5" class="py-0 my-1">
+                                    <p class="font-weight-bold">Date of Birth</p>
+                                </v-col>
+                                <v-col cols="7"  class="py-0 my-1">
+                                    <div class="text-field">
+                                        <v-menu
+                                            v-model="showDateOfBirth"
+                                            :close-on-content-click="false"
+                                            :nudge-right="40"
+                                            transition="scale-transition"
+                                            offset-y
+                                            min-width="290px"
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <ValidationProvider name="Bate Of Birth" rules="required|valid-date" v-slot="{ errors }">
+                                                    <v-text-field
+                                                        placeholder="DD/MM/YYYY"
+                                                        outlined
+                                                        dense
+                                                        append-icon="mdi-calendar"
+                                                        v-model="chatbot_app.personal_details.dob"
+                                                        v-bind="attrs"
+                                                        :error-messages="errors[0]"
+                                                        hide-details="auto"
+                                                        @change="updateDobPicker"
+                                                    >
+                                                        <template slot="append">
+                                                            <v-icon v-on="on">mdi-calendar</v-icon>
+                                                        </template>
+                                                    </v-text-field>
+                                                </ValidationProvider>
+                                            </template>
+                                            <v-date-picker
+                                                v-model="dob"
+                                                @input="showDateOfBirth = false"
+                                                @change="personalDetailsChanged('dob')"
+                                            ></v-date-picker>
+                                        </v-menu>
+                                    </div>
+                                </v-col>
+
+                                <v-col   cols="5"  class="py-0 my-1">
+                                    <p class="font-weight-bold"> Mobile </p>
+                                </v-col>
+                                <v-col  cols="7"  class="py-0 my-1">
+                                    <div  class="text-field">
+                                        <ValidationProvider name="Mobile" rules="required|cv-phone|length:10" v-slot="{ errors }">
+                                            <v-text-field
+                                                v-model="chatbot_app.personal_details.phone"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                placeholder="Mobile"
+                                                :error-messages="errors[0]"
+                                                @change="personalDetailsChanged('phone')"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+                                <v-col cols="5" class="py-0 my-1">
+                                    <p class="font-weight-bold">Business Name</p>
+                                </v-col>
+                                <v-col cols="7"  class="py-0 my-1">
+                                    <div  class="text-field">
+                                        <ValidationProvider name="Business Name" v-slot="{ errors }">
+                                            <v-text-field
+                                                v-model="chatbot_app.personal_details.business_name"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                placeholder="Please type..."
+                                                :error-messages="errors[0]"
+                                                @change="personalDetailsChanged('business_name')"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+                                <v-col cols="5" class="py-0 my-1">
+                                    <p class="font-weight-bold">ABN</p>
+                                </v-col>
+                                <v-col cols="7"  class="py-0 my-1">
+                                    <div  class="text-field">
+                                        <ValidationProvider name="ABN"  v-slot="{ errors }">
+                                            <v-text-field
+                                                v-model="chatbot_app.personal_details.abn"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                placeholder="Please type..."
+                                                :error-messages="errors[0]"
+                                                @change="personalDetailsChanged('abn')"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </div>
                                 </v-col>
                             </v-row>
                             <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
-                            <v-btn small @click="cancelPropertyDetails" :loading="cancelPropertyLoading" :disabled="shouldActivePropertyDetailsAction"> Cancel</v-btn>
-                            <v-btn color="primary" small right @click="savePropertyDetails" :loading="saveProDloading" :disabled="shouldActivePropertyDetailsAction"> Save</v-btn>
+                            <v-btn small @click="cancelPersonalDetails" :loading="cancelPersonalLoading" :disabled="shouldActivePersonalDetailsAction"> Cancel</v-btn>
+                            <v-btn color="primary" small right @click="savePersonalDetails"  :loading="savePersonDloading" :disabled="shouldActivePersonalDetailsAction"> Save</v-btn>
                         </v-row>
                         </ValidationObserver>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
-            <v-divider ></v-divider>
+                <v-divider ></v-divider>
 
-            <v-expansion-panel style="box-shadow:none !important;">
-                <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
-                    Identification Details
-                </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                    <ValidationObserver ref="id_details_ref">
-                        <v-row>
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">Identification</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <div class="text-field">
-                                    <ValidationProvider name="Identification" rules="required" v-slot="{ errors }">
-                                        <v-select
-                                            v-model="chatbot_app.id_detail.identification_type"
-                                            item-text="text"
-                                            item-value="value"
-                                            :items="idenficationTypeDD"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            :error-messages="errors[0]"
-                                            @change="idDetailsChanged('identification_type')"
+                <v-expansion-panel  class="custom-card-color" elevation="0">
+                        <v-expansion-panel-header class="expansion-header">
+                            Property Details
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <ValidationObserver ref="property_details_ref">
+                                <v-row>
+                                    <v-col cols ="5"  class="py-0 my-1">
+                                        <p class="font-weight-bold">Property Type</p>
+                                    </v-col>
+                                    <v-col cols ="7" class="py-0 my-1">
+                                        <div class="text-field">
+                                            <ValidationProvider
+                                                name="Property Type"
+                                                rules="required"
+                                                v-slot="{ errors }"
+                                            >
+                                                <v-select
+                                                    v-model="chatbot_app.property_details.rent"
+                                                    :items="tenantTypeDD"
+                                                    item-text="text"
+                                                    item-value="value"
+                                                    outlined
+                                                    dense
+                                                    hide-details="auto"
+                                                    :error-messages="errors[0]"
+                                                    @change="propertyDetailsChanged('rent')"
+                                                >
+                                                </v-select>
+                                            </ValidationProvider>
+                                        </div>
+                                    </v-col>
+                                    <v-col cols ="5"  class="py-0 my-1">
+                                        <p class="font-weight-bold">Solar Power</p>
+                                    </v-col>
+                                    <v-col cols ="7" class="py-0 my-1">
+                                        <div class="text-field">
+                                            <ValidationProvider
+                                                name="Solar Power"
+                                                rules="required"
+                                                v-slot="{ errors }"
+                                            >
+                                                <v-select
+                                                    v-model="chatbot_app.property_details.solar_panel"
+                                                    :items="solarPowerDD"
+                                                    item-text="text"
+                                                    item-value="value"
+                                                    outlined
+                                                    dense
+                                                    hide-details="auto"
+                                                    :error-messages="errors[0]"
+                                                    @change="propertyDetailsChanged('solar_panel')"
+                                                >
+                                                </v-select>
+                                            </ValidationProvider>
+                                        </div>
+                                    </v-col>
+                                    <v-col cols ="5"  class="py-0 my-1">
+                                        <p class="font-weight-bold">NMI (Power)</p>
+                                    </v-col>
+                                    <v-col cols ="7" class="py-0 my-1">
+                                        <div class="text-field">
+                                            <ValidationProvider
+                                                name="NMI"
+                                                rules="numeric"
+                                                v-slot="{ errors }"
+                                            >
+                                                <v-text-field
+                                                    v-model="chatbot_app.property_details.nmi"
+                                                    outlined
+                                                    dense
+                                                    hide-details="auto"
+                                                    placeholder="NMI"
+                                                    :error-messages="errors[0]"
+                                                    @change="propertyDetailsChanged('nmi')"
+                                                ></v-text-field>
+                                            </ValidationProvider>
+                                        </div>
+                                    </v-col>
+                                    <v-col cols ="5"  class="py-0 my-1">
+                                        <p class="font-weight-bold">MIRN (Gas)</p>
+                                    </v-col>
+                                    <v-col cols ="7" class="py-0 my-1">
+                                        <div class="text-field">
+                                            <ValidationProvider
+                                                name="NMI"
+                                                rules="numeric"
+                                                v-slot="{ errors }"
+                                            >
+                                                <v-text-field
+                                                    v-model="chatbot_app.property_details.mirn"
+                                                    outlined
+                                                    dense
+                                                    hide-details="auto"
+                                                    placeholder="MIRN"
+                                                    :error-messages="errors[0]"
+                                                    @change="propertyDetailsChanged('mirn')"
+                                                ></v-text-field>
+                                            </ValidationProvider>
+                                        </div>
+                                    </v-col>
+                                    <v-col cols ="5"  class="py-0 my-1">
+                                        <p class="font-weight-bold">Is renovation going on?</p>
+                                    </v-col>
+                                    <v-col cols ="7" class="py-0 my-1">
+                                        <div class="text-field">
+                                            <v-select
+                                                v-model="chatbot_app.property_details.is_renovation_on"
+                                                :items="accessRequirement"
+                                                item-text="text"
+                                                item-value="value"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                @change="propertyDetailsChanged('is_renovation_on')"
+                                            >
+                                            </v-select>
+                                        </div>
+                                    </v-col>
+                                    <v-col cols ="5"  class="py-0 my-1">
+                                        <p class="font-weight-bold">Access requirement</p>
+                                    </v-col>
+                                    <v-col cols ="7" class="py-0 my-1">
+                                        <div class="text-field">
+                                            <v-select
+                                                v-model="chatbot_app.property_details.has_access_req"
+                                                :items="accessRequirement"
+                                                item-text="text"
+                                                item-value="value"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                @change="propertyDetailsChanged('has_access_req')"
+                                            >
+                                            </v-select>
+                                        </div>
+                                    </v-col>
+                                    <v-col cols ="5"  class="py-0 my-1">
+                                        <p  class="font-weight-bold">Moving Date</p>
+                                    </v-col>
+                                    <v-col cols ="7" class="py-0 my-1">
+                                        <div  class="text-field">
+                                            <ValidationProvider
+                                                name="Moving date"
+                                                rules="required"
+                                                v-slot="{ errors }"
+                                            >
+                                                <v-menu
+                                                    v-model="showMovingDate"
+                                                    :close-on-content-click="false"
+                                                    :nudge-right="40"
+                                                    transition="scale-transition"
+                                                    offset-y
+                                                    min-width="290px"
+                                                >
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <ValidationProvider
+                                                            name="Moving Date"
+                                                            rules="required|valid-date|not-holiday:@h_state"
+                                                            v-slot="{ errors }"
+                                                        >
+                                                            <v-text-field
+                                                                placeholder="DD/MM/YYYY"
+                                                                outlined
+                                                                dense
+                                                                append-icon="mdi-calendar"
+                                                                v-model="chatbot_app.property_details.moved_at"
+                                                                v-bind="attrs"
+                                                                :error-messages="errors[0]"
+                                                                hide-details="auto"
+                                                                @change="updateMovingDatePicker"
+                                                            >
+                                                                <template slot="append">
+                                                                    <v-icon v-on="on">mdi-calendar</v-icon>
+                                                                </template>
+                                                            </v-text-field>
+                                                        </ValidationProvider>
+                                                    </template>
+                                                    <v-date-picker
+                                                        v-model="moved_at"
+                                                        @input="showMovingDate = false"
+                                                        @change="propertyDetailsChanged('moved_at')"
+                                                    ></v-date-picker>
+                                                </v-menu>
+                                            </ValidationProvider>
+                                        </div>
+                                    </v-col>
+
+                                    <v-col cols ="5"  class="py-0 my-1">
+                                        <p class="font-weight-bold">Service Address:</p>
+                                    </v-col>
+                                    <v-col cols ="7" class="py-0 my-1">
+                                        <div class="text-field">
+                                            <ValidationProvider
+                                                name="Service Address"
+                                                rules="required"
+                                                v-slot="{ errors }"
+                                            >
+                                                <v-text-field
+                                                    v-model="chatbot_app.property_details.to_address"
+                                                    @click="openGbGAddress"
+                                                    outlined
+                                                    dense
+                                                    hide-details="auto"
+                                                    :error-messages="errors[0]"
+                                                ></v-text-field>
+                                            </ValidationProvider>
+                                        </div>
+                                    </v-col>
+                                </v-row>
+                                <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
+                                <v-btn small @click="cancelPropertyDetails" :loading="cancelPropertyLoading" :disabled="shouldActivePropertyDetailsAction"> Cancel</v-btn>
+                                <v-btn color="primary" small right @click="savePropertyDetails" :loading="saveProDloading" :disabled="shouldActivePropertyDetailsAction"> Save</v-btn>
+                            </v-row>
+                            </ValidationObserver>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                <v-divider ></v-divider>
+
+                <v-expansion-panel class="custom-card-color" elevation="0">
+                    <v-expansion-panel-header class="expansion-header">
+                        Identification Details
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        <ValidationObserver ref="id_details_ref">
+                            <v-row>
+                                <v-col cols ="5"  class="py-0 my-1">
+                                    <p class="font-weight-bold">Identification</p>
+                                </v-col>
+                                <v-col cols ="7" class="py-0 my-1">
+                                    <div class="text-field">
+                                        <ValidationProvider name="Identification" rules="required" v-slot="{ errors }">
+                                            <v-select
+                                                v-model="chatbot_app.id_detail.identification_type"
+                                                item-text="text"
+                                                item-value="value"
+                                                :items="idenficationTypeDD"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                :error-messages="errors[0]"
+                                                @change="idDetailsChanged('identification_type')"
+                                            >
+                                            </v-select>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+                                <v-col cols ="5"  class="py-0 my-1">
+                                    <p class="font-weight-bold">Card Number</p>
+                                </v-col>
+                                <v-col v-if="chatbot_app.id_detail.identification_type === 'identity_driving_license'" cols ="7" class="py-0 my-1">
+                                    <div class="text-field">
+                                        <ValidationProvider name="Card Number" rules="required" v-slot="{ errors }">
+                                            <v-text-field
+                                                v-model="chatbot_app.id_detail.driving_license_number"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                :error-messages="errors[0]"
+                                                @change="idDetailsChanged('driving_license_number')"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+                                <v-col v-if="chatbot_app.id_detail.identification_type === 'identity_medicare'" cols ="7" class="py-0 my-1">
+                                    <div class="text-field">
+                                        <ValidationProvider name="Card Number" rules="required" v-slot="{ errors }">
+                                            <v-text-field
+                                                v-model="chatbot_app.id_detail.medicare_card_number"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                :error-messages="errors[0]"
+                                                @change="idDetailsChanged('medicare_card_number')"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+                                <v-col v-if="chatbot_app.id_detail.identification_type === 'identity_passport'" cols ="7" class="py-0 my-1">
+                                    <div class="text-field">
+                                        <ValidationProvider name="Card Number" rules="required" v-slot="{ errors }">
+                                            <v-text-field
+                                                v-model="chatbot_app.id_detail.passport_number"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                :error-messages="errors[0]"
+                                                @change="idDetailsChanged('passport_number')"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+                                <v-col cols ="5"  class="py-0 my-1">
+                                    <p class="font-weight-bold">Expiry Date</p>
+                                </v-col>
+                                <v-col cols ="7" class="py-0 my-1">
+                                    <div class="text-field" >
+                                        <v-menu
+                                            v-model="showExpireDate"
+                                            :close-on-content-click="false"
+                                            :nudge-right="40"
+                                            transition="scale-transition"
+                                            offset-y
+                                            min-width="290px"
                                         >
-                                        </v-select>
-                                    </ValidationProvider>
-                                </div>
-                            </v-col>
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">Card Number</p>
-                            </v-col>
-                            <v-col v-if="chatbot_app.id_detail.identification_type === 'identity_driving_license'" cols ="7" class="py-0 my-1">
-                                <div class="text-field">
-                                    <ValidationProvider name="Card Number" rules="required" v-slot="{ errors }">
-                                        <v-text-field
-                                            v-model="chatbot_app.id_detail.driving_license_number"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            :error-messages="errors[0]"
-                                            @change="idDetailsChanged('driving_license_number')"
-                                        ></v-text-field>
-                                    </ValidationProvider>
-                                </div>
-                            </v-col>
-                            <v-col v-if="chatbot_app.id_detail.identification_type === 'identity_medicare'" cols ="7" class="py-0 my-1">
-                                <div class="text-field">
-                                    <ValidationProvider name="Card Number" rules="required" v-slot="{ errors }">
-                                        <v-text-field
-                                            v-model="chatbot_app.id_detail.medicare_card_number"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            :error-messages="errors[0]"
-                                            @change="idDetailsChanged('medicare_card_number')"
-                                        ></v-text-field>
-                                    </ValidationProvider>
-                                </div>
-                            </v-col>
-                            <v-col v-if="chatbot_app.id_detail.identification_type === 'identity_passport'" cols ="7" class="py-0 my-1">
-                                <div class="text-field">
-                                    <ValidationProvider name="Card Number" rules="required" v-slot="{ errors }">
-                                        <v-text-field
-                                            v-model="chatbot_app.id_detail.passport_number"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            :error-messages="errors[0]"
-                                            @change="idDetailsChanged('passport_number')"
-                                        ></v-text-field>
-                                    </ValidationProvider>
-                                </div>
-                            </v-col>
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">Expiry Date</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <div class="text-field" >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <ValidationProvider name="Expiry Date" rules="required|valid-date" v-slot="{ errors }">
+                                                    <v-text-field
+                                                        placeholder="DD/MM/YYYY"
+                                                        outlined
+                                                        dense
+                                                        v-model="chatbot_app.id_detail.identification_expire_date"
+                                                        v-bind="attrs"
+                                                        hide-details="auto"
+                                                        @change="updateExpireDatePicker"
+                                                        :error-messages="errors[0]"
+                                                    >
+                                                        <template slot="append">
+                                                            <v-icon v-on="on">mdi-calendar</v-icon>
+                                                        </template>
+                                                    </v-text-field>
+                                                </ValidationProvider>
+                                            </template>
+                                            <v-date-picker
+                                                v-model="expire_date"
+                                                @input="showExpireDate = false"
+                                                @change="idDetailsChanged('identification_expire_date')"
+                                            ></v-date-picker>
+                                        </v-menu>
+                                    </div>
+                                </v-col>
+
+                                <template v-if="chatbot_app.id_detail.identification_type === 'identity_medicare'" >
+                                    <v-col cols ="5"  class="py-0 my-1">
+                                        <p class="font-weight-bold">Special Number</p>
+                                    </v-col>
+                                    <v-col cols ="7" class="py-0 my-1">
+                                        <div class="text-field">
+                                            <ValidationProvider name="Special Number"  v-slot="{ errors }">
+                                                <v-select
+                                                    v-model="chatbot_app.id_detail.individual_reference_number"
+                                                    :items="specialNumberDD"
+                                                    outlined
+                                                    dense
+                                                    hide-details="auto"
+                                                    :error-messages="errors[0]"
+                                                    @change="idDetailsChanged('individual_reference_number')"
+                                                >
+                                                </v-select>
+                                            </ValidationProvider>
+                                        </div>
+                                    </v-col>
+                                </template>
+
+                                <template v-if="chatbot_app.id_detail.identification_type === 'identity_passport'" >
+                                    <v-col cols ="5"  class="py-0 my-1">
+                                        <p class="font-weight-bold">Passport Country</p>
+                                    </v-col>
+                                    <v-col cols ="7" class="py-0 my-1">
+                                        <div class="text-field">
+                                            <ValidationProvider name="Passport Country"  v-slot="{ errors }">
+                                                <v-text-field
+                                                    v-model="chatbot_app.id_detail.passport_country"
+                                                    outlined
+                                                    dense
+                                                    hide-details="auto"
+                                                    placeholder="Passport Country"
+                                                    :error-messages="errors[0]"
+                                                    @change="idDetailsChanged('passport_country')"
+                                                ></v-text-field>
+                                            </ValidationProvider>
+                                        </div>
+                                    </v-col>
+                                </template>
+                                <template v-if="chatbot_app.id_detail.identification_type === 'identity_medicare'" >
+                                    <v-col cols ="5"  class="py-0 my-1">
+                                        <p class="font-weight-bold">Card Colour</p>
+                                    </v-col>
+                                    <v-col cols ="7" class="py-0 my-1">
+                                        <div class="text-field">
+                                            <ValidationProvider name="Card Colour"  v-slot="{ errors }">
+                                                <v-select
+                                                    v-model="chatbot_app.id_detail.medicare_card_color"
+                                                    item-text="text"
+                                                    item-value="value"
+                                                    :items="colorDD"
+                                                    outlined
+                                                    dense
+                                                    hide-details="auto"
+                                                    :error-messages="errors[0]"
+                                                    @change="idDetailsChanged('medicare_card_color')"
+                                                >
+                                                </v-select>
+                                            </ValidationProvider>
+                                        </div>
+                                    </v-col>
+                                </template>
+                                <template v-if="chatbot_app.id_detail.identification_type === 'identity_driving_license'" >
+                                    <v-col cols ="5"  class="py-0 my-1">
+                                        <p class="font-weight-bold">State</p>
+                                    </v-col>
+                                    <v-col cols ="7" class="py-0 my-1">
+                                        <div class="text-field">
+                                            <ValidationProvider name="State"  v-slot="{ errors }">
+                                                <v-select
+                                                    v-model="chatbot_app.id_detail.driving_license_state"
+                                                    item-text="text"
+                                                    item-value="text"
+                                                    :items="statesDD"
+                                                    outlined
+                                                    dense
+                                                    hide-details="auto"
+                                                    :error-messages="errors[0]"
+                                                    @change="idDetailsChanged('driving_license_state')"
+                                                >
+                                                </v-select>
+                                            </ValidationProvider>
+                                        </div>
+                                    </v-col>
+                                </template>
+
+                            </v-row>
+                            <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
+                            <v-btn small  @click="cancelIdDetails"  :loading="cancelIdLoading" :disabled="shouldActiveIdDetailsAction"> Cancel</v-btn>
+                            <v-btn color="primary" small right @click="saveIdDetails"  :loading="saveIDDloading" :disabled="shouldActiveIdDetailsAction"> Save</v-btn>
+                        </v-row>
+                        </ValidationObserver>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+                <v-divider></v-divider>
+
+                <v-expansion-panel  class="custom-card-color" elevation="0">
+                    <v-expansion-panel-header class="expansion-header">
+                        Concession Card
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        <ValidationObserver ref="concession_card_ref">
+                            <v-row>
+                                <v-col cols ="5"  class="py-0 my-1">
+                                    <p class="font-weight-bold">Concession Card</p>
+                                </v-col>
+                                <v-col cols ="7" class="py-0 my-1">
+                                    <div class="text-field">
+                                        <ValidationProvider name="Concession Card"  v-slot="{ errors }">
+                                            <v-select
+                                                v-model="chatbot_app.concession_details.concession_card_type"
+                                                :items="concessionCard"
+                                                item-text="text"
+                                                item-value="value"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                :error-messages="errors[0]"
+                                                @change="concessionDetailsChanged('concession_card_type')"
+                                            >
+                                            </v-select>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+
+
+                                <v-col cols ="5"  class="py-0 my-1">
+                                    <p class="font-weight-bold">Card Number*</p>
+                                </v-col>
+                                <v-col cols ="7" class="py-0 my-1">
+                                    <div class="text-field">
+                                        <ValidationProvider name="Card Number" rules="required" v-slot="{ errors }">
+                                            <v-text-field
+                                                v-model="chatbot_app.concession_details.concession_card_value"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                placeholder="Card Number"
+                                                :error-messages="errors[0]"
+                                                @change="concessionDetailsChanged('concession_card_value')"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+
+
+                                <v-col cols ="5"  class="py-0 my-1">
+                                    <p class="font-weight-bold">Start Date*</p>
+                                </v-col>
+                                <v-col cols ="7" class="py-0 my-1">
                                     <v-menu
-                                        v-model="showExpireDate"
+                                        v-model="isConcessionStartDate"
                                         :close-on-content-click="false"
                                         :nudge-right="40"
                                         transition="scale-transition"
@@ -505,16 +698,20 @@
                                         min-width="290px"
                                     >
                                         <template v-slot:activator="{ on, attrs }">
-                                            <ValidationProvider name="Expiry Date" rules="required|valid-date" v-slot="{ errors }">
+                                            <ValidationProvider
+                                                name="Start Date" rules="required"
+                                                v-slot="{ errors }"
+                                            >
                                                 <v-text-field
                                                     placeholder="DD/MM/YYYY"
                                                     outlined
                                                     dense
-                                                    v-model="chatbot_app.id_detail.identification_expire_date"
+                                                    append-icon="mdi-calendar"
+                                                    v-model="chatbot_app.concession_details.concession_card_start_date"
                                                     v-bind="attrs"
-                                                    hide-details="auto"
-                                                    @change="updateExpireDatePicker"
                                                     :error-messages="errors[0]"
+                                                    hide-details="auto"
+                                                    @change="updateConcessionStartDatePicker"
                                                 >
                                                     <template slot="append">
                                                         <v-icon v-on="on">mdi-calendar</v-icon>
@@ -523,340 +720,154 @@
                                             </ValidationProvider>
                                         </template>
                                         <v-date-picker
-                                            v-model="expire_date"
-                                            @input="showExpireDate = false"
-                                            @change="idDetailsChanged('identification_expire_date')"
+                                            v-model="concession_start_date"
+                                            @input="isConcessionStartDate = false"
+                                            @change="concessionDetailsChanged('concession_card_start_date')"
                                         ></v-date-picker>
                                     </v-menu>
-                                </div>
-                            </v-col>
+                                </v-col>
 
-                            <template v-if="chatbot_app.id_detail.identification_type === 'identity_medicare'" >
+
                                 <v-col cols ="5"  class="py-0 my-1">
-                                    <p class="font-weight-bold">Special Number</p>
+                                    <p class="font-weight-bold">End Date</p>
                                 </v-col>
                                 <v-col cols ="7" class="py-0 my-1">
-                                    <div class="text-field">
-                                        <ValidationProvider name="Special Number"  v-slot="{ errors }">
-                                            <v-select
-                                                v-model="chatbot_app.id_detail.individual_reference_number"
-                                                :items="specialNumberDD"
-                                                outlined
-                                                dense
-                                                hide-details="auto"
-                                                :error-messages="errors[0]"
-                                                @change="idDetailsChanged('individual_reference_number')"
+                                    <v-menu
+                                        v-model="isConcessionEndDate"
+                                        :close-on-content-click="false"
+                                        :nudge-right="40"
+                                        transition="scale-transition"
+                                        offset-y
+                                        min-width="290px"
+                                    >
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <ValidationProvider
+                                                name="End Date"
+                                                v-slot="{ errors }"
                                             >
-                                            </v-select>
-                                        </ValidationProvider>
-                                    </div>
+                                                <v-text-field
+                                                    placeholder="DD/MM/YYYY"
+                                                    outlined
+                                                    dense
+                                                    append-icon="mdi-calendar"
+                                                    v-model="chatbot_app.concession_details.concession_end_date"
+                                                    v-bind="attrs"
+                                                    :error-messages="errors[0]"
+                                                    hide-details="auto"
+                                                >
+                                                    <template slot="append">
+                                                        <v-icon v-on="on">mdi-calendar</v-icon>
+                                                    </template>
+                                                </v-text-field>
+                                            </ValidationProvider>
+                                        </template>
+                                        <v-date-picker
+                                            v-model="concession_end_date"
+                                            @input="isConcessionEndDate = false"
+                                        ></v-date-picker>
+                                    </v-menu>
                                 </v-col>
-                            </template>
+                            </v-row>
+                            <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
+                                <v-btn small @click="cancelConcessionDetails" :loading="cancelConcessionLoading" :disabled="shouldActiveConcessionDetailsAction"> Cancel</v-btn>
+                                <v-btn color="primary" small right @click="saveConcessionDetails" :loading="saveConcessionLoading" :disabled="shouldActiveConcessionDetailsAction"> Save</v-btn>
+                            </v-row>
+                        </ValidationObserver>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+                <v-divider ></v-divider>
 
-                            <template v-if="chatbot_app.id_detail.identification_type === 'identity_passport'" >
-                                <v-col cols ="5"  class="py-0 my-1">
-                                    <p class="font-weight-bold">Passport Country</p>
-                                </v-col>
-                                <v-col cols ="7" class="py-0 my-1">
-                                    <div class="text-field">
-                                        <ValidationProvider name="Passport Country"  v-slot="{ errors }">
-                                            <v-text-field
-                                                v-model="chatbot_app.id_detail.passport_country"
-                                                outlined
-                                                dense
-                                                hide-details="auto"
-                                                placeholder="Passport Country"
-                                                :error-messages="errors[0]"
-                                                @change="idDetailsChanged('passport_country')"
-                                            ></v-text-field>
-                                        </ValidationProvider>
-                                    </div>
-                                </v-col>
-                            </template>
-                            <template v-if="chatbot_app.id_detail.identification_type === 'identity_medicare'" >
-                                <v-col cols ="5"  class="py-0 my-1">
-                                    <p class="font-weight-bold">Card Colour</p>
-                                </v-col>
-                                <v-col cols ="7" class="py-0 my-1">
-                                    <div class="text-field">
-                                        <ValidationProvider name="Card Colour"  v-slot="{ errors }">
-                                            <v-select
-                                                v-model="chatbot_app.id_detail.medicare_card_color"
-                                                item-text="text"
-                                                item-value="value"
-                                                :items="colorDD"
-                                                outlined
-                                                dense
-                                                hide-details="auto"
-                                                :error-messages="errors[0]"
-                                                @change="idDetailsChanged('medicare_card_color')"
-                                            >
-                                            </v-select>
-                                        </ValidationProvider>
-                                    </div>
-                                </v-col>
-                            </template>
-                            <template v-if="chatbot_app.id_detail.identification_type === 'identity_driving_license'" >
-                                <v-col cols ="5"  class="py-0 my-1">
-                                    <p class="font-weight-bold">State</p>
-                                </v-col>
-                                <v-col cols ="7" class="py-0 my-1">
-                                    <div class="text-field">
-                                        <ValidationProvider name="State"  v-slot="{ errors }">
-                                            <v-select
-                                                v-model="chatbot_app.id_detail.driving_license_state"
-                                                item-text="text"
-                                                item-value="text"
-                                                :items="statesDD"
-                                                outlined
-                                                dense
-                                                hide-details="auto"
-                                                :error-messages="errors[0]"
-                                                @change="idDetailsChanged('driving_license_state')"
-                                            >
-                                            </v-select>
-                                        </ValidationProvider>
-                                    </div>
-                                </v-col>
-                            </template>
-
-                        </v-row>
-                        <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
-                        <v-btn small  @click="cancelIdDetails"  :loading="cancelIdLoading" :disabled="shouldActiveIdDetailsAction"> Cancel</v-btn>
-                        <v-btn color="primary" small right @click="saveIdDetails"  :loading="saveIDDloading" :disabled="shouldActiveIdDetailsAction"> Save</v-btn>
-                    </v-row>
-                    </ValidationObserver>
-                </v-expansion-panel-content>
-            </v-expansion-panel>
-            <v-divider></v-divider>
-
-            <v-expansion-panel  style="box-shadow:none !important;">
-                <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
-                    Concession Card
-                </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                    <ValidationObserver ref="concession_card_ref">
+                <v-expansion-panel class="custom-card-color" elevation="0">
+                    <v-expansion-panel-header class="expansion-header">
+                        Service Preference
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
                         <v-row>
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">Concession Card</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <div class="text-field">
-                                    <ValidationProvider name="Concession Card"  v-slot="{ errors }">
-                                        <v-select
-                                            v-model="chatbot_app.concession_details.concession_card_type"
-                                            :items="concessionCard"
-                                            item-text="text"
-                                            item-value="value"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            :error-messages="errors[0]"
+                            <v-col cols="12" v-if="chatbot_app.eleService">
+                                <div  class="my-0 py-0 mx-0 border-all">
+                                    <p class="pt-2 pb-1 mb-0 services">
+                              <span class="ml-0">
+                                  <v-icon  color="yellow" size="17">mdi-flash</v-icon> Power
+                              </span>
+                                    </p>
+                                    <p class="py-0 my-0 service-status" >
+                                        <small>Current Status</small>
+                                        <v-select @change="changeServiceStatus(chatbot_app.eleService)"
+                                                  placeholder="Please select"
+                                                  v-model="chatbot_app.eleService.status"
+                                                  item-text="text"
+                                                  item-value="text"
+                                                  :items="powerStatus"
+                                                  outlined
+                                                  dense
+                                                  hide-details="auto"
                                         >
                                         </v-select>
-                                    </ValidationProvider>
+                                    </p>
+                                </div>
+
+                                <div class="item" v-if="chatbot_app.eleService.service_type === 'electricity'">
+                                    <v-btn v-if="chatbot_app.eleService.status === 'Rejected'"
+                                           @click="openRejection(electricityService)"
+                                           small
+                                           style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a; margin-top: 15px;"
+                                           outlined
+                                    > Reason </v-btn>
                                 </div>
                             </v-col>
-
-
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">Card Number*</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <div class="text-field">
-                                    <ValidationProvider name="Card Number" rules="required" v-slot="{ errors }">
-                                        <v-text-field
-                                            v-model="chatbot_app.concession_details.concession_card_value"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                            placeholder="Card Number"
-                                            :error-messages="errors[0]"
-                                        ></v-text-field>
-                                    </ValidationProvider>
+                            <v-col cols="12" v-if="chatbot_app.gasService">
+                                <div  class="my-0 py-0 mx-0 border-all">
+                                    <p class="pt-2 pb-1 mb-0 services">
+                              <span class="ml-0">
+                                  <v-icon color="red" size="17">mdi-fire</v-icon> Gas
+                              </span>
+                                    </p>
+                                    <p class="py-0 my-0 service-status" >
+                                        <small>Current Status</small>
+                                        <v-select @change="changeServiceStatus(chatbot_app.gasService)"
+                                                  placeholder="Please select"
+                                                  v-model="chatbot_app.gasService.status"
+                                                  item-text="text"
+                                                  item-value="text"
+                                                  :items="gasStatus"
+                                                  outlined
+                                                  dense
+                                                  hide-details="auto"
+                                        >
+                                        </v-select>
+                                    </p>
+                                </div>
+                                <div class="item" v-if="chatbot_app.gasService.service_type === 'gas'">
+                                    <v-btn v-if="chatbot_app.gasService.status === 'Rejected'"
+                                           @click="openRejection(gasService)"
+                                           small
+                                           style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;margin-top: 15px;"
+                                           outlined
+                                    >Reason</v-btn>
                                 </div>
                             </v-col>
-
-
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">Start Date*</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <v-menu
-                                    v-model="isConcessionStartDate"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    transition="scale-transition"
-                                    offset-y
-                                    min-width="290px"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <ValidationProvider
-                                            name="Start Date" rules="required"
-                                            v-slot="{ errors }"
-                                        >
-                                            <v-text-field
-                                                placeholder="DD/MM/YYYY"
-                                                outlined
-                                                dense
-                                                append-icon="mdi-calendar"
-                                                v-model="chatbot_app.concession_details.concession_card_start_date"
-                                                v-bind="attrs"
-                                                :error-messages="errors[0]"
-                                                hide-details="auto"
-                                            >
-                                                <template slot="append">
-                                                    <v-icon v-on="on">mdi-calendar</v-icon>
-                                                </template>
-                                            </v-text-field>
-                                        </ValidationProvider>
-                                    </template>
-                                    <v-date-picker
-                                        v-model="concession_start_date"
-                                        @input="isConcessionStartDate = false"
-                                    ></v-date-picker>
-                                </v-menu>
-                            </v-col>
-
-
-                            <v-col cols ="5"  class="py-0 my-1">
-                                <p class="font-weight-bold">End Date</p>
-                            </v-col>
-                            <v-col cols ="7" class="py-0 my-1">
-                                <v-menu
-                                    v-model="isConcessionEndDate"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    transition="scale-transition"
-                                    offset-y
-                                    min-width="290px"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <ValidationProvider
-                                            name="End Date"
-                                            v-slot="{ errors }"
-                                        >
-                                            <v-text-field
-                                                placeholder="DD/MM/YYYY"
-                                                outlined
-                                                dense
-                                                append-icon="mdi-calendar"
-                                                v-model="chatbot_app.concession_details.concession_end_date"
-                                                v-bind="attrs"
-                                                :error-messages="errors[0]"
-                                                hide-details="auto"
-                                            >
-                                                <template slot="append">
-                                                    <v-icon v-on="on">mdi-calendar</v-icon>
-                                                </template>
-                                            </v-text-field>
-                                        </ValidationProvider>
-                                    </template>
-                                    <v-date-picker
-                                        v-model="concession_end_date"
-                                        @input="isConcessionEndDate = false"
-                                    ></v-date-picker>
-                                </v-menu>
-                            </v-col>
                         </v-row>
-                        <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
-                            <v-btn small @click="cancelConcessionDetails" :loading="cancelConcessionLoading"> Cancel</v-btn>
-                            <v-btn color="primary" small right @click="saveConcessionDetails" :loading="saveConcessionLoading"> Save</v-btn>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+                <v-divider></v-divider>
+
+                <v-expansion-panel class="custom-card-color">
+                    <v-expansion-panel-header class="expansion-header">
+                        Application Notes
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        <v-row>
+                            <ChatbotApplicationNote @newNote="loadApplication"  :applications="chatbot_app.application_notes" ></ChatbotApplicationNote>
                         </v-row>
-                    </ValidationObserver>
-                </v-expansion-panel-content>
-            </v-expansion-panel>
-            <v-divider ></v-divider>
-
-            <v-expansion-panel style="box-shadow: none !important;">
-                <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
-                    Service Preference
-                </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                    <v-row>
-                        <v-col cols="12" v-if="chatbot_app.eleService">
-                            <div  class="my-0 py-0 mx-0 border-all">
-                                <p class="pt-2 pb-1 mb-0 services">
-                          <span class="ml-0">
-                              <v-icon  color="yellow" size="17">mdi-flash</v-icon> Power
-                          </span>
-                                </p>
-                                <p class="py-0 my-0 service-status" >
-                                    <small>Current Status</small>
-                                    <v-select @change="changeServiceStatus(chatbot_app.eleService)"
-                                              placeholder="Please select"
-                                              v-model="chatbot_app.eleService.status"
-                                              item-text="text"
-                                              item-value="text"
-                                              :items="powerStatus"
-                                              outlined
-                                              dense
-                                              hide-details="auto"
-                                    >
-                                    </v-select>
-                                </p>
-                            </div>
-
-                            <div class="item" v-if="chatbot_app.eleService.service_type === 'electricity'">
-                                <v-btn v-if="chatbot_app.eleService.status === 'Rejected'"
-                                       @click="openRejection(electricityService)"
-                                       small
-                                       style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a; margin-top: 15px;"
-                                       outlined
-                                > Reason </v-btn>
-                            </div>
-                        </v-col>
-                        <v-col cols="12" v-if="chatbot_app.gasService">
-                            <div  class="my-0 py-0 mx-0 border-all">
-                                <p class="pt-2 pb-1 mb-0 services">
-                          <span class="ml-0">
-                              <v-icon color="red" size="17">mdi-fire</v-icon> Gas
-                          </span>
-                                </p>
-                                <p class="py-0 my-0 service-status" >
-                                    <small>Current Status</small>
-                                    <v-select @change="changeServiceStatus(chatbot_app.gasService)"
-                                              placeholder="Please select"
-                                              v-model="chatbot_app.gasService.status"
-                                              item-text="text"
-                                              item-value="text"
-                                              :items="gasStatus"
-                                              outlined
-                                              dense
-                                              hide-details="auto"
-                                    >
-                                    </v-select>
-                                </p>
-                            </div>
-                            <div class="item" v-if="chatbot_app.gasService.service_type === 'gas'">
-                                <v-btn v-if="chatbot_app.gasService.status === 'Rejected'"
-                                       @click="openRejection(gasService)"
-                                       small
-                                       style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;margin-top: 15px;"
-                                       outlined
-                                >Reason</v-btn>
-                            </div>
-                        </v-col>
-                    </v-row>
-                </v-expansion-panel-content>
-            </v-expansion-panel>
-            <v-divider></v-divider>
-
-            <v-expansion-panel>
-                <v-expansion-panel-header style="font-size: 18px; font-weight: bold">
-                    Application Notes
-                </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                    <v-row>
-                        <ChatbotApplicationNote @newNote="loadApplication"  :applications="chatbot_app.application_notes" ></ChatbotApplicationNote>
-                    </v-row>
-                </v-expansion-panel-content>
-            </v-expansion-panel>
-        </v-expansion-panels>
-
-        <RejectionReasonModal v-if="dialog" :dialog="dialog" :service="selectedRejectedService"  @close="onCloseReject" ></RejectionReasonModal>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
 
         <GgbService v-if="showGbg" :dialog="showGbg"  :propertyDetails="chatbot_app.property_address" @close="showGbg = false" @saveAddress="saveAddress"></GgbService>
+
+            <RejectionReasonModal v-if="dialog" :dialog="dialog" :service="selectedRejectedService"  @close="onCloseReject" ></RejectionReasonModal>
+        </div>
+
     </div>
 </template>
 
@@ -871,8 +882,8 @@ import CustomerService from "@scripts/services/CustomerService";
 import RejectionReasonModal from "@scripts/components/crm/modals/RejectionReasonModal";
 import IdCopyToClipboard from "@scripts/components/common/IdCopyToClipboard";
 import CHATBOT_APP_DATA from "@scripts/data/constants/CHATBOT_APP_DATA";
-import GgbService from "@scripts/components/chatbot/GbgService";
 
+import GgbService from "@scripts/components/chatbot/GbgService";import SkeletonLoaderData from "@scripts/data/SkeletonLoaderData";
 export default {
     name: "ChatbotApplicationDetails",
     components: {
@@ -890,7 +901,7 @@ export default {
             isProfileEditMode: false,
             specialNumberDD: CHATBOT_APP_DATA.SPECIAL_NUMBER_DD,
             showExpireDate: false,
-            expire_date:  '',
+            expire_date:  null,
             titlesDropDown: titlesMapperForDropdownCb,
             accessRequirement: CHATBOT_APP_DATA.ACCESS_REQUIREMENT,
             solarPowerDD: CHATBOT_APP_DATA.SOLAR_POWER_DD,
@@ -924,9 +935,14 @@ export default {
             propertyDetailsFlag : [],
             idDetailsFlag : [],
             applicationNoteFlag : [],
+            concessionDetailsFlag : [],
             cancelConcessionLoading: false,
             saveConcessionLoading: false,
-            showGbg: false
+            showGbg: false,
+            sticky : true,
+            isLoadSkeleton : false,
+            skeletonAttribute: SkeletonLoaderData.attribute,
+            skeletonType : SkeletonLoaderData.type
         }
     },
     computed: {
@@ -955,6 +971,13 @@ export default {
 
         shouldActiveIdDetailsAction(){
             return this.idDetailsFlag.length <= 0;
+        },
+
+        shouldActiveConcessionDetailsAction(){
+            return this.concessionDetailsFlag.length <= 0;
+        },
+        shouldShowExpansionPanel(){
+            return this.chatbot_app;
         }
 
 
@@ -970,6 +993,7 @@ export default {
             this.savePersonDloading = true;
             await ChatbotApplicationService.updatePersonalDetails(this.app_id, this.chatbot_app.personal_details);
             this.savePersonDloading = false;
+            this.$emit("applicationDetailsUpdated");
 
         },
 
@@ -978,6 +1002,7 @@ export default {
             await ChatbotApplicationService.updatePersonalDetails(this.app_id, this.chatbot_app_backup.personal_details);
             this.chatbot_app = cloneDeep(this.chatbot_app_backup);
             this.cancelPersonalLoading = false;
+            this.$emit("applicationDetailsUpdated");
         },
 
         async savePropertyDetails() {
@@ -985,6 +1010,7 @@ export default {
             this.saveProDloading = true;
             await ChatbotApplicationService.updatePropertyDetails(this.app_id, this.chatbot_app.property_details);
             this.saveProDloading = false;
+            this.$emit("applicationDetailsUpdated");
         },
 
         async cancelPropertyDetails(){
@@ -992,6 +1018,7 @@ export default {
             await ChatbotApplicationService.updatePropertyDetails(this.app_id, this.chatbot_app_backup.property_details);
             this.chatbot_app = cloneDeep(this.chatbot_app_backup);
             this.cancelPropertyLoading = false;
+            this.$emit("applicationDetailsUpdated");
         },
 
         async saveIdDetails() {
@@ -999,6 +1026,7 @@ export default {
             this.saveIDDloading = true;
             await ChatbotApplicationService.updateIdDetails(this.app_id, this.chatbot_app.id_detail);
             this.saveIDDloading = false;
+            this.$emit("applicationDetailsUpdated");
         },
 
         async cancelIdDetails(){
@@ -1006,12 +1034,14 @@ export default {
             await ChatbotApplicationService.updateIdDetails(this.app_id, this.chatbot_app_backup.id_detail);
             this.chatbot_app = cloneDeep(this.chatbot_app_backup);
             this.cancelIdLoading = false;
+            this.$emit("applicationDetailsUpdated");
         },
         async saveConcessionDetails() {
             if(!await this.validateFormData('concession_card_ref')) return;
             this.saveConcessionLoading = true;
             await ChatbotApplicationService.updateConcessionDetails(this.app_id, this.chatbot_app.concession_details);
             this.saveConcessionLoading = false;
+            this.$emit("applicationDetailsUpdated");
         },
 
         async cancelConcessionDetails(){
@@ -1019,6 +1049,7 @@ export default {
             await ChatbotApplicationService.updateConcessionDetails(this.app_id, this.chatbot_app_backup.concession_details);
             this.chatbot_app = cloneDeep(this.chatbot_app_backup);
             this.cancelConcessionLoading = false;
+            this.$emit("applicationDetailsUpdated");
         },
 
         async validateFormData(reference){
@@ -1026,38 +1057,45 @@ export default {
         },
 
         updateExpireDatePicker() {
-            if (DayJs(this.application.expire_date, "DD/MM/YYYY").isValid()) {
-                this.expire_date = DayJs(
-                    this.this.application.expire_date,
-                    "DD/MM/YYYY"
-                ).format("YYYY-MM-DD");
+            if (DayJs(this.chatbot_app.id_detail.identification_expire_date, "DD/MM/YYYY").isValid()) {
+                this.expire_date = DayJs(this.chatbot_app.id_detail.identification_expire_date,"DD/MM/YYYY").format("YYYY-MM-DD");
             }
             this.idDetailsChanged('identification_expire_date');
         },
 
         updateDobPicker() {
-            if (DayJs(this.chatbot_app.dob, "DD/MM/YYYY").isValid()) {
-                this.chatbot_app.personal_details.dob = DayJs(
-                    this.this.chatbot_app.dob,
-                    "DD/MM/YYYY"
-                ).format("YYYY-MM-DD");
+            if (DayJs(this.chatbot_app.personal_details.dob, "DD/MM/YYYY").isValid()) {
+                this.dob = DayJs(this.chatbot_app.personal_details.dob,"DD/MM/YYYY").format("YYYY-MM-DD");
             }
             this.personalDetailsChanged('dob');
         },
 
         updateMovingDatePicker() {
-            if (DayJs(this.chatbot_app.moved_at, "DD/MM/YYYY").isValid()) {
-                this.chatbot_app.property_details.moved_at = DayJs(
-                    this.this.chatbot_app.moved_at,
-                    "DD/MM/YYYY"
-                ).format("YYYY-MM-DD");
+            if (DayJs(this.chatbot_app.property_details.moved_at, "DD/MM/YYYY").isValid()) {
+                this.moved_at = DayJs(this.chatbot_app.property_details.moved_at,"DD/MM/YYYY").format("YYYY-MM-DD");
             }
             this.propertyDetailsChanged('moved_at');
         },
 
+        updateConcessionStartDatePicker() {
+            if (DayJs(this.chatbot_app.concession_details.concession_card_start_date, "DD/MM/YYYY").isValid()) {
+                this.concession_card_start_date = DayJs(this.chatbot_app.concession_details.concession_card_start_date,"DD/MM/YYYY").format("YYYY-MM-DD");
+            }
+            this.concessionDetailsChanged('concession_card_start_date');
+        },
+
+        updateConcessionEndDatePicker() {
+            if (DayJs(this.chatbot_app.concession_details.concession_card_end_date, "DD/MM/YYYY").isValid()) {
+                this.concession_card_end_date = DayJs(this.chatbot_app.concession_details.concession_card_end_date,"DD/MM/YYYY").format("YYYY-MM-DD");
+            }
+            this.concessionDetailsChanged('concession_card_end_date');
+        },
+
         async loadApplication() {
+            this.isLoadSkeleton = true;
            this.chatbot_app =  await CustomerService.getMovingData(this.app_id);
            this.chatbot_app_backup = cloneDeep(this.chatbot_app);
+            this.isLoadSkeleton  = false;
         },
 
         handleNewApplication(){
@@ -1124,7 +1162,19 @@ export default {
         saveAddress(address) {
             console.log(address);
             console.log('address part is here');
-        }
+        },
+
+        concessionDetailsChanged(attribute){
+            if(this.chatbot_app.concession_details[attribute] !== this.chatbot_app_backup.concession_details[attribute]){
+                if(!this.concessionDetailsFlag.includes(attribute))
+                    this.concessionDetailsFlag.push(attribute);
+            }else{
+                if(this.concessionDetailsFlag.includes(attribute)){
+                    let index = this.concessionDetailsFlag.indexOf(attribute);
+                    this.concessionDetailsFlag.splice(index, 1);
+                }
+            }
+        },
 
     },
     mounted(){
@@ -1189,6 +1239,15 @@ export default {
 
 .heading.col.col-12 {
     padding: 28px;
+}
+
+.custom-card-color{
+    background-color: #f8f8f8 !important;
+}
+
+.expansion-header{
+    font-size: 18px;
+    font-weight: bold;
 }
 
 </style>
