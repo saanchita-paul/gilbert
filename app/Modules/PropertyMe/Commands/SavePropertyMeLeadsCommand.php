@@ -57,7 +57,7 @@ class SavePropertyMeLeadsCommand extends Command
         $this->overwriteConfigs();
 
         if ($this->option('office') !== null) {
-           $this->fetchForSelectedOffice();
+            $this->fetchForSelectedOffice();
         } else {
             $this->fetchForAllOffices();
         }
@@ -111,21 +111,25 @@ class SavePropertyMeLeadsCommand extends Command
 
     private function saveLead(Office $office): void
     {
-
         $this->line("[$office->name] START");
 
         $pm = new SaveContacts($office->property_me_refresh_token);
         $leads = $pm->fetch()->createLead()->getSavedLeads();
-        $leadCleanseAddresses = $this->getCleanseAddress($leads);
+        $cleanseAddresses = $this->getCleanseAddress($leads, 'PhysicalAddress');
+        $cleanseBillingAddresses = $this->getCleanseAddress($leads, 'PostalAddress');
 
 
         $this->line("[$office->name]  Saved in property_me_leads: " . sizeof($leads));
 
         $saveService = new SaveToConnectionApplication($office);
 
-        foreach ($leads as $key =>  $lead) {
+        foreach ($leads as $key => $lead) {
             try {
-                $saveService->run($lead, $leadCleanseAddresses[$key] ?? null);
+                $saveService->run(
+                    $lead,
+                    $cleanseAddresses[$key] ?? null,
+                    $cleanseBillingAddresses[$key] ?? null,
+                );
             } catch (Exception $e) {
                 Log::error($e->getMessage());
                 Log::error($e->getTraceAsString());
@@ -141,12 +145,14 @@ class SavePropertyMeLeadsCommand extends Command
         $this->info("[$office->name] Complete");
     }
 
-    private function getCleanseAddress($leads): array
+    private function getCleanseAddress($leads, $addressType): array
     {
         $addresses = [];
         foreach ($leads as $lead) {
-            $addresses[] = data_get($lead, 'PrimaryContactPerson.PhysicalAddress.Text');
+            $raw = json_decode($lead->all_fields_dump, true);
+            $addresses[] = ['fullAddress' => data_get($raw, "PrimaryContactPerson.$addressType.Text")];
         }
+
 
         return (new GBGAddressCleanse())->run($addresses);
     }
@@ -176,7 +182,7 @@ class SavePropertyMeLeadsCommand extends Command
         $memory_limit = env('SERVER_MEMORY_LIMIT', '1024M');
 
         \Http::timeout($time_out);
-        ini_set('memory_limit', $memory_limit );
+        ini_set('memory_limit', $memory_limit);
 
 
         $days = $this->option('days');
@@ -195,7 +201,7 @@ class SavePropertyMeLeadsCommand extends Command
             . "\nServer Time: " . now()->toDateTimeString()
             . "\nTable: property_me_leads"
             . "\nColumn: id"
-            ."\nValues: <strong>[{$ids}]<strong>";
+            . "\nValues: <strong>[{$ids}]<strong>";
 
         $emails = explode(',', config('property_me.support_emails'));
 

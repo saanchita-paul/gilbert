@@ -14,7 +14,7 @@ class GBGAddressCleanse
             'Accept' => 'application/json',
             'Authorization' => $authorization
         ])
-            ->post(config('gbg.gbgUserId'), $this->getPayload($addresses));
+            ->post(config('gbg.cleanse_url'), $this->getPayload($addresses));
 
         return json_decode($response->body(), true)['payload'] ?? [];
     }

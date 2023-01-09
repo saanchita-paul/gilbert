@@ -244,12 +244,14 @@ class AddressModel
 
     public static function mapStateToShort(?string $state): ?string
     {
-        $state = AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($state)];
+        $state = AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($state)] ?? null;
         return $state ? strtoupper($state) : null;
     }
 
     public static function mapStateToLong(?string $state): ?string
     {
-        return ucwords(self::MAP_STATES_SHORT_TO_LONG[strtolower($state)]) ?? null;
+        $state = self::MAP_STATES_SHORT_TO_LONG[strtolower($state)] ?? null;
+
+        return $state ? ucwords($state) : null;
     }
 }
