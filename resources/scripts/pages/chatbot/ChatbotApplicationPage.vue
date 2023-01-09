@@ -30,9 +30,15 @@
                     </v-card-text>
                 </v-card>
             </v-col>
-            <v-col cols="4" v-if="chatbotApps.length" >
-                <ChatbotApplicationDetails  ></ChatbotApplicationDetails>
+            <v-col cols="4"  >
+                <v-skeleton-loader
+                    v-bind="attrs"
+                    type="article, actions , article,  actions, article, actions"
+                    v-if="isLoadSkeleton"
+                ></v-skeleton-loader>
+                <ChatbotApplicationDetails v-if="shouldShowApplicationDetails" @applicationDetailsUpdated="fetchCafFiles" ></ChatbotApplicationDetails>
             </v-col>
+
         </v-row>
     </v-container>
 </template>
@@ -49,6 +55,7 @@ import ChatbotApplicationDetails from "@scripts/components/chatbot/ChatbotApplic
 import ChatbotApplicationFilter from "@scripts/components/chatbot/ChatbotApplicationFilter";
 import ChatbotCafTable from "@scripts/components/chatbot/ChatbotCafTable";
 import Store from '@scripts/store/index';
+import SkeletonLoaderData from "@scripts/data/SkeletonLoaderData";
 
 export default {
 name: "ChatbotApplicationPage",
@@ -84,7 +91,9 @@ name: "ChatbotApplicationPage",
             totalItems: null,
             option: {},
             advanceSearchModel: new CafFileSearchFilterModel(),
-            selectedApp: null
+            selectedApp: null,
+            isLoadSkeleton : false,
+            attrs: SkeletonLoaderData,
         }
     },
 
@@ -167,14 +176,16 @@ name: "ChatbotApplicationPage",
         },
 
         async fetchCafFiles() {
+            this.isLoadSkeleton = true;
             let data = await ApplicationCafFileService.getChatbotApplication({...this.sort_search_meta, ...{page: this.page}}, this.advanceSearch);
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
             this.totalItem = data.pagination.total;
             if(data.data.length > 0) {
                 const query = this.$route.query;
-                await this.$router.replace({query: {...query, app_id: data.data[0].id}});
+                await this.$router.replace({query: {...query, app_id: data.data[0].id}}).catch((error)=>{});
             }
+            this.isLoadSkeleton = false;
         },
 
         async fetchGilbertApplications() {
@@ -223,6 +234,10 @@ name: "ChatbotApplicationPage",
     computed: {
         chatbotApps() {
            return Store.getters.applications;
+        },
+        shouldShowApplicationDetails(){
+            return (this.isLoadSkeleton === false) && (this.chatbotApps.length > 0);
+
         }
     }
 
