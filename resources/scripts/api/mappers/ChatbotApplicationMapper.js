@@ -116,5 +116,13 @@ export default {
                 dayjs(data.concession_end_date,'DD/MM/YYYY')
                     .format('YYYY-MM-DD'): ''
         }
+    },
+    mapToUpdateAddress : address => {
+        return{
+            ...address,
+            suburb : address.city,
+            to_postcode : address.postcode,
+            flat_or_unit_number : address.unit_number
+        }
     }
 }

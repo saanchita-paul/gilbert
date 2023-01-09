@@ -1,6 +1,7 @@
 import ChatbotApplicationApi from "@scripts/api/chatbot/ChatbotApplicationApi";
 import Store from '@scripts/store/index';
 import axios from "axios";
+import utilityAPI from "@scripts/api/UtilityAPI";
 export default {
     saveNote: note => ChatbotApplicationApi.saveNote(note),
     updatePersonalDetails: async (utilityId, data) => {
@@ -29,6 +30,12 @@ export default {
 
     saveServiceStatus: async (service) => {
       return  await ChatbotApplicationApi.saveServiceStatus(service.id, {status: service.status});
+    },
+
+    updatePropertyAddress: async (utilityId, address) => {
+        const application = ChatbotApplicationApi.updatePropertyAddress(utilityId, address)
+        Store.commit('updateApp', application);
     }
+
 
 }

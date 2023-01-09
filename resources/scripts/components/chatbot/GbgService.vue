@@ -306,7 +306,7 @@
                                         <v-btn @click="closeServiceAddress" block>Cancel</v-btn>
                                     </v-col>
                                     <v-col cols="6" class="py-0">
-                                        <v-btn @click="onSubmit" block color="primary">Save</v-btn>
+                                        <v-btn @click="onSubmit" block color="primary" :loading="saveButtonLoader">Save</v-btn>
                                     </v-col>
                                 </v-row>
                             </v-col>
@@ -340,6 +340,9 @@ export default {
         },
         propertyDetails: {
             required: true
+        },
+        saveButtonLoader : {
+            required : true
         }
     },
     data () {

@@ -864,7 +864,7 @@
                 </v-expansion-panel>
             </v-expansion-panels>
 
-        <GgbService v-if="showGbg" :dialog="showGbg"  :propertyDetails="chatbot_app.property_address" @close="showGbg = false" @saveAddress="saveAddress"></GgbService>
+        <GgbService v-if="showGbg" :dialog="showGbg"  :propertyDetails="chatbot_app.property_address" @close="showGbg = false" @saveAddress="saveAddress" :saveButtonLoader="address_loader"></GgbService>
 
             <RejectionReasonModal v-if="dialog" :dialog="dialog" :service="selectedRejectedService"  @close="onCloseReject" ></RejectionReasonModal>
         </div>
@@ -1095,8 +1095,8 @@ export default {
 
         async loadApplication() {
             this.isLoadSkeleton = true;
-           this.chatbot_app =  await CustomerService.getMovingData(this.app_id);
-           this.chatbot_app_backup = cloneDeep(this.chatbot_app);
+            this.chatbot_app =  await CustomerService.getMovingData(this.app_id);
+            this.chatbot_app_backup = cloneDeep(this.chatbot_app);
             this.isLoadSkeleton  = false;
         },
 
@@ -1161,10 +1161,12 @@ export default {
             this.showGbg = true;
         },
 
-        saveAddress(address) {
-            console.log(address);
+        async saveAddress(address) {
             this.address_loader = true;
-            console.log('address part is here');
+            await ChatbotApplicationService.updatePropertyAddress(this.app_id, address)
+            await this.loadApplication();
+            this.address_loader = false;
+            this.showGbg = false;
         },
 
         concessionDetailsChanged(attribute){

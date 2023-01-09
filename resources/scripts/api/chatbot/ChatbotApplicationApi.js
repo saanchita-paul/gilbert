@@ -70,4 +70,15 @@ export default {
         }
     },
 
+    async updatePropertyAddress(utilityId, address){
+        try {
+            const mappedData = ChatbotApplicationMapper.mapToUpdateAddress(address);
+            const response = (await axios.post(`${ROOT}/${utilityId}/utility-address`, {...mappedData})).data;
+            return ApplicationCafFileMapper.mapChatbotSingleApplication(response.data);
+        } catch (error) {
+            console.log('error', error);
+            return null;
+        }
+    }
+
 }
