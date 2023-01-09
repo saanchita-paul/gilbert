@@ -2,6 +2,7 @@
 
 namespace App\Modules\PropertyMe\Services;
 
+use App\Events\Agency\CreateApplicationEvent;
 use App\Events\NotifyAgentAfterLeadCreation;
 use App\Jobs\CreateHubspotProperty;
 use App\Models\AgentProfile;
@@ -129,7 +130,7 @@ class SaveToConnectionApplication
 
         $this->saveApplicationId($application->id, $lead);
         NotifyAgentAfterLeadCreation::dispatch($application->id);
-        CreateHubspotProperty::dispatch($application->id);
+        CreateApplicationEvent::dispatch($application->id);
 
         return $application;
     }
