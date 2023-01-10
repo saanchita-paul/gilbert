@@ -260,7 +260,6 @@ export default {
         async loadUserList() {
             const meta = {
                 search: this.userSearch,
-                page: this.options.page,
                 per_page: this.options.itemsPerPage,
                 is_descending: false,
                 sort_by: '',
