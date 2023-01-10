@@ -14,6 +14,7 @@
             @click:row="onRowSelect"
             single-select
         >
+
             <template v-slot:item.data-table-select="{ item, isSelected, select }">
                 <v-simple-checkbox
                     :ripple="false"
@@ -122,9 +123,30 @@ export default {
             row.select(true);
         },
         isSelectedClass(item) {
-            if (item.id === this.selectedRowId) {
-                return 'selectedRowForAgentTable';
+            if (item.color === true) {
+                return 'row-rejected';
             }
+
+            // if(item.caf_generation_status  === 'CAF Submitted') {
+            //     console.log('matched', item);
+            //     return 'row-rejected';
+            // }
+            // if(item.connection_type  === 'Default') {
+            //     console.log('matched', item);
+            //     return 'row-rejected';
+            // }
+            // if(item.services.status  === 'Rejected') {
+            //     console.log('matched', item);
+            //     return 'row-rejected';
+            // }
+            // if(item.service.status  === 'Rejected') {
+            //     console.log('matched', item);
+            //     return 'row-rejected';
+            // }
+
+
+
+
         },
 
         created_date(date) {
@@ -170,6 +192,7 @@ export default {
 .row-pointer >>> tbody tr :hover {
     /*cursor: pointer;*/
 }
+
 .row-pointer >>> tbody tr td:nth-child(3){
     white-space: nowrap;
     overflow: hidden;
@@ -201,6 +224,7 @@ export default {
 .row-pointer >>> thead tr th:not(:nth-child(1)) {
     padding: 0px 8px  0px 0px !important;
 }
+
 
 
 </style>

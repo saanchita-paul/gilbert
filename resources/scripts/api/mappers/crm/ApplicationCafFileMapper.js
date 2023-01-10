@@ -67,7 +67,26 @@ function mapServiceStatus(service) {
 
 
 }
- const mapApplicationCafFile = data => {
+
+function mapModelColor(service, caf_generation_status, connection_type) {
+
+    if(caf_generation_status === 'CAF Submitted')
+    {
+        return false;
+    }
+
+    if(connection_type === 'Temporary')
+    {
+        return true;
+    }
+    return service.find(sv  => {
+        return (['electricity', 'gas'].includes(sv.service_type) && (
+            ['rejected', 'submitted'].includes(sv.status?.toLowerCase()) || (sv.status == null)));
+    });
+
+}
+
+const mapApplicationCafFile = data => {
     let model = new ApplicationCafFile({...data});
     model.service_type = mapService(model.service);
     model.supplier = mapProvider(model.service);
@@ -79,6 +98,7 @@ function mapServiceStatus(service) {
     model.status = mapServiceStatus(model.service)
     model.is_selected = false;
     model.services = model.service;
+    model.color = !!mapModelColor(model.service, model.caf_generation_status, model.connection_type);
     return model;
 }
 

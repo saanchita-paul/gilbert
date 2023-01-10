@@ -10,9 +10,18 @@
                 <v-col cols="12">
                     <p style="margin-bottom: unset">Chatbot Application Details</p>
                     <p class="font-weight-bold" style="font-size: 25px; margin-bottom: unset">{{ chatbot_app.personal_details.title.charAt(0).toUpperCase() + chatbot_app.personal_details.title.slice(1) }}. {{ chatbot_app.personal_details.first_name.charAt(0).toUpperCase() + chatbot_app.personal_details.first_name.slice(1) }} {{ chatbot_app.personal_details.last_name.charAt(0).toUpperCase() + chatbot_app.personal_details.last_name.slice(1) }}</p>
-                    <IdCopyToClipboard :applicationId="app_id"></IdCopyToClipboard>
+                    <v-row style="margin-top: unset">
+                        <v-col cols="4">
+                            <IdCopyToClipboard :applicationId="app_id"></IdCopyToClipboard>
+                        </v-col>
+                        <v-col cols="8">
+                            <p>Temporary Connection</p>
+                        </v-col>
+                    </v-row>
                 </v-col>
+
             </v-row>
+
             <v-divider ></v-divider>
             <v-expansion-panels class=" overflow-auto" v-model="expansionPanel" @change="handleExpansionPanel" multiple accordion style="box-shadow: none !important; max-height: 54.8vh;">
                 <v-expansion-panel class="custom-card-color" elevation="0" >
@@ -426,6 +435,80 @@
 
                 <v-expansion-panel class="custom-card-color" elevation="0">
                     <v-expansion-panel-header class="expansion-header">
+                        Service Preference
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        <v-row>
+                            <v-col cols="12" v-if="chatbot_app.eleService">
+                                <div  class="my-0 py-0 mx-0 border-all">
+                                    <p class="pt-2 pb-1 mb-0 services">
+                              <span class="ml-0">
+                                  <v-icon  color="yellow" size="17">mdi-flash</v-icon> Power
+                              </span>
+                                    </p>
+                                    <p class="py-0 my-0 service-status" >
+                                        <small>Current Status</small>
+                                        <v-select @change="changeServiceStatus(chatbot_app.eleService)"
+                                                  placeholder="Please select"
+                                                  v-model="chatbot_app.eleService.status"
+                                                  item-text="text"
+                                                  item-value="text"
+                                                  :items="powerStatus"
+                                                  outlined
+                                                  dense
+                                                  hide-details="auto"
+                                        >
+                                        </v-select>
+                                    </p>
+                                </div>
+
+                                <div class="item" v-if="chatbot_app.eleService.service_type === 'electricity'">
+                                    <v-btn v-if="chatbot_app.eleService.status === 'Rejected'"
+                                           @click="openRejection(electricityService)"
+                                           small
+                                           style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a; margin-top: 15px;"
+                                           outlined
+                                    > Reason </v-btn>
+                                </div>
+                            </v-col>
+                            <v-col cols="12" v-if="chatbot_app.gasService">
+                                <div  class="my-0 py-0 mx-0 border-all">
+                                    <p class="pt-2 pb-1 mb-0 services">
+                              <span class="ml-0">
+                                  <v-icon color="red" size="17">mdi-fire</v-icon> Gas
+                              </span>
+                                    </p>
+                                    <p class="py-0 my-0 service-status" >
+                                        <small>Current Status</small>
+                                        <v-select @change="changeServiceStatus(chatbot_app.gasService)"
+                                                  placeholder="Please select"
+                                                  v-model="chatbot_app.gasService.status"
+                                                  item-text="text"
+                                                  item-value="text"
+                                                  :items="gasStatus"
+                                                  outlined
+                                                  dense
+                                                  hide-details="auto"
+                                        >
+                                        </v-select>
+                                    </p>
+                                </div>
+                                <div class="item" v-if="chatbot_app.gasService.service_type === 'gas'">
+                                    <v-btn v-if="chatbot_app.gasService.status === 'Rejected'"
+                                           @click="openRejection(gasService)"
+                                           small
+                                           style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;margin-top: 15px;"
+                                           outlined
+                                    >Reason</v-btn>
+                                </div>
+                            </v-col>
+                        </v-row>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+                <v-divider></v-divider>
+
+                <v-expansion-panel class="custom-card-color" elevation="0">
+                    <v-expansion-panel-header class="expansion-header">
                         Identification Details
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
@@ -777,80 +860,6 @@
                     </v-expansion-panel-content>
                 </v-expansion-panel>
                 <v-divider ></v-divider>
-
-                <v-expansion-panel class="custom-card-color" elevation="0">
-                    <v-expansion-panel-header class="expansion-header">
-                        Service Preference
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                        <v-row>
-                            <v-col cols="12" v-if="chatbot_app.eleService">
-                                <div  class="my-0 py-0 mx-0 border-all">
-                                    <p class="pt-2 pb-1 mb-0 services">
-                              <span class="ml-0">
-                                  <v-icon  color="yellow" size="17">mdi-flash</v-icon> Power
-                              </span>
-                                    </p>
-                                    <p class="py-0 my-0 service-status" >
-                                        <small>Current Status</small>
-                                        <v-select @change="changeServiceStatus(chatbot_app.eleService)"
-                                                  placeholder="Please select"
-                                                  v-model="chatbot_app.eleService.status"
-                                                  item-text="text"
-                                                  item-value="text"
-                                                  :items="powerStatus"
-                                                  outlined
-                                                  dense
-                                                  hide-details="auto"
-                                        >
-                                        </v-select>
-                                    </p>
-                                </div>
-
-                                <div class="item" v-if="chatbot_app.eleService.service_type === 'electricity'">
-                                    <v-btn v-if="chatbot_app.eleService.status === 'Rejected'"
-                                           @click="openRejection(electricityService)"
-                                           small
-                                           style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a; margin-top: 15px;"
-                                           outlined
-                                    > Reason </v-btn>
-                                </div>
-                            </v-col>
-                            <v-col cols="12" v-if="chatbot_app.gasService">
-                                <div  class="my-0 py-0 mx-0 border-all">
-                                    <p class="pt-2 pb-1 mb-0 services">
-                              <span class="ml-0">
-                                  <v-icon color="red" size="17">mdi-fire</v-icon> Gas
-                              </span>
-                                    </p>
-                                    <p class="py-0 my-0 service-status" >
-                                        <small>Current Status</small>
-                                        <v-select @change="changeServiceStatus(chatbot_app.gasService)"
-                                                  placeholder="Please select"
-                                                  v-model="chatbot_app.gasService.status"
-                                                  item-text="text"
-                                                  item-value="text"
-                                                  :items="gasStatus"
-                                                  outlined
-                                                  dense
-                                                  hide-details="auto"
-                                        >
-                                        </v-select>
-                                    </p>
-                                </div>
-                                <div class="item" v-if="chatbot_app.gasService.service_type === 'gas'">
-                                    <v-btn v-if="chatbot_app.gasService.status === 'Rejected'"
-                                           @click="openRejection(gasService)"
-                                           small
-                                           style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;margin-top: 15px;"
-                                           outlined
-                                    >Reason</v-btn>
-                                </div>
-                            </v-col>
-                        </v-row>
-                    </v-expansion-panel-content>
-                </v-expansion-panel>
-                <v-divider></v-divider>
 
                 <v-expansion-panel class="custom-card-color">
                     <v-expansion-panel-header class="expansion-header">
@@ -1253,6 +1262,9 @@ export default {
 .expansion-header{
     font-size: 18px;
     font-weight: bold;
+}
+.v-application .pa-4 {
+    padding: 0 20px !important;
 }
 
 </style>
