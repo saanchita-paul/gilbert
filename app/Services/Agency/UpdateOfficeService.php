@@ -104,9 +104,22 @@ class UpdateOfficeService
 
     public function updateAgent($agentData)
     {
-        $agent = AgentProfile::findOrFail($agentData['id']);
-        $agent->update($agentData);
-        $agent->user->update(["email" => $agentData['email']]);
-        return $agent->refresh();
+        if (isset($agentData['id'])) {
+            $agent = AgentProfile::findOrFail($agentData['id']);
+            $agent->update($agentData);
+        } else {
+            $office = Office::findOrFail($this->id);
+            $agentData['office_id'] = $office->id;
+            $agentData['agency_id'] = $office->agency_id;
+            $agent = AgentProfile::create($agentData);
+        }
+
+        if (isset($agentData['email'])) {
+            $agent->user->update(["email" => $agentData['email']]);
+        }
+
+        $agent->refresh();
+
+        return $agent;
     }
 }
