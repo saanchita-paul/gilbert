@@ -187,10 +187,6 @@ class ApplicationService
             throw new \Exception('assignUser: Application not found!');
         }
 
-        if (!$this->checkAllowableForAssign($connectionApplication)) {
-            throw new \Exception('assignUser: Application has no phone number or suburb/city!');
-        }
-
         $connectionApplication->update(['assigned_to' => $agentId, 'status' => ConnectionApplication::STATUS_ASSIGNED]);
 
         if (in_array(HoodProfile::find($agentId)->user->roles->first()?->name,
@@ -214,11 +210,17 @@ class ApplicationService
 
     public function sendToChatbot($appId, $hoodUserId)
     {
+        $connectionApplication = ConnectionApplication::find($appId);
         $checkProfile = User::where('profile_type', USER::PROFILE_TYPE_HOOD)
             ->where('profile_id', $hoodUserId)
             ->firstOrFail();
 
         if ($checkProfile->hasAnyRole(RolePermission::ROLE_HOOD_CHATBOT_USER)) {
+            if (!$this->checkAllowableForAssign($connectionApplication)) {
+                $connectionApplication->update(['assigned_to' => null, 'status' => ConnectionApplication::STATUS_UNASSIGNED]);
+                throw new \Exception('assignUser: Application has no phone number or suburb/city!');
+            }
+
             GilbertToChatbotJob::dispatch($appId);
         };
     }
