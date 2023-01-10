@@ -11,7 +11,9 @@ use App\Services\Application\SearchConnectionApplication;
 use App\Services\ApplicationCafService\CafApplication;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Storage;
 use Powershop\Services\CAFGenerationService;
 
 
@@ -41,7 +43,9 @@ class ApplicationCafController extends Controller{
         try {
             $service = new CafApplication($ids);
             $service->prepareCafFileData();
-//            return $service->downloadCAF();
+            $path = $service->downloadedZipFile();
+            $path  = public_path("storage/$path");
+            return response()->download($path);
         }
         catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);

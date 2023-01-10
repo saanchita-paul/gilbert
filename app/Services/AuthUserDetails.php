@@ -71,11 +71,14 @@ class AuthUserDetails
                     'user_email' => $user->email
                 ];
 
+                info('data', $data);
+
                 $crypt = new Encrypter( config('bot.encryption_key'), 'AES-128-CBC');
                 return $crypt->encrypt($data, true);
             }
 
         } catch (\Exception $e) {
+            info('data', ['geting error']);
             \Log::error($e->getMessage());
             \Log::error($e->getTraceAsString());
         }

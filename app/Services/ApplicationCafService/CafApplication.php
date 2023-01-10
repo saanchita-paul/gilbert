@@ -4,10 +4,12 @@ namespace App\Services\ApplicationCafService;
 
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Maatwebsite\Excel\Facades\Excel;
 use Rap2hpoutre\FastExcel\FastExcel;
+use Storage;
+use Illuminate\Filesystem\Filesystem;
 
 class CafApplication
 {
@@ -23,29 +25,24 @@ class CafApplication
     private  $originApplicationList = [];
 
 
-    public function __construct(array $applicationIdList)
-    {
-        $this->chatbotUri = config('bot.root_url');
-        $this->getPromotionCode();
+    public function __construct(array $applicationIdList){
         $this->applicationIdList = $applicationIdList;
-        // $this->cafToken = $this->getPowerShopCafToken();
 
         $this->fetchApplications();
-//        $this->mapApplications();
+        $this->clearExistingCafData();
     }
 
     private function fetchApplications(): void {
         $this->fetchPSApplication();
         $this->fetchOriginApplication();
-
     }
 
     public function prepareCafFileData():void{
         $urgentFile = sprintf('HOOD-Powershop-Sales-Date-%s.csv', $this->getCAFPostfix());
-        $this->generate(collect($this->powerShopApplicationList) ,$urgentFile, ConnectionService::PROVIDER_POWER_SHOP);
+        $this->generate($this->powerShopApplicationList ,$urgentFile, ConnectionService::PROVIDER_POWER_SHOP);
 
         $urgentFile = sprintf('HOOD-Origin-Sales-Date-%s.csv', $this->getCAFPostfix());
-        $this->generate(collect($this->originApplicationList) ,$urgentFile, ConnectionService::PROVIDER_POWER_SHOP);
+        $this->generate($this->originApplicationList ,$urgentFile, ConnectionService::PROVIDER_ORIGIN);
     }
 
     private function getCAFPostfix(): string{
@@ -53,25 +50,32 @@ class CafApplication
     }
 
 
-    public function generate($collection, string $path, $provider): void{
+    public function generate($data, string $path, $provider): void{
          try {
              switch ($provider){
                  case ConnectionService::PROVIDER_POWER_SHOP:
-//                     $exporter = new ConnectionApplicationExporter($collection);
+                     $exporter = new PowerShopExporter($data);
                      break;
                  case ConnectionService::PROVIDER_ORIGIN:
-//                     $exporter = new OriginExporter($collection);
+                     $exporter = new OriginExporter($data);
                      break;
                  default:
                      Log::warning(sprintf('Invalid Provider to generate CAF'));
              }
 
-//             if (!$exporter->hasData()) {
-//                 $this->warn(sprintf('There is no data found to sent EnergyAustralia for %s', $path));
-//                 return 0;
-//             }
-             $path = self::PENDING_PATH. DIRECTORY_SEPARATOR.  now(10)->format('d-m-Y'). DIRECTORY_SEPARATOR. $path;
-             (new FastExcel())->data($collection)->export($path);
+             $currentTime = now(10)->format('d-m-Y');
+             $storagePath = storage_path("app/public/gilbert/".$currentTime);
+             if(!File::isDirectory($storagePath)){
+                 File::makeDirectory($storagePath);
+             }
+
+             $path = self::PENDING_PATH. DIRECTORY_SEPARATOR.  $currentTime. DIRECTORY_SEPARATOR. $path;
+
+
+            $data = $exporter->getCollection();
+            $fastExcel = new FastExcel();
+            $fastExcel->data($data);
+            $fastExcel->export(storage_path("app/public/$path"));
 //             $exporter->updateServiceRecords();
 
          } catch (\Exception $exception) {
@@ -101,25 +105,54 @@ class CafApplication
     }
 
 
-    private function getPromotionCode(){
-        try {
-            $url = $this->chatbotUri.'/hood-dashboard/api/power-shop/promo-code';
 
-            if (config('app.env') == 'local') $response = Http::withOptions(['verify' => false,])->get($url);
-            else $response = Http::get($url);
 
-            if($response->status() == 200) {
-                $this->mapPromotionCode(json_decode($response->body(), true));
-            }
-        } catch (\Exception $e) {
-            Log::warning('No promotion code is found'.$e->getMessage());
+    public function downloadedZipFile(){
+        $currentDate = now(10)->format('d-m-Y');
+        $zipName = now(10)->unix();
+        $dataDir =  self::PENDING_PATH. DIRECTORY_SEPARATOR.$currentDate;
+
+        $storagePath = storage_path("app/public/gilbert/data");
+        if(!File::isDirectory($storagePath)){
+            File::makeDirectory($storagePath);
         }
+
+        $subPath = "gilbert/data/$zipName.zip";
+        $zipFilePath =  storage_path("app/public/$subPath");
+
+
+        $zip = new \ZipArchive();
+
+        if ($zip->open($zipFilePath, \ZipArchive::CREATE) === true) {
+            $fileDir = storage_path('app/public/'.$dataDir);
+
+
+            if(is_dir($fileDir)) {
+                $files = File::files(storage_path('app/public/'.$dataDir));
+
+                foreach ( $files as $key=>$file)
+                {
+                    $zip->addFile($file, basename($file));
+                }
+            }
+            $zip->close();
+        } else {
+            throw new \Exception("Error while caf downloading");
+        }
+
+        return $subPath;
     }
 
-    private function mapPromotionCode(?array $promotionData): void
-    {
-        $this->gasPromotionData = data_get($promotionData, 'gas', []);
-        $this->elePromotionData = data_get($promotionData, 'electricity', []);
+    private function clearExistingCafData(){
+//        Storage::download("robots.txt");
+        try {
+            $removedOldService = new RemoveOldCafService();
+            $removedOldService->delete(true);
+        } catch (\Exception $exception) {
+            Log::info($exception->getMessage());
+            Log::error($exception->getTraceAsString());
+        }
+
     }
 
 }
