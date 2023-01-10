@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-show="false">
         <v-checkbox
             v-model="isMriOffice"
             :label="`MRI Office`">

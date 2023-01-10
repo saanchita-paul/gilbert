@@ -210,11 +210,11 @@ export default {
                     value: 't_app',
                     icon: '/assets/images/icons/company/tapp.png'
                 },
-                {
-                    text: 'MRI',
-                    value: 'mri',
-                    icon: '/assets/images/icons/company/mri.png'
-                },
+                // {
+                //     text: 'MRI',
+                //     value: 'mri',
+                //     icon: '/assets/images/icons/company/mri.png'
+                // },
 
             ],
             tanancyTypeOptions: [

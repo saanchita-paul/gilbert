@@ -71,7 +71,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('send-email-mri-office')->twiceDaily();
 
-        $this->runMri($schedule);
+//        $this->runMri($schedule);
 
         /**
          * For Horizon metrics dashboard
