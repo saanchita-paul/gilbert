@@ -294,7 +294,7 @@ Route::get('/applications/{id}/email-manually-verified', [ApplicationController:
 /**
  * gilbert to chatbot sync
  */
-Route::get('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syncProperty']);
+Route::post('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syncProperty']);
 
 /**
  * application events
