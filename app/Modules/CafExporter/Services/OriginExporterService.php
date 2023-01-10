@@ -44,6 +44,8 @@ class OriginExporterService
      */
     private $chatbotUri;
 
+    private array $campaignInfo;
+
     /**
      *
      */
