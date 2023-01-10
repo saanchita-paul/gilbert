@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Database\Factories\AgencyFactory;
 
 /**
  * App\Models\Agency
@@ -70,5 +71,10 @@ class Agency extends Model
     public function applications(): HasMany
     {
         return $this->hasMany(ConnectionApplication::class);
+    }
+
+    protected static function newFactory()
+    {
+        return AgencyFactory::new();
     }
 }

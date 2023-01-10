@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Services\Agency;
-
 
 use App\Mail\InviteUserMail;
 use App\Models\AgentProfile;
@@ -13,10 +11,11 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use phpDocumentor\Reflection\DocBlock\Tags\Reference\Url;
+use App\Models\MriAgent;
 
 class CreateAgentAndUser
 {
-    public function createAgent( array $agentData)
+    public function createAgent(array $agentData)
     {
         /** @var AgentProfile $agent */
         $agent = AgentProfile::create($agentData);
@@ -31,7 +30,6 @@ class CreateAgentAndUser
         $user = User::create(array_merge($userData, ['profile_type' => 'App\Models\AgentProfile']));
         $user->assignRole($userData['role']);
         return $user;
-
     }
 
     public function createUserInvitation(array $userData)
@@ -52,6 +50,12 @@ class CreateAgentAndUser
         $agent = $this->createAgent($inputData);
         $inputData['profile_id'] = $agent->id;
         $user = $this->createUser($inputData);
+        $mriAgent = MriAgent::where('email_address', $inputData['email'])->first();
+        if ($mriAgent) {
+            $mriAgent->agent_profile_id = $agent->id;
+            $mriAgent->save();
+        }
+
         return $agent;
     }
 
@@ -59,5 +63,4 @@ class CreateAgentAndUser
     {
         return Str::random(30);
     }
-
 }

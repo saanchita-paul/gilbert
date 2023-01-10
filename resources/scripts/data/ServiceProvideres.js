@@ -131,6 +131,20 @@ export default [
         ],
         logo: '/assets/images/logo/providers/goodtel.png'
     },
-
+    {
+        name: 'first_energy',
+        formatted_name: '1st Energy',
+        service_type: 'energy',
+        default_plan: null,
+        logo: '/assets/images/logo/providers/1st_energy.png',
+        plans: [
+            new ProviderPlan({
+                title:'1st Super Saver',
+                name: '1st_super_saver',
+                bgColor: '#42B5E8',
+                type: 'power',
+            }),
+        ],
+    },
 
 ]

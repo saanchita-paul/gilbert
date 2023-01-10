@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\ConnectionApplication;
-use App\Services\Agency\HubspotContactService;
+use App\Services\hubspot\HubspotContactService;
 use Exception;
 use Illuminate\Console\Command;
 

@@ -81,6 +81,8 @@
                       @input="updateOffice"
                       :label="`Notify agents when HOOD receives an application`">
                   </v-checkbox>
+
+                  <MriOfficeDropdown @saveMriOffice="saveMriOffice"></MriOfficeDropdown>
               </div>
             </v-col>
           </v-row>
@@ -89,9 +91,11 @@
 <script>
 import debounce from "lodash-es/debounce";
 import GoogleMapService from "@scripts/services/GoogleMapService";
+import MriOfficeDropdown from "@scripts/components/crm/office/mri/MriOfficeDropdown";
 
 export default {
   name: "OfficeDetails",
+    components:{MriOfficeDropdown},
     props:['data'],
     data() {
       return {
@@ -138,6 +142,9 @@ export default {
                 .then((data) => {
                     this.office.address = data.formatted_address;
                 });
+        },
+        saveMriOffice(item) {
+            this.$emit('saveMriOffice', item);
         }
 
 
