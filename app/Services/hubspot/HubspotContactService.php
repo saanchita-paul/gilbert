@@ -60,10 +60,10 @@ class HubspotContactService
         ]);
         $body = json_decode($response->body(), true);
 
-//        if (empty($body['vid'])) {
-//            Log::error($response->body());
-//            throw new \Exception("[HubspotContactService] failed to create contact");
-//        }
+        if (empty($body['vid'])) {
+            Log::error($response->body());
+            throw new \Exception("[HubspotContactService] failed to create contact", ["response" => $response->body()]);
+        }
 
         $this->application->update(['hubspot_contact_id' => $body['vid']]);
 
