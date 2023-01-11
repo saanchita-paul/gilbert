@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use App\Models\ConnectionService;
 use App\Jobs\OriginStatusUpdateJob;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 class OriginCheckStatusCommand extends Command
 {
@@ -45,7 +46,10 @@ class OriginCheckStatusCommand extends Command
         $services = ConnectionService::where('provider_name', ConnectionService::PROVIDER_ORIGIN)
             ->whereNotNull('lead_reference')
             ->where('status', ConnectionService::STATUS_SUBMITTED)
-            ->where('quote_reference', '!=', ApplicationServiceStatusService::QUOTE_REFERENCE)
+            ->where(function (Builder $b) {
+                $b->where('quote_reference', '!=', ApplicationServiceStatusService::QUOTE_REFERENCE)
+                    ->orWhereNull('quote_reference');
+            })
             ->get();
 
         foreach ($services as $service) {
