@@ -216,7 +216,7 @@ class GetSalesRequestStaus
             ->where('provider_name', '=', ConnectionService::PROVIDER_EA)
             ->whereIn('service_type', [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY])
             ->whereNotNull('lead_reference')
-            ->where('lead_reference', '!=', ApplicationServiceStatusService::QUOTE_REFERENCE)
+            ->where('quote_reference', '!=', ApplicationServiceStatusService::QUOTE_REFERENCE)
             ->distinct()
             ->get()
             ->unique('lead_reference');
