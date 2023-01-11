@@ -565,20 +565,20 @@
               </template>
             </v-text-field>
           </ValidationProvider>
-            <span class="mt-2" v-if="isEmbeddedNMI == 2">
-                <span><small>Checking Embedded..</small></span>
-                <v-progress-linear
-                    class="primary-color"
-                    indeterminate
-                    height="6"
-                ></v-progress-linear>
-            </span>
-            <span class="error--text" v-if="isEmbeddedNMI == 1">
-                  <v-icon color="error" class="mt-4">
-                      info
-                  </v-icon>
-                  <small v-html="embeddedText"></small>
-            </span>
+<!--            <span class="mt-2" v-if="isEmbeddedNMI == 2">-->
+<!--                <span><small>Checking Embedded..</small></span>-->
+<!--                <v-progress-linear-->
+<!--                    class="primary-color"-->
+<!--                    indeterminate-->
+<!--                    height="6"-->
+<!--                ></v-progress-linear>-->
+<!--            </span>-->
+<!--            <span class="error&#45;&#45;text" v-if="isEmbeddedNMI == 1">-->
+<!--                  <v-icon color="error" class="mt-4">-->
+<!--                      info-->
+<!--                  </v-icon>-->
+<!--                  <small v-html="embeddedText"></small>-->
+<!--            </span>-->
         </div>
       </div>
 
@@ -608,20 +608,20 @@
                         </template>
                     </v-text-field>
                 </ValidationProvider>
-                <span class="mt-2" v-if="isEmbeddedNMI == 2">
-                    <span><small>Checking Embedded..</small></span>
-                    <v-progress-linear
-                        class="primary-color"
-                        indeterminate
-                        height="6"
-                    ></v-progress-linear>
-                </span>
-                <span class="error--text" v-if="isEmbeddedNMI == 1">
-                      <v-icon color="error" class="mt-4">
-                          info
-                      </v-icon>
-                      <small v-html="embeddedText"></small>
-                </span>
+<!--                <span class="mt-2" v-if="isEmbeddedNMI == 2">-->
+<!--                    <span><small>Checking Embedded..</small></span>-->
+<!--                    <v-progress-linear-->
+<!--                        class="primary-color"-->
+<!--                        indeterminate-->
+<!--                        height="6"-->
+<!--                    ></v-progress-linear>-->
+<!--                </span>-->
+<!--                <span class="error&#45;&#45;text" v-if="isEmbeddedNMI == 1">-->
+<!--                      <v-icon color="error" class="mt-4">-->
+<!--                          info-->
+<!--                      </v-icon>-->
+<!--                      <small v-html="embeddedText"></small>-->
+<!--                </span>-->
             </div>
         </div>
 
