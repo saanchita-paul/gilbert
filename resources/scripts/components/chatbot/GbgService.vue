@@ -328,6 +328,7 @@ import STATES_DD from "@scripts/data/constants/STATES_DD";
 import MapService from "@scripts/services/MapService";
 import { street_type } from "@scripts/data/constants/StreetType";
 import Store from '@scripts/store/index';
+import {getStateKey, STATES} from "@scripts/data/constants/STATES";
 
 export default {
     name: "GgbService",
@@ -473,7 +474,7 @@ export default {
                         this.propertyDetails.billing_address_text = data.address_text,
                         this.billing_search_address_text = data.address_text,
                         this.propertyDetails.billing_country = data.country,
-                        this.propertyDetails.billing_state = data.state,
+                        this.propertyDetails.billing_state = getStateKey(data.state),
                         this.propertyDetails.billing_street_type = data.street_type,
                         this.propertyDetails.billing_street_number = data.street_number,
                         this.propertyDetails.billing_address_unit = data.address_unit,
@@ -487,6 +488,7 @@ export default {
             this.searchResult = [];
             MapService.getAddressDetailsById(place.id)
                 .then((data) => {
+
                     // this.propertyDetails = { ...this.propertyDetails, ...data }
                     this.st
                     this.propertyDetails.address_text = data.address_text;
@@ -494,7 +496,7 @@ export default {
                     this.propertyDetails.city = data.city;
                     this.propertyDetails.country = data.country;
                     this.propertyDetails.postcode = data.postcode;
-                    this.propertyDetails.state = data.state;
+                    this.propertyDetails.state = getStateKey(data.state);
                     this.propertyDetails.state_short = data.state_short;
                     // this.propertyDetails.street_number = data.street_number?data.street_number:null;
                     this.propertyDetails.unit_number = data.unit_number;
