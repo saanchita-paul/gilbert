@@ -21,6 +21,8 @@ export default class PropertyDetail{
                     concession_card_value = null,
                     concession_card_start_date = null,
                     to_address = null,
+                    full_address = null,
+
                 }) {
 
         this.which_utility = which_utility;
@@ -41,5 +43,8 @@ export default class PropertyDetail{
         this.concession_card_start_date = concession_card_start_date;
         this.concession_card_start_date = concession_card_start_date;
         this.to_address = to_address;
+        this.street_name = street_name;
+        this.street_type = street_type;
+        this.full_address = street_number+' '+street_name+' '+street_type +','+suburb+','+state +' '+to_postcode;
     }
 }

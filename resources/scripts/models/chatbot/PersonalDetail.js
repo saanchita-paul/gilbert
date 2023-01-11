@@ -13,6 +13,11 @@ export default class PersonalDetail{
                     homephone =null,
                     business_name =  null,
                     abn =  null,
+                    titleUcFirst =  null,
+                    firstnameUcFirst =  null,
+                    lastnameUcFirst =  null,
+                    fullName =  null,
+
 
                 }) {
 
@@ -27,6 +32,12 @@ export default class PersonalDetail{
         this.homephone = homephone;
         this.business_name = business_name ?? "";
         this.abn = abn ?? "";
+        this.titleUcFirst = title.charAt(0).toUpperCase() + title.slice(1);
+        this.firstnameUcFirst = first_name.charAt(0).toUpperCase() + first_name.slice(1);
+        this.lastnameUcFirst = last_name.charAt(0).toUpperCase() + last_name.slice(1);
+        this.fullName = title.charAt(0).toUpperCase() + title.slice(1) + '. ' + first_name.charAt(0).toUpperCase() + first_name.slice(1) + ' ' + last_name.charAt(0).toUpperCase() + last_name.slice(1);
 
     }
+
+
 }

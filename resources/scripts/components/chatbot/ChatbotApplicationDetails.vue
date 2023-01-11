@@ -9,7 +9,7 @@
             <v-row class="pa-5">
                 <v-col cols="12">
                     <p style="margin-bottom: unset">Chatbot Application Details</p>
-                    <p class="font-weight-bold" style="font-size: 25px; margin-bottom: unset">{{ chatbot_app.personal_details.title.charAt(0).toUpperCase() + chatbot_app.personal_details.title.slice(1) }}. {{ chatbot_app.personal_details.first_name.charAt(0).toUpperCase() + chatbot_app.personal_details.first_name.slice(1) }} {{ chatbot_app.personal_details.last_name.charAt(0).toUpperCase() + chatbot_app.personal_details.last_name.slice(1) }}</p>
+                    <p class="font-weight-bold" style="font-size: 25px; margin-bottom: unset">{{ chatbot_app.personal_details.fullName }}</p>
                     <v-row style="margin-top: unset">
                         <v-col cols="4">
                             <IdCopyToClipboard :applicationId="app_id"></IdCopyToClipboard>
@@ -288,6 +288,7 @@
                                                     placeholder="NMI"
                                                     :error-messages="errors[0]"
                                                     @change="propertyDetailsChanged('nmi')"
+                                                    :loading="nmi_loader"
                                                 ></v-text-field>
                                             </ValidationProvider>
                                         </div>
@@ -310,6 +311,7 @@
                                                     placeholder="MIRN"
                                                     :error-messages="errors[0]"
                                                     @change="propertyDetailsChanged('mirn')"
+                                                    :loading="mirn_loader"
                                                 ></v-text-field>
                                             </ValidationProvider>
                                         </div>
@@ -954,6 +956,9 @@ export default {
             skeletonAttribute: SkeletonLoaderData.attribute,
             skeletonType : SkeletonLoaderData.type,
             address_loader: false,
+            nmi_loader: false,
+            mirn_loader: false
+
         }
     },
     computed: {
@@ -1019,8 +1024,12 @@ export default {
         async savePropertyDetails() {
             if(!await this.validateFormData('property_details_ref')) return;
             this.saveProDloading = true;
+            this.nmi_loader = true;
+            this.mirn_loader = true;
             await ChatbotApplicationService.updatePropertyDetails(this.app_id, this.chatbot_app.property_details);
             this.saveProDloading = false;
+            this.nmi_loader = false;
+            this.mirn_loader = false;
             this.$emit("applicationDetailsUpdated");
         },
 
@@ -1103,6 +1112,10 @@ export default {
         },
 
         async loadApplication() {
+
+            console.log('api callng again');
+
+
             this.isLoadSkeleton = true;
             this.chatbot_app =  await CustomerService.getMovingData(this.app_id);
             this.chatbot_app_backup = cloneDeep(this.chatbot_app);
