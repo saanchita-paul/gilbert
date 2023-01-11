@@ -414,7 +414,7 @@
                                                 v-slot="{ errors }"
                                             >
                                                 <v-text-field
-                                                    v-model="chatbot_app.property_details.to_address"
+                                                    v-model="chatbot_app.property_details.full_address"
                                                     @click="openGbGAddress"
                                                     outlined
                                                     dense
@@ -1112,10 +1112,6 @@ export default {
         },
 
         async loadApplication() {
-
-            console.log('api callng again');
-
-
             this.isLoadSkeleton = true;
             this.chatbot_app =  await CustomerService.getMovingData(this.app_id);
             this.chatbot_app_backup = cloneDeep(this.chatbot_app);

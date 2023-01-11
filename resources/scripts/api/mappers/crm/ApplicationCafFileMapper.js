@@ -88,6 +88,9 @@ function mapModelColor(service, caf_generation_status, connection_type) {
 
 const mapApplicationCafFile = data => {
     let model = new ApplicationCafFile({...data});
+
+    console.log('model details', model);
+
     model.service_type = mapService(model.service);
     model.supplier = mapProvider(model.service);
     model.connection_date = mapConnDate(model.connection_date);
