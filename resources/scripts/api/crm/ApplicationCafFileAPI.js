@@ -50,7 +50,7 @@ export default {
     },
 
     getGilbertApplicationData: async (sort_search_meta, params) => {
-        const data = await axios.get('/api/gilbert/applications',{params:{...sort_search_meta, ...params}});
+        const data = await axios.get('/api/gilbert/applications',{params:{...sort_search_meta, ...params, provider_name: sort_search_meta.provider_name ?? ''}});
 
         return {
             data: GilbertApplicationCafFileMapper.mapGilbertApplicationList(data.data),

@@ -269,7 +269,7 @@ export default {
         },
 
         async fetchGilbertApplications() {
-            let data = await ApplicationCafFileService.getGilbertApplicationData({...this.sorts_search_meta, ...{page: this.pages}}, this.advanceSearchModel);
+            let data = await ApplicationCafFileService.getGilbertApplicationData({...this.sorts_search_meta, ...{page: this.pages}, ...{provider_name:'powershop,origin'}}, this.advanceSearchModel);
             this.gilbertApplications = data.data;
             this.pages = data.pagination.current_page;
             this.itemsPerPages = data.pagination.per_page;

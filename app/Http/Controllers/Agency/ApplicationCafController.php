@@ -30,7 +30,7 @@ class ApplicationCafController extends Controller{
         /** @var User $user */
         $user = auth()->user();
         try {
-            $data = array_merge($request->toArray(), ['provider_name' => 'powershop_origin']);
+            $data = array_merge($request->toArray());
             $service = new SearchConnectionApplication($data);
             return ApplicationResource::collection($service->get($user));
         } catch (\Exception $exception) {
