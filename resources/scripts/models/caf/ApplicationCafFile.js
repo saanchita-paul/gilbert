@@ -57,7 +57,6 @@ export default class ApplicationCafFile {
     }
 
     getServiceProvider(services) {
-        console.log('service length', services.length);
         if(services.length > 0) {
             return services[0].provider_name;
         }
