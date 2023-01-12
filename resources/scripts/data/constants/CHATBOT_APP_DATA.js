@@ -60,11 +60,11 @@ export default {
     ],
     TENANT_TYPE_DD: [
         {
-            text: "Renter",
+            text: "Residential",
             value: "1",
         },
         {
-            text: "Owner",
+            text: "Business",
             value: "0",
         },
         {
@@ -72,6 +72,7 @@ export default {
             value: "2",
         },
     ],
+
     HOME_RENOVATION_DD: [
         {
             text: "No",
