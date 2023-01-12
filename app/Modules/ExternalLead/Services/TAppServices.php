@@ -3,6 +3,7 @@
 
 namespace ExternalLead\Services;
 
+use App\Events\Agency\CreateApplicationEvent;
 use App\Events\NotifyAgentAfterLeadCreation;
 use Exception;
 use App\Models\Office;
@@ -12,9 +13,7 @@ use ExternalLead\Models\TApp;
 use App\Models\Identification;
 use App\Models\ConnectionService;
 use JetBrains\PhpStorm\ArrayShape;
-use App\Jobs\CreateHubspotProperty;
 use App\Mail\TAppAgentNotFoundMail;
-use App\Models\Agency;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Models\ConnectionApplication;
@@ -108,9 +107,9 @@ class TAppServices
         $this->connectionApplicaton->save();
 
         NotifyBadAgentMailService::check(
-            $this->connectionApplicaton, 
-            'TApp', 
-            $this->userRequestData->agency_name ?? '', 
+            $this->connectionApplicaton,
+            'TApp',
+            $this->userRequestData->agency_name ?? '',
             $this->getAgencyAndOffice()['office']->name ?? '',
             $this->userRequestData->agent_email ?? ''
         );
@@ -124,7 +123,8 @@ class TAppServices
             $this->createService($requestData->tenancy_service_type, $this->connectionApplicaton->id);
             $this->createAuthorizedPerson($this->connectionApplicaton->id);
             NotifyAgentAfterLeadCreation::dispatch($this->connectionApplicaton->id);
-            CreateHubspotProperty::dispatch($this->connectionApplicaton->id);
+
+            CreateApplicationEvent::dispatch($this->connectionApplicaton->id);
         } catch (Exception $ex) {
             \Log::error("Lead create successful, Identification or Service or Authorization creation fail");
             \Log::error($ex->getMessage());
@@ -189,21 +189,26 @@ class TAppServices
         $this->connectionApplicaton->unit_number = $this->userRequestData->tenancy_unit_number ?? null;
         $this->connectionApplicaton->street_number = $this->userRequestData->tenancy_street_number ?? null;
         $this->connectionApplicaton->street_name = $this->userRequestData->tenancy_street_name ?? null;
+        $this->connectionApplicaton->street_name_only = $this->userRequestData->tenancy_street_name ?? null;
+        $this->connectionApplicaton->street_type = $this->userRequestData->tenancy_street_type ?? null;
+        $this->connectionApplicaton->address_text = $this->userRequestData->tenancy_address_text ?? null;
+        $this->connectionApplicaton->billing_street_type = $this->userRequestData->tenancy_billing_street_type ?? null;
         $this->connectionApplicaton->billing_unit_number = $this->userRequestData->tenancy_billing_unit_number ?? null;
         $this->connectionApplicaton->billing_street_number = $this->userRequestData->tenancy_billing_street_number ?? null;
         $this->connectionApplicaton->billing_street_name = $this->userRequestData->tenancy_billing_street_name ?? null;
+        $this->connectionApplicaton->billing_street_name_only = $this->userRequestData->tenancy_billing_street_name ?? null;
         $this->connectionApplicaton->billing_address_text = $this->userRequestData->tenancy_billing_address_text ?? null;
-        // $this->connectionApplicaton->billing_street_address = $this->userRequestData->tenancy_billing_street_address ?? null;;
+        $this->connectionApplicaton->street_address = $this->userRequestData->tenancy_street_address ?? null;
         $this->connectionApplicaton->billing_city = $this->userRequestData->tenancy_billing_city ?? null;
+        $this->connectionApplicaton->billing_street_address = $this->userRequestData->tenancy_billing_street_address ?? null;;
         $this->connectionApplicaton->billing_state = $this->userRequestData->tenancy_billing_state ?
             $addressService->mapState($this->userRequestData->tenancy_billing_state) : null;
         $this->connectionApplicaton->billing_postcode = $this->userRequestData->tenancy_billing_postcode ?? null;
         $this->connectionApplicaton->is_renovation_on = $this->userRequestData->tenancy_is_renovation_on ?
             $mapperService->mapYesNoToBool($this->userRequestData->tenancy_is_renovation_on) : null;
 
-        $this->setStreetAddressAndAddressText();
+//        $this->setStreetAddressAndAddressText();
 
-        // $this->connectionApplicaton->street_address = $this->userRequestData->tenancy_street_address ?? null;
     }
 
     private function setStreetAddressAndAddressText()
@@ -216,7 +221,7 @@ class TAppServices
             $this->connectionApplicaton->city,
             $this->connectionApplicaton->state,
             $this->connectionApplicaton->country,
-         );
+        );
 
         $billingAddress = new AddressModel(
             $this->connectionApplicaton->billing_unit_number,
@@ -226,7 +231,7 @@ class TAppServices
             $this->connectionApplicaton->billing_city,
             $this->connectionApplicaton->billing_state,
             $this->connectionApplicaton->billing_country,
-         );
+        );
 
         $this->connectionApplicaton->street_address = $address->street_address;
         $this->connectionApplicaton->address_text = $address->address_text;
@@ -246,7 +251,7 @@ class TAppServices
         if (empty($this->officeData)) {
             $email = $this->userRequestData->agent_email ?? '';
             $office_id = $this->userRequestData->office_id ?? '';
-    
+
             $res = [
                 "agent" => null,
                 "agency" => null,
@@ -257,13 +262,13 @@ class TAppServices
                     'user',
                     fn(Builder $user) => $user->where('email', $email)
                 )->first();
-    
+
                 if ($res["agent"]) {
                     $res["office"] = $res["agent"]->office;
                     $res["agency"] = $res["agent"]->agency;
                 } else {
                     $office = Office::find($office_id);
-    
+
                     if ($office) {
                         $res["office"] = $office;
                         $res["agency"] = $office->agency;
@@ -273,14 +278,14 @@ class TAppServices
                         $res["agency"] = $res["office"]?->agency;
                         throw new Exception("No Agent matched for email: $email. falling back to default agency & office mapping.");
                     }
-                } 
+                }
             } catch (Exception $exception) {
                 Log::error($exception->getMessage());
                 Log::error($exception->getTraceAsString());
-    
+
                 $this->sendAgentNotFoundEmail($exception->getMessage());
             }
-    
+
             $this->officeData = $res;
         }
 

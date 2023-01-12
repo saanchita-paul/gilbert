@@ -6,20 +6,17 @@ use Illuminate\Support\Facades\Http;
 
 class SendApplicationToChatbotAPI
 {
-    const BASE_URL = 'http://192.168.1.13:8888/api';
-
     /**
      * Run POST Http Client
      *
-     * @param object $application
-     *
-     * @return object
-     *
-     * @throws exception
+     * @param $applicationDetails
+     * @return mixed|void
      */
-    public function postApi(object $application)
+    public function postApi($applicationDetails)
     {
-        $url = self::BASE_URL. '/application-data';
+        $url = config('gb_to_cb.root_url') .
+            config('gb_to_cb.endpoints.gb_to_cb_sync') .
+            $applicationDetails['connection_application_id'];
 
         try {
             $headers = [
@@ -30,16 +27,14 @@ class SendApplicationToChatbotAPI
             $response = Http::withOptions([
                 'headers' => $headers
             ])
-                ->withBody(json_encode($application), "application/json")
+                ->withBody(json_encode($applicationDetails), "application/json")
                 ->post($url);
 
             $response->throw();
 
             return json_decode($response->body(), true);
-
         } catch (\Exception $exception) {
             \Log::error('Exception Message', [$exception->getMessage()]);
         }
-
     }
 }

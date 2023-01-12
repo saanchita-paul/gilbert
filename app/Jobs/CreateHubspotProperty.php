@@ -2,12 +2,12 @@
 
 namespace App\Jobs;
 
+use App\Services\hubspot\HubspotHandlerService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Services\Agency\HubspotHandlerService;
 
 class CreateHubspotProperty implements ShouldQueue
 {

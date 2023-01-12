@@ -32,31 +32,31 @@ class ConnectionService extends Model
     use HasFactory;
 
 
-    const TYPE_ELECTRICITY = 'power';
-    const TYPE_GAS = 'gas';
-    const TYPE_WATER = 'water';
-    const TYPE_INTERNET = 'internet';
+    public const TYPE_ELECTRICITY = 'power';
+    public const TYPE_GAS = 'gas';
+    public const TYPE_WATER = 'water';
+    public const TYPE_INTERNET = 'internet';
 
-    const STATUS_UNASSIGNED = 1;
-    const STATUS_ASSIGNED = 2;
-    const STATUS_ESCALATED = 3;
-    const STATUS_SUBMITTED = 4;
-    const STATUS_ACCEPTED = 5;
-    const STATUS_REJECTED = 6;
-    const STATUS_EA_PROCESSINF = 7; //todo: rename this constant to STATUS_NOT_SUBMITTED
-    const STATUS_CLOSED = 8;
-    const STATUS_CANT_CONNECT = 9;
-    const STATUS_NEEDS_MORE_INFO = 10;
-    const AC_MANUAL_PROCESSING = 11;
-    const STATUS_ENERGY_SUBMIT = 12;
-    const STATUS_FAILED = 13;
+    public const STATUS_UNASSIGNED = 1;
+    public const STATUS_ASSIGNED = 2;
+    public const STATUS_ESCALATED = 3;
+    public const STATUS_SUBMITTED = 4;
+    public const STATUS_ACCEPTED = 5;
+    public const STATUS_REJECTED = 6;
+    public const STATUS_EA_PROCESSINF = 7; //todo: rename this public constant to STATUS_NOT_SUBMITTED
+    public const STATUS_CLOSED = 8;
+    public const STATUS_CANT_CONNECT = 9;
+    public const STATUS_NEEDS_MORE_INFO = 10;
+    public const AC_MANUAL_PROCESSING = 11;
+    public const STATUS_ENERGY_SUBMIT = 12;
+    public const STATUS_FAILED = 13;
 
     // Do not use these statuese
-    const WATER_STATUS_IN_PROGRESS = 7; // initial status
-    const WATER_STATUS_NEED_INFO = 10;
-    const WATER_STATUS_SUBMITTED = 4;
-    const WATER_STATUS_CONNECTED = 5;
-    const WATER_STATUS_CANT_CONNECT = 9;
+    public const WATER_STATUS_IN_PROGRESS = 7; // initial status
+    public const WATER_STATUS_NEED_INFO = 10;
+    public const WATER_STATUS_SUBMITTED = 4;
+    public const WATER_STATUS_CONNECTED = 5;
+    public const WATER_STATUS_CANT_CONNECT = 9;
 
     const PROVIDER_SUMO = 'sumo';
     const PROVIDER_EA = 'ea';
@@ -65,7 +65,7 @@ class ConnectionService extends Model
     const PROVIDER_FIRST_ENERGY = 'first_energy';
 
 
-    const STATUS_MAPPING = [
+    public const STATUS_MAPPING = [
         self::STATUS_UNASSIGNED => 'unassigned',
         self::STATUS_ASSIGNED => 'assigned',
         self::STATUS_ESCALATED => 'escalated',
@@ -105,6 +105,12 @@ class ConnectionService extends Model
         'total_plan_plus_12' => self::ENERGY_AUSTRALIA_TOTAL_PLUS_12_PLAN,
     ];
 
+    public const SERVICE_TYPES = [
+        self::TYPE_ELECTRICITY,
+        self::TYPE_GAS,
+        self::TYPE_WATER,
+        self::TYPE_INTERNET
+    ];
 
     /**
      * The attributes that are mass assignable.

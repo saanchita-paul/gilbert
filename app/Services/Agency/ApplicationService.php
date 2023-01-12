@@ -2,6 +2,8 @@
 
 namespace App\Services\Agency;
 
+use App\Jobs\FetchAdditionalInfoAddressJob;
+use App\Jobs\FetchEmbeddedNetworkJob;
 use App\Jobs\GilbertToChatbotJob;
 use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
@@ -38,9 +40,11 @@ class ApplicationService
         $application['agency_id'] = $agentProfile->agency_id;
         $application['created_by'] = $agentProfile->id;
         $application['status'] = ConnectionApplication::STATUS_UNASSIGNED;
+        $application['loading_address_info'] = true;
+        $application['embedded_nmi'] = 2;
         $authizedPerson = $application['authorized_person'];
 
-        if($application['is_billing_same'] == 0 || $application['is_billing_same'] == null ) {
+        if ($application['is_billing_same'] == 0 || $application['is_billing_same'] == null) {
 
             $application['billing_unit_number'] = $application['billing_unit_number'];
             $application['billing_street_number'] = $application['billing_street_number'];
@@ -52,8 +56,7 @@ class ApplicationService
             $application['billing_postcode'] = $application['billing_postcode'];
             $application['billing_state'] = $application['billing_state'];
             $application['billing_address_unit'] = $application['billing_unit_number'] ? $application['billing_unit_number'] : null;
-        }
-        else {
+        } else {
             $application['billing_unit_number'] = $application['unit_number'];
             $application['billing_street_number'] = $application['street_number'];
             $application['billing_street_name_only'] = $application['street_name_only'];
@@ -137,10 +140,11 @@ class ApplicationService
         $existingApplication->postcode = $address['postcode'];
         $existingApplication->state = $address['state'];
         $existingApplication->country = $address['country'];
-        $existingApplication->mirn = $address['mirn'];
-        $existingApplication->nmi = $address['nmi'];
+        $existingApplication->mirn = null;
+        $existingApplication->nmi = null;
+        $existingApplication->embedded_nmi = 2;
+        $existingApplication->loading_address_info = true;
         $existingApplication->is_billing_same = $address['is_billing_same'];
-
 
 
         if ($address['is_billing_same'] == 0 || $address['is_billing_same'] == null) {
@@ -176,9 +180,14 @@ class ApplicationService
 
     public function assignUser(string $agentId, int $applicationId)
     {
-        ConnectionApplication::query()
-            ->where('id', $applicationId)
-            ->update(['assigned_to' => $agentId, 'status' => ConnectionApplication::STATUS_ASSIGNED]);
+        $connectionApplication = ConnectionApplication::query()
+            ->where('id', $applicationId)->first();
+
+        if (!$connectionApplication) {
+            throw new \Exception('assignUser: Application not found!');
+        }
+
+        $connectionApplication->update(['assigned_to' => $agentId, 'status' => ConnectionApplication::STATUS_ASSIGNED]);
 
         if (in_array(HoodProfile::find($agentId)->user->roles->first()?->name,
             [RolePermission::ROLE_EXTERNAL_HOOD_TEAM_LEAD])) {
@@ -194,13 +203,24 @@ class ApplicationService
         return $this->findApplications($applicationId);
     }
 
+    private function checkAllowableForAssign($connectionApplication)
+    {
+        return $connectionApplication->phone && $connectionApplication->city;
+    }
+
     public function sendToChatbot($appId, $hoodUserId)
     {
+        $connectionApplication = ConnectionApplication::find($appId);
         $checkProfile = User::where('profile_type', USER::PROFILE_TYPE_HOOD)
             ->where('profile_id', $hoodUserId)
             ->firstOrFail();
 
-        if($checkProfile->hasAnyRole(RolePermission::ROLE_HOOD_CHATBOT_USER)) {
+        if ($checkProfile->hasAnyRole(RolePermission::ROLE_HOOD_CHATBOT_USER)) {
+            if (!$this->checkAllowableForAssign($connectionApplication)) {
+                $connectionApplication->update(['assigned_to' => null, 'status' => ConnectionApplication::STATUS_UNASSIGNED]);
+                throw new \Exception('assignUser: Application has no phone number or suburb/city!');
+            }
+
             GilbertToChatbotJob::dispatch($appId);
         };
     }
@@ -222,7 +242,7 @@ class ApplicationService
             ->delete();
 
 
-        $conServices =  ConnectionService::query()->where('connection_application_id', '=', $id)
+        $conServices = ConnectionService::query()->where('connection_application_id', '=', $id)
             ->get();
         #saving newly selected service
         $data = [];
@@ -236,7 +256,7 @@ class ApplicationService
                     'connection_application_id' => $id,
                     'status' => ConnectionService::STATUS_EA_PROCESSINF
                 ];
-                if (in_array($item, [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS ])) {
+                if (in_array($item, [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])) {
                     $serviceData['provider_name'] = $planProvider['provider_name'];
                     $serviceData['plan_type'] = $planProvider['plan_type'];
                 }
@@ -254,7 +274,7 @@ class ApplicationService
         $provider = null;
         $plan = null;
         foreach ($conServices as $service) {
-            if (in_array($service->service_type, [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS ])) {
+            if (in_array($service->service_type, [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])) {
                 $provider = $service->provider_name ?? null;
                 $plan = $service->plan_type ?? null;
             }
@@ -432,29 +452,35 @@ class ApplicationService
         $isIdentification = $application['identification'];
         $isService = $application['isService'];
 
+        if (array_key_exists('nmi', $application)) {
+            $application['embedded_nmi'] = 2;
+            FetchEmbeddedNetworkJob::dispatch($id);
+        }
+
+
         unset($application['identification']);
         unset($application['isService']);
 
         if (isset($application['email_manually_verified_by'])) {
             if ($application['email_manually_verified_by'] === true) {
-                $application['email_manually_verified_by'] =  auth()->user()->profile_id;
+                $application['email_manually_verified_by'] = auth()->user()->profile_id;
             } else {
-                $application['email_manually_verified_by'] =  null;
+                $application['email_manually_verified_by'] = null;
             }
         }
 
         foreach ([
-            'is_gas_life_support' => 'gas_life_support_accepted_at',
-            'is_power_life_support' => 'power_life_support_accepted_at']
-            as $key => $val){
+                     'is_gas_life_support' => 'gas_life_support_accepted_at',
+                     'is_power_life_support' => 'power_life_support_accepted_at']
+                 as $key => $val) {
 
-                if (isset($application[$key])) {
-                    if ($application[$key] === true) {
-                        $application[$val] = Carbon::now();
-                    } else {
-                        $application[$val] = null;
-                    }
+            if (isset($application[$key])) {
+                if ($application[$key] === true) {
+                    $application[$val] = Carbon::now();
+                } else {
+                    $application[$val] = null;
                 }
+            }
         }
 
         if ($isIdentification) {
@@ -548,8 +574,8 @@ class ApplicationService
         };
 
         foreach ($services as $service) {
-            $key = $service. "_plan_type";
-            $plan =   $data[$key] ?? null;
+            $key = $service . "_plan_type";
+            $plan = $data[$key] ?? null;
 
             $connectionService = ConnectionService::where('connection_application_id', $applicationId)
                 ->where('service_type', $service)
@@ -572,7 +598,7 @@ class ApplicationService
         }
     }
 
-    public function getNotSubmittedServices($id, $submitType) : array
+    public function getNotSubmittedServices($id, $submitType): array
     {
         $providers = [ConnectionService::PROVIDER_EA, ConnectionService::PROVIDER_ORIGIN, ConnectionService::PROVIDER_POWER_SHOP, ConnectionService::PROVIDER_FIRST_ENERGY];
 
@@ -585,12 +611,12 @@ class ApplicationService
 
         $notSubmitted = [];
 
-        foreach($providers as $provider){
+        foreach ($providers as $provider) {
             $notSubmitted[$provider] = ConnectionService::query()->where('connection_application_id', $id)
-            ->where('provider_name', $provider)
-            ->whereNull('lead_reference')
-            ->whereIn('service_type', $services)
-            ->pluck('id')->toArray();
+                ->where('provider_name', $provider)
+                ->whereNull('lead_reference')
+                ->whereIn('service_type', $services)
+                ->pluck('id')->toArray();
         }
 
         return $notSubmitted;
@@ -653,14 +679,18 @@ class ApplicationService
     {
         $existingApplication = ConnectionApplication::where('id', $applicationId)->firstOrFail();
 
-        return $existingApplication?->is_sent_to_chatbot;
+        return [
+            'is_sent_to_chatbot' => (bool)$existingApplication->is_sent_to_chatbot,
+            'chatbot_id' => $existingApplication->chatbot_id,
+            'is_locked' => (bool)$existingApplication->is_locked
+        ];
     }
 
 
     public function updateEmailField(array $application, $id)
     {
         $existLead = ConnectionApplication::findOrFail($id);
-        ConnectionApplication::where('id' , $existLead->id)
+        ConnectionApplication::where('id', $existLead->id)
             ->update([
                 'email_manually_verified_by' => null,
             ]);

@@ -25,14 +25,14 @@ class GBGServices
             "payload" => [
                 [
                     "fullAddress" => $this->addressModelPayload->getAddressText(),
-                    "flatUnitNumber" => $this->addressModelPayload->getUnitNumber(),
-                    "streetNumber" => $this->addressModelPayload->getStreetNumber(),
-                    "streetName" => $this->addressModelPayload->getStreetName(),
-                    "streetType" => $this->addressModelPayload->getStreetType(),
-                    "postcode" => $this->addressModelPayload->getPostcode(),
-                    "locality" => $this->addressModelPayload->getCity(),
-                    "state" => $this->addressModelPayload->getState(),
-                    "country" => "AU"
+//                    "flatUnitNumber" => $this->addressModelPayload->getUnitNumber(),
+//                    "streetNumber" => $this->addressModelPayload->getStreetNumber(),
+//                    "streetName" => $this->addressModelPayload->getStreetName(),
+//                    "streetType" => $this->addressModelPayload->getStreetType(),
+//                    "postcode" => $this->addressModelPayload->getPostcode(),
+//                    "locality" => $this->addressModelPayload->getCity(),
+//                    "state" => $this->addressModelPayload->getState(),
+//                    "country" => "AU"
                 ]
             ],
             "sourceOfTruth" => "GNAF"
@@ -83,5 +83,10 @@ class GBGServices
         $appAddress->setIsAddressComplete( $this->isAddressValid($gbgModel) );
         // info("is address complete" , )
         return $appAddress;
+    }
+
+    public static function cleanse(array $addresses): array
+    {
+
     }
 }

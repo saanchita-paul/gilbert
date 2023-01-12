@@ -19,6 +19,7 @@ use App\Services\Agency\OfficeMatricsService;
 use App\Services\Agency\OfficeService;
 use App\Services\Agency\SearchOfficeService;
 use App\Services\Agency\UpdateOfficeService;
+use App\Services\MRI\HandleMRIOfficeService;
 use App\Services\ReassignApplicationsServices;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -41,7 +42,6 @@ class OfficeController extends Controller
         try {
             $service = new SearchOfficeService($request->toArray());
             return OfficeResource::collection($service->get($agencyId));
-
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
@@ -76,7 +76,6 @@ class OfficeController extends Controller
     public function createOffice(CreateOfficeRequest $request)
     {
         try {
-
             $ofcAndAgencySvc = new CreateOfficeAndAgency($request->toArray());
             $agentAndUserSvc = new CreateAgentAndUser();
             $inputData       = $request->toArray();
@@ -84,11 +83,22 @@ class OfficeController extends Controller
             $officeData        = $inputData['office'];
             $agentData         = $inputData['agent'];
             $officeCommissions = $inputData['office_commissions'];
+            $mriOffice         = $inputData['mri_office'];
 
             //create new office
             $office                 = $ofcAndAgencySvc->createOffice($officeData);
             $agentData['office_id'] = $office->id;
             $agentData['agency_id'] = $officeData['agency_id'];
+
+            // Save MRI office
+            if (
+                $mriOffice
+                && !empty($mriOffice['key'])
+                && !empty($mriOffice['company_name'])
+                && !empty($mriOffice['activation_date'])) {
+                $service = new HandleMRIOfficeService($office->id);
+                $service->saveMRIOffice($mriOffice);
+            }
 
             //create agent and user
             $agent                   = $agentAndUserSvc->createAgent($agentData);
@@ -98,7 +108,6 @@ class OfficeController extends Controller
             //create commission with data
             $commissions = $ofcAndAgencySvc->createCommistions($officeCommissions, $office->id, $officeData['agency_id']);
             return AgencyResource::make($office);
-
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
@@ -152,7 +161,6 @@ class OfficeController extends Controller
             $service = new UpdateOfficeService($id);
             // ? TOOO why success false?
             return response()->json(['success' => false, 'message' => $service->updateOffice($request->toArray())]);
-
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
@@ -212,7 +220,6 @@ class OfficeController extends Controller
         try {
             $service = new SearchOfficeService($request->toArray());
             return OfficeResource::collection($service->getOfficesForAssignApp());
-
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

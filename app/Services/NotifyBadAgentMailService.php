@@ -23,7 +23,9 @@ class NotifyBadAgentMailService
             $mail = new AgentNotFoundMail($application->id, $submitType, $agencyName, $officeName, $agentEmail, $isNotActive);
             $emails = explode(',', config('support_email.agent_not_found'));
             foreach ($emails as $recipient) {
-                Mail::to($recipient)->queue($mail);
+                if (!empty($recipient)) {
+                    Mail::to($recipient)->queue($mail);
+                }
             }
         }
     }
