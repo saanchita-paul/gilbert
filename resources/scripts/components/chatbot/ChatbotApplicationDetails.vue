@@ -47,7 +47,7 @@
                                             item-value="value"
                                             hide-details="auto"
                                             :error-messages="errors[0]"
-                                            @change="personalDetailsChanged('title')"
+                                            @keyup="personalDetailsChanged('title')"
                                         ></v-select>
                                         </ValidationProvider>
                                     </div>
@@ -65,7 +65,7 @@
                                             hide-details="auto"
                                             placeholder="First Name"
                                             :error-messages="errors[0]"
-                                            @change="personalDetailsChanged('first_name')"
+                                            @keyup="personalDetailsChanged('first_name')"
                                         ></v-text-field>
                                         </ValidationProvider>
                                     </div>
@@ -83,7 +83,7 @@
                                             hide-details="auto"
                                             placeholder="Last Name"
                                             :error-messages="errors[0]"
-                                            @change="personalDetailsChanged('last_name')"
+                                            @keyup="personalDetailsChanged('last_name')"
                                         ></v-text-field>
                                         </ValidationProvider>
                                     </div>
@@ -102,7 +102,7 @@
                                                 hide-details="auto"
                                                 placeholder="Email"
                                                 :error-messages="errors[0]"
-                                                @change="personalDetailsChanged('email')"
+                                                @keyup="personalDetailsChanged('email')"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </div>
@@ -162,7 +162,7 @@
                                                 hide-details="auto"
                                                 placeholder="Mobile"
                                                 :error-messages="errors[0]"
-                                                @change="personalDetailsChanged('phone')"
+                                                @keyup="personalDetailsChanged('phone')"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </div>
@@ -180,7 +180,7 @@
                                                 hide-details="auto"
                                                 placeholder="Please type..."
                                                 :error-messages="errors[0]"
-                                                @change="personalDetailsChanged('business_name')"
+                                                @keyup="personalDetailsChanged('business_name')"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </div>
@@ -198,7 +198,7 @@
                                                 hide-details="auto"
                                                 placeholder="Please type..."
                                                 :error-messages="errors[0]"
-                                                @change="personalDetailsChanged('abn')"
+                                                @keyup="personalDetailsChanged('abn')"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </div>
@@ -335,7 +335,7 @@
                                                     hide-details="auto"
                                                     placeholder="NMI"
                                                     :error-messages="errors[0]"
-                                                    @change="propertyDetailsChanged('nmi')"
+                                                    @keyup="propertyDetailsChanged('nmi')"
                                                     :loading="nmi_loader"
                                                 ></v-text-field>
                                             </ValidationProvider>
@@ -358,7 +358,7 @@
                                                     hide-details="auto"
                                                     placeholder="MIRN"
                                                     :error-messages="errors[0]"
-                                                    @change="propertyDetailsChanged('mirn')"
+                                                    @keyup="propertyDetailsChanged('mirn')"
                                                     :loading="mirn_loader"
                                                 ></v-text-field>
                                             </ValidationProvider>
@@ -563,7 +563,7 @@
                                                 dense
                                                 hide-details="auto"
                                                 :error-messages="errors[0]"
-                                                @change="idDetailsChanged('driving_license_number')"
+                                                @keyup="idDetailsChanged('driving_license_number')"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </div>
@@ -577,7 +577,7 @@
                                                 dense
                                                 hide-details="auto"
                                                 :error-messages="errors[0]"
-                                                @change="idDetailsChanged('medicare_card_number')"
+                                                @keyup="idDetailsChanged('medicare_card_number')"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </div>
@@ -591,7 +591,7 @@
                                                 dense
                                                 hide-details="auto"
                                                 :error-messages="errors[0]"
-                                                @change="idDetailsChanged('passport_number')"
+                                                @keyup="idDetailsChanged('passport_number')"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </div>
@@ -672,7 +672,7 @@
                                                     hide-details="auto"
                                                     placeholder="Passport Country"
                                                     :error-messages="errors[0]"
-                                                    @change="idDetailsChanged('passport_country')"
+                                                    @keyup="idDetailsChanged('passport_country')"
                                                 ></v-text-field>
                                             </ValidationProvider>
                                         </div>
@@ -778,7 +778,7 @@
                                                 hide-details="auto"
                                                 placeholder="Card Number"
                                                 :error-messages="errors[0]"
-                                                @change="concessionDetailsChanged('concession_card_value')"
+                                                @keyup="concessionDetailsChanged('concession_card_value')"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </div>
@@ -1035,18 +1035,14 @@ export default {
             await ChatbotApplicationService.updatePersonalDetails(this.app_id, this.chatbot_app_backup.personal_details);
             this.chatbot_app = cloneDeep(this.chatbot_app_backup);
             this.cancelPersonalLoading = false;
-            this.$emit("applicationDetailsUpdated");
+            this.personalDetailsFlag = [];
         },
 
         async savePropertyDetails() {
             if(!await this.validateFormData('property_details_ref')) return;
             this.saveProDloading = true;
-            this.nmi_loader = true;
-            this.mirn_loader = true;
             await ChatbotApplicationService.updatePropertyDetails(this.app_id, this.chatbot_app.property_details);
             this.saveProDloading = false;
-            this.nmi_loader = false;
-            this.mirn_loader = false;
             this.$emit("applicationDetailsUpdated");
         },
 
@@ -1055,7 +1051,7 @@ export default {
             await ChatbotApplicationService.updatePropertyDetails(this.app_id, this.chatbot_app_backup.property_details);
             this.chatbot_app = cloneDeep(this.chatbot_app_backup);
             this.cancelPropertyLoading = false;
-            this.$emit("applicationDetailsUpdated");
+            this.propertyDetailsFlag = [];
         },
 
         async saveIdDetails() {
@@ -1071,7 +1067,7 @@ export default {
             await ChatbotApplicationService.updateIdDetails(this.app_id, this.chatbot_app_backup.id_detail);
             this.chatbot_app = cloneDeep(this.chatbot_app_backup);
             this.cancelIdLoading = false;
-            this.$emit("applicationDetailsUpdated");
+            this.idDetailsFlag = [];
         },
         async saveConcessionDetails() {
             if(!await this.validateFormData('concession_card_ref')) return;
@@ -1086,7 +1082,7 @@ export default {
             await ChatbotApplicationService.updateConcessionDetails(this.app_id, this.chatbot_app_backup.concession_details);
             this.chatbot_app = cloneDeep(this.chatbot_app_backup);
             this.cancelConcessionLoading = false;
-            this.$emit("applicationDetailsUpdated");
+            this.concessionDetailsFlag = [];
         },
 
         async validateFormData(reference){
@@ -1198,9 +1194,12 @@ export default {
 
         async saveAddress(address) {
             this.address_loader = true;
-            let response = await ChatbotApplicationService.updatePropertyAddress(this.app_id, address);
-            console.log("response",response);
+            this.nmi_loader = true;
+            this.mirn_loader = true;
+            await ChatbotApplicationService.updatePropertyAddress(this.app_id, address);
             await this.loadApplication();
+            this.nmi_loader = false;
+            this.mirn_loader = false;
             this.address_loader = false;
             this.showGbg = false;
         },
