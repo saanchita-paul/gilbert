@@ -36,7 +36,7 @@
                     :type="skeletonType"
                     v-if="isLoadSkeleton"
                 ></v-skeleton-loader>
-                <ChatbotApplicationDetails v-if="shouldShowApplicationDetails" @applicationDetailsUpdated="fetchCafFiles" ></ChatbotApplicationDetails>
+                <ChatbotApplicationDetails v-if="shouldShowApplicationDetails" @applicationDetailsUpdated="updateApplication" ></ChatbotApplicationDetails>
             </v-col>
 
         </v-row>
@@ -94,7 +94,8 @@ name: "ChatbotApplicationPage",
             selectedApp: null,
             isLoadSkeleton : false,
             skeletonAttribute: SkeletonLoaderData.attribute,
-            skeletonType : SkeletonLoaderData.type
+            skeletonType : SkeletonLoaderData.type,
+            chatbotApps: [],
         }
     },
 
@@ -133,6 +134,12 @@ name: "ChatbotApplicationPage",
 
 
     methods: {
+
+
+        updateApplication()
+        {
+          this.fetchCafFiles();
+        },
 
         selectRowCafFile(item)
         {
@@ -177,16 +184,27 @@ name: "ChatbotApplicationPage",
         },
 
         async fetchCafFiles() {
-            this.isLoadSkeleton = true;
+
             let data = await ApplicationCafFileService.getChatbotApplication({...this.sort_search_meta, ...{page: this.page}}, this.advanceSearch);
+            this.chatbotApps = data.data;
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
             this.totalItem = data.pagination.total;
-            if(data.data.length > 0) {
-                const query = this.$route.query;
+            const query = this.$route.query;
+            const p = this.chatbotApps.find(it => {
+                console.log(it, query.app_id);
+               return  it.id === query.app_id
+            });
+
+            console.log("current app", p);
+
+
+            if(data.data.length > 0 && !p) {
+                this.isLoadSkeleton = true;
                 await this.$router.replace({query: {...query, app_id: data.data[0].id}}).catch((error)=>{});
+                this.isLoadSkeleton = false;
             }
-            this.isLoadSkeleton = false;
+
         },
 
         async fetchGilbertApplications() {
@@ -233,9 +251,9 @@ name: "ChatbotApplicationPage",
 
     },
     computed: {
-        chatbotApps() {
-           return Store.getters.applications;
-        },
+        // chatbotApps() {
+        //    return Store.getters.applications;
+        // },
         shouldShowApplicationDetails(){
             return (this.isLoadSkeleton === false) && (this.chatbotApps.length > 0);
 

@@ -16,7 +16,7 @@ export default {
 
     getChatbotApplication : async (sort_search_meta, params) => {
         const data = await ApplicationCafFileAPI.getApplicationCafFileData(sort_search_meta, params);
-        Store.commit('setchatbotApplications', data.data);
+        // Store.commit('setchatbotApplications', data.data);
         return data;
     }
 
