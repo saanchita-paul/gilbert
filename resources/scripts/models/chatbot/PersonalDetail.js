@@ -36,7 +36,11 @@ export default class PersonalDetail{
         this.firstnameUcFirst = first_name.charAt(0).toUpperCase() + first_name.slice(1);
         this.lastnameUcFirst = last_name.charAt(0).toUpperCase() + last_name.slice(1);
         this.fullName = title.charAt(0).toUpperCase() + title.slice(1) + '. ' + first_name.charAt(0).toUpperCase() + first_name.slice(1) + ' ' + last_name.charAt(0).toUpperCase() + last_name.slice(1);
-
+        this.connection_type = this.generateConnectionType(abn, business_name);
+    }
+    generateConnectionType(abn, business_name){
+        if(abn || business_name) return "Temporary";
+        return "Default"
     }
 
 

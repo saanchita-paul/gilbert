@@ -15,7 +15,7 @@
                             <IdCopyToClipboard :applicationId="app_id"></IdCopyToClipboard>
                         </v-col>
                         <v-col cols="8">
-                            <p>Temporary Connection</p>
+                            <p :hidden="shouldShowConnectionType">Temporary Connection</p>
                         </v-col>
                     </v-row>
                 </v-col>
@@ -204,10 +204,10 @@
                                     </div>
                                 </v-col>
                             </v-row>
-                            <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
-                            <v-btn small @click="cancelPersonalDetails" :loading="cancelPersonalLoading" :disabled="shouldActivePersonalDetailsAction"> Cancel</v-btn>
-                            <v-btn color="primary" small right @click="savePersonalDetails"  :loading="savePersonDloading" :disabled="shouldActivePersonalDetailsAction"> Save</v-btn>
-                        </v-row>
+                            <v-row class="pa-3 d-flex justify-end" style="gap: 10px" v-if="shouldActivePersonalDetailsAction">
+                                <v-btn small @click="cancelPersonalDetails" :loading="cancelPersonalLoading" > Cancel</v-btn>
+                                <v-btn color="primary" small right @click="savePersonalDetails"  :loading="savePersonDloading" > Save</v-btn>
+                            </v-row>
                         </ValidationObserver>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -440,10 +440,10 @@
                                     </v-col>
 
                                 </v-row>
-                                <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
-                                <v-btn small @click="cancelPropertyDetails" :loading="cancelPropertyLoading" :disabled="shouldActivePropertyDetailsAction"> Cancel</v-btn>
-                                <v-btn color="primary" small right @click="savePropertyDetails" :loading="saveProDloading" :disabled="shouldActivePropertyDetailsAction"> Save</v-btn>
-                            </v-row>
+                                <v-row class="pa-3 d-flex justify-end" style="gap: 10px" v-if="shouldActivePropertyDetailsAction">
+                                    <v-btn small @click="cancelPropertyDetails" :loading="cancelPropertyLoading" > Cancel</v-btn>
+                                    <v-btn color="primary" small right @click="savePropertyDetails" :loading="saveProDloading" > Save</v-btn>
+                                </v-row>
                             </ValidationObserver>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
@@ -726,10 +726,10 @@
                                 </template>
 
                             </v-row>
-                            <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
-                            <v-btn small  @click="cancelIdDetails"  :loading="cancelIdLoading" :disabled="shouldActiveIdDetailsAction"> Cancel</v-btn>
-                            <v-btn color="primary" small right @click="saveIdDetails"  :loading="saveIDDloading" :disabled="shouldActiveIdDetailsAction"> Save</v-btn>
-                        </v-row>
+                            <v-row class="pa-3 d-flex justify-end" style="gap: 10px" v-if="shouldActiveIdDetailsAction">
+                                <v-btn small  @click="cancelIdDetails"  :loading="cancelIdLoading"> Cancel</v-btn>
+                                <v-btn color="primary" small right @click="saveIdDetails"  :loading="saveIDDloading"> Save</v-btn>
+                            </v-row>
                         </ValidationObserver>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -868,9 +868,9 @@
                                     </v-menu>
                                 </v-col>
                             </v-row>
-                            <v-row class="pa-3 d-flex justify-end" style="gap: 10px">
-                                <v-btn small @click="cancelConcessionDetails" :loading="cancelConcessionLoading" :disabled="shouldActiveConcessionDetailsAction"> Cancel</v-btn>
-                                <v-btn color="primary" small right @click="saveConcessionDetails" :loading="saveConcessionLoading" :disabled="shouldActiveConcessionDetailsAction"> Save</v-btn>
+                            <v-row class="pa-3 d-flex justify-end" style="gap: 10px" v-if="shouldActiveConcessionDetailsAction">
+                                <v-btn small @click="cancelConcessionDetails" :loading="cancelConcessionLoading" > Cancel</v-btn>
+                                <v-btn color="primary" small right @click="saveConcessionDetails" :loading="saveConcessionLoading"> Save</v-btn>
                             </v-row>
                         </ValidationObserver>
                     </v-expansion-panel-content>
@@ -992,22 +992,25 @@ export default {
         },
 
         shouldActivePersonalDetailsAction(){
-            return this.personalDetailsFlag.length <= 0;
+            return this.personalDetailsFlag.length > 0;
         },
 
         shouldActivePropertyDetailsAction(){
-            return this.propertyDetailsFlag.length <= 0;
+            return this.propertyDetailsFlag.length > 0;
         },
 
         shouldActiveIdDetailsAction(){
-            return this.idDetailsFlag.length <= 0;
+            return this.idDetailsFlag.length > 0;
         },
 
         shouldActiveConcessionDetailsAction(){
-            return this.concessionDetailsFlag.length <= 0;
+            return this.concessionDetailsFlag.length > 0;
         },
         shouldShowExpansionPanel(){
             return this.chatbot_app;
+        },
+        shouldShowConnectionType(){
+            return !(this.chatbot_app.personal_details.connection_type === 'Temporary');
         }
 
 
@@ -1195,7 +1198,8 @@ export default {
 
         async saveAddress(address) {
             this.address_loader = true;
-            await ChatbotApplicationService.updatePropertyAddress(this.app_id, address)
+            let response = await ChatbotApplicationService.updatePropertyAddress(this.app_id, address);
+            console.log("response",response);
             await this.loadApplication();
             this.address_loader = false;
             this.showGbg = false;

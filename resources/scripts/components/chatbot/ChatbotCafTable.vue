@@ -6,14 +6,19 @@
             :items="cafFiles"
             :server-items-length="totalItem"
             :options.sync="options"
-            :single-expand=true
+            :single-select=false
             :expanded.sync="expanded"
             :item-class="isSelectedClass"
             item-key="id"
+            show-select
             class="row-pointer"
             @click:row="onRowSelect"
-            single-select
         >
+            <template v-slot:item.to_address="{item}">
+                <div class="d-flex align-center"  style="font-size: 12px!important;">
+                    <span > {{ mapAddress(item.to_address) }}</span>
+                </div>
+            </template>
 
             <template v-slot:item.data-table-select="{ item, isSelected, select }">
                 <v-simple-checkbox
@@ -120,7 +125,7 @@ export default {
         onRowSelect(item, row) {
             let params = { ...this.$route.query, app_id: item.id}
             this.$router.replace({ query: {...params} });
-            row.select(true);
+            //row.select(true);
         },
         isSelectedClass(item) {
             if (item.color === true) {
@@ -184,6 +189,9 @@ export default {
             }
             return '--';
         },
+        mapAddress(address){
+            return address.substring(0,20)+"...";
+        }
     },
 }
 </script>
@@ -211,7 +219,6 @@ export default {
 }
 .row-pointer >>> thead tr th{
    white-space: nowrap;
-
 }
 
 .row-pointer >>> tbody tr td:nth-child(1) {

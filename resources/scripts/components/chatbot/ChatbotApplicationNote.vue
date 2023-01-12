@@ -17,7 +17,7 @@
                     ></v-textarea>
                 </ValidationProvider>
             </ValidationObserver>
-            <v-btn class="mt-2 float-right white--text note-button" @click="saveNote" color="#542E89" :disabled="isNoteTextEmpty">Submit Note</v-btn>
+            <v-btn class="mt-2 float-right white--text note-button" @click="saveNote" color="#542E89" v-if="isNoteTextEmpty">Submit Note</v-btn>
         </v-col>
         <v-col cols="12" v-if="applications.length > 0" class="notes-container" style="background-color: #f8f8f8">
             <v-timeline dense>
@@ -55,7 +55,7 @@ export default {
     },
     computed: {
       isNoteTextEmpty(){
-          return isEmpty(this.note.text)
+          return !isEmpty(this.note.text)
       }
     },
     methods: {
