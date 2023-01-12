@@ -59,7 +59,7 @@ class ApplicationResource extends JsonResource
             'country' => $this->country,
             'additional_instruction' => $this->additional_instruction,
             'address_text' => $this->address_text,
-            'Services' => $this->getConnectionServices($this->connectionServices),
+            'services' => $this->getConnectionServices($this->connectionServices),
             'connection_services' => $this->mapService($this->connectionServices),
             'tsa_call_histories' => $this->mapTsaService($this->tsa),
             'identification' => $this->identification,
