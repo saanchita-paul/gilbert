@@ -92,7 +92,7 @@ class MirnNmiService
         $application->update(['loading_address_info' => false]);
         event(new FetchMirnNmiEvent($applicationId));
 
-        MirnNmiService::fetchNmiIsEmbedded(null, true, $application->id);
+//        MirnNmiService::fetchNmiIsEmbedded(null, true, $application->id);
         event(new FetchEmbeddedNetworkEvent($applicationId));
         $application->refresh();
 
