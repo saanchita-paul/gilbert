@@ -36,7 +36,7 @@ class FetchEmbeddedNetworkJob implements ShouldQueue
     public function handle()
     {
         $application = ConnectionApplication::find($this->applicationId);
-        MirnNmiService::fetchNmiIsEmbeddedWithNmi($application->nmi, true, $application->id);
+//        MirnNmiService::fetchNmiIsEmbeddedWithNmi($application->nmi, true, $application->id);
         $application->update(['loading_address_info' => false]);
         $application->refresh();
         event(new FetchEmbeddedNetworkEvent($application->id));
