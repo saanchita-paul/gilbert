@@ -70,10 +70,10 @@ function mapServiceStatus(service) {
 
 function mapModelColor(service, caf_generation_status, connection_type) {
 
-    if(caf_generation_status === 'CAF Submitted')
-    {
-        return false;
-    }
+    // if(caf_generation_status === 'CAF Submitted')
+    // {
+    //     return false;
+    // }
 
     if(connection_type === 'Temporary')
     {

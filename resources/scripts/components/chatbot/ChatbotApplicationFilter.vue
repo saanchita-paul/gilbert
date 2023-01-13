@@ -263,7 +263,7 @@ export default {
             this.$emit('updateDate', this.dateRange)
         },
 
-        generateCafFIle()
+        async generateCafFIle()
         {
             let selectedId = this.selected.map(dt => dt.id);
 
@@ -274,10 +274,11 @@ export default {
             let query = selectedRow.join('_');
             console.log('selected rows', query);
             const url = `${process.env.MIX_BOT_ROOT_URL}/api/download-caf-file?leads=`+ query;
-            window.open(
+            await window.open(
                 url,
                 '_blank'
             );
+            this.$emit("updateCafTable")
 
         }
     },

@@ -9,10 +9,11 @@
                                 <ChatbotApplicationFilter
                                     :selected="selectedCaf"
                                     v-model="advanceSearch"
-                                    :cafFiles="cafFiles"
+                                    :cafFiles="chatbotApps"
                                     :isSearchEmpty="advanceSearch.isSearchEmpty()"
                                     listPage="true"
                                     @updateDate="updateDate"
+                                    @updateCafTable="fetchCafFiles"
                                 >
                                 </ChatbotApplicationFilter>
                             </v-col>

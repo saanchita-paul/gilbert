@@ -4,7 +4,7 @@
             <p class="sub-title">Notes</p>
             <ValidationObserver ref="application_note_ref">
                 <ValidationProvider
-                    name="Application Notes"
+                    name="Application Note"
                     rules="required"
                     v-slot="{ errors }"
                 >
@@ -62,9 +62,9 @@ export default {
         async saveNote() {
             if(!await this.validateFormData('application_note_ref')) return;
             //todo need to call note api in chatbot site
-            await ChatbotApplicationService.saveNote(this.note);
+            let response = await ChatbotApplicationService.saveNote(this.note);
             this.note.text = '';
-            this.$emit("newNote");
+            this.applications.unshift(response)
         },
         getColor(index) {
             if(index === 0) return 'primary';
