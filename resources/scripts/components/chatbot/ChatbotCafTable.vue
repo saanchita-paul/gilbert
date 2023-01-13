@@ -13,6 +13,7 @@
             show-select
             class="row-pointer"
             @click:row="onRowSelect"
+            @toggle-select-all="selectAllToggle"
         >
             <template v-slot:item.to_address="{item}">
                 <div class="d-flex align-center"  style="font-size: 12px!important;">
@@ -108,9 +109,33 @@ export default {
             deep: true,
         },
     },
+    updated(){
+        this.disabledCount = 0
+        this.cafFiles.forEach(item => {
+          if (this.getStatus(item)) this.disabledCount += 1
+        })
+    },
 
     methods: {
-
+        selectAllToggle(props) {
+            if(this.selected.length !== this.cafFiles.length - this.disabledCount) {
+                this.selected = [];
+                props.items.forEach(item => {
+                    if(!this.getStatus(item)) {
+                        item.is_selected = true;
+                        this.selected.push(item);
+                    }
+                });
+            } else{
+                props.items.forEach(item => {
+                    if(!this.getStatus(item)) {
+                        item.is_selected = false;
+                        this.selected.push(item);
+                    }
+                });
+                this.selected = [];
+            }
+        },
 
         updateTableData(data)
         {
@@ -131,26 +156,6 @@ export default {
             if (item.color === true) {
                 return 'row-rejected';
             }
-
-            // if(item.caf_generation_status  === 'CAF Submitted') {
-            //     console.log('matched', item);
-            //     return 'row-rejected';
-            // }
-            // if(item.connection_type  === 'Default') {
-            //     console.log('matched', item);
-            //     return 'row-rejected';
-            // }
-            // if(item.services.status  === 'Rejected') {
-            //     console.log('matched', item);
-            //     return 'row-rejected';
-            // }
-            // if(item.service.status  === 'Rejected') {
-            //     console.log('matched', item);
-            //     return 'row-rejected';
-            // }
-
-
-
 
         },
 

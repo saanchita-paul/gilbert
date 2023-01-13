@@ -192,12 +192,8 @@ name: "ChatbotApplicationPage",
             this.totalItem = data.pagination.total;
             const query = this.$route.query;
             const p = this.chatbotApps.find(it => {
-                console.log(it, query.app_id);
                return  it.id === query.app_id
             });
-
-            console.log("current app", p);
-
 
             if(data.data.length > 0 && !p) {
                 this.isLoadSkeleton = true;
