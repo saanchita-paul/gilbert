@@ -43,7 +43,7 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject("Reset your password")
+            ->subject("HOOD Account Password Reset")
             ->view('email.forgot_password', [
                 'token' => $this->token,
             ]);
