@@ -405,3 +405,5 @@ Route::get('/test', function() {
 //    ApplicationFromGilbertJob::dispatch(3);
 
 });
+
+Route::get('/generate-nmi-report', [\App\Http\Controllers\SettingsController::class, 'generateAddressReport']);

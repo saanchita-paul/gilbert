@@ -37,7 +37,7 @@ class FastConnectService
             Log::info('fast connect payload', $payload);
 
             $authorization = 'Bearer ' . $this->accessToken;
-            $response = Http::retry(2)->withHeaders([
+            $response = Http::retry(2)->timeout(150)->withHeaders([
 
                 'content-type' => 'application/json',
                 'accept' => 'application/json',
@@ -47,45 +47,31 @@ class FastConnectService
                 ->post(config('fastconnect.root_url') . \config('fastconnect.search_nmi_mirn_uri')); //CHANGE
             // ->post("https://api.fastconnect.net.au/api/datafind/address");
 
-            $response_decoded = json_decode($response->body(), true);
-            $mirn = null;
-            $nmi = null;
-            if (!empty($response_decoded['mirn']['result']) && count($response_decoded['mirn']['result']) === 1) {
-                $mirn = $response_decoded['mirn']['result'][0]['mirn'];
-            }
+            $responseDecoded = json_decode($response->body(), true);
 
-            if (!empty($response_decoded['nmi']['result']) && count($response_decoded['nmi']['result'])  === 1) {
-                $nmi = $response_decoded['nmi']['result'][0]['nmi'];
-            }
+            $parsedValues = $this->parseValues($responseDecoded);
 
-            $error = $response_decoded['mirn']['error'] ?? $response_decoded['nmi']['error'];
-            $no_result = empty($nmi) && empty($mirn);
-
-            if ($no_result && !empty($error)) {
-                Log::warning("FastConnectService: " . $error);
-                return [
-                    'mirn' => null,
-                    'nmi' => null,
-                ];
-            }
+            $mirn = $parsedValues['mirn'];
+            $nmi = $parsedValues['nmi'];
 
             if ($applicationFlag) {
                 $connectionApp = ConnectionApplication::find($id);
                 $connectionApp->nmi = $nmi;
+                $connectionApp->nmi_score = $parsedValues['nmi_score'];
                 $connectionApp->mirn = $mirn;
+                $connectionApp->mirn_score = $parsedValues['mirn_score'];
                 $connectionApp->save();
             }
 
-            return [
-                'mirn' => $mirn,
-                'nmi' => $nmi,
-            ];
+            return $parsedValues;
         } catch (\Exception $exception) {
             Log::warning("FastConnectService: " . $exception->getMessage());
             Log::warning("FastConnectService: " . $exception->getTraceAsString());
             return [
                 'mirn' => null,
+                'mirn_score' => 'SERVER_ERROR',
                 'nmi' => null,
+                'nmi_score' => 'SERVER_ERROR',
             ];
         }
     }
@@ -131,5 +117,84 @@ class FastConnectService
         }
         return $state;
 
+    }
+
+    /**
+     * @param array $response
+     *
+     * @return array{mirn: ?numeric, mirn_score: string, nmi: ?numeric, nmi_score: string}
+     */
+    private function parseValues(array $response): array
+    {
+        $mirns = $this->parseMirn($response['mirn']['result'] ?? null);
+        $nmis = $this->parseNmi($response['nmi']['result'] ?? null);
+
+        return array_merge($mirns, $nmis);
+    }
+
+    private function parseNmi(?array $nmis): array
+    {
+        $res = [
+            'nmi' => null,
+            'nmi_score' => 'NO_RESULT',
+        ];
+        if (!$nmis) {
+            return $res;
+        }
+
+        $exact = [];
+
+        foreach ($nmis as $nmi) {
+            if (isset($nmi['nmi']) && ($nmi['match_type'] ?? null) === "EXACT" && ($nmi['status'] ?? null) === 'ACTIVE') {
+                $exact[] = $nmi['nmi'];
+            }
+        }
+
+        if (sizeof($exact) === 0 ) {
+            return $res;
+        }
+
+        if (sizeof($exact) > 1) {
+            $res['nmi_score'] = 'MULTIPLE_EXACT';
+            return  $res;
+        }
+
+        $res['nmi_score'] = 'EXACT';
+        $res['nmi'] = $exact[0];
+
+        return  $res;
+    }
+
+    private function parseMirn(?array $mirns): array
+    {
+        $res = [
+            'mirn' => null,
+            'mirn_score' => 'NO_RESULT',
+        ];
+        if (!$mirns) {
+            return $res;
+        }
+
+        $exact = [];
+
+        foreach ($mirns as $mirn) {
+            if (isset($mirn['mirn']) && ($mirn['match_type'] ?? null) === "EXACT") {
+                $exact[] = $mirn['mirn'];
+            }
+        }
+
+        if (sizeof($exact) === 0 ) {
+            return $res;
+        }
+
+        if (sizeof($exact) > 1) {
+            $res['mirn_score'] = 'MULTIPLE_EXACT';
+            return  $res;
+        }
+
+        $res['nmi_score'] = 'EXACT';
+        $res['mirn'] = $exact[0];
+
+        return  $res;
     }
 }
