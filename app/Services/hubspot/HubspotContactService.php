@@ -1,20 +1,22 @@
 <?php
 
-namespace App\Services\Agency;
+namespace App\Services\hubspot;
 
 use App\Models\APILog;
-use App\Models\Identification;
-use Illuminate\Http\Client\PendingRequest;
-use Illuminate\Support\Carbon;
-use App\Models\ConnectionService;
 use App\Models\ConnectionApplication;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
+use App\Models\ConnectionService;
 use App\Models\HubspotHistory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Identification;
+use App\Services\Agency\contact_id;
+use App\Services\Agency\hubspot_response;
+use App\Services\Agency\oldApplicationId;
 use App\Services\Logger\ErrorLogService;
 use Illuminate\Database\Eloquent\Collection;
-use PropertyMe\Services\SaveContacts;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class HubspotContactService
 {
@@ -58,10 +60,10 @@ class HubspotContactService
         ]);
         $body = json_decode($response->body(), true);
 
-//        if (empty($body['vid'])) {
-//            Log::error($response->body());
-//            throw new \Exception("[HubspotContactService] failed to create contact");
-//        }
+        if (empty($body['vid'])) {
+            Log::error($response->body());
+            throw new \Exception("[HubspotContactService] failed to create contact", ["response" => $response->body()]);
+        }
 
         $this->application->update(['hubspot_contact_id' => $body['vid']]);
 
@@ -380,6 +382,10 @@ class HubspotContactService
             [
                 "property" => "hood_real_estate_agency",
                 "value" => $this->application->getAgencyName(),
+            ],
+            [
+                "property" => "is_embedded_network",
+                "value" => $this->application->embedded_nmi ? 'yes' : 'no',
             ],
         ];
     }

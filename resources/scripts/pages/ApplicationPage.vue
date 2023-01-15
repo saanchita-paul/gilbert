@@ -4,12 +4,16 @@
             <v-col cols="8">
                 <v-card class="hood-card">
                     <p>Your Metrics</p>
-                    <h3 class="page-title">Total Applications: {{ total_leads }}</h3>
+                    <div class="d-flex justify-space-between">
+                        <h3 class="page-title">Total Applications: {{ total_leads }}</h3>
+                        <AssignToChatbotSetting v-if="isShowAutoAssignBtn"></AssignToChatbotSetting>
+                    </div>
+
                     <ApplicationsMetrics @resetPage="resetPage" v-if="leadTypesFlag" :activeLeadType="activeLeadType"
                                          :showDuplicate="showDuplicates" :leads="leadTypes"
                                          @updateTotal="updateTotal"></ApplicationsMetrics>
                 </v-card>
-<!--                <BulkStatusChangeUploadButton class="mt-3 text-end" :reloadLeads="this.fetchLeads"/>-->
+                <!--                <BulkStatusChangeUploadButton class="mt-3 text-end" :reloadLeads="this.fetchLeads"/>-->
                 <ApplicationFilter v-model="advanceSearch"
                                    :isSearchEmpty="advanceSearch.isSearchEmpty()"></ApplicationFilter>
                 <router-view
@@ -43,6 +47,8 @@ import {LeadSearchFilterModel} from '@scripts/models/LeadSearchFilterModel'
 import ApplicationFilter from '@scripts/pages/ApplicationFilter';
 import debounce from "lodash-es/debounce";
 import DuplicateLeadService from "@scripts/services/crm/DuplicateLeadService";
+import AssignToChatbotSetting from "@scripts/components/crm/AssignToChatbotSetting";
+import AuthService from "@scripts/services/AuthService";
 import BulkStatusChangeUploadButton
     from "@scripts/components/crm/modals/application-service-status/BulkStatusChangeUploadButton";
 
@@ -54,6 +60,7 @@ export default {
         ApplicationDetails,
         ApplicationsMetrics,
         ApplicationFilter,
+        AssignToChatbotSetting,
         BulkStatusChangeUploadButton
     },
 
@@ -84,11 +91,21 @@ export default {
                 source: "",
                 tenancy_type: "",
                 triage: "",
+                assignee: ""
             },
             advanceSearch: new LeadSearchFilterModel(),
             showDuplicates: false,
             duplication_group_id: null,
         }
+    },
+
+    computed: {
+        authUser() {
+            return AuthService.getAuthUser();
+        },
+        isShowAutoAssignBtn() {
+            return this.authUser.permissions.includes('can_switch_auto_chatbot_assign');
+        },
     },
 
     methods: {
@@ -121,6 +138,7 @@ export default {
             this.totalItem = data.pagination.total;
             this.selected_lead_id = this.leads[0]?.id;
             this.leads.length ? await this.loadLeadSummary() : "";
+            this.listenEmbeddedNetworkEvent();
             // console.log('lead list', this.leads);
         },
 
@@ -136,6 +154,7 @@ export default {
         openLeadSummary(id) {
             this.selected_lead_id = id;
             this.loadLeadSummary();
+            this.listenEmbeddedNetworkEvent();
         },
 
         refreshDataTable(meta) {
@@ -161,6 +180,12 @@ export default {
 
         async showDuplicateList(duplication_group_id) {
             let duplicatedData = await DuplicateLeadService.getDuplicateLeadData(duplication_group_id);
+        },
+        listenEmbeddedNetworkEvent() {
+            this.$echo.channel(`fetchEmbeddedNetwork.${this.selected_lead_id}`)
+                .listen('FetchEmbeddedNetworkEvent', (res) => {
+                    this.loadLeadSummary();
+                });
         }
 
     },

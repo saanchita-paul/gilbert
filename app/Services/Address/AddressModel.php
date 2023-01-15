@@ -5,7 +5,8 @@ namespace App\Services\Address;
 
 use App\Models\ConnectionApplication;
 
-class AddressModel{
+class AddressModel
+{
 
     /**
      *
@@ -22,11 +23,11 @@ class AddressModel{
     /**
      *
      */
-    const STATE_SA  = 'south australia';
+    const STATE_SA = 'south australia';
     /**
      *
      */
-    const STATE_NT  = 'northern territory';
+    const STATE_NT = 'northern territory';
     /**
      *
      */
@@ -54,11 +55,11 @@ class AddressModel{
     /**
      *
      */
-    const STATE_SHORT_SA  = 'sa';
+    const STATE_SHORT_SA = 'sa';
     /**
      *
      */
-    const STATE_SHORT_NT  = 'nt';
+    const STATE_SHORT_NT = 'nt';
     /**
      *
      */
@@ -90,22 +91,22 @@ class AddressModel{
         self::STATE_SHORT_NSW => self::STATE_NSW,
         self::STATE_SHORT_VIC => self::STATE_VIC,
         self::STATE_SHORT_QLD => self::STATE_QLD,
-        self::STATE_SHORT_SA  => self::STATE_SA,
-        self::STATE_SHORT_NT  => self::STATE_NT,
+        self::STATE_SHORT_SA => self::STATE_SA,
+        self::STATE_SHORT_NT => self::STATE_NT,
         self::STATE_SHORT_TAS => self::STATE_TAS,
         self::STATE_SHORT_ACT => self::STATE_ACT,
-        self::STATE_SHORT_WA  => self::STATE_WA,
+        self::STATE_SHORT_WA => self::STATE_WA,
     ];
 
     const MAP_STATES_LONG_TO_SHORT = [
         self::STATE_NSW => self::STATE_SHORT_NSW,
         self::STATE_VIC => self::STATE_SHORT_VIC,
         self::STATE_QLD => self::STATE_SHORT_QLD,
-        self::STATE_SA  => self::STATE_SHORT_SA,
-        self::STATE_NT  => self::STATE_SHORT_NT,
+        self::STATE_SA => self::STATE_SHORT_SA,
+        self::STATE_NT => self::STATE_SHORT_NT,
         self::STATE_TAS => self::STATE_SHORT_TAS,
         self::STATE_ACT => self::STATE_SHORT_ACT,
-        self::STATE_WA  => self::STATE_SHORT_WA,
+        self::STATE_WA => self::STATE_SHORT_WA,
     ];
 
     public function __construct(
@@ -122,21 +123,17 @@ class AddressModel{
         private ?string $country = null,
         private ?bool $is_address_complete = false,
         private ?int $connection_application_id = null,
-    )
-    {
-        if(isset($this->connection_application_id))
-        {
+    ) {
+        if (isset($this->connection_application_id)) {
             $this->setFromConnectionApplication();
-        } else
-        {
+        } else {
             $this->setProperties();
         }
     }
 
     private function setFromConnectionApplication()
     {
-        try
-        {
+        try {
             $application = ConnectionApplication::findOrFail($this->connection_application_id);
             $this->unit_number = $application->unit_number;
             $this->address_text = $application->address_text;
@@ -149,34 +146,28 @@ class AddressModel{
             $this->state = $application->state;
             $this->state_short = $application->state_short;
             $this->country = $application->country;
-        } catch(\Exception $exception)
-        {
-            \Log::error( "error in AddressModel" ,  [ 'msg' => $exception->getMessage(), "trace" => $exception->getTraceAsString() ] );
+        } catch (\Exception $exception) {
+            \Log::error("error in AddressModel", ['msg' => $exception->getMessage(), "trace" => $exception->getTraceAsString()]);
         }
     }
 
     private function setProperties()
     {
-        $this->street_address = $this->unit_number == null || $this->unit_number == "" ? "" : $this->unit_number . "/". $this->street_number;
+        $this->street_address = $this->unit_number == null || $this->unit_number == "" ? "" : $this->unit_number . "/" . $this->street_number;
         $this->street_address = trim($this->street_address . " " . $this->street_name . " ");
 
-        if( $this->address_text == null || $this->address_text == "" )
-        {
+        if ($this->address_text == null || $this->address_text == "") {
             $this->address_text = $this->street_address . " " . $this->city . " " . $this->state . " " . $this->postcode . " " . $this->country;
         }
 
-        if ($this->state && strlen($this->state) < 4)
-        {
+        if ($this->state && strlen($this->state) < 4) {
             $this->state_short = $this->state;
-            $this->state = ucwords( self::MAP_STATES_SHORT_TO_LONG[strtolower($this->state)] ) ?? null;
-        }
-        else
-        {
+            $this->state = ucwords(self::MAP_STATES_SHORT_TO_LONG[strtolower($this->state)]) ?? null;
+        } else {
             $this->state_short = ucfirst(self::MAP_STATES_LONG_TO_SHORT[strtolower($this->state)]) ?? null;
         }
 
-        if ($this->country && strlen($this->country) < 3)
-        {
+        if ($this->country && strlen($this->country) < 3) {
             $this->country = ucfirst(self::MAP_COUNTRY[strtolower($this->country)]) ?? null;
         }
     }
@@ -253,7 +244,14 @@ class AddressModel{
 
     public static function mapStateToShort(?string $state): ?string
     {
-        $state = AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($state)];
-        return $state ?  strtoupper($state) : null;
+        $state = AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($state)] ?? null;
+        return $state ? strtoupper($state) : null;
+    }
+
+    public static function mapStateToLong(?string $state): ?string
+    {
+        $state = self::MAP_STATES_SHORT_TO_LONG[strtolower($state)] ?? null;
+
+        return $state ? ucwords($state) : null;
     }
 }

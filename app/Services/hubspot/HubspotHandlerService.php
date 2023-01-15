@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Services\Agency;
+namespace App\Services\hubspot;
 
-use Illuminate\Database\Eloquent\Collection;
 use App\Models\ConnectionApplication;
+use Illuminate\Database\Eloquent\Collection;
 
 class HubspotHandlerService
 {

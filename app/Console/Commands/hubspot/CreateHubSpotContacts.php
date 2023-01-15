@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\hubspot;
 
 use App\Models\ConnectionApplication;
-use App\Services\Agency\HubspotHandlerService;
+use App\Services\hubspot\HubspotHandlerService;
 use Illuminate\Console\Command;
 
 /**

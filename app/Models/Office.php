@@ -77,6 +77,7 @@ class Office extends Model
         'rent_roll',
         'property_me_refresh_token',
         'should_notify_agent',
+        'is_chatbot_office'
     ];
 
     /**
@@ -95,9 +96,10 @@ class Office extends Model
         return $this->hasMany(AgentProfile::class);
     }
 
-    public function activeAgents(){
-        return $this->agents()->whereHas('user', function($query){
-            $query->where('is_active' , 1);
+    public function activeAgents()
+    {
+        return $this->agents()->whereHas('user', function ($query) {
+            $query->where('is_active', 1);
         })->count();
     }
 
@@ -152,6 +154,12 @@ class Office extends Model
     public function getVendorCode(): string
     {
         return $this->eaClientCredential?->vendor_code ?? config('ea.default_vendor_code');
+    }
+
+
+    public function timeSlots(): HasMany
+    {
+        return $this->hasMany(OfficeAutoAssignTimeSlot::class);
     }
 
     public function mriOffice()

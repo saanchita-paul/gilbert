@@ -2,15 +2,16 @@
 
 namespace App\Jobs;
 
-use App\Services\GilbertToCB\UpdateApplicationFromGilbertService;
+use App\Events\FetchEmbeddedNetworkEvent;
+use App\Models\ConnectionApplication;
+use App\Services\Agency\MirnNmiService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class ApplicationFromGilbertJob implements ShouldQueue
+class FetchEmbeddedNetworkJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -23,6 +24,7 @@ class ApplicationFromGilbertJob implements ShouldQueue
      */
     public function __construct($applicationId)
     {
+        $this->onQueue('fc-address');
         $this->applicationId = $applicationId;
     }
 
@@ -33,13 +35,10 @@ class ApplicationFromGilbertJob implements ShouldQueue
      */
     public function handle()
     {
-        try {
-            $application = new UpdateApplicationFromGilbertService($this->applicationId);
-            $application->call();
-        }
-        catch (\Exception $exception)
-        {
-            \Log::error($exception->getMessage());
-        }
+        $application = ConnectionApplication::find($this->applicationId);
+//        MirnNmiService::fetchNmiIsEmbeddedWithNmi($application->nmi, true, $application->id);
+        $application->update(['loading_address_info' => false]);
+        $application->refresh();
+        event(new FetchEmbeddedNetworkEvent($application->id));
     }
 }

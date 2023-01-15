@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\ConnectionApplicationStatusChangeEvent;
 use ExternalLead\Models\TApp;
 use Foxie\Models\SugerLead;
 use Ignite\Models\IgniteLead;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Notifications\Notifiable;
 use OurProperty\Models\OurProperty;
 use phpDocumentor\Reflection\Utils;
 use PropertyMe\PropertyMeLead;
@@ -67,6 +69,7 @@ use Carbon\Carbon;
  * @property int|null $supplier
  * @property int|null $plan_type
  * @property int|null $status
+ * @property int|null $is_embedded
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Agency $agency
@@ -118,7 +121,7 @@ use Carbon\Carbon;
  */
 class ConnectionApplication extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -234,8 +237,12 @@ class ConnectionApplication extends Model
         'gas_life_support_accepted_at',
         'app_close_reason_id',
         'chatbot_id',
+        'is_locked',
         'mri_application_id',
         'status_log_id',
+        'is_embedded',
+        'loading_address_info',
+        'embedded_nmi',
     ];
 
 
@@ -424,6 +431,18 @@ class ConnectionApplication extends Model
         self::ACCESS_KEYS_LETTER,
         self::ACCESS_CUSTOMER_CONSULTATION
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($model) {
+            if ($model->chatbot_id && $model->isDirty('status')) {
+                \Log::info('Lead status changed!');
+                event(new ConnectionApplicationStatusChangeEvent($model->id));
+            }
+        });
+    }
 
     /**
      * @return BelongsTo
@@ -648,6 +667,7 @@ class ConnectionApplication extends Model
 
             for ($i = count($arr) - 1; $i >= 0; $i--) {
                 $asciiVal = intval(ord($arr[$i]));
+
                 if ($isDouble) {
                     $asciiVal *= 2;
                 }

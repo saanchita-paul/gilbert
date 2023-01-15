@@ -1,21 +1,22 @@
 import Office from "@scripts/models/crm/Office";
 import PaginationMapper from "@scripts/api/mappers/crm/PaginationMapper";
 import COMMISSION from "@scripts/data/constants/COMMISSION";
+import TimeSlotsService from "@scripts/services/crm/TimeSlotsService";
 
 function mapOffice(office) {
     return new Office({...office});
 }
 
-function mapOfficeDetails(office){
+function mapOfficeDetails(office) {
 
     return {
         ...office
     }
 
-    }
+}
 
 
-function mapCommissions (commissions){
+function mapCommissions(commissions) {
     return commissions.map(cmtn => {
         const commission = {
             id: cmtn.id,
@@ -45,7 +46,7 @@ function mapCommissions (commissions){
     });
 }
 
-   function mapAgent (agent) {
+function mapAgent(agent) {
     return {
         ...agent,
         // full_name: agent.first_name + ' ' + agent.last_name,
@@ -62,15 +63,28 @@ function mapHoodProfile(hoodUsers) {
     })
 }
 
+function mapTimeSlots(timeSlots) {
+    return timeSlots.map(item => {
+        return {
+            ...item,
+            all_day: mapAllDay(item)
+        }
+    });
+}
+
+function mapAllDay(item) {
+    return TimeSlotsService.getFullDayTime(item);
+}
+
 
 export default {
-    mapOfficeList: (officeList)=> {
+    mapOfficeList: (officeList) => {
 
-        const offices =  officeList?.data.map(office=> {
+        const offices = officeList?.data.map(office => {
             return mapOffice(office);
         });
 
-        const pagination =  PaginationMapper.mapPagination(officeList?.meta);
+        const pagination = PaginationMapper.mapPagination(officeList?.meta);
 
         return {
             offices: offices,
@@ -93,49 +107,49 @@ export default {
         let mriOfc = officedData.mriOffice;
 
         office = {
-                agency_id: agency,
-                address: ofc.address,
-                name: ofc.title,
-                street_address: ofc.street_address,
-                city: ofc.city,
-                state: ofc.state,
-                postcode: ofc.postcode,
-                abn: ofc.abn,
-                phone: ofc.contact,
-                email: ofc.email,
-                rent_roll: ofc.rent_roll,
-                hood_agent_id: ofc.hood_agent_id,
-            };
+            agency_id: agency,
+            address: ofc.address,
+            name: ofc.title,
+            street_address: ofc.street_address,
+            city: ofc.city,
+            state: ofc.state,
+            postcode: ofc.postcode,
+            abn: ofc.abn,
+            phone: ofc.contact,
+            email: ofc.email,
+            rent_roll: ofc.rent_roll,
+            hood_agent_id: ofc.hood_agent_id,
+        };
         agent = {
-                first_name: agPro.first_name,
-                last_name: agPro.last_name,
-                email: agPro.email,
-                f_id_12: agPro.last_name,
-                phone: agPro.phone_number,
-                role: 'agency_office_allocator'
-            };
+            first_name: agPro.first_name,
+            last_name: agPro.last_name,
+            email: agPro.email,
+            f_id_12: agPro.last_name,
+            phone: agPro.phone_number,
+            role: 'agency_office_allocator'
+        };
         office_commissions = [
-                {
-                    type: COMMISSION.GAS.type,
-                    rate: commission.gas,
-                },
-                {
-                    type: COMMISSION.INTERNET.type,
-                    rate: commission.internet,
-                },
-                {
-                    type: COMMISSION.POWER.type,
-                    rate: commission.power,
-                },
-                // {
-                //     type: COMMISSION.WATER.type,
-                //     rate: commission.water,
-                // },
+            {
+                type: COMMISSION.GAS.type,
+                rate: commission.gas,
+            },
+            {
+                type: COMMISSION.INTERNET.type,
+                rate: commission.internet,
+            },
+            {
+                type: COMMISSION.POWER.type,
+                rate: commission.power,
+            },
+            // {
+            //     type: COMMISSION.WATER.type,
+            //     rate: commission.water,
+            // },
             {
                 type: COMMISSION.SPONSORSHIP.type,
                 rate: commission.sponsorship,
             },
-            ];
+        ];
 
         mri_office = {
             key: mriOfc.key,
@@ -153,17 +167,15 @@ export default {
     },
 
     mapMetaData: (meta) => {
-            if(meta.sort_by === 'title') meta.sort_by = 'name';
-            if(meta.sort_by === 'last_updated') meta.sort_by = 'updated_at';
-            if(meta.sort_by === 'user_account') meta.sort_by = 'agents_count';
-            if(meta.sort_by === 'total_leads') meta.sort_by = 'applications_count';
-            return meta;
+        if (meta.sort_by === 'title') meta.sort_by = 'name';
+        if (meta.sort_by === 'last_updated') meta.sort_by = 'updated_at';
+        if (meta.sort_by === 'user_account') meta.sort_by = 'agents_count';
+        if (meta.sort_by === 'total_leads') meta.sort_by = 'applications_count';
+        return meta;
     },
 
 
-
-
-    mapOfficeCommissionAgent: (data)=> {
+    mapOfficeCommissionAgent: (data) => {
         let office = mapOfficeDetails(data);
         office.agency_name = office.agency.name;
         office.agency_type = office.agency.type;
@@ -171,11 +183,13 @@ export default {
         let commissions = mapCommissions(data.commissions);
         let agent = mapAgent(data.agent);
         let hood_users = mapHoodProfile(data?.hood_users);
+        let time_slots = mapTimeSlots(data?.time_slots);
         return {
             office: office,
             commissions: commissions,
             agent: agent,
-            hood_users: hood_users
+            hood_users: hood_users,
+            time_slots: time_slots
         }
     },
 
@@ -196,7 +210,6 @@ export default {
             mri_office: mri_office,
         }
     },
-
 
 
 }

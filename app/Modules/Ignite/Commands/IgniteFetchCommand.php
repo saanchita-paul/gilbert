@@ -2,8 +2,11 @@
 
 namespace Ignite\Commands;
 
+use Exception;
 use Ignite\Jobs\IgniteFetchJob;
+use Ignite\Services\IgniteLeadService;
 use Illuminate\Console\Command;
+
 class IgniteFetchCommand extends Command
 {
     /**
@@ -11,7 +14,7 @@ class IgniteFetchCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'ignite:fetch';
+    protected $signature = 'ignite:fetch {--test}';
 
     /**
      * The console command description.
@@ -33,12 +36,39 @@ class IgniteFetchCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return int
+     * @return void
+     * @throws Exception
      */
-    public function handle()
-    {   
-        $this->line('Ignite fetch lead command started successfully!');
-        IgniteFetchJob::dispatch();
-        $this->line('Ignite fetch lead command finished successfully!');
+    public function handle(): void
+    {
+        if ($this->option('test')) {
+            $this->test();
+        } else {
+            $this->fetchLead();
+        }
     }
+
+    /**
+     * @throws Exception
+     */
+    private function test()
+    {
+        if (app()->environment('production')) {
+            throw new Exception("Testing is not possible in production environment");
+        }
+
+
+        $createLeadService = new IgniteLeadService();
+        $createLeadService->dummyCreate();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function fetchLead()
+    {
+        $createLeadService = new IgniteLeadService();
+        $createLeadService->create();
+    }
+
 }

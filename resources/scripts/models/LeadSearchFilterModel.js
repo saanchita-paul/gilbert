@@ -2,20 +2,22 @@ import {isEmpty} from "lodash-es";
 
 class LeadSearchFilterModel {
     constructor({
-        tenant_name,
-        source,
-        phone,
-        address,
-        tenancy_type,
-        app_id,
-        tenant_email,
-        moving_date,
-        active_lead_type,
-        agent_id,
-        agent_name,
-        triage,
+                    tenant_name,
+                    source,
+                    phone,
+                    address,
+                    tenancy_type,
+                    app_id,
+                    tenant_email,
+                    moving_date,
+                    active_lead_type,
+                    agent_id,
+                    agent_name,
+                    triage,
                     duplication_group_id,
-    } = {}) {
+                    assignee,
+                    assignee_search,
+                } = {}) {
         this.tenant_name = tenant_name;
         this.source = source ?? null;
         this.phone = phone;
@@ -29,6 +31,8 @@ class LeadSearchFilterModel {
         this.agent_name = agent_name;
         this.triage = triage ?? null;
         this.duplication_group_id = duplication_group_id ?? null;
+        this.assignee = assignee;
+        this.assignee_search = assignee_search;
     }
 
     isSearchEmpty() {
@@ -39,10 +43,12 @@ class LeadSearchFilterModel {
             isEmpty(this.tenancy_type) &&
             isEmpty(this.triage) &&
             isEmpty(this.tenant_email) &&
-            isEmpty(this.duplication_group_id);
+            isEmpty(this.duplication_group_id) &&
+            !this.assignee
+            && isEmpty(this.assignee_search);
     }
 
-    clear(){
+    clear() {
         this.tenant_name = null;
         this.source = null;
         this.phone = null;
@@ -56,11 +62,11 @@ class LeadSearchFilterModel {
         this.agent_name = null;
         this.triage = null;
         this.duplication_group_id = null;
-
-        console.log('clear duplicated group id');
+        this.assignee = null;
+        this.assignee_search = null;
     }
 
 
 }
 
-export { LeadSearchFilterModel };
+export {LeadSearchFilterModel};

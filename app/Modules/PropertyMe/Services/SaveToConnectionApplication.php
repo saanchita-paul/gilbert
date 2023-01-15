@@ -2,6 +2,7 @@
 
 namespace App\Modules\PropertyMe\Services;
 
+use App\Events\Agency\CreateApplicationEvent;
 use App\Events\NotifyAgentAfterLeadCreation;
 use App\Jobs\CreateHubspotProperty;
 use App\Models\AgentProfile;
@@ -11,6 +12,9 @@ use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\Identification;
 use App\Models\Office;
 use App\Notifications\ErrorLogNotification;
+use App\Services\Address\AddressModel;
+use App\Services\Address\GBGAddressMapper;
+use App\Services\Address\StreetTypeMapper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -21,12 +25,14 @@ use App\Models\ApplicationNote;
 use App\Models\ConnectionService;
 use App\Services\NotifyBadAgentMailService;
 
+use function Sodium\add;
+
 class SaveToConnectionApplication
 {
 
     public function __construct(private Office $office) {}
 
-    public function run(PropertyMeLead $lead)
+    public function run(PropertyMeLead $lead, ?array $cleanseAddress = null, ?array $cleanseBillingAddress = null)
     {
         $leadData = json_decode($lead->all_fields_dump, true);
 
@@ -41,7 +47,10 @@ class SaveToConnectionApplication
         $movingDate = data_get($lead, 'movingDate');
         unset($lead->movingDate);
 
-        $application = ConnectionApplication::query()->create([
+        $appAddress = $this->mapAddress($leadData, $cleanseAddress);
+        $appBillingAddress = $this->mapBillingAddress($leadData, $cleanseBillingAddress);
+
+        $application = ConnectionApplication::query()->create(array_merge($appAddress, $appBillingAddress, [
             'source' => ConnectionApplication::SOURCE_PROPERTY_ME,
             'office_id' => $this->office->id,
             'agency_id' => $this->office->agency->id,
@@ -62,36 +71,17 @@ class SaveToConnectionApplication
             'property_type' => $this->getTenancyType($leadData),
             'is_email_billing' => $this->getIsEmailBilling($this->extractContact($leadData, 'CommunicationPreferences')),
 
-            'unit_number' => $this->extractContact($leadData, 'PhysicalAddress.Unit'),
-            'street_number' => $this->extractContact($leadData, 'PhysicalAddress.Number'),
-            'street_name' => $this->extractContact($leadData, 'PhysicalAddress.Street'),
-            'street_address' => $this->getStreetAddress($leadData),
-            'postcode' => $this->extractContact($leadData, 'PhysicalAddress.PostalCode'),
-            'city' => $this->extractContact($leadData, 'PhysicalAddress.Suburb'),
-            'state' => $this->extractContact($leadData, 'PhysicalAddress.State'),
-            'country' => $this->extractContact($leadData, 'PhysicalAddress.Country'),
-            'address_text' => $this->extractContact($leadData, 'PhysicalAddress.Text'),
 
-            'billing_unit_number' => $this->extractContact($leadData, 'PostalAddress.Unit'),
-            'billing_street_number' => $this->extractContact($leadData, 'PostalAddress.Number'),
-            'billing_street_name' => $this->extractContact($leadData, 'PostalAddress.Street'),
-            'billing_street_address' => $this->getStreetAddress($leadData, 'PostalAddress'),
-            'billing_postcode' => $this->extractContact($leadData, 'PostalAddress.PostalCode'),
-            'billing_city' => $this->extractContact($leadData, 'PostalAddress.Suburb'),
-            'billing_state' => $this->extractContact($leadData, 'PostalAddress.State'),
-            'billing_country' => $this->extractContact($leadData, 'PostalAddress.Country'),
-            'billing_address_text' => $this->extractContact($leadData, 'PostalAddress.Text'),
-
-        ]);
+        ]));
 
         // auto adding water service to connection application
         if ($application->id) {
 
             NotifyBadAgentMailService::check(
-                $application, 
-                'PropertyMe', 
-                $this->office->agency->name ?? '', 
-                $this->office->name ?? '', 
+                $application,
+                'PropertyMe',
+                $this->office->agency->name ?? '',
+                $this->office->name ?? '',
                 $lead->agent_email ?? ''
             );
 
@@ -143,9 +133,62 @@ class SaveToConnectionApplication
 
         $this->saveApplicationId($application->id, $lead);
         NotifyAgentAfterLeadCreation::dispatch($application->id);
-        CreateHubspotProperty::dispatch($application->id);
+        CreateApplicationEvent::dispatch($application->id);
 
         return $application;
+    }
+
+    /**
+     *  Mapping Address
+     *
+     * @param $leadData
+     * @param $address
+     * @return array
+     */
+    private function mapAddress($leadData, $address): array
+    {
+        if ($address) {
+            return GBGAddressMapper::toAppAddress($address);
+        }
+        return [
+            'unit_number' => $this->extractContact($leadData, 'PhysicalAddress.Unit'),
+            'street_number' => $this->extractContact($leadData, 'PhysicalAddress.Number'),
+            'street_name' => $this->extractContact($leadData, 'PhysicalAddress.Street'),
+            'street_address' => $this->getStreetAddress($leadData),
+            'postcode' => $this->extractContact($leadData, 'PhysicalAddress.PostalCode'),
+            'city' => $this->extractContact($leadData, 'PhysicalAddress.Suburb'),
+            'state' => $this->extractContact($leadData, 'PhysicalAddress.State'),
+            'country' => $this->extractContact($leadData, 'PhysicalAddress.Country'),
+            'address_text' => $this->extractContact($leadData, 'PhysicalAddress.Text'),
+        ];
+
+    }
+
+    /**
+     * Mapping Address
+     *
+     * @param $leadData
+     * @param $address
+     * @return array
+     */
+    private function mapBillingAddress($leadData, $address): array
+    {
+        $country = $this->extractContact($leadData, 'PostalAddress.Country');
+
+        if ($address) {
+            return GBGAddressMapper::toBillingAddress($address);
+        }
+        return [
+            'billing_unit_number' => $this->extractContact($leadData, 'PostalAddress.Unit'),
+            'billing_street_number' => $this->extractContact($leadData, 'PostalAddress.Number'),
+            'billing_street_name_only' => $this->extractContact($leadData, 'PostalAddress.Street'),
+            'billing_street_type' => $this->getStreetAddress($leadData),
+            'billing_postcode' => $this->extractContact($leadData, 'PostalAddress.PostalCode'),
+            'billing_city' => $this->extractContact($leadData, 'PostalAddress.Suburb'),
+            'billing_state' => $this->extractContact($leadData, 'PostalAddress.State'),
+            'billing_address_text' => $this->extractContact($leadData, 'PostalAddress.Text') . " $country",
+        ];
+
     }
 
 

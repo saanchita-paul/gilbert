@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Services\Agency\HubspotContactService;
+use App\Services\hubspot\HubspotContactService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

@@ -1,13 +1,13 @@
 <?php
 
-
 namespace App\Services\Agency;
-
 
 use App\Models\Agency;
 use App\Models\AgentProfile;
 use App\Models\Office;
+use App\Models\OfficeAutoAssignTimeSlot;
 use App\Models\OfficeCommission;
+use Carbon\Carbon;
 use App\Services\MRI\HandleMRIOfficeService;
 
 class UpdateOfficeService
@@ -45,7 +45,44 @@ class UpdateOfficeService
         $office = $office->refresh()->toArray();
         $office['commissions'] = $this->updateCommissions($data['commissions'], $office);
         $office['agent'] = $this->updateAgent($data['agent']);
+        $office['time_slots'] = $this->updateTimeSlots($data['time_slots'], $data['office']['is_chatbot_office']);
         return $office;
+    }
+
+    public function updateTimeSlots($timeSlots, $isChatbotOffice)
+    {
+        /*$weekDays = [
+            'monday' => 1,
+            'tuesday' => 2,
+            'wednesday' => 3,
+            'thursday' => 4,
+            'friday' => 5,
+            'saturday' => 6,
+            'sunday' => 7,
+        ];*/
+
+        if ($isChatbotOffice && count($timeSlots) > 0) {
+            /*foreach ($weekDays as $weekDayName => $weekDay) {
+                OfficeAutoAssignTimeSlot::updateOrCreate([
+                    'office_id' => $this->id,
+                    'day' => $weekDayName,
+                ], [
+                    'start_time' => Carbon::parse($timeSlots[0]['start_time'])->format('H:i:s'),
+                    'end_time' => Carbon::parse($timeSlots[0]['end_time'])->format('H:i:s'),
+                ]);
+            }*/
+            OfficeAutoAssignTimeSlot::query()->where('office_id', $this->id)->delete();
+
+            OfficeAutoAssignTimeSlot::create([
+                'office_id' => $this->id,
+                'start_time' => Carbon::parse($timeSlots[0]['start_time'])->format('H:i:s'),
+                'end_time' => Carbon::parse($timeSlots[0]['end_time'])->format('H:i:s'),
+            ]);
+        } else {
+            OfficeAutoAssignTimeSlot::query()->where('office_id', $this->id)->delete();
+        }
+
+        return OfficeAutoAssignTimeSlot::query()->where('office_id', $this->id)->get();
     }
 
     public function updateCommissions($commistions, $office)
@@ -67,9 +104,22 @@ class UpdateOfficeService
 
     public function updateAgent($agentData)
     {
-        $agent = AgentProfile::findOrFail($agentData['id']);
-        $agent->update($agentData);
-        $agent->user->update(["email" => $agentData['email']]);
-        return $agent->refresh();
+        if (isset($agentData['id'])) {
+            $agent = AgentProfile::findOrFail($agentData['id']);
+            $agent->update($agentData);
+        } else {
+            $office = Office::findOrFail($this->id);
+            $agentData['office_id'] = $office->id;
+            $agentData['agency_id'] = $office->agency_id;
+            $agent = AgentProfile::create($agentData);
+        }
+
+        if (isset($agentData['email'])) {
+            $agent->user->update(["email" => $agentData['email']]);
+        }
+
+        $agent->refresh();
+
+        return $agent;
     }
 }
