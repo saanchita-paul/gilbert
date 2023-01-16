@@ -1,5 +1,23 @@
 import dayJs from "dayjs";
 
+function mapServiceStatus(status = '') {
+
+    switch (status)
+    {
+        case 'pending':
+        case 'submitted':
+        case 'in progress':
+            return 'In Progress';
+        case 'Manual Processing':
+        case 'Manual_Processing':
+            return 'Manual Processing';
+        default:
+            return status;
+
+
+    }
+}
+
 export default class ConnectionService{
     constructor({
                     id= null,
@@ -17,7 +35,7 @@ export default class ConnectionService{
         this.id = id;
         this.service_type = service_type;
         this.lead_reference = lead_reference;
-        this.status = status;
+        this.status = mapServiceStatus(status);
         this.connection_date = dayJs(connection_date).format("DD/MM/YYYY h:mm A");
         this.provider_name = provider_name;
         this.plan_type = plan_type;
@@ -25,4 +43,6 @@ export default class ConnectionService{
         this.quote_reference = quote_reference;
 
     }
+
+
 }
