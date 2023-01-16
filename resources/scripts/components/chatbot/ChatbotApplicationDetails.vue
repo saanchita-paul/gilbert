@@ -1132,6 +1132,8 @@ export default {
         async loadApplication() {
             this.isLoadSkeleton = true;
             this.chatbot_app =  await CustomerService.getMovingData(this.app_id);
+            this.dob = new DayJs(this.chatbot_app.personal_details.dob).format("YYYY-MM-DD");
+            //this.moved_at = new DayJs(this.chatbot_app.property_details.moved_at).format("YYYY-MM-DD");
             this.chatbot_app_backup = cloneDeep(this.chatbot_app);
             this.isLoadSkeleton  = false;
         },
@@ -1232,18 +1234,21 @@ export default {
             this.chatbot_app.id_detail.identification_expire_date = new DayJs(this.expire_date).format(
                 "DD/MM/YYYY"
             );
+            this.idDetailsChanged('identification_expire_date');
         },
         dob() {
             if (isNull(this.dob) || this.dob === '' || this.dob === undefined ) return;
             this.chatbot_app.personal_details.dob = new DayJs(this.dob).format(
                 "DD/MM/YYYY"
             );
+            this.personalDetailsChanged('dob');
         },
         moved_at(){
             if (isNull(this.moved_at) || this.moved_at === '' || this.moved_at === undefined ) return;
             this.chatbot_app.property_details.moved_at = new DayJs(this.moved_at).format(
                 "DD/MM/YYYY"
             );
+            this.propertyDetailsChanged('moved_at')
         },
 
         concession_start_date() {
@@ -1251,12 +1256,14 @@ export default {
             this.chatbot_app.concession_details.concession_card_start_date = new DayJs(this.concession_start_date).format(
                 "DD/MM/YYYY"
             );
+            this.concessionDetailsChanged('concession_card_start_date');
         },
         concession_end_date() {
             if (isNull(this.concession_end_date) || this.concession_end_date === '' || this.concession_end_date === undefined ) return;
             this.chatbot_app.concession_details.concession_end_date = new DayJs(this.concession_end_date).format(
                 "DD/MM/YYYY"
             );
+            this.concessionDetailsChanged('concession_card_end_date');
         },
         '$route': {
             handler() {
