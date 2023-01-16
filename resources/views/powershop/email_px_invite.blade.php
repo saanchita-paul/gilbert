@@ -18,12 +18,12 @@
 </head>
 
 <body style="margin: 0;">
-<div class="main-container" style="font-family: 'Ubuntu'; font-style: normal; font-weight: 400; font-size: 14px; line-height: 18px; color: #252830; max-width: 800px; margin: 0 auto;">
+<div class="main-container" style="font-family: 'Ubuntu'; font-style: normal; font-weight: 400; font-size: 14px; line-height: 18px; color: #252830; max-width: 800px; margin: 10px auto;">
     <header>
         <img src="{{ asset('/assets/images/email/powershop_payment.png') }}" alt="Banner Image" width="100%">
     </header>
 
-    <section style="padding: 10px;">
+    <section style="padding: 15px;">
         <div>
             <h2 style="font-weight: 700; font-size: 24px;">Hi {{$name}},</h2>
             <p>Thank you for choosing Powershop with HOOD! As we mentioned, please provide your payment details by clicking on the button below.</p>
@@ -31,7 +31,7 @@
 
         <div style="margin-top: 40px; margin-bottom: 40px;">
             <p>
-                <a href="{{ $paymentUrl }}" target="_blank" style="padding: 15px 25px; box-shadow: 0 0 10px 10px #673ab71a; background: #542E89; color: white; border-radius: 10px; text-decoration: none; font-weight: 700;">Secure Payment Link</a>
+                <a href="{{ $paymentUrl }}" target="_blank" style="padding: 10px 20px; box-shadow: 0 0 10px 10px #673ab71a; background: #542E89; color: white; border-radius: 10px; text-decoration: none; font-weight: 700;">Secure Payment Link</a>
             </p>
         </div>
 
@@ -45,7 +45,7 @@
     </section>
 
     <footer>
-        <div style=" display: flex; padding: 10px;">
+        <div style=" display: flex; padding: 15px;">
             <div>
                 <a href="https://hoodagents.com.au/" target="_blank" style="padding: 8px 8px 8px 0;">
                     <img src="{{ asset('/assets/images/email/rea.png') }}" width="auto" alt="REA" />

@@ -13,12 +13,14 @@ use Illuminate\Notifications\Notification;
 class ResetPasswordNotification extends Notification implements ShouldQueue
 {
     use Queueable;
+
     /**
      * Create a new notification instance.
      *
-     * @param string $token
+     * @param string|null $token
+     * @param string|null $name
      */
-    public function __construct(public? string $token)
+    public function __construct(public? string $token, public? string $name)
     {
         //
     }
@@ -46,6 +48,7 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
             ->subject("HOOD Account Password Reset")
             ->view('email.forgot_password', [
                 'token' => $this->token,
+                'name' => $this->name,
             ]);
     }
 
