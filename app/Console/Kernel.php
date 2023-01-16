@@ -71,7 +71,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('send-email-mri-office')->twiceDaily();
 
-//        $this->runMri($schedule);
+        $this->runMri($schedule);
 
         /**
          * For Horizon metrics dashboard
@@ -95,7 +95,8 @@ class Kernel extends ConsoleKernel
         return $igniteStart;
     }
 
-    private function runMri(Schedule $schedule) {
+    private function runMri(Schedule $schedule)
+    {
         $schedule->command('mri:fetch_agent')->hourlyAt(10);
         $schedule->command('mri:fetch_tenancies')->everyFifteenMinutes();
     }
