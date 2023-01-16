@@ -47,7 +47,7 @@
                                             item-value="value"
                                             hide-details="auto"
                                             :error-messages="errors[0]"
-                                            @keyup="personalDetailsChanged('title')"
+                                            @change="personalDetailsChanged('title')"
                                         ></v-select>
                                         </ValidationProvider>
                                     </div>
@@ -347,8 +347,8 @@
                                     <v-col cols ="7" class="py-0 my-1">
                                         <div class="text-field">
                                             <ValidationProvider
-                                                name="NMI"
-                                                rules="required|numeric"
+                                                name="MIRN"
+                                                :rules="`${isMIRNRequired ? 'required|' : ''} numeric`"
                                                 v-slot="{ errors }"
                                             >
                                                 <v-text-field
@@ -424,7 +424,7 @@
                                                 v-slot="{ errors }"
                                             >
                                                 <v-select
-                                                    v-model="chatbot_app.property_details.rent"
+                                                    v-model="chatbot_app.property_details.account_type"
                                                     :items="tenantTypeDD"
                                                     item-text="text"
                                                     item-value="value"
@@ -432,7 +432,7 @@
                                                     dense
                                                     hide-details="auto"
                                                     :error-messages="errors[0]"
-                                                    @change="propertyDetailsChanged('rent')"
+                                                    @change="propertyDetailsChanged('account_type')"
                                                 >
                                                 </v-select>
                                             </ValidationProvider>
@@ -711,7 +711,7 @@
                                                 <v-select
                                                     v-model="chatbot_app.id_detail.driving_license_state"
                                                     item-text="text"
-                                                    item-value="text"
+                                                    item-value="value"
                                                     :items="statesDD"
                                                     outlined
                                                     dense
@@ -1011,6 +1011,11 @@ export default {
         },
         shouldShowConnectionType(){
             return !(this.chatbot_app.personal_details.connection_type === 'Temporary');
+        },
+        isMIRNRequired(){
+            if(this.chatbot_app.property_details.which_utility === 'electricity_and_gas' || this.chatbot_app.property_details.which_utility === 'gas'){
+                return true;
+            }
         }
 
 
@@ -1215,6 +1220,7 @@ export default {
                 }
             }
         },
+
 
     },
     mounted(){

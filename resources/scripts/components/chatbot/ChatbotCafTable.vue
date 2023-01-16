@@ -13,21 +13,11 @@
             show-select
             class="row-pointer"
             @click:row="onRowSelect"
-            @toggle-select-all="selectAllToggle"
         >
             <template v-slot:item.to_address="{item}">
                 <div class="d-flex align-center"  style="font-size: 12px!important;">
                     <span > {{ mapAddress(item.to_address) }}</span>
                 </div>
-            </template>
-
-            <template v-slot:item.data-table-select="{ item, isSelected, select }">
-                <v-simple-checkbox
-                    :ripple="false"
-                    :disabled="getStatus(item)"
-                    v-model="item.is_selected"
-                    @input="onchangeRow(item)"
-                ></v-simple-checkbox>
             </template>
 
 
@@ -79,13 +69,13 @@ export default {
             selectedRowId: 0,
             disabledCount: 0,
             headers: [
-                {text: 'App ID', align: 'start', sortable: true, value: 'id', class: 'black--text', shouldShow: true },
-                {text: 'Tenant Name', align: 'start', sortable: true, value: 'full_name', class: 'black--text', shouldShow: true},
-                {text: 'Address', align: 'start', sortable: true, value: 'to_address', class: 'black--text', shouldShow: true},
-                {text: 'Connection Date', align: 'start', sortable: true, value: 'connection_date', class: 'black--text', shouldShow: true},
-                {text: 'Created Date', align: 'start', sortable: true, value: 'created_date', class: 'black--text', shouldShow: true},
-                {text: 'Services', align: 'start', sortable: true, value: 'services', class: 'black--text', shouldShow: true},
-                {text: 'Status', align: 'start', sortable: true, value: 'caf_generation_status', class: 'black--text', shouldShow: true},
+                {text: 'App ID', align: 'start', sortable: false, value: 'id', class: 'black--text', shouldShow: true },
+                {text: 'Tenant Name', align: 'start', sortable: false, value: 'full_name', class: 'black--text', shouldShow: true},
+                {text: 'Address', align: 'start', sortable: false, value: 'to_address', class: 'black--text', shouldShow: true},
+                {text: 'Connection Date', align: 'start', sortable: false, value: 'connection_date', class: 'black--text', shouldShow: true},
+                {text: 'Created Date', align: 'start', sortable: false, value: 'created_date', class: 'black--text', shouldShow: true},
+                {text: 'Services', align: 'start', sortable: false, value: 'services', class: 'black--text', shouldShow: true},
+                {text: 'Status', align: 'start', sortable: false, value: 'caf_generation_status', class: 'black--text', shouldShow: true},
                 {text: '', value: 'data-table-select', sortable: false}
             ],
             cafFileSearch: '',
@@ -109,34 +99,8 @@ export default {
             deep: true,
         },
     },
-    updated(){
-        this.disabledCount = 0
-        this.cafFiles.forEach(item => {
-          if (this.getStatus(item)) this.disabledCount += 1
-        })
-    },
 
     methods: {
-        selectAllToggle(props) {
-            if(this.selected.length !== this.cafFiles.length - this.disabledCount) {
-                this.selected = [];
-                props.items.forEach(item => {
-                    if(!this.getStatus(item)) {
-                        item.is_selected = true;
-                        this.selected.push(item);
-                    }
-                });
-            } else{
-                props.items.forEach(item => {
-                    if(!this.getStatus(item)) {
-                        item.is_selected = false;
-                        this.selected.push(item);
-                    }
-                });
-                this.selected = [];
-            }
-        },
-
         updateTableData(data)
         {
             this.$emit('updateDataTable', data);
@@ -173,13 +137,7 @@ export default {
 
 
         isDisabled(item) {
-
-            console.log('updated item', item);
             return false;
-        },
-
-        getStatus(item) {
-            return !item.is_possible_caf_file;
         },
 
         isServiceAllowed(services, type) {

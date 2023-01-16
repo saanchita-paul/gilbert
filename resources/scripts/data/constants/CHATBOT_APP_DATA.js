@@ -1,5 +1,5 @@
 export default {
-    SPECIAL_NUMBER_DD: [1,2,3,4,5,6,7,8],
+    SPECIAL_NUMBER_DD: ["1","2","3","4","5","6","7","8"],
     ACCESS_REQUIREMENT: [
         {
             text: "Yes",
@@ -61,15 +61,11 @@ export default {
     TENANT_TYPE_DD: [
         {
             text: "Residential",
-            value: "1",
+            value: "residential",
         },
         {
             text: "Business",
-            value: "0",
-        },
-        {
-            text: "Rea Partner",
-            value: "2",
+            value: "business",
         },
     ],
 
@@ -208,6 +204,59 @@ export default {
         {
             text: "Queensland Seniors",
             value: 4,
+        },
+    ],
+
+    //for chatbot application filter
+    STATUS:[
+        {
+            text: "Not Submitted",
+            value: 7
+        },
+        {
+            text: "In Progress",
+            value: 12
+        },
+        {
+            text: "Accepted",
+            value: 5
+        },
+
+        {
+            text: "Rejected",
+            value: 9
+        },
+        {
+            text: "Manual Processing",
+            value: 11
+        }
+    ],
+    APPLICATION_TYPE:[
+        {
+            text: "Chatbot Default",
+            value: "chatbot"
+        },
+        {
+            text: "Temporary",
+            value: "temporary"
+        },
+        {
+            text: "Twiddle",
+            value: "twiddle"
+        },
+    ],
+    PROVIDER:[
+        {
+            text: "EA",
+            value: "ea"
+        },
+        {
+            text: "Powershop",
+            value: "powershop"
+        },
+        {
+            text: "Origin",
+            value: "origin"
         },
     ],
 }

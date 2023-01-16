@@ -136,6 +136,7 @@
 <script>
 import DatePickerModal from "@scripts/modules/sales/components/DatePickerModal";
 import {getFormattedDBDate, getToday, getTodayString, getYesterday, isSame} from "@scripts/services/DateRangeService";
+import CHATBOT_APP_DATA from "@scripts/data/constants/CHATBOT_APP_DATA";
 export default {
     name: "ChatbotApplicationFilter",
     components: {DatePickerModal},
@@ -154,72 +155,9 @@ export default {
                 end:  this.$route.query?.end ?
                     this.$route.query?.end : getTodayString()
             },
-            provider : [
-                {
-                    text: "EA",
-                    value: "ea"
-                },
-                {
-                    text: "Powershop",
-                    value: "powershop"
-                },
-                {
-                    text: "Origin",
-                    value: "origin"
-                },
-            ],
-            applicationType : [
-                {
-                    text: "Chatbot Default",
-                    value: "chatbot"
-                },
-                {
-                    text: "Temporary",
-                    value: "temporary"
-                },
-                {
-                    text: "Twiddle",
-                    value: "twiddle"
-                },
-            ],
-            status : [
-                {
-                    id: 13,
-                    type: "service",
-                    display_text: "Accepted",
-                    display_text_alias: "Connected",
-                    status_value: 5,
-                    text: "Accepted",
-                    value: 5
-                },
-                {
-                    id: 15,
-                    type: "service",
-                    display_text: "Not Submitted",
-                    display_text_alias: "In progress",
-                    status_value: 7,
-                    text: "Not Submitted",
-                    value: 7
-                },
-                {
-                    id: 17,
-                    type: "service",
-                    display_text: "Rejected",
-                    display_text_alias: "Rejected",
-                    status_value: 9,
-                    text: "Rejected",
-                    value: 9
-                },
-                {
-                    id: 19,
-                    type: "service",
-                    display_text: "Manual Processing",
-                    display_text_alias: "Manual Processing",
-                    status_value: 11,
-                    text: "Manual Processing",
-                    value: 11
-                },
-            ],
+            provider : CHATBOT_APP_DATA.PROVIDER,
+            applicationType : CHATBOT_APP_DATA.APPLICATION_TYPE,
+            status : CHATBOT_APP_DATA.STATUS
         };
     },
     computed: {

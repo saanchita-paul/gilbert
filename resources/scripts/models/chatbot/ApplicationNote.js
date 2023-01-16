@@ -1,4 +1,5 @@
-import dayJs from "dayjs";
+import DayJs from "dayjs";
+import dayjs from "dayjs";
 
 export default class ApplicationNote{
     constructor({
@@ -7,7 +8,7 @@ export default class ApplicationNote{
                     created_by= null,
                     user_role= null,
                 }) {
-        this.created_at = dayJs(created_at).format("DD/MM/YYYY h:mm A");
+        this.created_at = dayjs.utc(created_at).local().format("DD/MM/YYYY hh:mm A");
         this.text = text;
         this.created_by = created_by;
         this.user_role = user_role;
