@@ -281,7 +281,7 @@
                                                 v-slot="{ errors }"
                                             >
                                                 <v-textarea
-                                                    v-model="chatbot_app.property_details.full_address"
+                                                    v-model="chatbot_app.property_details.to_address"
                                                     @click="openGbGAddress"
                                                     outlined
                                                     dense

@@ -45,6 +45,6 @@ export default class PropertyDetail{
         this.to_address = to_address;
         this.street_name = street_name;
         this.street_type = street_type;
-        this.full_address = street_number+' '+street_name+' '+street_type +', '+suburb+' ' +state +' '+to_postcode;
+        this.full_address ='U'+' '+ flat_or_unit_number+' '+ street_number+' '+street_name+' '+street_type +', '+suburb+' ' +state +' '+to_postcode;
     }
 }
