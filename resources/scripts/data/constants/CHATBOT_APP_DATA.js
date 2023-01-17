@@ -148,6 +148,15 @@ export default {
             text: "CAF Submitted",
             value: 21
         },
+        {
+            id: 15,
+            type: "service",
+            display_text: "Not Submitted",
+            display_text_alias: "Not Submitted",
+            status_value: 7,
+            text: "--",
+            value: 7
+        },
 
 
     ],
@@ -205,6 +214,15 @@ export default {
             status_value: 21,
             text: "CAF Submitted",
             value: 21
+        },
+        {
+            id: 15,
+            type: "service",
+            display_text: "Not Submitted",
+            display_text_alias: "Not Submitted",
+            status_value: 7,
+            text: "--",
+            value: 7
         },
     ],
     EXPANSION_PANEL : [0],

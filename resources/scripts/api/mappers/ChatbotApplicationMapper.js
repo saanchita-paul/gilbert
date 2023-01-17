@@ -39,6 +39,7 @@ function mapChatbotAppStatus(status) {
     switch (status) {
         case 'Manual Processing':
             return 'Manual_Processing';
+        case '--':
         case 'Not Submitted':
             return null;
         default:

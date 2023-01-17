@@ -42,7 +42,7 @@ export default class PropertyDetail{
         this.concession_card_value = concession_card_value;
         this.concession_card_start_date = concession_card_start_date;
         this.concession_card_start_date = concession_card_start_date;
-        this.to_address = to_address;
+        this.to_address = to_address.split(',').join(', ');
         this.street_name = street_name;
         this.street_type = street_type;
         this.full_address ='U'+' '+ flat_or_unit_number+' '+ street_number+' '+street_name+' '+street_type +', '+suburb+' ' +state +' '+to_postcode;

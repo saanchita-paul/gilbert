@@ -55,7 +55,7 @@ import ApplicationCafFileDetails from "@scripts/pages/ApplicationCafFileDetails"
 import Pagination from "@scripts/models/crm/Pagination";
 import dayJs from "dayjs";
 import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileService";
-import {isEqual} from "lodash-es";
+import {isEqual, isNull} from "lodash-es";
 
 export default {
     name: "ChatbotCafTable",
@@ -146,7 +146,8 @@ export default {
         },
         getServiceStatus(services, type) {
             let selectedService =  services.find((dt) => dt.service_type === type);
-            if(selectedService) {
+
+            if(selectedService && !isNull(selectedService.status)) {
                 return selectedService.status;
             }
             return '--';

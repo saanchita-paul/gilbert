@@ -854,6 +854,7 @@
                                                     v-bind="attrs"
                                                     :error-messages="errors[0]"
                                                     hide-details="auto"
+                                                    @keyup="updateConcessionEndDatePicker"
                                                 >
                                                     <template slot="append">
                                                         <v-icon v-on="on">mdi-calendar</v-icon>
@@ -864,6 +865,7 @@
                                         <v-date-picker
                                             v-model="concession_end_date"
                                             @input="isConcessionEndDate = false"
+                                            @change="concessionDetailsChanged('concession_end_date')"
                                         ></v-date-picker>
                                     </v-menu>
                                 </v-col>
@@ -1161,6 +1163,7 @@ export default {
 
         async changeServiceStatus(service) {
             const res  =  await ChatbotApplicationService.saveServiceStatus(service);
+            this.$emit("applicationDetailsUpdated");
         },
 
         personalDetailsChanged(attribute){
@@ -1266,7 +1269,7 @@ export default {
             this.chatbot_app.concession_details.concession_end_date = new DayJs(this.concession_end_date).format(
                 "DD/MM/YYYY"
             );
-            this.concessionDetailsChanged('concession_card_end_date');
+            this.concessionDetailsChanged('concession_end_date');
         },
         '$route': {
             handler() {
