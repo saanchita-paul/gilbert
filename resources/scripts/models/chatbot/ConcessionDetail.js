@@ -18,6 +18,6 @@ export default class ConcessionDetail{
 
     }
     generateInitialDate(date){
-        return date ? new DayJs(date).format("YYYY-MM-DD") : null;
+        return date ? new DayJs(date).format("DD/MM/YYYY") : null;
     }
 }
