@@ -50,11 +50,11 @@ class FastConnectService
             $response_decoded = json_decode($response->body(), true);
             $mirn = null;
             $nmi = null;
-            if (!empty($response_decoded['mirn']['result']) && count($response_decoded['mirn']['result']) > 0) {
+            if (!empty($response_decoded['mirn']['result']) && count($response_decoded['mirn']['result']) === 1) {
                 $mirn = $response_decoded['mirn']['result'][0]['mirn'];
             }
 
-            if (!empty($response_decoded['nmi']['result']) && count($response_decoded['nmi']['result']) > 0) {
+            if (!empty($response_decoded['nmi']['result']) && count($response_decoded['nmi']['result'])  === 1) {
                 $nmi = $response_decoded['nmi']['result'][0]['nmi'];
             }
 
