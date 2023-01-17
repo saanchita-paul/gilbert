@@ -2,7 +2,7 @@
     <v-container fluid style="max-height: 80vh">
         <v-row>
             <v-col cols="8">
-                <v-card style="background-color: #f8f8f8">
+                <v-card class="custom-card-style">
                     <v-card-text>
                         <v-row>
                             <v-col cols="12">
@@ -31,7 +31,7 @@
                     </v-card-text>
                 </v-card>
             </v-col>
-            <v-col cols="4"  >
+            <v-col cols="4">
                 <v-skeleton-loader
                     v-bind="skeletonAttribute"
                     :type="skeletonType"
@@ -264,5 +264,9 @@ name: "ChatbotApplicationPage",
 .v-tab {
     text-transform: capitalize;
     font-weight: bold;
+}
+.custom-card-style{
+    background-color: white;
+    border-radius: 16px;
 }
 </style>

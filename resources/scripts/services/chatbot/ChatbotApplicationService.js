@@ -6,7 +6,6 @@ export default {
     saveNote: note => ChatbotApplicationApi.saveNote(note),
     updatePersonalDetails: async (utilityId, data) => {
         const application = await ChatbotApplicationApi.updatePersonalData(utilityId, data);
-        console.log (application);
         Store.commit('updateApp', application);
     },
 

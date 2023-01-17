@@ -1,11 +1,11 @@
 <template>
-    <div>
+    <div  >
         <v-skeleton-loader
             v-bind="skeletonAttribute"
             :type="skeletonType"
             v-if="isLoadSkeleton"
         ></v-skeleton-loader>
-        <div v-if="shouldShowExpansionPanel" class="hood-card pa-0 custom-card-color" >
+        <div v-if="shouldShowExpansionPanel" class="pa-0 id-details-panel">
             <v-row class="pa-5">
                 <v-col cols="12">
                     <p style="margin-bottom: unset">Chatbot Application Details</p>
@@ -23,8 +23,8 @@
             </v-row>
 
             <v-divider ></v-divider>
-            <v-expansion-panels class=" overflow-auto" v-model="expansionPanel" @change="handleExpansionPanel" multiple accordion style="box-shadow: none !important; max-height: 54.8vh;">
-                <v-expansion-panel class="custom-card-color" elevation="0" >
+            <v-expansion-panels class="overflow-auto" v-model="expansionPanel" @change="handleExpansionPanel" multiple accordion style="box-shadow: none !important; max-height: 54.8vh;">
+                <v-expansion-panel  elevation="0" >
                     <v-expansion-panel-header class="expansion-header">
                         Profile Details
                     </v-expansion-panel-header>
@@ -213,7 +213,7 @@
                 </v-expansion-panel>
                 <v-divider ></v-divider>
 
-                <v-expansion-panel  class="custom-card-color" elevation="0">
+                <v-expansion-panel   elevation="0">
                         <v-expansion-panel-header class="expansion-header">
                             Property Details
                         </v-expansion-panel-header>
@@ -325,7 +325,7 @@
                                         <div class="text-field">
                                             <ValidationProvider
                                                 name="NMI"
-                                                rules="required|numeric"
+                                                rules="required"
                                                 v-slot="{ errors }"
                                             >
                                                 <v-text-field
@@ -342,13 +342,13 @@
                                         </div>
                                     </v-col>
                                     <v-col cols ="5"  class="py-0 my-1">
-                                        <p class="font-weight-bold">MIRN (Gas)*</p>
+                                        <p class="font-weight-bold">MIRN (Gas) <span v-if="isMIRNRequired">*</span> </p>
                                     </v-col>
                                     <v-col cols ="7" class="py-0 my-1">
                                         <div class="text-field">
                                             <ValidationProvider
                                                 name="MIRN"
-                                                :rules="`${isMIRNRequired ? 'required|' : ''} numeric`"
+                                                :rules="`${isMIRNRequired ? 'required|' : ''}`"
                                                 v-slot="{ errors }"
                                             >
                                                 <v-text-field
@@ -449,7 +449,7 @@
                     </v-expansion-panel>
                 <v-divider ></v-divider>
 
-                <v-expansion-panel class="custom-card-color" elevation="0">
+                <v-expansion-panel elevation="0">
                     <v-expansion-panel-header class="expansion-header">
                         Service Preference
                     </v-expansion-panel-header>
@@ -523,7 +523,7 @@
                 </v-expansion-panel>
                 <v-divider></v-divider>
 
-                <v-expansion-panel class="custom-card-color" elevation="0">
+                <v-expansion-panel  elevation="0">
                     <v-expansion-panel-header class="expansion-header">
                         Identification Details
                     </v-expansion-panel-header>
@@ -735,7 +735,7 @@
                 </v-expansion-panel>
                 <v-divider></v-divider>
 
-                <v-expansion-panel  class="custom-card-color" elevation="0">
+                <v-expansion-panel   elevation="0">
                     <v-expansion-panel-header class="expansion-header">
                         Concession Card
                     </v-expansion-panel-header>
@@ -877,7 +877,7 @@
                 </v-expansion-panel>
                 <v-divider ></v-divider>
 
-                <v-expansion-panel class="custom-card-color">
+                <v-expansion-panel class="expansion-panel-radius" >
                     <v-expansion-panel-header class="expansion-header">
                         Application Notes
                     </v-expansion-panel-header>
@@ -1037,7 +1037,6 @@ export default {
 
         async cancelPersonalDetails(){
             this.cancelPersonalLoading = true;
-            await ChatbotApplicationService.updatePersonalDetails(this.app_id, this.chatbot_app_backup.personal_details);
             this.chatbot_app = cloneDeep(this.chatbot_app_backup);
             this.cancelPersonalLoading = false;
             this.personalDetailsFlag = [];
@@ -1053,7 +1052,6 @@ export default {
 
         async cancelPropertyDetails(){
             this.cancelPropertyLoading = true;
-            await ChatbotApplicationService.updatePropertyDetails(this.app_id, this.chatbot_app_backup.property_details);
             this.chatbot_app = cloneDeep(this.chatbot_app_backup);
             this.cancelPropertyLoading = false;
             this.propertyDetailsFlag = [];
@@ -1069,7 +1067,6 @@ export default {
 
         async cancelIdDetails(){
             this.cancelIdLoading = true;
-            await ChatbotApplicationService.updateIdDetails(this.app_id, this.chatbot_app_backup.id_detail);
             this.chatbot_app = cloneDeep(this.chatbot_app_backup);
             this.cancelIdLoading = false;
             this.idDetailsFlag = [];
@@ -1084,7 +1081,6 @@ export default {
 
         async cancelConcessionDetails(){
             this.cancelConcessionLoading = true;
-            await ChatbotApplicationService.updateConcessionDetails(this.app_id, this.chatbot_app_backup.concession_details);
             this.chatbot_app = cloneDeep(this.chatbot_app_backup);
             this.cancelConcessionLoading = false;
             this.concessionDetailsFlag = [];
@@ -1133,9 +1129,16 @@ export default {
             this.isLoadSkeleton = true;
             this.chatbot_app =  await CustomerService.getMovingData(this.app_id);
             this.dob = new DayJs(this.chatbot_app.personal_details.dob).format("YYYY-MM-DD");
-            //this.moved_at = new DayJs(this.chatbot_app.property_details.moved_at).format("YYYY-MM-DD");
+            //this.moved_at = this.generateInitialDate(this.chatbot_app.property_details.moved_at);
+            //this.expire_date = this.generateInitialDate(this.chatbot_app.id_detail.identification_expire_date);
+            // this.concession_start_date = this.generateInitialDate(this.chatbot_app.concession_details.concession_card_start_date);
+            // this.concession_end_date = this.generateInitialDate(this.chatbot_app.concession_details.concession_card_end_date);
             this.chatbot_app_backup = cloneDeep(this.chatbot_app);
             this.isLoadSkeleton  = false;
+        },
+
+        generateInitialDate(date){
+            return date ? new DayJs(date).format("YYYY-MM-DD") : null;
         },
 
         handleNewApplication(){
@@ -1304,6 +1307,14 @@ export default {
 }
 .v-application .pa-4 {
     padding: 0 20px !important;
+}
+
+.id-details-panel{
+    background-color: white;
+    border-radius: 16px 16px 0px 0px;
+}
+.expansion-panel-radius{
+    border-radius: 0px 0px 16px 16px !important;
 }
 
 </style>
