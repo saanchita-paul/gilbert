@@ -107,7 +107,7 @@ export default {
             id: 15,
             type: "service",
             display_text: "Not Submitted",
-            display_text_alias: "In progress",
+            display_text_alias: "Not Submitted",
             status_value: 7,
             text: "Not Submitted",
             value: 7
@@ -138,7 +138,18 @@ export default {
             status_value: 12,
             text: "In Progress",
             value: 12
-        }
+        },
+        {
+            id: 21,
+            type: "service",
+            display_text: "CAF Submitted",
+            display_text_alias: "CAF Submitted",
+            status_value: 21,
+            text: "CAF Submitted",
+            value: 21
+        },
+
+
     ],
     GAS_STATUS : [
         {
@@ -185,7 +196,16 @@ export default {
             status_value: 12,
             text: "In Progress",
             value: 12
-        }
+        },
+        {
+            id: 21,
+            type: "service",
+            display_text: "CAF Submitted",
+            display_text_alias: "CAF Submitted",
+            status_value: 21,
+            text: "CAF Submitted",
+            value: 21
+        },
     ],
     EXPANSION_PANEL : [0],
     CONCESSION_CARD: [
