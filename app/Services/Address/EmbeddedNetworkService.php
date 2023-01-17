@@ -205,6 +205,7 @@ class EmbeddedNetworkService
                 'embedded_nmi' => null
             ];
         } finally {
+            Log::info('Embedded Network NMI: ' . $is_embedded);
             if ($applicationFlag) {
                 self::saveEmbeddedNmi($applicationId, $is_embedded);
             }

@@ -93,7 +93,7 @@ class MirnNmiService
         event(new FetchMirnNmiEvent($applicationId));
 
 //        MirnNmiService::fetchNmiIsEmbedded(null, true, $application->id);
-        event(new FetchEmbeddedNetworkEvent($applicationId));
+//        event(new FetchEmbeddedNetworkEvent($applicationId));
         $application->refresh();
 
         return $application;
