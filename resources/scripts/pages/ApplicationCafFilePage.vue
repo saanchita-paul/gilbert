@@ -41,18 +41,18 @@
 
 
             <!--  Chatbot Application start-->
-            <v-tab href="#chatbotApplication">
+            <v-tab href="#chatbotApplication" class="custom-gray-color">
                 <v-icon left>mdi-facebook-messenger</v-icon>
                 Chatbot Applications
             </v-tab>
-            <v-tab-item value="chatbotApplication" style="max-height: 87vh !important;">
+            <v-tab-item value="chatbotApplication" class="chatbot-app-tab">
               <ChatbotApplicationPage></ChatbotApplicationPage>
             </v-tab-item>
             <!--  Chatbot Application end-->
 
 
             <!--  Gilbert Application start-->
-            <v-tab href="#gilbertApplication">
+            <v-tab href="#gilbertApplication" class="custom-gray-color">
                 <v-icon left>mdi-message-text</v-icon>
                 Gilbert Applications
             </v-tab>
@@ -318,6 +318,18 @@ export default {
 .v-tab {
     text-transform: capitalize;
     font-weight: bold;
+}
+.v-tab--active{
+    margin-top: -17px;
+    padding-top: 8px;
+    background-color: #FFFFFF !important;
+}
+.custom-gray-color{
+    background-color: #bcbcbc;
+}
+.chatbot-app-tab{
+    max-height: 87vh !important;
+    background-color: #e3e3e3 !important;
 }
 </style>
 
