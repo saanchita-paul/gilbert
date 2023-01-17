@@ -1,7 +1,10 @@
 import dayJs from "dayjs";
+import {isNull} from "lodash-es";
 
 function mapServiceStatus(status = '') {
-
+    if(isNull(status)) {
+        status = '';
+    }
     switch (status)
     {
         case 'pending':
@@ -11,6 +14,8 @@ function mapServiceStatus(status = '') {
         case 'Manual Processing':
         case 'Manual_Processing':
             return 'Manual Processing';
+        case '':
+            return 'Not Submitted';
         default:
             return status;
 

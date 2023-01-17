@@ -35,6 +35,19 @@ function mapPropertyAddress(dt) {
     };
 }
 
+function mapChatbotAppStatus(status) {
+    switch (status) {
+        case 'Manual Processing':
+            return 'Manual_Processing';
+        case 'Not Submitted':
+            return null;
+        default:
+            return status;
+
+    }
+
+}
+
 export default {
     mapApplication: (application) => {
         const id_detail = new IdDetail(application);
@@ -125,5 +138,17 @@ export default {
             to_address: address.address_text,
             flat_or_unit_number : address.unit_number
         }
+    },
+
+    mapToUpdateServiceStatus: service => {
+       if(service.status.toLowerCase() === 'caf submitted') {
+           return {
+               is_caf_file_generated: true,
+           }
+       } else {
+           return {
+               status: mapChatbotAppStatus(service.status)
+           };
+       }
     }
 }
