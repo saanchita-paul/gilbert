@@ -122,7 +122,7 @@ export default {
             ...address,
             suburb : address.city,
             to_postcode : address.postcode,
-            to_address: address.address_text,
+            to_address: address.address_text?.split(',').map(part => part.trim()).join(', '),
             flat_or_unit_number : address.unit_number
         }
     }
