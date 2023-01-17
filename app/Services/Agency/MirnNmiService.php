@@ -10,21 +10,21 @@ use App\Services\FastConnectService;
 
 class MirnNmiService
 {
-    public static function fetchMirnNmi($application_id)
+    /**
+     * Fetching and saving Application Minr & NMI
+     *
+     * @param int $appId
+     *
+     * @return void
+     */
+    public static function saveApplicationMirnNmi(int $appId): void
     {
-        $application = ConnectionApplication::find($application_id);
+        $application = ConnectionApplication::findOrFail($appId);
 
-        $result = [
-            'mirn' => null,
-            'nmi' => null,
-        ];
+        $svcUtilities = new FastConnectService($application->toArray());
+        $result = $svcUtilities->searchAddress();
 
-        if ($application) {
-            $svcUtilities = new FastConnectService();
-            $result = $svcUtilities->authenticate()->searchAddress([], true, $application->id);
-        }
-
-        return $result;
+        $application->fill($result)->save();
     }
 
     public static function fetchMirnNmiWithoutUnit($application_id)
@@ -88,7 +88,7 @@ class MirnNmiService
     public static function dispatchAllService($applicationId)
     {
         $application = ConnectionApplication::find($applicationId);
-        MirnNmiService::fetchMirnNmi($application->id);
+        MirnNmiService::saveApplicationMirnNmi($application->id);
         $application->update(['loading_address_info' => false]);
         event(new FetchMirnNmiEvent($applicationId));
 

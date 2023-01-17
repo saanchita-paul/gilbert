@@ -3,12 +3,31 @@
 namespace App\Services;
 
 use App\Models\ConnectionApplication;
+use Exception;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use voku\helper\ASCII;
 
 class FastConnectService
 {
+    public const NO_RESULT = 'NO_RESULT';
+    public const NO_EXACT_OR_ACTIVE = 'NO_EXACT_OR_ACTIVE';
+    public const EXACT = 'EXACT';
+    public const MULTIPLE_EXACT = 'MULTIPLE_EXACT';
+
+
     private string $accessToken;
+    private array $payload;
+
+    public function __construct(array $address)
+    {
+        $this->payload = $this->makePayload($address);
+
+        $this->authenticate();
+    }
 
     public function authenticate(): static
     {
@@ -25,58 +44,65 @@ class FastConnectService
         return $this;
     }
 
-    public function searchAddress($body = [], $applicationFlag = false, $id = null)
+    /**
+     * Getting mirn & nmi
+     *
+     * @param array|null $address
+     *
+     * @return array{mirn: ?numeric, mirn_score: string, nmi: ?numeric, nmi_score: string}
+     */
+    public function searchAddress(?array $address = null): array
     {
+        if ($address) {
+            $this->payload = $this->makePayload($address);
+        }
+
+        $result = [
+            'mirn' => null,
+            'mirn_score' => '',
+            'nmi' => null,
+            'nmi_score' => '',
+        ];
+
+
+
         try {
-            if ($applicationFlag) {
-                $body = ConnectionApplication::find($id)->toArray();
-            }
-
-            $payload = FastConnectService::makeAddressPayload($body);
-
-            Log::info('fast connect payload', $payload);
-
-            $authorization = 'Bearer ' . $this->accessToken;
+            Log::info('fast connect payload', $this->payload);
             $response = Http::retry(2)->timeout(150)->withHeaders([
 
                 'content-type' => 'application/json',
                 'accept' => 'application/json',
-                'authorization' => $authorization,
-            ])
-                ->withBody(json_encode($payload), 'application/json')
+                'authorization' => 'Bearer ' . $this->accessToken,
+            ])->
+            withBody(json_encode($this->payload), 'application/json')
                 ->post(config('fastconnect.root_url') . \config('fastconnect.search_nmi_mirn_uri')); //CHANGE
             // ->post("https://api.fastconnect.net.au/api/datafind/address");
 
             $responseDecoded = json_decode($response->body(), true);
 
-            $parsedValues = $this->parseValues($responseDecoded);
+            return $this->parseValues($responseDecoded);
+        } catch (Exception $e) {
+            $error = $e instanceof RequestException ? "HTTP_ERROR_" . $e->getResponse()->getStatusCode() : 'ERROR';
+            $result['mirn_score'] = $error;
+            $result['nmi_score'] = $error;
 
-            $mirn = $parsedValues['mirn'];
-            $nmi = $parsedValues['nmi'];
+            Log::error("FastConnectService: ", [
+                "mgs" => $e->getMessage(),
+                "trace" => $e->getTraceAsString(),
+            ]);
 
-            if ($applicationFlag) {
-                $connectionApp = ConnectionApplication::find($id);
-                $connectionApp->nmi = $nmi;
-                $connectionApp->nmi_score = $parsedValues['nmi_score'];
-                $connectionApp->mirn = $mirn;
-                $connectionApp->mirn_score = $parsedValues['mirn_score'];
-                $connectionApp->save();
-            }
-
-            return $parsedValues;
-        } catch (\Exception $exception) {
-            Log::warning("FastConnectService: " . $exception->getMessage());
-            Log::warning("FastConnectService: " . $exception->getTraceAsString());
-            return [
-                'mirn' => null,
-                'mirn_score' => 'SERVER_ERROR',
-                'nmi' => null,
-                'nmi_score' => 'SERVER_ERROR',
-            ];
+            return $result;
         }
     }
 
-    public static function makeAddressPayload($address = [])
+    /**
+     * Making payload body  for FC address searcing
+     *
+     * @param array $address
+     *
+     * @return array
+     */
+    public function makePayload(array $address = []): array
     {
         return [
             'search_lookup_types' => [
@@ -111,12 +137,12 @@ class FastConnectService
             'Northern Territory' => 'NT',
             'TAS' => 'Tasmania',
             'ACT' => 'Australian Capital Territory',
-            'WA' => 'Western Australia'];
+            'WA' => 'Western Australia'
+        ];
         if (array_key_exists($state, $stateList)) {
             return $stateList[$state];
         }
         return $state;
-
     }
 
     /**
@@ -132,13 +158,20 @@ class FastConnectService
         return array_merge($mirns, $nmis);
     }
 
+    /**
+     * Parsing Nmi from response
+     *
+     * @param array|null $nmis
+     *
+     * @return array
+     */
     private function parseNmi(?array $nmis): array
     {
         $res = [
             'nmi' => null,
-            'nmi_score' => 'NO_RESULT',
+            'nmi_score' => FastConnectService::NO_RESULT,
         ];
-        if (!$nmis) {
+        if (!$nmis || sizeof($nmis) === 0) {
             return $res;
         }
 
@@ -150,28 +183,36 @@ class FastConnectService
             }
         }
 
-        if (sizeof($exact) === 0 ) {
+        if (sizeof($exact) === 0) {
+            $res['nmi_score'] = FastConnectService::NO_EXACT_OR_ACTIVE;
             return $res;
         }
 
         if (sizeof($exact) > 1) {
-            $res['nmi_score'] = 'MULTIPLE_EXACT';
-            return  $res;
+            $res['nmi_score'] = FastConnectService::MULTIPLE_EXACT;
+            return $res;
         }
 
-        $res['nmi_score'] = 'EXACT';
+        $res['nmi_score'] = FastConnectService::EXACT;
         $res['nmi'] = $exact[0];
 
-        return  $res;
+        return $res;
     }
 
+    /**
+     * Parsing MIRN from response
+     *
+     * @param array|null $mirns
+     *
+     * @return array
+     */
     private function parseMirn(?array $mirns): array
     {
         $res = [
             'mirn' => null,
-            'mirn_score' => 'NO_RESULT',
+            'mirn_score' => FastConnectService::NO_RESULT,
         ];
-        if (!$mirns) {
+        if (!$mirns || sizeof($mirns) === 0) {
             return $res;
         }
 
@@ -183,18 +224,19 @@ class FastConnectService
             }
         }
 
-        if (sizeof($exact) === 0 ) {
+        if (sizeof($exact) === 0) {
+            $res['mirn_score'] = FastConnectService::NO_EXACT_OR_ACTIVE;
             return $res;
         }
 
         if (sizeof($exact) > 1) {
-            $res['mirn_score'] = 'MULTIPLE_EXACT';
-            return  $res;
+            $res['mirn_score'] = FastConnectService::MULTIPLE_EXACT;
+            return $res;
         }
 
-        $res['nmi_score'] = 'EXACT';
+        $res['mirn_score'] = FastConnectService::EXACT;
         $res['mirn'] = $exact[0];
 
-        return  $res;
+        return $res;
     }
 }

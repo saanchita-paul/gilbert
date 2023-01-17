@@ -459,14 +459,6 @@ export default {
                 await this.getElectricityDistributor();
             }
         },
-        async updateMernNmi() {
-            if (this.leadSummary.nmi == null && this.leadSummary.mirn == null) {
-                const nmiMern = await LeadApplicationService.getNmiMern(this.leadId);
-                this.leadSummary.nmi = nmiMern.nmi;
-                this.leadSummary.mirn = nmiMern.mirn;
-                this.leadSummary.embedded_nmi = nmiMern.embedded_nmi;
-            }
-        },
         closeAssignedToEmptyModal() {
             this.assignedToDialog = false;
         },

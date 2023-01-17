@@ -79,7 +79,6 @@ export default {
     saveLead: (lead, leadId) => LeadApplicationAPI.saveLead(lead, leadId),
     updateAddress: (address, leadId) => LeadApplicationAPI.updateAddress(address, leadId),
     assignUser: (leadId, agentProfileId) => LeadApplicationAPI.assignUser(leadId, agentProfileId),
-    getNmiMern: (id) => LeadApplicationAPI.getNmiMern(id),
     loadAuthorizedPerson: (leadId) => LeadApplicationAPI.loadAuthorizedPerson(leadId),
     saveAuthorizedPerson: (data) => LeadApplicationAPI.saveAuthorizedPerson(data),
     updateApplicationProviders: (payload, application_id) => LeadApplicationAPI.updateApplicationProviders(payload, application_id),

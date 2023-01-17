@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Models\ConnectionApplication;
+use App\Services\Agency\MirnNmiService;
 use App\Services\FastConnectService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -29,10 +31,8 @@ class NMICheckerJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
-        $service = new FastConnectService();
-
-        $service->authenticate()->searchAddress([], true, $this->applicationId);
+        MirnNmiService::saveApplicationMirnNmi($this->applicationId);
     }
 }
