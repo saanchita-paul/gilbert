@@ -26,8 +26,8 @@
     <section style="padding: 15px;">
         <div>
             <h2 style="font-weight: 700; font-size: 24px;">Hi {{ $name }}! It happens...</h2>
-            <p>But don’t worry, we got you covered!</p>
-            <p>We received a request from you to reset your password.</p>
+            <p style="margin-bottom: 0;">But don’t worry, we got you covered!</p>
+            <p style="margin-top: 0;">We received a request from you to reset your password.</p>
             <p>If you requested to reset your password, please click the button below:</p>
         </div>
 

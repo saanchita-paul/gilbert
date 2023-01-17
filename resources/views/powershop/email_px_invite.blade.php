@@ -35,10 +35,6 @@
             </p>
         </div>
 
-        <div>
-            <p>Please ignore this email if you did not request this action.</p>
-        </div>
-
         <div style="margin-top: 30px;">
             <p>Kind Regards, <br> HOOD Team</p>
         </div>
