@@ -23,7 +23,7 @@
             </v-row>
 
             <v-divider ></v-divider>
-            <v-expansion-panels class="overflow-auto" v-model="expansionPanel" @change="handleExpansionPanel" multiple accordion style="box-shadow: none !important; max-height: 54.8vh;">
+            <v-expansion-panels class="overflow-auto" v-model="expansionPanel" @change="handleExpansionPanel" multiple accordion style="box-shadow: none !important; max-height: 53vh;">
                 <v-expansion-panel  elevation="0" >
                     <v-expansion-panel-header class="expansion-header">
                         Profile Details

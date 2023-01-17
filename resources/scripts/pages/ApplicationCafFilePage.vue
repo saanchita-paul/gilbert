@@ -1,45 +1,7 @@
 <template>
     <v-container fluid>
 
-        <v-tabs v-model="activeTab">
-            <!--  Chatbot Application start-->
-<!--            <v-tab href="#chatbotApplication">-->
-<!--                <v-icon left>mdi-facebook-messenger</v-icon>-->
-<!--                Chatbot Applications-->
-<!--            </v-tab>-->
-<!--            <v-tab-item value="chatbotApplication">-->
-<!--                <v-card>-->
-<!--                    <v-card-text>-->
-<!--                        <v-row>-->
-<!--                            <v-col cols="12">-->
-<!--                                <h3>Filters</h3>-->
-<!--                                <ApplicationCafFileFilter :selected="selectedCaf"-->
-<!--                                                          v-model="advanceSearch"-->
-<!--                                                          :cafFiles="cafFiles"-->
-<!--                                                          :isSearchEmpty="advanceSearch.isSearchEmpty()"-->
-<!--                                                          @updateDate="updateDate"></ApplicationCafFileFilter>-->
-<!--                            </v-col>-->
-<!--                            <v-col cols="12">-->
-<!--                                <ApplicationCafFileTable-->
-<!--                                    v-model="selectedCaf"-->
-<!--                                    :cafFiles="cafFiles"-->
-<!--                                    :totalItem="totalItem"-->
-<!--                                    @updateDataTable="updateDataTable"-->
-<!--                                    @refreshDataTable="refreshDataTable"-->
-<!--                                    @updateServiceType="updateServiceType"-->
-<!--                                    @updateSelectedMovingData="updateSelectedMovingData"-->
-<!--                                    @selectRowCafFile="selectRowCafFile"-->
-<!--                                >-->
-
-<!--                                </ApplicationCafFileTable>-->
-<!--                            </v-col>-->
-<!--                        </v-row>-->
-<!--                    </v-card-text>-->
-<!--                </v-card>-->
-<!--            </v-tab-item>-->
-            <!--  Chatbot Application end-->
-
-
+        <v-tabs v-model="activeTab" background-color="transparent">
             <!--  Chatbot Application start-->
             <v-tab href="#chatbotApplication" class="custom-gray-color">
                 <v-icon left>mdi-facebook-messenger</v-icon>
@@ -325,11 +287,12 @@ export default {
     background-color: #FFFFFF !important;
 }
 .custom-gray-color{
-    background-color: #bcbcbc;
+    /*background-color: #bcbcbc;*/
 }
 .chatbot-app-tab{
-    max-height: 87vh !important;
-    background-color: #e3e3e3 !important;
+    max-height: 88vh !important;
+    background-color: #F2F3F4 !important;
+
 }
 </style>
 

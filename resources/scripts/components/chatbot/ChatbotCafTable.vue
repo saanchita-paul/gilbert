@@ -8,7 +8,6 @@
             :options.sync="options"
             :single-select=false
             :expanded.sync="expanded"
-            :item-class="isSelectedClass"
             item-key="id"
             show-select
             class="row-pointer"
@@ -23,7 +22,7 @@
 
             <template v-slot:item.caf_generation_status="{item}">
                 <div class="d-flex align-center"  style="font-size: 12px!important;">
-                    <span class="service-status"> {{item.caf_generation_status}}</span>
+                    <span class="service-status" :class="isSelectedClass(item)"> {{item.caf_generation_status}}</span>
                 </div>
             </template>
 
@@ -118,7 +117,7 @@ export default {
         },
         isSelectedClass(item) {
             if (item.color === true) {
-                return 'row-rejected';
+                return 'red--text';
             }
 
         },

@@ -1,7 +1,7 @@
 <template>
-    <v-container fluid style="max-height: 80vh">
+    <v-container class="pa-0 ma-0 custom-height" fluid >
         <v-row>
-            <v-col cols="8">
+            <v-col cols="8" class="py-0">
                 <v-card class="custom-card-style">
                     <v-card-text>
                         <v-row>
@@ -31,7 +31,7 @@
                     </v-card-text>
                 </v-card>
             </v-col>
-            <v-col cols="4">
+            <v-col cols="4 py-0">
                 <v-skeleton-loader
                     v-bind="skeletonAttribute"
                     :type="skeletonType"
@@ -267,6 +267,9 @@ name: "ChatbotApplicationPage",
 }
 .custom-card-style{
     background-color: white;
-    border-radius: 16px;
+    border-radius: 0 16px 16px 16px;
+}
+.custom-height{
+    max-height: 80vh;
 }
 </style>
