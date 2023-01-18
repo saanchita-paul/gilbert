@@ -13,11 +13,8 @@ export default class ConcessionDetail{
 
         this.concession_card_type = concession_card_type;
         this.concession_card_value = concession_card_value;
-        this.concession_end_date = this.generateInitialDate(concession_end_date);
-        this.concession_card_start_date = this.generateInitialDate(concession_card_start_date);
+        this.concession_end_date = concession_end_date ?? "" ;
+        this.concession_card_start_date = concession_card_start_date ;
 
-    }
-    generateInitialDate(date){
-        return date ? new DayJs(date).format("DD/MM/YYYY") : null;
     }
 }

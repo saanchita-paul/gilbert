@@ -25,7 +25,9 @@ export default class PersonalDetail{
                     firstnameUcFirst =  null,
                     lastnameUcFirst =  null,
                     fullName =  null,
-
+                    is_email_billing = null,
+                    is_marketing_email = null,
+                    has_life_support = null
 
                 }) {
 
@@ -35,7 +37,7 @@ export default class PersonalDetail{
         this.last_name = last_name;
         this.email = email;
         this.phone = phone;
-        this.dob = dayJs(dob).format("DD/MM/YYYY");
+        this.dob = dob
         this.phone_type = phone_type;
         this.homephone = homephone;
         this.business_name = business_name ?? "";
@@ -45,6 +47,9 @@ export default class PersonalDetail{
         this.lastnameUcFirst = last_name?.charAt(0)?.toUpperCase() + last_name?.slice(1);
         this.fullName = getFullName(this.titleUcFirst, this.firstnameUcFirst, this.lastnameUcFirst);
         this.connection_type = this.generateConnectionType(abn, business_name);
+        this.is_email_billing = is_email_billing; //value-> email/post
+        this.is_marketing_email = is_marketing_email; //value-> yes/no
+        this.has_life_support = has_life_support; //value-> yes/no
     }
     generateConnectionType(abn, business_name){
         if(abn || business_name) return "Temporary";

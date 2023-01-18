@@ -8,6 +8,7 @@
             :options.sync="options"
             :single-select=false
             :expanded.sync="expanded"
+            :item-class="selectedRowToHighlight"
             item-key="id"
             show-select
             class="row-pointer"
@@ -113,7 +114,7 @@ export default {
         onRowSelect(item, row) {
             let params = { ...this.$route.query, app_id: item.id}
             this.$router.replace({ query: {...params} });
-            //row.select(true);
+            // row.select(true);
         },
         isSelectedClass(item) {
             if (item.color === true) {
@@ -148,12 +149,26 @@ export default {
             let selectedService =  services.find((dt) => dt.service_type === type);
 
             if(selectedService && !isNull(selectedService.status)) {
-                return selectedService.status;
+                return this.mapServiceStatus(selectedService.status);
             }
             return '--';
         },
+
+        mapServiceStatus(status) {
+            switch (status) {
+                case 'Manual_Processing' :
+                    return 'Manual Processing';
+                default :
+                    return status;
+            }
+        },
+
         mapAddress(address){
             return address.substring(0,20)+"...";
+        },
+
+        selectedRowToHighlight(item) {
+           return item.id == this.$route.query.app_id ? 'highlight-selected' : '';
         }
     },
 }

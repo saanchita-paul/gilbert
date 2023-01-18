@@ -3,7 +3,7 @@
 
         <v-tabs v-model="activeTab" background-color="transparent">
             <!--  Chatbot Application start-->
-            <v-tab href="#chatbotApplication" class="custom-gray-color">
+            <v-tab href="#chatbotApplication" class="custom-gray-color ">
                 <v-icon left>mdi-facebook-messenger</v-icon>
                 Chatbot Applications
             </v-tab>
@@ -278,21 +278,26 @@ export default {
 
 <style scoped>
 .v-tab {
+    background-color: #e6e5e5 !important;
+    border-radius: 16px 16px 0px 0px;
     text-transform: capitalize;
     font-weight: bold;
 }
 .v-tab--active{
     margin-top: -17px;
     padding-top: 8px;
+    border-radius: 50% 50% 0 0 !important;
     background-color: #FFFFFF !important;
 }
 .custom-gray-color{
-    /*background-color: #bcbcbc;*/
+   /*border-radius: 50% 50% 0 0;*/
 }
 .chatbot-app-tab{
-    max-height: 88vh !important;
     background-color: #F2F3F4 !important;
+}
 
+.theme--light.v-tabs .v-tab--active:hover::before, .theme--light.v-tabs .v-tab--active::before{
+    border-radius: 50% 50% 0px 0px ;
 }
 </style>
 
