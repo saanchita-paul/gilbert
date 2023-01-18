@@ -454,16 +454,6 @@ export default {
     },
 
 
-    async getNmiMern(id) {
-        try {
-            const data = await axios.get('/api/applications/' + id + '/nmi-mern');
-            return data.data.data;
-
-        } catch (error) {
-            return error.data;
-        }
-    },
-
     async loadAuthorizedPerson(id) {
         try {
             const data = await axios.get('/api/secondary-contact/' + id);
