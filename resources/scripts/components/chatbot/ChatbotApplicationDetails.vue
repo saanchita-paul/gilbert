@@ -23,7 +23,7 @@
             </v-row>
 
             <v-divider ></v-divider>
-            <v-expansion-panels class="overflow-auto" v-model="expansionPanel" @change="handleExpansionPanel" multiple accordion style="box-shadow: none !important; max-height: 53vh;">
+            <v-expansion-panels v-model="expansionPanel" @change="handleExpansionPanel" multiple accordion style="box-shadow: none !important;">
                 <v-expansion-panel  elevation="0" >
                     <v-expansion-panel-header class="expansion-header">
                         Profile Details
@@ -53,7 +53,7 @@
                                     </div>
                                 </v-col>
                                 <v-col cols="5" class="py-0 my-1">
-                                    <p class="font-weight-bold">FirstName</p>
+                                    <p class="font-weight-bold">Firstname</p>
                                 </v-col>
                                 <v-col cols="7"  class="py-0 my-1">
                                     <div  class="text-field">
@@ -71,7 +71,7 @@
                                     </div>
                                 </v-col>
                                 <v-col cols="5" class="py-0 my-1">
-                                    <p class="font-weight-bold">LastName</p>
+                                    <p class="font-weight-bold">Lastname</p>
                                 </v-col>
                                 <v-col cols="7"  class="py-0 my-1">
                                     <div class="text-field">
@@ -122,7 +122,7 @@
                                             min-width="290px"
                                         >
                                             <template v-slot:activator="{ on, attrs }">
-                                                <ValidationProvider name="Bate Of Birth" rules="required|valid-date" v-slot="{ errors }">
+                                                <ValidationProvider name="Bate Of Birth" rules="required|valid-date|adult" v-slot="{ errors }">
                                                     <v-text-field
                                                         placeholder="DD/MM/YYYY"
                                                         outlined
@@ -200,6 +200,86 @@
                                                 :error-messages="errors[0]"
                                                 @keyup="personalDetailsChanged('abn')"
                                             ></v-text-field>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+
+                                <v-col cols="5" class="py-0 my-1">
+                                    <p class="font-weight-bold">Email Billing?*</p>
+                                </v-col>
+                                <v-col cols ="7" class="py-0 my-1">
+                                    <div class="text-field">
+                                        <ValidationProvider
+                                            name="Email Billing"
+                                            rules="required"
+                                            v-slot="{ errors }"
+                                        >
+                                            <v-select
+                                                placeholder="Email/Post"
+                                                v-model="chatbot_app.personal_details.billing_preference"
+                                                :items="emailBillingItems"
+                                                item-text="text"
+                                                item-value="value"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                :error-messages="errors[0]"
+                                                @change="personalDetailsChanged('billing_preference')"
+                                            >
+                                            </v-select>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+
+                                <v-col cols ="5"  class="py-0 my-1">
+                                    <p class="font-weight-bold">Marketing Emails</p>
+                                </v-col>
+                                <v-col cols ="7" class="py-0 my-1">
+                                    <div class="text-field">
+                                        <ValidationProvider
+                                            name="Marketing Emails"
+                                            v-slot="{ errors }"
+                                        >
+                                            <v-select
+                                                placeholder="Yes/No"
+                                                v-model="chatbot_app.personal_details.enabled_marketing_offer"
+                                                :items="userConcentDD"
+                                                item-text="text"
+                                                item-value="value"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                :error-messages="errors[0]"
+                                                @change="personalDetailsChanged('enabled_marketing_offer')"
+                                            >
+                                            </v-select>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+
+                                <v-col cols ="5"  class="py-0 my-1">
+                                    <p class="font-weight-bold">Life Support</p>
+                                </v-col>
+                                <v-col cols ="7" class="py-0 my-1">
+                                    <div class="text-field">
+                                        <ValidationProvider
+                                            name="Life Support"
+                                            rules="required"
+                                            v-slot="{ errors }"
+                                        >
+                                            <v-select
+                                                placeholder="Yes/No"
+                                                v-model="chatbot_app.personal_details.has_life_support"
+                                                :items="userConcentDD"
+                                                item-text="text"
+                                                item-value="value"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                :error-messages="errors[0]"
+                                                @change="personalDetailsChanged('has_life_support')"
+                                            >
+                                            </v-select>
                                         </ValidationProvider>
                                     </div>
                                 </v-col>
@@ -398,7 +478,7 @@
                                                 v-slot="{ errors }"
                                             >
                                             <v-select
-                                                v-model="chatbot_app.property_details.has_access_req"
+                                                v-model="chatbot_app.property_details.rent"
                                                 :items="accessRequirement"
                                                 item-text="text"
                                                 item-value="value"
@@ -406,7 +486,7 @@
                                                 dense
                                                 hide-details="auto"
                                                 :error-messages="errors[0]"
-                                                @change="propertyDetailsChanged('has_access_req')"
+                                                @change="propertyDetailsChanged('rent')"
                                             >
                                             </v-select>
                                             </ValidationProvider>
@@ -881,7 +961,7 @@
                                                     v-bind="attrs"
                                                     :error-messages="errors[0]"
                                                     hide-details="auto"
-                                                    @keyup="updateConcessionEndDatePicker"
+                                                    @change="updateConcessionEndDatePicker"
                                                 >
                                                     <template slot="append">
                                                         <v-icon v-on="on">mdi-calendar</v-icon>
@@ -1001,6 +1081,7 @@ export default {
             address_loader: false,
             nmi_loader: false,
             mirn_loader: false,
+
             cafStatus: [
                 'CAF Submitted',
                 '--'
@@ -1009,7 +1090,8 @@ export default {
             saveeleStatusLoader: false,
             cancelgasStatusLoader: false,
             savegasStatusLoader: false,
-
+            userConcentDD : CHATBOT_APP_DATA.YES_NO_OPTIONS,
+            emailBillingItems : CHATBOT_APP_DATA.EMAIL_BILLING_ITEMS
         }
     },
     computed: {
@@ -1082,6 +1164,7 @@ export default {
         async cancelPersonalDetails(){
             this.cancelPersonalLoading = true;
             this.chatbot_app = cloneDeep(this.chatbot_app_backup);
+            this.dob = this.chatbot_app.personal_details.dob
             this.cancelPersonalLoading = false;
             this.personalDetailsFlag = [];
         },
@@ -1097,6 +1180,7 @@ export default {
         async cancelPropertyDetails(){
             this.cancelPropertyLoading = true;
             this.chatbot_app = cloneDeep(this.chatbot_app_backup);
+            this.moved_at = this.chatbot_app.property_details.moved_at;
             this.cancelPropertyLoading = false;
             this.propertyDetailsFlag = [];
         },
@@ -1112,6 +1196,7 @@ export default {
         async cancelIdDetails(){
             this.cancelIdLoading = true;
             this.chatbot_app = cloneDeep(this.chatbot_app_backup);
+            this.expire_date = this.chatbot_app.id_detail.identification_expire_date;
             this.cancelIdLoading = false;
             this.idDetailsFlag = [];
         },
@@ -1126,6 +1211,8 @@ export default {
         async cancelConcessionDetails(){
             this.cancelConcessionLoading = true;
             this.chatbot_app = cloneDeep(this.chatbot_app_backup);
+            this.concession_start_date = this.chatbot_app.concession_details.concession_card_start_date;
+            this.concession_end_date = this.chatbot_app.concession_details.concession_end_date;
             this.cancelConcessionLoading = false;
             this.concessionDetailsFlag = [];
         },
@@ -1136,7 +1223,7 @@ export default {
 
         updateExpireDatePicker() {
             if (DayJs(this.chatbot_app.id_detail.identification_expire_date, "DD/MM/YYYY").isValid()) {
-                this.expire_date = DayJs(this.chatbot_app.id_detail.identification_expire_date,"DD/MM/YYYY").format("YYYY-MM-DD");
+                this.expire_date = DayJs(this.chatbot_app.id_detail.identification_expire_date,"YYYY-MM-DD").format("YYYY-MM-DD");
             }
             this.idDetailsChanged('identification_expire_date');
         },
@@ -1157,26 +1244,26 @@ export default {
 
         updateConcessionStartDatePicker() {
             if (DayJs(this.chatbot_app.concession_details.concession_card_start_date, "DD/MM/YYYY").isValid()) {
-                this.concession_card_start_date = DayJs(this.chatbot_app.concession_details.concession_card_start_date,"DD/MM/YYYY").format("YYYY-MM-DD");
+                this.concession_start_date = DayJs(this.chatbot_app.concession_details.concession_card_start_date,"DD/MM/YYYY").format("YYYY-MM-DD");
             }
             this.concessionDetailsChanged('concession_card_start_date');
         },
 
         updateConcessionEndDatePicker() {
-            if (DayJs(this.chatbot_app.concession_details.concession_card_end_date, "DD/MM/YYYY").isValid()) {
-                this.concession_card_end_date = DayJs(this.chatbot_app.concession_details.concession_card_end_date,"DD/MM/YYYY").format("YYYY-MM-DD");
+            if (DayJs(this.chatbot_app.concession_details.concession_end_date, "DD/MM/YYYY").isValid()) {
+                this.concession_end_date = DayJs(this.chatbot_app.concession_details.concession_end_date,"DD/MM/YYYY").format("YYYY-MM-DD");
             }
-            this.concessionDetailsChanged('concession_card_end_date');
+            this.concessionDetailsChanged('concession_end_date');
         },
 
         async loadApplication() {
             this.isLoadSkeleton = true;
             this.chatbot_app =  await CustomerService.getMovingData(this.app_id);
-            this.dob = new DayJs(this.chatbot_app.personal_details.dob).format("YYYY-MM-DD");
-            //this.moved_at = this.generateInitialDate(this.chatbot_app.property_details.moved_at);
-            //this.expire_date = this.generateInitialDate(this.chatbot_app.id_detail.identification_expire_date);
-            // this.concession_start_date = this.generateInitialDate(this.chatbot_app.concession_details.concession_card_start_date);
-            // this.concession_end_date = this.generateInitialDate(this.chatbot_app.concession_details.concession_card_end_date);
+            this.dob = this.chatbot_app.personal_details.dob
+            this.moved_at = this.chatbot_app.property_details.moved_at;
+            this.expire_date = this.chatbot_app.id_detail.identification_expire_date;
+            this.concession_start_date = this.chatbot_app.concession_details.concession_card_start_date;
+            this.concession_end_date = this.chatbot_app.concession_details.concession_end_date;
             this.chatbot_app_backup = cloneDeep(this.chatbot_app);
             this.isLoadSkeleton  = false;
         },
@@ -1264,6 +1351,7 @@ export default {
         },
 
         concessionDetailsChanged(attribute){
+            console.log(this.chatbot_app.concession_details[attribute])
             if(this.chatbot_app.concession_details[attribute] !== this.chatbot_app_backup.concession_details[attribute]){
                 if(!this.concessionDetailsFlag.includes(attribute))
                     this.concessionDetailsFlag.push(attribute);
@@ -1301,21 +1389,18 @@ export default {
             this.chatbot_app.id_detail.identification_expire_date = new DayJs(this.expire_date).format(
                 "DD/MM/YYYY"
             );
-            this.idDetailsChanged('identification_expire_date');
         },
         dob() {
             if (isNull(this.dob) || this.dob === '' || this.dob === undefined ) return;
             this.chatbot_app.personal_details.dob = new DayJs(this.dob).format(
                 "DD/MM/YYYY"
             );
-            this.personalDetailsChanged('dob');
         },
         moved_at(){
             if (isNull(this.moved_at) || this.moved_at === '' || this.moved_at === undefined ) return;
             this.chatbot_app.property_details.moved_at = new DayJs(this.moved_at).format(
                 "DD/MM/YYYY"
             );
-            this.propertyDetailsChanged('moved_at')
         },
 
         concession_start_date() {
@@ -1323,14 +1408,12 @@ export default {
             this.chatbot_app.concession_details.concession_card_start_date = new DayJs(this.concession_start_date).format(
                 "DD/MM/YYYY"
             );
-            this.concessionDetailsChanged('concession_card_start_date');
         },
         concession_end_date() {
             if (isNull(this.concession_end_date) || this.concession_end_date === '' || this.concession_end_date === undefined ) return;
             this.chatbot_app.concession_details.concession_end_date = new DayJs(this.concession_end_date).format(
                 "DD/MM/YYYY"
             );
-            this.concessionDetailsChanged('concession_end_date');
         },
         '$route': {
             handler() {

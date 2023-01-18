@@ -1,5 +1,5 @@
 <template>
-    <v-container class="pa-0 ma-0 custom-height" fluid >
+    <v-container class="pa-0 ma-0" fluid >
         <v-row>
             <v-col cols="8" class="py-0">
                 <v-card class="custom-card-style">
@@ -17,7 +17,7 @@
                                 >
                                 </ChatbotApplicationFilter>
                             </v-col>
-                            <v-col cols="12" style="max-height: 44vh" class="overflow-auto">
+                            <v-col cols="12" >
                                 <ChatbotCafTable
                                     v-model="selectedCaf"
                                     :cafFiles="chatbotApps"
@@ -37,7 +37,7 @@
                     :type="skeletonType"
                     v-if="isLoadSkeleton"
                 ></v-skeleton-loader>
-                <ChatbotApplicationDetails v-if="shouldShowApplicationDetails" @applicationDetailsUpdated="updateApplication" ></ChatbotApplicationDetails>
+                <ChatbotApplicationDetails  v-if="shouldShowApplicationDetails" @applicationDetailsUpdated="updateApplication" ></ChatbotApplicationDetails>
             </v-col>
 
         </v-row>
@@ -135,7 +135,6 @@ name: "ChatbotApplicationPage",
 
 
     methods: {
-
 
         updateApplication()
         {

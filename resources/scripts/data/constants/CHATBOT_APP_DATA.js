@@ -2,12 +2,12 @@ export default {
     SPECIAL_NUMBER_DD: ["1","2","3","4","5","6","7","8"],
     ACCESS_REQUIREMENT: [
         {
-            text: "Yes",
-            value: 1,
+            text: "Home Owner",
+            value: "0",
         },
         {
-            text: "No",
-            value: 0,
+            text: "Renter",
+            value: "1",
         },
     ],
     SOLAR_POWER_DD: [
@@ -242,6 +242,26 @@ export default {
         {
             text: "Queensland Seniors",
             value: 4,
+        },
+    ],
+    YES_NO_OPTIONS : [
+        {
+            text: "No",
+            value: 'false',
+        },
+        {
+            text: "Yes",
+            value: 'true',
+        },
+    ],
+    EMAIL_BILLING_ITEMS : [
+        {
+            text: "Email",
+            value: "email",
+        },
+        {
+            text: "Post",
+            value: "connection_address",
         },
     ],
 
