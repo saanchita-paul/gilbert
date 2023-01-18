@@ -46,9 +46,10 @@ class MirnNmiService
 
     /**
      * @param $applicationId
+     * @return ConnectionApplication
      * @throws \Exception
      */
-    public static function dispatchAllService($applicationId): void
+    public static function dispatchAllService($applicationId): ConnectionApplication
     {
         /** @var ConnectionApplication $application */
         $application = ConnectionApplication::find($applicationId);
@@ -66,5 +67,7 @@ class MirnNmiService
         MirnNmiService::fetchNmiIsEmbedded($application->refresh());
 
         event(new FetchEmbeddedNetworkEvent($applicationId));
+
+        return $application->refresh();
     }
 }
