@@ -33,6 +33,10 @@ class NMICheckerJob implements ShouldQueue
      */
     public function handle(): void
     {
-        MirnNmiService::saveApplicationMirnNmi($this->applicationId);
+        $app = ConnectionApplication::findOrFail($this->applicationId);
+
+        MirnNmiService::saveApplicationMirnNmi($app);
+
+        MirnNmiService::fetchNmiIsEmbedded($app);
     }
 }
