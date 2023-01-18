@@ -1,5 +1,5 @@
 import COLOR from "@scripts/data/constants/COLOR";
-import { DashboardSourceModel } from "@scripts/modules/sales/models/DashboardSourceModel";
+import {DashboardSourceModel} from "@scripts/modules/sales/models/DashboardSourceModel";
 import {getProviderBackgound, PLAN} from "@scripts/data/constants/ENERGY_PLAN";
 
 export default {
@@ -10,7 +10,6 @@ export default {
      * @returns {Object}
      */
     getEnergyDashboardData: (response) => {
-
 
 
         function getGasData(data, isRejected = false) {
@@ -67,7 +66,8 @@ export default {
                 ],
                 [
                     {
-                        key: '1st Super Saver', value: data.hasOwnProperty('1st_super_saver') ? data['1st_super_saver'] : 0,
+                        key: '1st Super Saver',
+                        value: data.hasOwnProperty('first_energy_gas_super_saver') ? data['first_energy_gas_super_saver'] : 0,
                     },
                     // {
                     //     key: 'PowerShop Switch Saver', value: data?.switch_saver,
@@ -84,7 +84,7 @@ export default {
             const totalSumoData = data?.sumo_gas_freedom;
             const totalPowerShopData = data?.powershop_gas_carbon_neutral;
             const totalOriginData = data?.origin_advantage_variable + data?.origin_supply + data?.origin_basic;
-            const totalFirstEnergyData = data.hasOwnProperty('1st_super_saver') ? data['1st_super_saver'] : 0;
+            const totalFirstEnergyData = data.hasOwnProperty('first_energy_gas_super_saver') ? data['first_energy_gas_super_saver'] : 0;
 
             const chartData = [totalEaData, totalSumoData, totalOriginData, totalPowerShopData, totalFirstEnergyData];
             const plan = PLAN;
@@ -171,7 +171,8 @@ export default {
                 ],
                 [
                     {
-                        key: 'First Super Saver', value: data['1st_super_saver'],
+                        key: '1st Super Saver',
+                        value: data.hasOwnProperty('first_energy_power_super_saver') ? data['first_energy_power_super_saver'] : 0
                     },
                 ],
 
@@ -183,9 +184,9 @@ export default {
                 + data?.ea_power_flexi_plan
                 + data?.ea_power_balance_plan;
             const totalSumoData = data?.sumo_power_freedom;
-            const totalPowerShopData = data?.powershop_power_carbon_neutral +  data?.powershop_power_switch_saver;
+            const totalPowerShopData = data?.powershop_power_carbon_neutral + data?.powershop_power_switch_saver;
             const totalOriginData = data?.origin_home_assist + data?.origin_home_support;
-            const totalFirstEnergyData = data.hasOwnProperty('1st_super_saver') ? data['1st_super_saver'] : 0;
+            const totalFirstEnergyData = data.hasOwnProperty('first_energy_power_super_saver') ? data['first_energy_power_super_saver'] : 0;
 
 
             const chartData = [totalEaData, totalSumoData, totalOriginData, totalPowerShopData, totalFirstEnergyData];
@@ -230,7 +231,7 @@ export default {
         function getConnectedData(data, submittedData, rejectedData) {
 
             let conversionRate = null;
-            if(rejectedData.total === 0 && submittedData.total === 0) {
+            if (rejectedData.total === 0 && submittedData.total === 0) {
                 conversionRate = 0;
             } else {
                 conversionRate = ((data.total / (submittedData.total + rejectedData.total)) * 100).toFixed(1);
