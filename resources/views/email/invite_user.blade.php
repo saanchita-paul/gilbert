@@ -20,7 +20,7 @@
 <body style="margin: 0;">
 <div class="main-container" style="font-family: 'Ubuntu'; font-style: normal; font-weight: 400; font-size: 14px; line-height: 18px; color: #252830; max-width: 800px; margin: 0 auto;">
     <header>
-        <img src="{{ asset('/assets/images/email/_banner.png') }}" alt="Banner Image" width="100%">
+        <img src="{{ asset('/assets/images/email/user_invite.png') }}" alt="Banner Image" width="100%">
     </header>
 
     <section style="padding: 15px;">
