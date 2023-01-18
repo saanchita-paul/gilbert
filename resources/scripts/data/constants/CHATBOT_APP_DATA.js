@@ -247,11 +247,11 @@ export default {
     YES_NO_OPTIONS : [
         {
             text: "No",
-            value: 'false',
+            value: 0,
         },
         {
             text: "Yes",
-            value: 'true',
+            value: 1,
         },
     ],
     EMAIL_BILLING_ITEMS : [

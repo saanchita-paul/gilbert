@@ -27,7 +27,7 @@ export default class PersonalDetail{
                     fullName =  null,
                     billing_preference = null,
                     enabled_marketing_offer = null,
-                    has_life_support = null
+                    is_property_on_life_support = null
 
                 }) {
 
@@ -49,7 +49,7 @@ export default class PersonalDetail{
         this.connection_type = this.generateConnectionType(abn, business_name);
         this.billing_preference = billing_preference; //value-> email/post
         this.enabled_marketing_offer = enabled_marketing_offer; //value-> yes/no
-        this.has_life_support = has_life_support; //value-> yes/no
+        this.is_property_on_life_support = parseInt(is_property_on_life_support); //value-> yes/no
     }
     generateConnectionType(abn, business_name){
         if(abn || business_name) return "Temporary";

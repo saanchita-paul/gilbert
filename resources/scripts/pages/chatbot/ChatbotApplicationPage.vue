@@ -192,10 +192,11 @@ name: "ChatbotApplicationPage",
             this.totalItem = data.pagination.total;
             const query = this.$route.query;
             const p = this.chatbotApps.find(it => {
-               return  it.id === query.app_id
+               return  it.id == query.app_id
             });
 
-            if(data.data.length > 0 && !p) {
+            if(data.data.length > 0 && !p ) {
+                console.log( query.app_id, p);
                 this.isLoadSkeleton = true;
                 await this.$router.replace({query: {...query, app_id: data.data[0].id}}).catch((error)=>{});
                 this.isLoadSkeleton = false;

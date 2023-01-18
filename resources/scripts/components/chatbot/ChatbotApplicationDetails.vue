@@ -269,7 +269,7 @@
                                         >
                                             <v-select
                                                 placeholder="Yes/No"
-                                                v-model="chatbot_app.personal_details.has_life_support"
+                                                v-model="chatbot_app.personal_details.is_property_on_life_support"
                                                 :items="userConcentDD"
                                                 item-text="text"
                                                 item-value="value"
@@ -277,7 +277,7 @@
                                                 dense
                                                 hide-details="auto"
                                                 :error-messages="errors[0]"
-                                                @change="personalDetailsChanged('has_life_support')"
+                                                @change="personalDetailsChanged('is_property_on_life_support')"
                                             >
                                             </v-select>
                                         </ValidationProvider>
@@ -455,7 +455,7 @@
                                             >
                                             <v-select
                                                 v-model="chatbot_app.property_details.is_renovation_on"
-                                                :items="accessRequirement"
+                                                :items="homeRenovationDD"
                                                 item-text="text"
                                                 item-value="value"
                                                 outlined
@@ -1156,6 +1156,8 @@ export default {
             if(!await this.validateFormData('personal_details_ref')) return;
             this.savePersonDloading = true;
             await ChatbotApplicationService.updatePersonalDetails(this.app_id, this.chatbot_app.personal_details);
+            this.chatbot_app_backup = cloneDeep(this.chatbot_app);
+            this.personalDetailsFlag = [];
             this.savePersonDloading = false;
             this.$emit("applicationDetailsUpdated");
 
@@ -1173,7 +1175,9 @@ export default {
             if(!await this.validateFormData('property_details_ref')) return;
             this.saveProDloading = true;
             await ChatbotApplicationService.updatePropertyDetails(this.app_id, this.chatbot_app.property_details);
+            this.chatbot_app_backup = cloneDeep(this.chatbot_app);
             this.saveProDloading = false;
+            this.propertyDetailsFlag = [];
             this.$emit("applicationDetailsUpdated");
         },
 
@@ -1189,6 +1193,8 @@ export default {
             if(!await this.validateFormData('id_details_ref')) return;
             this.saveIDDloading = true;
             await ChatbotApplicationService.updateIdDetails(this.app_id, this.chatbot_app.id_detail);
+            this.chatbot_app_backup = cloneDeep(this.chatbot_app);
+            this.idDetailsFlag = [];
             this.saveIDDloading = false;
             this.$emit("applicationDetailsUpdated");
         },
@@ -1204,7 +1210,9 @@ export default {
             if(!await this.validateFormData('concession_card_ref')) return;
             this.saveConcessionLoading = true;
             await ChatbotApplicationService.updateConcessionDetails(this.app_id, this.chatbot_app.concession_details);
+            this.chatbot_app_backup = cloneDeep(this.chatbot_app);
             this.saveConcessionLoading = false;
+            this.concessionDetailsFlag = [];
             this.$emit("applicationDetailsUpdated");
         },
 
@@ -1339,6 +1347,7 @@ export default {
         },
 
         async saveAddress(address) {
+            this.chatbot_app.to_address = address.address_text;
             this.address_loader = true;
             this.nmi_loader = true;
             this.mirn_loader = true;
