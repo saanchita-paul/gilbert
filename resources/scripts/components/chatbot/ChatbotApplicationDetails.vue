@@ -455,16 +455,37 @@
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <v-row>
-                            <v-col cols="12" v-if="chatbot_app.eleService">
+                            <v-col cols="12">
                                 <div  class="my-0 py-0 mx-0 border-all">
                                     <p class="pt-2 pb-1 mb-0 services">
-                              <span class="ml-0">
-                                  <v-icon  color="yellow" size="17">mdi-flash</v-icon> Power
-                              </span>
+                                        <span class="ml-0">CAF Status</span>
                                     </p>
                                     <p class="py-0 my-0 service-status" >
                                         <small>Current Status</small>
-                                        <v-select @change="changeServiceStatus(chatbot_app.eleService)"
+                                        <v-select
+                                                  placeholder="Please select"
+                                                  v-model="chatbot_app.cafStatus"
+                                                  item-text="text"
+                                                  item-value="text"
+                                                  :items="cafStatus"
+                                                  outlined
+                                                  dense
+                                                  hide-details="auto"
+                                        >
+                                        </v-select>
+                                    </p>
+                                </div>
+                            </v-col>
+                            <v-col cols="12" v-if="chatbot_app.eleService">
+                                <div  class="my-0 py-0 mx-0 border-all">
+                                    <p class="pt-2 pb-1 mb-0 services">
+                                      <span class="ml-0">
+                                          <v-icon  color="yellow" size="17">mdi-flash</v-icon> Power
+                                      </span>
+                                    </p>
+                                    <p class="py-0 my-0 service-status" >
+                                        <small>Current Status</small>
+                                        <v-select
                                                   placeholder="Please select"
                                                   v-model="chatbot_app.eleService.status"
                                                   item-text="text"
@@ -486,6 +507,7 @@
                                            outlined
                                     > Reason </v-btn>
                                 </div>
+
                             </v-col>
                             <v-col cols="12" v-if="chatbot_app.gasService">
                                 <div  class="my-0 py-0 mx-0 border-all">
@@ -496,7 +518,7 @@
                                     </p>
                                     <p class="py-0 my-0 service-status" >
                                         <small>Current Status</small>
-                                        <v-select @change="changeServiceStatus(chatbot_app.gasService)"
+                                        <v-select
                                                   placeholder="Please select"
                                                   v-model="chatbot_app.gasService.status"
                                                   item-text="text"
@@ -518,6 +540,12 @@
                                     >Reason</v-btn>
                                 </div>
                             </v-col>
+                            <div>
+                                <div v-if="shouldShowServiceAction" class="mt-2 d-flex justify-end" style="gap: 10px">
+                                    <v-btn small  @click="cancelStatus"  :loading="cancelgasStatusLoader"> Cancel</v-btn>
+                                    <v-btn color="primary" small right @click="changeServiceStatus"  :loading="savegasStatusLoader"> Save</v-btn>
+                                </div>
+                            </div>
                         </v-row>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -770,13 +798,12 @@
                                 </v-col>
                                 <v-col cols ="7" class="py-0 my-1">
                                     <div class="text-field">
-                                        <ValidationProvider name="Card Number" rules="required" v-slot="{ errors }">
+                                        <ValidationProvider name="Card Number" :rules="chatbot_app.concession_details.concession_card_type? 'required' :  '' " v-slot="{ errors }">
                                             <v-text-field
                                                 v-model="chatbot_app.concession_details.concession_card_value"
                                                 outlined
                                                 dense
                                                 hide-details="auto"
-                                                placeholder="Card Number"
                                                 :error-messages="errors[0]"
                                                 @keyup="concessionDetailsChanged('concession_card_value')"
                                             ></v-text-field>
@@ -799,7 +826,7 @@
                                     >
                                         <template v-slot:activator="{ on, attrs }">
                                             <ValidationProvider
-                                                name="Start Date" rules="required"
+                                                name="Start Date" :rules="chatbot_app.concession_details.concession_card_type? 'required' :  '' "
                                                 v-slot="{ errors }"
                                             >
                                                 <v-text-field
@@ -973,7 +1000,15 @@ export default {
             skeletonType : SkeletonLoaderData.type,
             address_loader: false,
             nmi_loader: false,
-            mirn_loader: false
+            mirn_loader: false,
+            cafStatus: [
+                'CAF Submitted',
+                '--'
+            ],
+            canceleleStatusLoader: false,
+            saveeleStatusLoader: false,
+            cancelgasStatusLoader: false,
+            savegasStatusLoader: false,
 
         }
     },
@@ -1008,17 +1043,24 @@ export default {
         shouldActiveConcessionDetailsAction(){
             return this.concessionDetailsFlag.length > 0;
         },
-        shouldShowExpansionPanel(){
+        shouldShowExpansionPanel() {
             return this.chatbot_app;
         },
-        shouldShowConnectionType(){
+        shouldShowConnectionType() {
             return !(this.chatbot_app.personal_details.connection_type === 'Temporary');
         },
         isMIRNRequired(){
             if(this.chatbot_app.property_details.which_utility === 'electricity_and_gas' || this.chatbot_app.property_details.which_utility === 'gas'){
                 return true;
             }
+        },
+
+        shouldShowServiceAction() {
+            return this.chatbot_app.eleService?.status !== this.chatbot_app_backup.eleService?.status ||
+                this.chatbot_app.gasService?.status !== this.chatbot_app_backup.gasService?.status ||
+                this.chatbot_app.cafStatus !== this.chatbot_app_backup.cafStatus;
         }
+
 
 
     },
@@ -1161,9 +1203,13 @@ export default {
             this.dialog = true;
         },
 
-        async changeServiceStatus(service) {
-            const res  =  await ChatbotApplicationService.saveServiceStatus(service);
+        async changeServiceStatus() {
+
+            this.savegasStatusLoader = true;
+            await ChatbotApplicationService.saveServiceStatus(this.chatbot_app);
+            this.savegasStatusLoader = false;
             this.$emit("applicationDetailsUpdated");
+
         },
 
         personalDetailsChanged(attribute){
@@ -1227,6 +1273,21 @@ export default {
                     this.concessionDetailsFlag.splice(index, 1);
                 }
             }
+        },
+
+
+        cancelStatus() {
+            this.cancelgasStatusLoader = true;
+            if(!isNull(this.chatbot_app.gasService)) {
+                this.chatbot_app.gasService.status = this.chatbot_app_backup.gasService.status;
+            }
+            if(!isNull(this.chatbot_app.eleService)) {
+                this.chatbot_app.eleService.status = this.chatbot_app_backup.eleService.status;
+            }
+
+            this.chatbot_app.cafStatus = this.chatbot_app_backup.cafStatus;
+
+            this.cancelgasStatusLoader = false;
         },
 
 

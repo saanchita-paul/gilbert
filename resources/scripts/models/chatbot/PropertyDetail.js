@@ -14,6 +14,7 @@ export default class PropertyDetail{
                     to_postcode =null,
                     suburb =null,
                     state =null,
+        
                     mirn =null,
                     nmi =null,
                     has_concession_card = null,

@@ -7,6 +7,7 @@ import * as dayjs from "dayjs";
 import ConnectionService from "@scripts/models/chatbot/ConnectionService";
 import ConcessionDetail from "@scripts/models/chatbot/ConcessionDetail";
 import GBGAddress from "@scripts/models/chatbot/GBGAddress";
+import {isNull} from "lodash-es";
 
 function mapPropertyAddress(dt) {
     return {
@@ -49,6 +50,12 @@ function mapChatbotAppStatus(status) {
 
 }
 
+function isCafGenerated(connection_services) {
+    return  !!connection_services.find((item) => {
+        return item.is_caf_file_generated;
+    })
+}
+
 export default {
     mapApplication: (application) => {
         const id_detail = new IdDetail(application);
@@ -60,6 +67,7 @@ export default {
         const property_address = new GBGAddress(mapPropertyAddress(application));
         let eleService = null;
         let gasService = null;
+        let cafStatus = isCafGenerated(application.connection_services);
 
         let electricityServiceOnly = application.connection_services.find((item) => {
             return item.service_type === 'electricity'
@@ -87,7 +95,8 @@ export default {
             concession_details: concession_details,
             eleService : eleService,
             gasService : gasService,
-            property_address: property_address
+            property_address: property_address,
+            cafStatus: cafStatus
         });
     },
 
@@ -136,20 +145,31 @@ export default {
             ...address,
             suburb : address.city,
             to_postcode : address.postcode,
-            to_address: address.address_text?.split(',').map(part => part.trim()).join(', '),
+            to_address: address.address_text,
             flat_or_unit_number : address.unit_number
         }
     },
 
-    mapToUpdateServiceStatus: service => {
-       if(service.status.toLowerCase() === 'caf submitted') {
-           return {
-               is_caf_file_generated: true,
-           }
-       } else {
-           return {
-               status: mapChatbotAppStatus(service.status)
-           };
-       }
+    mapToUpdateServiceStatus: (eleService, gasService, caf_status) => {
+        let appStatus = {};
+        let service = [];
+        if(!isNull(eleService))  {
+            service.push({
+                ...eleService,
+                status: mapChatbotAppStatus(eleService.status)
+            });
+        }
+        if(!isNull(gasService))  {
+            service.push({
+                ...gasService,
+                status: mapChatbotAppStatus(gasService.status)
+            });
+        }
+        appStatus.service = service
+        if(!isNull(caf_status))  {
+            appStatus.caf_status = caf_status
+        }
+        return appStatus;
+
     }
 }

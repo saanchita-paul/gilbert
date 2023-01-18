@@ -27,13 +27,13 @@ export default {
     },
 
 
-    saveServiceStatus: async (service) => {
-      return  await ChatbotApplicationApi.saveServiceStatus(service.id, {status: service.status});
+    saveServiceStatus: async (chatbot_app) => {
+      return  await ChatbotApplicationApi.saveServiceStatus(chatbot_app.eleService, chatbot_app.gasService, chatbot_app.cafStatus);
     },
 
     updatePropertyAddress: async (utilityId, address) => {
-        const application = ChatbotApplicationApi.updatePropertyAddress(utilityId, address)
-        Store.commit('updateApp', application);
+        await ChatbotApplicationApi.updatePropertyAddress(utilityId, address)
+
     }
 
 

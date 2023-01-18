@@ -22,7 +22,7 @@
 
             <template v-slot:item.caf_generation_status="{item}">
                 <div class="d-flex align-center"  style="font-size: 12px!important;">
-                    <span class="service-status" :class="isSelectedClass(item)"> {{item.caf_generation_status}}</span>
+                    <span class="service-status"> {{item.caf_generation_status}}</span>
                 </div>
             </template>
 
@@ -36,11 +36,11 @@
                     <div>
                         <div class="d-flex  ">
                             <v-icon :disabled="isServiceAllowed(item.services, 'electricity')" color="yellow">mdi-flash</v-icon>
-                            <span class="service-status">{{getServiceStatus(item.services, 'electricity')}}</span>
+                            <span :class="isSelectedClass(item)">{{getServiceStatus(item.services, 'electricity')}}</span>
                         </div>
                         <div class="d-flex align-center">
                             <v-icon :disabled="isServiceAllowed(item.services, 'gas')" color="red">mdi-fire</v-icon>
-                            <span class="service-status"> {{getServiceStatus(item.services, 'gas')}}</span>
+                            <span :class="isSelectedClass(item)"> {{getServiceStatus(item.services, 'gas')}}</span>
                         </div>
                     </div>
                 </div>
@@ -117,8 +117,9 @@ export default {
         },
         isSelectedClass(item) {
             if (item.color === true) {
-                return 'red--text';
+                return 'red--text service-status';
             }
+             return 'red--text service-status';
 
         },
 

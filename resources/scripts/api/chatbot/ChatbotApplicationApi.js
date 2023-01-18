@@ -60,10 +60,10 @@ export default {
         }
     },
 
-    async saveServiceStatus(serviceId, data) {
+    async saveServiceStatus(eleService = null, gasService = null, caf_status = null) {
         try {
-            const mappedData =  ChatbotApplicationMapper.mapToUpdateServiceStatus(data);
-            const response = await axios.post(`${BOT_API}/service-status/${serviceId}`,  mappedData);
+            const mappedData =  ChatbotApplicationMapper.mapToUpdateServiceStatus(eleService, gasService, caf_status);
+            const response = await axios.post(`${BOT_API}/service-status/`,  mappedData);
             return response.data;
         } catch (error) {
             console.log('error', error);
@@ -75,7 +75,6 @@ export default {
         try {
             const mappedData = ChatbotApplicationMapper.mapToUpdateAddress(address);
             const response = await axios.post(`${ROOT}/${utilityId}/utility-address`, {...mappedData});
-            // return ApplicationCafFileMapper.mapChatbotSingleApplication(response.data);
             return response.data;
         } catch (error) {
             console.log('error', error);

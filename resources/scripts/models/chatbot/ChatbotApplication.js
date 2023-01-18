@@ -9,6 +9,7 @@ export default class {
                     gasService = null,
                     concession_details = null,
                     property_address= null,
+                    cafStatus = false,
 
 
                 }) {
@@ -22,6 +23,7 @@ export default class {
         this.gasService = gasService;
         this.concession_details = concession_details;
         this.property_address = property_address;
+        this.cafStatus = cafStatus? 'CAF Submitted': '--';
     }
 
     setIdDetails(idDetail) {
