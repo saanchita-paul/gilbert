@@ -264,6 +264,7 @@ export default {
             value: "connection_address",
         },
     ],
+    WARNING_MESSAGE : "You have unsaved changes. Please save or cancel to continue",
 
     //for chatbot application filter
     STATUS:[

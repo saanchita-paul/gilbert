@@ -171,5 +171,9 @@ export default {
         }
         return appStatus;
 
+    },
+
+    mapApplicationNote : (data) => {
+        return data?.map(item => new ApplicationNote(item))
     }
 }

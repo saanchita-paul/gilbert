@@ -284,9 +284,14 @@
                                     </div>
                                 </v-col>
                             </v-row>
-                            <v-row class="pa-3 d-flex justify-end" style="gap: 10px" v-if="shouldActivePersonalDetailsAction">
-                                <v-btn small @click="cancelPersonalDetails" :loading="cancelPersonalLoading" > Cancel</v-btn>
-                                <v-btn color="primary" small right @click="savePersonalDetails"  :loading="savePersonDloading" > Save</v-btn>
+                            <v-row class="pa-3"  v-if="shouldActivePersonalDetailsAction">
+                                <v-col cols="7" class="pa-0">
+                                    <span class="orange--text">{{ unsavedWarningMessage }}</span>
+                                </v-col>
+                                <v-col cols="5" class="d-flex" style="gap: 10px">
+                                    <v-btn small @click="cancelPersonalDetails" :loading="cancelPersonalLoading" > Cancel</v-btn>
+                                    <v-btn color="primary" small right @click="savePersonalDetails"  :loading="savePersonDloading" > Save</v-btn>
+                                </v-col>
                             </v-row>
                         </ValidationObserver>
                     </v-expansion-panel-content>
@@ -520,9 +525,15 @@
                                     </v-col>
 
                                 </v-row>
-                                <v-row class="pa-3 d-flex justify-end" style="gap: 10px" v-if="shouldActivePropertyDetailsAction">
-                                    <v-btn small @click="cancelPropertyDetails" :loading="cancelPropertyLoading" > Cancel</v-btn>
-                                    <v-btn color="primary" small right @click="savePropertyDetails" :loading="saveProDloading" > Save</v-btn>
+                                <v-row class="pa-3" v-if="shouldActivePropertyDetailsAction">
+                                    <v-col cols="7" class="pa-0">
+                                        <span class="orange--text">{{ unsavedWarningMessage }}</span>
+                                    </v-col>
+                                    <v-col cols="5" class="d-flex" style="gap: 10px">
+                                        <v-btn small @click="cancelPropertyDetails" :loading="cancelPropertyLoading" > Cancel</v-btn>
+                                        <v-btn color="primary" small right @click="savePropertyDetails" :loading="saveProDloading" > Save</v-btn>
+                                    </v-col>
+
                                 </v-row>
                             </ValidationObserver>
                         </v-expansion-panel-content>
@@ -620,9 +631,14 @@
                                     >Reason</v-btn>
                                 </div>
                             </v-col>
-                            <v-row v-if="shouldShowServiceAction" class="pa-3 pr-5 d-flex justify-end" style="gap: 10px">
-                                <v-btn small  @click="cancelStatus"  :loading="cancelgasStatusLoader"> Cancel</v-btn>
-                                <v-btn color="primary" small right @click="changeServiceStatus"  :loading="savegasStatusLoader"> Save</v-btn>
+                            <v-row v-if="shouldShowServiceAction" class="pa-3 pr-4">
+                                <v-col cols="7">
+                                    <span class="orange--text">{{ unsavedWarningMessage }}</span>
+                                </v-col>
+                                <v-col cols="5" class="d-flex" style="gap: 10px">
+                                    <v-btn small  @click="cancelStatus"  :loading="cancelgasStatusLoader"> Cancel</v-btn>
+                                    <v-btn color="primary" small right @click="changeServiceStatus"  :loading="savegasStatusLoader"> Save</v-btn>
+                                </v-col>
                             </v-row>
                         </v-row>
                     </v-expansion-panel-content>
@@ -832,9 +848,14 @@
                                 </template>
 
                             </v-row>
-                            <v-row class="pa-3 d-flex justify-end" style="gap: 10px" v-if="shouldActiveIdDetailsAction">
-                                <v-btn small  @click="cancelIdDetails"  :loading="cancelIdLoading"> Cancel</v-btn>
-                                <v-btn color="primary" small right @click="saveIdDetails"  :loading="saveIDDloading"> Save</v-btn>
+                            <v-row class="pa-3" v-if="shouldActiveIdDetailsAction">
+                                <v-col cols="7" class="pa-0">
+                                    <span class="orange--text">{{ unsavedWarningMessage }}</span>
+                                </v-col>
+                                <v-col cols="5" class="d-flex" style="gap: 10px">
+                                    <v-btn small  @click="cancelIdDetails"  :loading="cancelIdLoading"> Cancel</v-btn>
+                                    <v-btn color="primary" small right @click="saveIdDetails"  :loading="saveIDDloading"> Save</v-btn>
+                                </v-col>
                             </v-row>
                         </ValidationObserver>
                     </v-expansion-panel-content>
@@ -975,9 +996,14 @@
                                     </v-menu>
                                 </v-col>
                             </v-row>
-                            <v-row class="pa-3 d-flex justify-end" style="gap: 10px" v-if="shouldActiveConcessionDetailsAction">
-                                <v-btn small @click="cancelConcessionDetails" :loading="cancelConcessionLoading" > Cancel</v-btn>
-                                <v-btn color="primary" small right @click="saveConcessionDetails" :loading="saveConcessionLoading"> Save</v-btn>
+                            <v-row class="pa-3" v-if="shouldActiveConcessionDetailsAction">
+                                <v-col cols="7" class="pa-0">
+                                    <span class="orange--text">{{ unsavedWarningMessage }}</span>
+                                </v-col>
+                                <v-col cols="5" class="d-flex" style="gap: 10px">
+                                    <v-btn small @click="cancelConcessionDetails" :loading="cancelConcessionLoading" > Cancel</v-btn>
+                                    <v-btn color="primary" small right @click="saveConcessionDetails" :loading="saveConcessionLoading"> Save</v-btn>
+                                </v-col>
                             </v-row>
                         </ValidationObserver>
                     </v-expansion-panel-content>
@@ -1089,7 +1115,8 @@ export default {
             cancelgasStatusLoader: false,
             savegasStatusLoader: false,
             userConcentDD : CHATBOT_APP_DATA.YES_NO_OPTIONS,
-            emailBillingItems : CHATBOT_APP_DATA.EMAIL_BILLING_ITEMS
+            emailBillingItems : CHATBOT_APP_DATA.EMAIL_BILLING_ITEMS,
+            unsavedWarningMessage : CHATBOT_APP_DATA.WARNING_MESSAGE
         }
     },
     computed: {
@@ -1301,6 +1328,10 @@ export default {
 
             this.savegasStatusLoader = true;
             await ChatbotApplicationService.saveServiceStatus(this.chatbot_app);
+            this.chatbot_app.application_notes = CustomerService.getApplicationNote(this.app_id);
+            this.chatbot_app_backup.eleService = cloneDeep(this.chatbot_app.eleService);
+            this.chatbot_app_backup.gasService = cloneDeep(this.chatbot_app.gasService);
+            this.chatbot_app_backup.cafStatus = cloneDeep(this.chatbot_app.cafStatus);
             this.savegasStatusLoader = false;
             this.$emit("applicationDetailsUpdated");
 
@@ -1381,7 +1412,9 @@ export default {
                 this.chatbot_app.eleService.status = this.chatbot_app_backup.eleService.status;
             }
 
-            this.chatbot_app.cafStatus = this.chatbot_app_backup.cafStatus;
+            this.chatbot_app.cafStatus = cloneDeep(this.chatbot_app_backup.cafStatus);
+            this.chatbot_app.eleService = cloneDeep(this.chatbot_app_backup.eleService);
+            this.chatbot_app.gasService = cloneDeep(this.chatbot_app_backup.gasService);
 
             this.cancelgasStatusLoader = false;
         },
@@ -1399,7 +1432,6 @@ export default {
             );
         },
         dob() {
-            console.log("dob reset")
             if (isNull(this.dob) || this.dob === '' || this.dob === undefined ) return;
             this.chatbot_app.personal_details.dob = new DayJs(this.dob).format(
                 "DD/MM/YYYY"

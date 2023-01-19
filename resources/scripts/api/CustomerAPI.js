@@ -165,6 +165,14 @@ export default {
     getRejectionReasonData: async (connectionServiceId) => {
         const response = await axios.get(`${BOT_API}/rejection-reasons/${connectionServiceId}`);
         return response.data;
+    },
+    /**
+     *
+     * @param id
+     */
+    getApplicationNote: async (id) => {
+        const response = await axios.get(`${BOT_API}/application-notes/${id}`);
+        return ChatbotApplicationMapper.mapApplicationNote(response.data);
     }
 
 }
