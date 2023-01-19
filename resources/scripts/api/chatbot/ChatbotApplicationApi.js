@@ -9,7 +9,11 @@ const ROOT = `${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api`;
 export default {
     saveNote: async note => {
         try {
-            return (await axios.post(`${ROOT}/application-note`, note)).data;
+            const user = Store.getters.user;
+            return (await axios.post(`${ROOT}/application-note`, {...note,
+                created_by: user.profile.first_name,
+                 user_role: user.roles[0],
+                 type: 'regular',})).data;
         } catch (error) {
             console.log('error', error);
             return null;
