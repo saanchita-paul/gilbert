@@ -248,10 +248,8 @@
               @blur="saveDraft('email', person_details.email)"
             ></v-text-field>
           </ValidationProvider>
-            <span class="error--text" v-if="emailCheck">
-                  <small>
-                      Email could not be verified. Please confirm it’s valid email.
-                  </small>
+            <span class="error--text d-block line-height-initial" v-if="emailCheck">
+                  <span class="font-12">Email could not be verified. Please confirm it’s valid email.</span>
             </span>
         <div class="text-field">
             <v-checkbox
@@ -2206,5 +2204,11 @@ export default {
 }
 .mt-4 {
     margin-top: 4px !important;
+}
+.line-height-initial {
+    line-height: initial;
+}
+.font-12 {
+    font-size: 12px;
 }
 </style>
