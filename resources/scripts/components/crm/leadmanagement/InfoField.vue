@@ -235,7 +235,7 @@
         <div class="text-field">
           <ValidationProvider
             name="Email"
-            :rules="`${isManuallyVerified?'':'gbg-email-validate|'}required|email`"
+            :rules="`${isManuallyVerified ? '' : emailCheck ? 'gbg-email-validate|': ''}required|email`"
             v-slot="{ errors }"
           >
             <v-text-field
@@ -1379,6 +1379,9 @@ export default {
     },
     services: {
       require: false,
+    },
+    emailCheck: {
+        required: true,
     },
   },
   components: {

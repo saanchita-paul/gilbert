@@ -18,6 +18,7 @@
                 @updateDraft="updateDraft"
                 @duplicateLead="duplicatedLead"
                 :isLocked="isLocked"
+                :emailCheck="emailCheck"
             ></LeadUserDetails>
         </ValidationObserver>
 
@@ -177,6 +178,7 @@ export default {
                 chatbot_id: null,
                 is_locked: false,
             },
+            emailCheck: false
         }
     },
     computed: {
@@ -291,12 +293,19 @@ export default {
             this.lead = lead;
         },
         async submitConnection(submitType) {
+            if (!this.lead.person_details.email_manually_verified_by) {
+                this.emailCheck = true;
+            }
+
             let v = await this.validateLead();
             let isProperAddress = await this.isProperAddress();
 
             if (!isProperAddress) Store.commit('setInvalidAddress', true);
 
-            if (!v || !isProperAddress) return;
+            if (!v || !isProperAddress) {
+                this.emailCheck = false;
+                return;
+            }
 
             let assignedHoodUser = await this.getAssignedHoodUser();
             if (!assignedHoodUser) {
