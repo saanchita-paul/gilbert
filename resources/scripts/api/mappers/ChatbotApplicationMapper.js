@@ -171,5 +171,13 @@ export default {
         }
         return appStatus;
 
+    },
+    mapNoteData(user, leadId) {
+        return {
+            created_by: user.profile.first_name,
+            user_role: user.roles[0],
+            type: 'regular',
+            'moving_utility_data_id': leadId
+        }
     }
 }

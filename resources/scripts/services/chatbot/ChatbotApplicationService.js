@@ -28,7 +28,7 @@ export default {
 
 
     saveServiceStatus: async (chatbot_app) => {
-      return  await ChatbotApplicationApi.saveServiceStatus(chatbot_app.eleService, chatbot_app.gasService, chatbot_app.cafStatus);
+      return  await ChatbotApplicationApi.saveServiceStatus(chatbot_app.id, chatbot_app.eleService, chatbot_app.gasService, chatbot_app.cafStatus);
     },
 
     updatePropertyAddress: async (utilityId, address) => {

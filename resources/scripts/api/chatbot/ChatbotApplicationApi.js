@@ -2,6 +2,7 @@ import axios from "axios";
 import ChatbotApplicationMapper from "@scripts/api/mappers/ChatbotApplicationMapper";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import ApplicationCafFileMapper from "@scripts/api/mappers/crm/ApplicationCafFileMapper";
+import Store from "@scripts/store";
 
 const ROOT = `${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api`;
 
@@ -60,10 +61,12 @@ export default {
         }
     },
 
-    async saveServiceStatus(eleService = null, gasService = null, caf_status = null) {
+    async saveServiceStatus(id, eleService = null, gasService = null, caf_status = null) {
         try {
+            const user = Store.getters.user;
             const mappedData =  ChatbotApplicationMapper.mapToUpdateServiceStatus(eleService, gasService, caf_status);
-            const response = await axios.post(`${BOT_API}/service-status/`,  mappedData);
+            mappedData.note = ChatbotApplicationMapper.mapNoteData(user, id);
+            const response = await axios.post(`${BOT_API}/utility-data/${id}/service-status`,  mappedData);
             return response.data;
         } catch (error) {
             console.log('error', error);
