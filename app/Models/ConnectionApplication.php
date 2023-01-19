@@ -71,6 +71,7 @@ use Carbon\Carbon;
  * @property int|null $status
  * @property int|null $is_embedded
  * @property int|null $embedded_nmi
+ * @property int|null $suggested_nmi
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Agency $agency
@@ -246,6 +247,7 @@ class ConnectionApplication extends Model
         'embedded_nmi',
         'mirn_score',
         'nmi_score',
+        'suggested_nmi'
     ];
 
 

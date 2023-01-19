@@ -33,10 +33,11 @@ class MirnNmiService
     public static function fetchNmiIsEmbedded(ConnectionApplication $app): void
     {
         $app->embedded_nmi = null;
+        $nmi = $app->nmi ?? $app->suggested_nmi;
 
-        if ($app->nmi) {
+        if ($nmi) {
             $service = new EmbeddedNetworkService();
-            $result = $service->isNmiEmbeddedNetwork($app->nmi);
+            $result = $service->isNmiEmbeddedNetwork($nmi);
             $app->embedded_nmi = $result === true ? 1 : null;
         }
 

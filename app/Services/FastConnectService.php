@@ -61,6 +61,7 @@ class FastConnectService
             'mirn' => null,
             'mirn_score' => '',
             'nmi' => null,
+            'suggested_nmi' => null,
             'nmi_score' => '',
         ];
 
@@ -170,21 +171,30 @@ class FastConnectService
         $res = [
             'nmi' => null,
             'nmi_score' => FastConnectService::NO_RESULT,
+            'suggested_nmi' => null,
         ];
         if (!$nmis || sizeof($nmis) === 0) {
             return $res;
         }
 
         $exact = [];
+        $suggested = [];
 
         foreach ($nmis as $nmi) {
-            if (isset($nmi['nmi']) && ($nmi['match_type'] ?? null) === "EXACT" && ($nmi['status'] ?? null) === 'ACTIVE') {
+            if ($this->isActiveNMI($nmi)) {
                 $exact[] = $nmi['nmi'];
+            }
+
+            if ($this->isSuggestedActiveNMI($nmi)) {
+                $suggested[] = $nmi['nmi'];
             }
         }
 
+        info("YAYAYAYAKAKAKA", [$exact, $suggested]);
+
         if (sizeof($exact) === 0) {
             $res['nmi_score'] = FastConnectService::NO_EXACT_OR_ACTIVE;
+            $res['suggested_nmi'] = $suggested[0] ?? null;
             return $res;
         }
 
@@ -197,6 +207,36 @@ class FastConnectService
         $res['nmi'] = $exact[0];
 
         return $res;
+    }
+
+    /**
+     * Checking the nmi is active
+     *
+     * @param array $nmi
+     *
+     * @return bool
+     */
+    private function isActiveNMI(array $nmi): bool
+    {
+        return isset($nmi['nmi'])
+            && ($nmi['match_type'] ?? null) === "EXACT"
+            &&  ($nmi['status'] ?? null) === 'ACTIVE';
+    }
+
+    /**
+     * Checking the nmi is active
+     *
+     * @param array $nmi
+     *
+     * @return bool
+     */
+    private function isSuggestedActiveNMI(array $nmi): bool
+    {
+        return isset($nmi['nmi'])
+            && ($nmi['match_type'] ?? null) === "SUGGESTION"
+            && ($nmi['status'] ?? null) === 'ACTIVE'
+            && sizeof(($nmi['match_type_enums'] ?? [])) === 1
+            && in_array('UNIT_NUMBER', $nmi['match_type_enums']);
     }
 
     /**
