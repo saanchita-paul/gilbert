@@ -171,7 +171,7 @@ export default {
      * @param id
      */
     getApplicationNote: async (id) => {
-        const response = await axios.get(`${BOT_API}/application-notes/${id}`);
+        const response = await axios.get(`${BOT_API}/utility-data/${id}/note`);
         return ChatbotApplicationMapper.mapApplicationNote(response.data);
     }
 
