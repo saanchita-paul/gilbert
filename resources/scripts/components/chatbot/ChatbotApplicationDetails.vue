@@ -450,11 +450,11 @@
                                     <v-col cols ="7" class="py-0 my-1">
                                         <div class="text-field">
                                             <ValidationProvider
-                                                name="Access requirement"
+                                                name="Renovation going on"
                                                 v-slot="{ errors }"
                                             >
                                             <v-select
-                                                v-model="chatbot_app.property_details.is_renovation_on"
+                                                v-model="chatbot_app.property_details.is_manual_connection_needed"
                                                 :items="homeRenovationDD"
                                                 item-text="text"
                                                 item-value="value"
@@ -462,7 +462,7 @@
                                                 dense
                                                 hide-details="auto"
                                                 :error-messages="errors[0]"
-                                                @change="propertyDetailsChanged('is_renovation_on')"
+                                                @change="propertyDetailsChanged('is_manual_connection_needed')"
                                             >
                                             </v-select>
                                             </ValidationProvider>

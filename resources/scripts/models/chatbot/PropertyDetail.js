@@ -14,7 +14,7 @@ export default class PropertyDetail{
                     to_postcode =null,
                     suburb =null,
                     state =null,
-        
+
                     mirn =null,
                     nmi =null,
                     has_concession_card = null,
@@ -23,6 +23,7 @@ export default class PropertyDetail{
                     concession_card_start_date = null,
                     to_address = null,
                     full_address = null,
+                    is_manual_connection_needed = null,
 
                 }) {
 
@@ -46,6 +47,7 @@ export default class PropertyDetail{
         this.to_address = to_address.split(',').join(', ');
         this.street_name = street_name;
         this.street_type = street_type;
+        this.is_manual_connection_needed = is_manual_connection_needed;
         this.full_address ='U'+' '+ flat_or_unit_number+' '+ street_number+' '+street_name+' '+street_type +', '+suburb+' ' +state +' '+to_postcode;
     }
 }
