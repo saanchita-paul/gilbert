@@ -1328,7 +1328,7 @@ export default {
 
             this.savegasStatusLoader = true;
             await ChatbotApplicationService.saveServiceStatus(this.chatbot_app);
-            this.chatbot_app.application_notes = CustomerService.getApplicationNote(this.app_id);
+            this.chatbot_app.application_notes = await CustomerService.getApplicationNote(this.app_id);
             this.chatbot_app_backup.eleService = cloneDeep(this.chatbot_app.eleService);
             this.chatbot_app_backup.gasService = cloneDeep(this.chatbot_app.gasService);
             this.chatbot_app_backup.cafStatus = cloneDeep(this.chatbot_app.cafStatus);
