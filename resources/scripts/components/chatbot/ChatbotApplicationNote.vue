@@ -17,7 +17,15 @@
                         :error-messages="errors[0]"
                     ></v-textarea>
                 </ValidationProvider>
-                <v-btn class="mt-2 float-right white--text note-button" @click="saveNote" color="#542E89" v-if="isNoteTextEmpty" :loading="loader">Submit Note</v-btn>
+                <v-row v-if="isNoteTextEmpty" class="pa-3">
+                    <v-col cols="7" class="pa-0">
+                        <span class="orange--text">{{ unsavedWarningMessage }}</span>
+                    </v-col>
+                    <v-col cols="5" class="d-flex px-0 justify-end">
+                        <v-btn class="white--text note-button" @click="saveNote" color="#542E89"  :loading="loader">Submit Note</v-btn>
+                    </v-col>
+                </v-row>
+
             </ValidationObserver>
         </v-col>
         <v-col cols="12" v-if="applications.length > 0" class="notes-container" >
@@ -41,6 +49,7 @@ import ChatbotApplicationService from "@scripts/services/chatbot/ChatbotApplicat
 import Note from "@scripts/components/crm/leadmanagement/notes/Note";
 import {isEmpty} from "lodash-es";
 import dayjs from "dayjs";
+import CHATBOT_APP_DATA from "@scripts/data/constants/CHATBOT_APP_DATA";
 
 export default {
     name: "ChatbotApplicationNote",
@@ -53,7 +62,8 @@ export default {
                 title: '',
                 moving_utility_data_id : this.$route.query.app_id ?? null,
             },
-            loader : false
+            loader : false,
+            unsavedWarningMessage : CHATBOT_APP_DATA.WARNING_MESSAGE
         }
     },
     computed: {

@@ -93,6 +93,11 @@ export default {
      */
     getRejection: (connectionServiceId) => CustomerAPI.getRejectionReasonData(connectionServiceId),
 
+    /**
+     * @param id
+     */
+    getApplicationNote: (id) => CustomerAPI.getApplicationNote(id),
+
 
 
 }

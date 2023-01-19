@@ -179,5 +179,9 @@ export default {
             type: 'regular',
             'moving_utility_data_id': leadId
         }
+
+    },
+    mapApplicationNote : (data) => {
+        return data?.map(item => new ApplicationNote(item))
     }
 }

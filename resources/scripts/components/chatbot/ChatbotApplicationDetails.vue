@@ -284,9 +284,14 @@
                                     </div>
                                 </v-col>
                             </v-row>
-                            <v-row class="pa-3 d-flex justify-end" style="gap: 10px" v-if="shouldActivePersonalDetailsAction">
-                                <v-btn small @click="cancelPersonalDetails" :loading="cancelPersonalLoading" > Cancel</v-btn>
-                                <v-btn color="primary" small right @click="savePersonalDetails"  :loading="savePersonDloading" > Save</v-btn>
+                            <v-row class="pa-3"  v-if="shouldActivePersonalDetailsAction">
+                                <v-col cols="7" class="pa-0">
+                                    <span class="orange--text">{{ unsavedWarningMessage }}</span>
+                                </v-col>
+                                <v-col cols="5" class="d-flex" style="gap: 10px">
+                                    <v-btn small @click="cancelPersonalDetails" :loading="cancelPersonalLoading" > Cancel</v-btn>
+                                    <v-btn color="primary" small right @click="savePersonalDetails"  :loading="savePersonDloading" > Save</v-btn>
+                                </v-col>
                             </v-row>
                         </ValidationObserver>
                     </v-expansion-panel-content>
@@ -520,9 +525,15 @@
                                     </v-col>
 
                                 </v-row>
-                                <v-row class="pa-3 d-flex justify-end" style="gap: 10px" v-if="shouldActivePropertyDetailsAction">
-                                    <v-btn small @click="cancelPropertyDetails" :loading="cancelPropertyLoading" > Cancel</v-btn>
-                                    <v-btn color="primary" small right @click="savePropertyDetails" :loading="saveProDloading" > Save</v-btn>
+                                <v-row class="pa-3" v-if="shouldActivePropertyDetailsAction">
+                                    <v-col cols="7" class="pa-0">
+                                        <span class="orange--text">{{ unsavedWarningMessage }}</span>
+                                    </v-col>
+                                    <v-col cols="5" class="d-flex" style="gap: 10px">
+                                        <v-btn small @click="cancelPropertyDetails" :loading="cancelPropertyLoading" > Cancel</v-btn>
+                                        <v-btn color="primary" small right @click="savePropertyDetails" :loading="saveProDloading" > Save</v-btn>
+                                    </v-col>
+
                                 </v-row>
                             </ValidationObserver>
                         </v-expansion-panel-content>
@@ -620,12 +631,15 @@
                                     >Reason</v-btn>
                                 </div>
                             </v-col>
-                            <div>
-                                <div v-if="shouldShowServiceAction" class="mt-2 d-flex justify-end" style="gap: 10px">
+                            <v-row v-if="shouldShowServiceAction" class="pa-3 pr-4">
+                                <v-col cols="7">
+                                    <span class="orange--text">{{ unsavedWarningMessage }}</span>
+                                </v-col>
+                                <v-col cols="5" class="d-flex" style="gap: 10px">
                                     <v-btn small  @click="cancelStatus"  :loading="cancelgasStatusLoader"> Cancel</v-btn>
                                     <v-btn color="primary" small right @click="changeServiceStatus"  :loading="savegasStatusLoader"> Save</v-btn>
-                                </div>
-                            </div>
+                                </v-col>
+                            </v-row>
                         </v-row>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -834,9 +848,14 @@
                                 </template>
 
                             </v-row>
-                            <v-row class="pa-3 d-flex justify-end" style="gap: 10px" v-if="shouldActiveIdDetailsAction">
-                                <v-btn small  @click="cancelIdDetails"  :loading="cancelIdLoading"> Cancel</v-btn>
-                                <v-btn color="primary" small right @click="saveIdDetails"  :loading="saveIDDloading"> Save</v-btn>
+                            <v-row class="pa-3" v-if="shouldActiveIdDetailsAction">
+                                <v-col cols="7" class="pa-0">
+                                    <span class="orange--text">{{ unsavedWarningMessage }}</span>
+                                </v-col>
+                                <v-col cols="5" class="d-flex" style="gap: 10px">
+                                    <v-btn small  @click="cancelIdDetails"  :loading="cancelIdLoading"> Cancel</v-btn>
+                                    <v-btn color="primary" small right @click="saveIdDetails"  :loading="saveIDDloading"> Save</v-btn>
+                                </v-col>
                             </v-row>
                         </ValidationObserver>
                     </v-expansion-panel-content>
@@ -977,9 +996,14 @@
                                     </v-menu>
                                 </v-col>
                             </v-row>
-                            <v-row class="pa-3 d-flex justify-end" style="gap: 10px" v-if="shouldActiveConcessionDetailsAction">
-                                <v-btn small @click="cancelConcessionDetails" :loading="cancelConcessionLoading" > Cancel</v-btn>
-                                <v-btn color="primary" small right @click="saveConcessionDetails" :loading="saveConcessionLoading"> Save</v-btn>
+                            <v-row class="pa-3" v-if="shouldActiveConcessionDetailsAction">
+                                <v-col cols="7" class="pa-0">
+                                    <span class="orange--text">{{ unsavedWarningMessage }}</span>
+                                </v-col>
+                                <v-col cols="5" class="d-flex" style="gap: 10px">
+                                    <v-btn small @click="cancelConcessionDetails" :loading="cancelConcessionLoading" > Cancel</v-btn>
+                                    <v-btn color="primary" small right @click="saveConcessionDetails" :loading="saveConcessionLoading"> Save</v-btn>
+                                </v-col>
                             </v-row>
                         </ValidationObserver>
                     </v-expansion-panel-content>
@@ -1091,7 +1115,8 @@ export default {
             cancelgasStatusLoader: false,
             savegasStatusLoader: false,
             userConcentDD : CHATBOT_APP_DATA.YES_NO_OPTIONS,
-            emailBillingItems : CHATBOT_APP_DATA.EMAIL_BILLING_ITEMS
+            emailBillingItems : CHATBOT_APP_DATA.EMAIL_BILLING_ITEMS,
+            unsavedWarningMessage : CHATBOT_APP_DATA.WARNING_MESSAGE
         }
     },
     computed: {
@@ -1156,7 +1181,7 @@ export default {
             if(!await this.validateFormData('personal_details_ref')) return;
             this.savePersonDloading = true;
             await ChatbotApplicationService.updatePersonalDetails(this.app_id, this.chatbot_app.personal_details);
-            this.chatbot_app_backup = cloneDeep(this.chatbot_app);
+            this.chatbot_app_backup.personal_details = cloneDeep(this.chatbot_app.personal_details);
             this.personalDetailsFlag = [];
             this.savePersonDloading = false;
             this.$emit("applicationDetailsUpdated");
@@ -1164,9 +1189,10 @@ export default {
         },
 
         async cancelPersonalDetails(){
+            console.log(this.chatbot_app.personal_details.dob, this.chatbot_app_backup.personal_details.dob)
             this.cancelPersonalLoading = true;
-            this.chatbot_app = cloneDeep(this.chatbot_app_backup);
-            this.dob = this.chatbot_app.personal_details.dob
+            this.chatbot_app.personal_details = cloneDeep(this.chatbot_app_backup.personal_details);
+            this.dob = DayJs(this.chatbot_app.personal_details.dob).format("YYYY-MM-DD");
             this.cancelPersonalLoading = false;
             this.personalDetailsFlag = [];
         },
@@ -1175,7 +1201,7 @@ export default {
             if(!await this.validateFormData('property_details_ref')) return;
             this.saveProDloading = true;
             await ChatbotApplicationService.updatePropertyDetails(this.app_id, this.chatbot_app.property_details);
-            this.chatbot_app_backup = cloneDeep(this.chatbot_app);
+            this.chatbot_app_backup.property_details = cloneDeep(this.chatbot_app.property_details);
             this.saveProDloading = false;
             this.propertyDetailsFlag = [];
             this.$emit("applicationDetailsUpdated");
@@ -1183,8 +1209,8 @@ export default {
 
         async cancelPropertyDetails(){
             this.cancelPropertyLoading = true;
-            this.chatbot_app = cloneDeep(this.chatbot_app_backup);
-            this.moved_at = this.chatbot_app.property_details.moved_at;
+            this.chatbot_app.property_details = cloneDeep(this.chatbot_app_backup.property_details);
+            this.moved_at = DayJs(this.chatbot_app_backup.property_details.moved_at).format("YYYY-MM-DD");
             this.cancelPropertyLoading = false;
             this.propertyDetailsFlag = [];
         },
@@ -1193,7 +1219,7 @@ export default {
             if(!await this.validateFormData('id_details_ref')) return;
             this.saveIDDloading = true;
             await ChatbotApplicationService.updateIdDetails(this.app_id, this.chatbot_app.id_detail);
-            this.chatbot_app_backup = cloneDeep(this.chatbot_app);
+            this.chatbot_app_backup.id_detail = cloneDeep(this.chatbot_app.id_detail);
             this.idDetailsFlag = [];
             this.saveIDDloading = false;
             this.$emit("applicationDetailsUpdated");
@@ -1201,8 +1227,8 @@ export default {
 
         async cancelIdDetails(){
             this.cancelIdLoading = true;
-            this.chatbot_app = cloneDeep(this.chatbot_app_backup);
-            this.expire_date = this.chatbot_app.id_detail.identification_expire_date;
+            this.chatbot_app.id_detail = cloneDeep(this.chatbot_app_backup.id_detail);
+            this.expire_date = DayJs(this.chatbot_app.id_detail.identification_expire_date).format("YYYY-MM-DD");
             this.cancelIdLoading = false;
             this.idDetailsFlag = [];
         },
@@ -1210,7 +1236,7 @@ export default {
             if(!await this.validateFormData('concession_card_ref')) return;
             this.saveConcessionLoading = true;
             await ChatbotApplicationService.updateConcessionDetails(this.app_id, this.chatbot_app.concession_details);
-            this.chatbot_app_backup = cloneDeep(this.chatbot_app);
+            this.chatbot_app_backup.concession_details = cloneDeep(this.chatbot_app.concession_details);
             this.saveConcessionLoading = false;
             this.concessionDetailsFlag = [];
             this.$emit("applicationDetailsUpdated");
@@ -1218,9 +1244,9 @@ export default {
 
         async cancelConcessionDetails(){
             this.cancelConcessionLoading = true;
-            this.chatbot_app = cloneDeep(this.chatbot_app_backup);
-            this.concession_start_date = this.chatbot_app.concession_details.concession_card_start_date;
-            this.concession_end_date = this.chatbot_app.concession_details.concession_end_date;
+            this.chatbot_app.concession_details = cloneDeep(this.chatbot_app_backup.concession_details);
+            this.concession_start_date =  DayJs(this.chatbot_app.concession_details.concession_card_start_date).format("YYYY-MM-DD");
+            this.concession_end_date =  DayJs(this.chatbot_app.concession_details.concession_end_date).format("YYYY-MM-DD");
             this.cancelConcessionLoading = false;
             this.concessionDetailsFlag = [];
         },
@@ -1302,6 +1328,10 @@ export default {
 
             this.savegasStatusLoader = true;
             await ChatbotApplicationService.saveServiceStatus(this.chatbot_app);
+            this.chatbot_app.application_notes = await CustomerService.getApplicationNote(this.app_id);
+            this.chatbot_app_backup.eleService = cloneDeep(this.chatbot_app.eleService);
+            this.chatbot_app_backup.gasService = cloneDeep(this.chatbot_app.gasService);
+            this.chatbot_app_backup.cafStatus = cloneDeep(this.chatbot_app.cafStatus);
             this.savegasStatusLoader = false;
             this.$emit("applicationDetailsUpdated");
 
@@ -1382,7 +1412,9 @@ export default {
                 this.chatbot_app.eleService.status = this.chatbot_app_backup.eleService.status;
             }
 
-            this.chatbot_app.cafStatus = this.chatbot_app_backup.cafStatus;
+            this.chatbot_app.cafStatus = cloneDeep(this.chatbot_app_backup.cafStatus);
+            this.chatbot_app.eleService = cloneDeep(this.chatbot_app_backup.eleService);
+            this.chatbot_app.gasService = cloneDeep(this.chatbot_app_backup.gasService);
 
             this.cancelgasStatusLoader = false;
         },
