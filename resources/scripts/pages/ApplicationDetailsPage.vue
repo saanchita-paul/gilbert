@@ -106,6 +106,7 @@ import DuplicateLeadModal from "@scripts/components/crm/modals/DuplicateLeadModa
 import ApplicationUnlockModal from "@scripts/components/crm/modals/ApplicationUnlockModal";
 import ApplicationUnlockConfirmModal from "@scripts/components/crm/modals/ApplicationUnlockConfirmModal";
 import SendToChatbotConfirmModal from "@scripts/components/crm/modals/SendToChatbotConfirmModal";
+import GBGService from "@scripts/services/GBGService";
 
 
 export default {
@@ -289,21 +290,23 @@ export default {
             this.readMoreFlag = false;
         },
         updateLead(lead) {
+            this.emailCheck = false;
             this.fullName = lead.person_details.first_name + ' ' + lead.person_details.last_name;
             this.lead = lead;
         },
         async submitConnection(submitType) {
-            if (!this.lead.person_details.email_manually_verified_by) {
-                this.emailCheck = true;
-            }
-
             let v = await this.validateLead();
             let isProperAddress = await this.isProperAddress();
 
             if (!isProperAddress) Store.commit('setInvalidAddress', true);
 
-            if (!v || !isProperAddress) {
-                this.emailCheck = false;
+            if (!v || !isProperAddress) return;
+
+            if (!this.lead.person_details.email_manually_verified_by) {
+                await this.gbgEmailValidate();
+            }
+
+            if (this.emailCheck) {
                 return;
             }
 
@@ -352,6 +355,17 @@ export default {
             return false;
         },
 
+        async gbgEmailValidate() {
+            this.emailCheck = false;
+            try {
+                const res = await GBGService.validateEmail(this.leadSummary.email);
+                this.emailCheck = false;
+            } catch (error) {
+                this.emailCheck = true;
+                console.log('gbgEmailValidate error', error);
+            }
+            return this.emailCheck;
+        },
 
         closePreventSubmissionModal() {
             this.preventSubmissionFlag = false;
@@ -421,6 +435,8 @@ export default {
 
         async updateDraft(field, value, isDate, identification, isManualChangeFlag) {
             if (isNull(value)) return;
+
+            this.emailCheck = false;
 
             if (isDate) {
                 if (field == 'dob' && dayjs(value, 'DD/MM/YYYY').isSame(this.leadSummary.dob)) {

@@ -235,10 +235,10 @@
         <div class="text-field">
           <ValidationProvider
             name="Email"
-            :rules="`${isManuallyVerified ? '' : emailCheck ? 'gbg-email-validate|': ''}required|email`"
+            rules="required|email"
             v-slot="{ errors }"
           >
-            <v-text-field
+            <v-text-field :class="emailCheck ? 'v-input--has-state error--text' : ''"
               v-model="person_details.email"
               @input="updateLeads"
               outlined
@@ -248,6 +248,11 @@
               @blur="saveDraft('email', person_details.email)"
             ></v-text-field>
           </ValidationProvider>
+            <span class="error--text" v-if="emailCheck">
+                  <small>
+                      Email could not be verified. Please confirm it’s valid email.
+                  </small>
+            </span>
         <div class="text-field">
             <v-checkbox
                 v-model="person_details.email_manually_verified_by"
