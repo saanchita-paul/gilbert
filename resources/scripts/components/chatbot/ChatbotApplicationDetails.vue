@@ -620,12 +620,10 @@
                                     >Reason</v-btn>
                                 </div>
                             </v-col>
-                            <div>
-                                <div v-if="shouldShowServiceAction" class="mt-2 d-flex justify-end" style="gap: 10px">
-                                    <v-btn small  @click="cancelStatus"  :loading="cancelgasStatusLoader"> Cancel</v-btn>
-                                    <v-btn color="primary" small right @click="changeServiceStatus"  :loading="savegasStatusLoader"> Save</v-btn>
-                                </div>
-                            </div>
+                            <v-row v-if="shouldShowServiceAction" class="pa-3 pr-5 d-flex justify-end" style="gap: 10px">
+                                <v-btn small  @click="cancelStatus"  :loading="cancelgasStatusLoader"> Cancel</v-btn>
+                                <v-btn color="primary" small right @click="changeServiceStatus"  :loading="savegasStatusLoader"> Save</v-btn>
+                            </v-row>
                         </v-row>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -1156,7 +1154,7 @@ export default {
             if(!await this.validateFormData('personal_details_ref')) return;
             this.savePersonDloading = true;
             await ChatbotApplicationService.updatePersonalDetails(this.app_id, this.chatbot_app.personal_details);
-            this.chatbot_app_backup = cloneDeep(this.chatbot_app);
+            this.chatbot_app_backup.personal_details = cloneDeep(this.chatbot_app.personal_details);
             this.personalDetailsFlag = [];
             this.savePersonDloading = false;
             this.$emit("applicationDetailsUpdated");
@@ -1164,9 +1162,10 @@ export default {
         },
 
         async cancelPersonalDetails(){
+            console.log(this.chatbot_app.personal_details.dob, this.chatbot_app_backup.personal_details.dob)
             this.cancelPersonalLoading = true;
-            this.chatbot_app = cloneDeep(this.chatbot_app_backup);
-            this.dob = this.chatbot_app.personal_details.dob
+            this.chatbot_app.personal_details = cloneDeep(this.chatbot_app_backup.personal_details);
+            this.dob = DayJs(this.chatbot_app.personal_details.dob).format("YYYY-MM-DD");
             this.cancelPersonalLoading = false;
             this.personalDetailsFlag = [];
         },
@@ -1175,7 +1174,7 @@ export default {
             if(!await this.validateFormData('property_details_ref')) return;
             this.saveProDloading = true;
             await ChatbotApplicationService.updatePropertyDetails(this.app_id, this.chatbot_app.property_details);
-            this.chatbot_app_backup = cloneDeep(this.chatbot_app);
+            this.chatbot_app_backup.property_details = cloneDeep(this.chatbot_app.property_details);
             this.saveProDloading = false;
             this.propertyDetailsFlag = [];
             this.$emit("applicationDetailsUpdated");
@@ -1183,8 +1182,8 @@ export default {
 
         async cancelPropertyDetails(){
             this.cancelPropertyLoading = true;
-            this.chatbot_app = cloneDeep(this.chatbot_app_backup);
-            this.moved_at = this.chatbot_app.property_details.moved_at;
+            this.chatbot_app.property_details = cloneDeep(this.chatbot_app_backup.property_details);
+            this.moved_at = DayJs(this.chatbot_app_backup.property_details.moved_at).format("YYYY-MM-DD");
             this.cancelPropertyLoading = false;
             this.propertyDetailsFlag = [];
         },
@@ -1193,7 +1192,7 @@ export default {
             if(!await this.validateFormData('id_details_ref')) return;
             this.saveIDDloading = true;
             await ChatbotApplicationService.updateIdDetails(this.app_id, this.chatbot_app.id_detail);
-            this.chatbot_app_backup = cloneDeep(this.chatbot_app);
+            this.chatbot_app_backup.id_detail = cloneDeep(this.chatbot_app.id_detail);
             this.idDetailsFlag = [];
             this.saveIDDloading = false;
             this.$emit("applicationDetailsUpdated");
@@ -1201,8 +1200,8 @@ export default {
 
         async cancelIdDetails(){
             this.cancelIdLoading = true;
-            this.chatbot_app = cloneDeep(this.chatbot_app_backup);
-            this.expire_date = this.chatbot_app.id_detail.identification_expire_date;
+            this.chatbot_app.id_detail = cloneDeep(this.chatbot_app_backup.id_detail);
+            this.expire_date = DayJs(this.chatbot_app.id_detail.identification_expire_date).format("YYYY-MM-DD");
             this.cancelIdLoading = false;
             this.idDetailsFlag = [];
         },
@@ -1210,7 +1209,7 @@ export default {
             if(!await this.validateFormData('concession_card_ref')) return;
             this.saveConcessionLoading = true;
             await ChatbotApplicationService.updateConcessionDetails(this.app_id, this.chatbot_app.concession_details);
-            this.chatbot_app_backup = cloneDeep(this.chatbot_app);
+            this.chatbot_app_backup.concession_details = cloneDeep(this.chatbot_app.concession_details);
             this.saveConcessionLoading = false;
             this.concessionDetailsFlag = [];
             this.$emit("applicationDetailsUpdated");
@@ -1218,9 +1217,9 @@ export default {
 
         async cancelConcessionDetails(){
             this.cancelConcessionLoading = true;
-            this.chatbot_app = cloneDeep(this.chatbot_app_backup);
-            this.concession_start_date = this.chatbot_app.concession_details.concession_card_start_date;
-            this.concession_end_date = this.chatbot_app.concession_details.concession_end_date;
+            this.chatbot_app.concession_details = cloneDeep(this.chatbot_app_backup.concession_details);
+            this.concession_start_date =  DayJs(this.chatbot_app.concession_details.concession_card_start_date).format("YYYY-MM-DD");
+            this.concession_end_date =  DayJs(this.chatbot_app.concession_details.concession_end_date).format("YYYY-MM-DD");
             this.cancelConcessionLoading = false;
             this.concessionDetailsFlag = [];
         },
@@ -1400,6 +1399,7 @@ export default {
             );
         },
         dob() {
+            console.log("dob reset")
             if (isNull(this.dob) || this.dob === '' || this.dob === undefined ) return;
             this.chatbot_app.personal_details.dob = new DayJs(this.dob).format(
                 "DD/MM/YYYY"
