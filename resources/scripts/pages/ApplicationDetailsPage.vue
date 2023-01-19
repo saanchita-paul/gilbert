@@ -362,7 +362,6 @@ export default {
                 this.emailCheck = false;
             } catch (error) {
                 this.emailCheck = true;
-                console.log('gbgEmailValidate error', error);
             }
             return this.emailCheck;
         },
