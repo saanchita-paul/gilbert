@@ -1300,6 +1300,11 @@ export default {
             this.concession_end_date = this.chatbot_app.concession_details.concession_end_date;
             this.chatbot_app_backup = cloneDeep(this.chatbot_app);
             this.isLoadSkeleton  = false;
+            this.personalDetailsFlag = [];
+            this.propertyDetailsFlag = [];
+            this.idDetailsFlag = [];
+            this.applicationNoteFlag = [];
+            this.concessionDetailsFlag = [];
         },
 
         generateInitialDate(date){

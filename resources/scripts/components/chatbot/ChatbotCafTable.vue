@@ -120,7 +120,7 @@ export default {
             if (item.color === true) {
                 return 'red--text service-status';
             }
-             return 'red--text service-status';
+             return 'service-status';
 
         },
 

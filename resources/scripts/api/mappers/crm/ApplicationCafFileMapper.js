@@ -81,7 +81,7 @@ function mapModelColor(service, caf_generation_status, connection_type) {
     }
     return service.find(sv  => {
         return (['electricity', 'gas'].includes(sv.service_type) && (
-            ['rejected', 'submitted'].includes(sv.status?.toLowerCase()) || (sv.status == null)));
+            ['rejected', 'not submitted'].includes(sv.status?.toLowerCase()) || (sv.status == null)));
     });
 
 }
