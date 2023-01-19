@@ -96,7 +96,8 @@ export default {
             eleService : eleService,
             gasService : gasService,
             property_address: property_address,
-            cafStatus: cafStatus
+            cafStatus: cafStatus,
+            id: application.id
         });
     },
 
