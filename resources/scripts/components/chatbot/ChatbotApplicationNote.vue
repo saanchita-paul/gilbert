@@ -33,7 +33,7 @@
                 <v-timeline-item color="primary" small v-for="(item, index) in applications" :color="getColor(index)" :key="index">
                     <v-card class="elevation-2 timeline-card" color="gray" :class="{active:index===0}">
                         <!--need to make this title dynamic according to note title-->
-                        <p class="title">Note by [Hood][HOOD ADMIN]</p>
+                        <p class="title">Note by [{{ item.created_by }}] [{{ item.user_role }}]</p>
                         <p>{{item.created_at}}</p>
                         <p>{{item.text}}</p>
                     </v-card>

@@ -5,6 +5,6 @@ export default {
         elevation: 2,
         height : '100%'
     },
-    type: "article, actions , article,  actions, article, actions"
+    type: "article, actions , article,  actions, article, actions, article,  actions, article, actions"
 
 }

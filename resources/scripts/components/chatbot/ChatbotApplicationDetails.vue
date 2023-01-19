@@ -1022,7 +1022,7 @@
                 </v-expansion-panel>
             </v-expansion-panels>
 
-        <GgbService v-if="showGbg" :dialog="showGbg"  :propertyDetails="chatbot_app.property_address" @close="showGbg = false" @saveAddress="saveAddress" :saveButtonLoader="address_loader"></GgbService>
+            <GgbService v-if="showGbg" :dialog="showGbg"  :propertyDetails="chatbot_app.property_address" @close="showGbg = false" @saveAddress="saveAddress" :saveButtonLoader="address_loader"></GgbService>
 
             <RejectionReasonModal v-if="dialog" :dialog="dialog" :service="selectedRejectedService"  @close="onCloseReject" ></RejectionReasonModal>
         </div>
@@ -1043,6 +1043,7 @@ import IdCopyToClipboard from "@scripts/components/common/IdCopyToClipboard";
 import CHATBOT_APP_DATA from "@scripts/data/constants/CHATBOT_APP_DATA";
 
 import GgbService from "@scripts/components/chatbot/GbgService";import SkeletonLoaderData from "@scripts/data/SkeletonLoaderData";
+import dayjs from "dayjs";
 export default {
     name: "ChatbotApplicationDetails",
     components: {
@@ -1151,7 +1152,7 @@ export default {
             return this.concessionDetailsFlag.length > 0;
         },
         shouldShowExpansionPanel() {
-            return this.chatbot_app;
+            return !this.isLoadSkeleton && this.chatbot_app;
         },
         shouldShowConnectionType() {
             return !(this.chatbot_app.personal_details.connection_type === 'Temporary');
@@ -1245,8 +1246,10 @@ export default {
         async cancelConcessionDetails(){
             this.cancelConcessionLoading = true;
             this.chatbot_app.concession_details = cloneDeep(this.chatbot_app_backup.concession_details);
-            this.concession_start_date =  DayJs(this.chatbot_app.concession_details.concession_card_start_date).format("YYYY-MM-DD");
-            this.concession_end_date =  DayJs(this.chatbot_app.concession_details.concession_end_date).format("YYYY-MM-DD");
+            this.concession_start_date =  dayjs(this.chatbot_app.concession_details.concession_card_start_date).isValid()?
+                dayjs(this.chatbot_app.concession_details.concession_card_start_date).format("YYYY-MM-DD"): '';
+            this.concession_end_date =  dayjs(this.chatbot_app.concession_details.concession_end_date).isValid()?
+                dayjs(this.chatbot_app.concession_details.concession_end_date).format("YYYY-MM-DD"): '';
             this.cancelConcessionLoading = false;
             this.concessionDetailsFlag = [];
         },

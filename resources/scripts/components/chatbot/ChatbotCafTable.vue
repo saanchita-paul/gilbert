@@ -14,9 +14,15 @@
             class="row-pointer"
             @click:row="onRowSelect"
         >
+            <template v-slot:item.full_name="{item}">
+                <div class="d-flex align-center"  style="font-size: 12px!important;">
+                    <span > {{ truncateLongText(item.full_name) }}</span>
+                </div>
+            </template>
+
             <template v-slot:item.to_address="{item}">
                 <div class="d-flex align-center"  style="font-size: 12px!important;">
-                    <span > {{ mapAddress(item.to_address) }}</span>
+                    <span > {{ truncateLongText (item.to_address) }}</span>
                 </div>
             </template>
 
@@ -164,7 +170,7 @@ export default {
             }
         },
 
-        mapAddress(address){
+        truncateLongText(address){
             return address.substring(0,20)+"...";
         },
 
