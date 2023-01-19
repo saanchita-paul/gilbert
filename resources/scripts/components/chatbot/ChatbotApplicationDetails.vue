@@ -474,12 +474,12 @@
                                         </div>
                                     </v-col>
                                     <v-col cols ="5"  class="py-0 my-1">
-                                        <p class="font-weight-bold">Access requirement</p>
+                                        <p class="font-weight-bold">Occupancy</p>
                                     </v-col>
                                     <v-col cols ="7" class="py-0 my-1">
                                         <div class="text-field">
                                             <ValidationProvider
-                                                name="Access requirement"
+                                                name="Occupancy"
                                                 v-slot="{ errors }"
                                             >
                                             <v-select
