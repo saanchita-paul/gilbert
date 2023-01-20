@@ -15,7 +15,11 @@ use App\Modules\PropertyMe\Commands\SavePropertyMeLeadsCommand;
 use App\Modules\PropertyMe\Commands\SetPropertyMeAgentEmailCommand;
 use Origin\Commands\OriginStorePlanCommand;
 use Origin\Commands\OriginCheckStatusCommand;
-
+use App\Console\Commands\MRIOfficeCommand;
+use MRI\Commands\MriFetchTenanciesCommand;
+use MRI\Commands\MriFetchAgentsCommand;
+use MRI\Commands\MriFetchNotesCommand;
+use Carbon\Carbon;
 
 class Kernel extends ConsoleKernel
 {
@@ -36,6 +40,10 @@ class Kernel extends ConsoleKernel
         OriginCheckStatusCommand::class,
         UpdateWaterStatusCommand::class,
         GetTsaLeadIdCommand::class,
+        MRIOfficeCommand::class,
+        MriFetchTenanciesCommand::class,
+        MriFetchAgentsCommand::class,
+        MriFetchNotesCommand::class,
     ];
 
     /**
@@ -46,20 +54,29 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('fetch:submitted-leads')->hourly();
-         $schedule->command('ea:upload:lead')->daily();
-         $schedule->command('property_me:save_contact')->everyThirtyMinutes();
-         $schedule->command('origin:check')->hourlyAt(45);
+        $schedule->command('fetch:submitted-leads')->hourly();
+        $schedule->command('ea:upload:lead')->daily();
+        $schedule->command('property_me:save_contact')->everyThirtyMinutes();
+        $schedule->command('origin:check')->hourlyAt(45);
 
-         if($this->shouldIgniteRun()){
+        if ($this->shouldIgniteRun()) {
             $schedule->command('ignite:fetch')->everyTenMinutes();
-         }
+        }
 
-         $this->registerWaterStatusUpdate($schedule);
+        $this->registerWaterStatusUpdate($schedule);
 
-         $this->registerSaveTsaCallHistory($schedule);
+        $this->registerSaveTsaCallHistory($schedule);
 
         $schedule->command('fetch:get-tsa-lead-id')->everyTenMinutes();
+
+        $schedule->command('send-email-mri-office')->twiceDaily();
+
+//        $this->runMri($schedule);
+
+        /**
+         * For Horizon metrics dashboard
+         */
+        $schedule->command('horizon:snapshot')->everyFiveMinutes();
     }
 
     private function registerWaterStatusUpdate(Schedule $schedule)
@@ -73,9 +90,14 @@ class Kernel extends ConsoleKernel
         $schedule->command('tsa:save-call-history')->everyThirtyMinutes();
     }
 
-    private function shouldIgniteRun(){
+    private function shouldIgniteRun() {
         $igniteStart = config('ignite.IGNITE_IS_ACTIVE') ?? false;
         return $igniteStart;
+    }
+
+    private function runMri(Schedule $schedule) {
+        $schedule->command('mri:fetch_agent')->hourlyAt(10);
+        $schedule->command('mri:fetch_tenancies')->everyFifteenMinutes();
     }
 
     /**
@@ -85,7 +107,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

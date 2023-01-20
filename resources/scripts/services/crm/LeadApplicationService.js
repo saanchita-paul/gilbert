@@ -25,7 +25,7 @@ export default {
         //    return  DuplicateLeadService.getDuplicateLeadData(
         //        params.duplication_group_id)
         // }
-        return  LeadApplicationAPI.getUserLeads(
+        return LeadApplicationAPI.getUserLeads(
             sort_search_meta,
             active_lead_type,
             src,
@@ -50,6 +50,7 @@ export default {
     closeApplication: id => LeadApplicationAPI.closeApplication(id),
     sendToChatBot: id => LeadApplicationAPI.sendToChatBot(id),
     isSentToChatbot: id => LeadApplicationAPI.getIsSentToChatbot(id),
+    lockOrUnlockApp: (id, formData) => LeadApplicationAPI.lockOrUnlockApp(id, formData),
     loadPlan: serviceProvider => LeadApplicationAPI.getPlan(serviceProvider),
     loadNote: leadUser => LeadApplicationAPI.getNote(leadUser),
     loadServiceProvider: services =>
@@ -224,6 +225,8 @@ export default {
                 return "Origin";
             case providerNameMapper.PROVIDER_POWERSHOP:
                 return "Powershop";
+            case providerNameMapper.PROVIDER_FIRST_ENERGY:
+                return "1st Energy";
             default:
                 return null;
         }

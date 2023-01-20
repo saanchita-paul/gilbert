@@ -26,6 +26,7 @@ use PropertyMe\services\FetchContacts;
 use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\GilbertLeadAPIController;
 use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
+use App\Http\Controllers\ApplicationEventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -202,6 +203,10 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::get('/applications/{id}/send-to-chatbot', [SendApplicationToChatbotController::class, 'sendApplication']);
     Route::get('/applications/{id}/is-sent-to-chatbot', [ApplicationController::class, 'isSentToChatBot']);
+
+    // Lock/unlock application routes
+    Route::post('/applications/{id}/lock-or-unlock', [ApplicationController::class, 'lockUnlockApp']);
+
      /***
      * Application closing reasons route
      */
@@ -293,9 +298,12 @@ Route::get('/applications/{id}/email-manually-verified', [ApplicationController:
 /**
  * gilbert to chatbot sync
  */
-Route::get('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syncProperty']);
+Route::post('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syncProperty']);
 
-
+/**
+ * application events
+ */
+Route::post('/application-events', [ApplicationEventController::class, 'saveEvent']);
 
 
 /**
@@ -343,10 +351,9 @@ Route::get('/applications/{applicationId}/{submitType}/same-day-connection', [Po
 
 
 Route::get('/kaka', function () {
-    $dateTimeZone = new DateTimeZone("Australia/Melbourne");
-    $date = new DateTime(null, $dateTimeZone);
-//    dd($date);
-    return $dateTimeZone->getOffset($date) / 60 / 60;
+    $m = new \App\Services\Address\AddressModel(connection_application_id: 2);
+    $s= new \App\Services\Address\GBGServices($m);
+    dd($s->findAddressByText());
 
 });
 

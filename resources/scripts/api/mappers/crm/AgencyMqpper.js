@@ -49,11 +49,13 @@ export default {
             name: agency.title,
             type: agency.type
         };
+        let mri_office = null;
 
         if(agency.type === 0) {
             let ofc = agency.office;
             let agPro = agency.allocator;
             let commission = agency.profile;
+            let mriOfc = agency.mriOffice;
             office = {
                 name: ofc.title,
                 address: ofc.address,
@@ -96,6 +98,11 @@ export default {
                     rate: commission.sponsorship,
                 },
             ];
+            mri_office = {
+                key: mriOfc.key,
+                company_name: mriOfc.company_name,
+                activation_date: mriOfc.activation_date
+            }
         }
 
         if(newAgency.type  === 0)
@@ -105,6 +112,7 @@ export default {
                 office: office,
                 agent: agent,
                 office_commissions: office_commissions,
+                mri_office: mri_office
             }
         }
 

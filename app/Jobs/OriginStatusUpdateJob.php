@@ -2,14 +2,13 @@
 
 namespace App\Jobs;
 
-use Origin\Services\CheckOrderAPI;
+use App\Services\hubspot\HubspotContactService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Services\Agency\HubspotContactService;
+use Origin\Services\CheckOrderAPI;
 
 class OriginStatusUpdateJob implements ShouldQueue
 {

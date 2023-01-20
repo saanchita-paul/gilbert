@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services\GilbertToCB;
+
 use App\Models\ConnectionApplication;
 use App\Services\Address\AddressModel;
 use Illuminate\Database\Eloquent\Collection;
@@ -36,17 +37,15 @@ class GilbertToChatbotService
      */
     public function create()
     {
-        $url = config('bot.root_url') .'/api/gilbert-application';
+        $url = config('bot.root_url') . '/api/gilbert-application';
         $response = Http::post($url, $this->getProperties());
-        if($response->status() === 201){
-            $this->application->update(['chatbot_id' => $response->json()['moving_utility_id']]);
+        if ($response->status() === 201) {
+            $this->application->update(['chatbot_id' => $response->json()['moving_utility_id'], 'is_locked' => true]);
         } else {
             \Log::error(json_encode($response->body()));
             throw new \Exception('Send to Chatbot is not successful');
         }
     }
-
-
 
 
     private function getProperties(): array
@@ -164,10 +163,10 @@ class GilbertToChatbotService
             "promotion_code" => $this->application->promotion_code,
             "promotion_terms_and_conditions_accepted_at" => $this->application->promotion_terms_and_conditions_accepted_at,
             "is_generated_caf" => $this->application->is_generated_caf,
-            "connection_services" =>$this->application->connectionServices ?  $this->application->connectionServices->toArray() : [],
-            "identification" =>$this->application->identification ?  $this->application->identification->toArray() : null,
-            "authorized_person" =>$this->application->authorizedPerson ?  $this->application->authorizedPerson->toArray() : null
-          ];
+            "connection_services" => $this->application->connectionServices ? $this->application->connectionServices->toArray() : [],
+            "identification" => $this->application->identification ? $this->application->identification->toArray() : null,
+            "authorized_person" => $this->application->authorizedPerson ? $this->application->authorizedPerson->toArray() : null
+        ];
     }
 
     public function mapConcessionCardType($data)
@@ -177,7 +176,7 @@ class GilbertToChatbotService
 
     private function mapTenancyType($tenancyType)
     {
-        return match((int) $tenancyType) {
+        return match ((int)$tenancyType) {
             1 => 1,
             2 => 0,
             default => null
@@ -186,13 +185,12 @@ class GilbertToChatbotService
 
     private function mapbillingType($billingType)
     {
-        return match((int) $billingType) {
+        return match ((int)$billingType) {
             1 => 'email',
             0 => 'connection_address',
             default => null
         };
     }
-
 
 
 }

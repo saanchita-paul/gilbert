@@ -4,17 +4,12 @@ namespace App\Jobs\EnergySubmission;
 
 use App\Events\Agency\SubmitApplicationEvent;
 use App\Models\ConnectionApplication;
-use App\Services\Sales\PostSalesService;
-
 use App\Models\ConnectionService;
-use App\Services\Agency\HubspotContactService;
-use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-
 use Powershop\Services\SubmitToPowershopService;
 
 

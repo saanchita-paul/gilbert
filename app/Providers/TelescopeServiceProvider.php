@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Jobs\WaterAutoSubmitJob;
+use App\Listeners\Agency\CreateHubSpotContact;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Telescope\IncomingEntry;
 use Laravel\Telescope\Telescope;
@@ -14,9 +16,14 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
      *
      * @return void
      */
+
+    public const TAGS_MAPPER = [
+//        "SomeClass => 'class property'
+        CreateHubSpotContact::class => 'applicationId'// this is default, it's for just an example
+    ];
     public function register()
     {
-        // Telescope::night();
+         Telescope::night();
 
         $this->hideSensitiveRequestDetails();
 
@@ -31,6 +38,26 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 //                   $entry->isScheduledTask() ||
 //                   $entry->hasMonitoredTag();
 //        });
+        $this->tagJob();
+    }
+
+    private function tagJob()
+    {
+        Telescope::tag(function (IncomingEntry $entry) {
+            if ($entry->type === 'job') {
+//                dd($entry->content);
+                $tag =  $entry->content['name'];
+                $id = $entry->content['data']['applicationId'] ?? null;
+
+                if (!$id && isset(TelescopeServiceProvider::TAGS_MAPPER[$tag])) {
+                    $id = $entry->content['data'][TelescopeServiceProvider::TAGS_MAPPER[$tag]] ?? null;
+                }
+
+                $tag = $id ? $tag . ":$id" : $tag;
+                $tags = $tag ? [$tag] : [];
+            }
+            return array_merge($entry->tags, $tags ?? []);
+        });
     }
 
     /**

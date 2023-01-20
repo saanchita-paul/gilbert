@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Services\Agency;
-
 
 use App\Models\ApplicationNote;
 use App\Models\User;
@@ -21,7 +19,7 @@ class ApplicationNoteService
 
     public function getNotes($application_id)
     {
-        return ApplicationNote::query()->where('connection_application_id','=', $application_id)->get();
+        return ApplicationNote::query()->where('connection_application_id', '=', $application_id)->get();
     }
 
     public function createNotes(array $note, $applicationId)
@@ -30,21 +28,19 @@ class ApplicationNoteService
         $note['connection_application_id'] = $applicationId;
         $note['created_by'] = $this->user->id;
         $note['user_role'] = $this->user->roles->first()?->name;
-        if(!isset($note['type']) || $note['type'] == ApplicationNote::NOTETYPE['regular']) {
+        if (!isset($note['type']) || $note['type'] == ApplicationNote::NOTETYPE['regular']) {
             $note['type'] = ApplicationNote::NOTETYPE['regular'];
-            $note['title'] = 'Note by ['.$this->user->profile->first_name.']';
-        }
-        else if ( $note['type'] == ApplicationNote::NOTETYPE['close_connection'] ) {
+            $note['title'] = 'Note by [' . $this->user->profile->first_name . ']';
+        } elseif ($note['type'] == ApplicationNote::NOTETYPE['close_connection']) {
             $note['type'] = ApplicationNote::NOTETYPE['close_connection'];
             $note['title'] = 'Note by [' . $this->user->profile->first_name . ']';
-        }
-        else if(in_array($note['type'], ApplicationNote::NOTESUBMIT)) {
-            $note['title'] = 'Note by ['.$this->user->profile->first_name.']';
-        }
-        else {
+        } elseif (in_array($note['type'], ApplicationNote::NOTESUBMIT)) {
+            $note['title'] = 'Note by [' . $this->user->profile->first_name . ']';
+        } elseif ($note['type'] == ApplicationNote::MRI_IDENTIFICATION) {
+            $note['title'] = 'HOOD Data from MRI Note';
+        } else {
             $note['title'] = $note['type'];
         }
         return ApplicationNote::create($note);
-
     }
 }

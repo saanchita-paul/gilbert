@@ -432,7 +432,7 @@
             rules="required"
             v-slot="{ errors }"
           >
-            <v-textarea
+            <v-textarea class="mb-2"
               @click="openServiceAddress"
               v-model="property_details.address_text"
               style="min-height: 56px !important;"
@@ -458,7 +458,7 @@
               outlined
               dense
               readonly
-              hide-details="auto" :error-messages=" errors[0]"
+              hide-details="auto" :error-messages="errors[0]"
           ></v-textarea>
           </ValidationProvider>
         </div>
@@ -565,6 +565,20 @@
               </template>
             </v-text-field>
           </ValidationProvider>
+<!--            <span class="mt-2" v-if="isEmbeddedNMI == 2">-->
+<!--                <span><small>Checking Embedded..</small></span>-->
+<!--                <v-progress-linear-->
+<!--                    class="primary-color"-->
+<!--                    indeterminate-->
+<!--                    height="6"-->
+<!--                ></v-progress-linear>-->
+<!--            </span>-->
+<!--            <span class="error&#45;&#45;text" v-if="isEmbeddedNMI == 1">-->
+<!--                  <v-icon color="error" class="mt-4">-->
+<!--                      info-->
+<!--                  </v-icon>-->
+<!--                  <small v-html="embeddedText"></small>-->
+<!--            </span>-->
         </div>
       </div>
 
@@ -594,6 +608,20 @@
                         </template>
                     </v-text-field>
                 </ValidationProvider>
+<!--                <span class="mt-2" v-if="isEmbeddedNMI == 2">-->
+<!--                    <span><small>Checking Embedded..</small></span>-->
+<!--                    <v-progress-linear-->
+<!--                        class="primary-color"-->
+<!--                        indeterminate-->
+<!--                        height="6"-->
+<!--                    ></v-progress-linear>-->
+<!--                </span>-->
+<!--                <span class="error&#45;&#45;text" v-if="isEmbeddedNMI == 1">-->
+<!--                      <v-icon color="error" class="mt-4">-->
+<!--                          info-->
+<!--                      </v-icon>-->
+<!--                      <small v-html="embeddedText"></small>-->
+<!--                </span>-->
             </div>
         </div>
 
@@ -623,6 +651,21 @@
               </template>
             </v-text-field>
           </ValidationProvider>
+            <span class="mt-2" v-if="isEmbeddedMIRN == 2">
+                <span><small>Checking Embedded..</small></span>
+                <v-progress-linear
+                    class="primary-color"
+                    indeterminate
+                    height="6"
+                ></v-progress-linear>
+            </span>
+
+            <span class="error--text" v-if="isEmbeddedMIRN == 1">
+                  <v-icon color="error" class="mt-4">
+                      info
+                  </v-icon>
+                  <small v-html="embeddedText"></small>
+            </span>
         </div>
       </div>
 
@@ -651,6 +694,21 @@
                         </template>
                     </v-text-field>
                 </ValidationProvider>
+                <span class="mt-2" v-if="isEmbeddedMIRN == 2">
+                    <span><small>Checking Embedded..</small></span>
+                    <v-progress-linear
+                        class="primary-color"
+                        indeterminate
+                        height="6"
+                    ></v-progress-linear>
+                </span>
+
+                <span class="error--text" v-if="isEmbeddedMIRN == 1">
+                      <v-icon color="error" class="mt-4">
+                          info
+                      </v-icon>
+                      <small v-html="embeddedText"></small>
+                </span>
             </div>
         </div>
 
@@ -1669,6 +1727,7 @@ export default {
         serviceAddressFlag: false,
         currentUser: null,
         manuallyVerified: false,
+        embeddedText: `The electricity at this address is in an <strong>Embedded network.</strong>`,
     };
   },
   methods: {
@@ -1961,6 +2020,15 @@ export default {
         isManuallyVerified() {
             return this.person_details.email_manually_verified_by;
         },
+        isEmbeddedNMI() {
+            return this.lead.embedded_nmi;
+        },
+        isEmbeddedMIRN() {
+            return this.lead.embedded_mirn;
+        },
+        loadAddressLoader() {
+            return this.lead.loading_address_info;
+        },
     },
 
   watch: {
@@ -2124,5 +2192,11 @@ export default {
 }
 .message-text {
     font-style: italic;
+}
+.primary-color {
+    color: #5c229a;
+}
+.mt-4 {
+    margin-top: 4px !important;
 }
 </style>
