@@ -171,7 +171,8 @@ export default {
         },
 
         truncateLongText(address){
-            return address.substring(0,20)+"...";
+            let value =  address.substring(0,20);
+            return address.length > 20 ? value+'...' : value;
         },
 
         selectedRowToHighlight(item) {
