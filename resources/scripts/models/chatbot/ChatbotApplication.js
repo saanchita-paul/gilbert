@@ -18,7 +18,7 @@ export default class {
         this.id_detail = id_detail;
         this.personal_details = personal_details;
         this.property_details = property_details;
-        this.application_notes = application_notes?.reverse();
+        this.application_notes = application_notes;
         this.connection_services = connection_services?.reverse();
         this.eleService = eleService;
         this.gasService = gasService;
