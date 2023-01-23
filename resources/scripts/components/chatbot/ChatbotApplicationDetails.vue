@@ -132,7 +132,7 @@
                                                         v-bind="attrs"
                                                         :error-messages="errors[0]"
                                                         hide-details="auto"
-                                                        @change="updateDobPicker"
+                                                        @keyup="updateDobPicker"
                                                     >
                                                         <template slot="append">
                                                             <v-icon v-on="on">mdi-calendar</v-icon>
@@ -143,7 +143,6 @@
                                             <v-date-picker
                                                 v-model="dob"
                                                 @input="showDateOfBirth = false"
-                                                @change="personalDetailsChanged('dob')"
                                             ></v-date-picker>
                                         </v-menu>
                                     </div>
@@ -338,7 +337,7 @@
                                                                 v-bind="attrs"
                                                                 :error-messages="errors[0]"
                                                                 hide-details="auto"
-                                                                @change="updateMovingDatePicker"
+                                                                @keyup="updateMovingDatePicker"
                                                             >
                                                                 <template slot="append">
                                                                     <v-icon v-on="on">mdi-calendar</v-icon>
@@ -349,7 +348,6 @@
                                                     <v-date-picker
                                                         v-model="moved_at"
                                                         @input="showMovingDate = false"
-                                                        @change="propertyDetailsChanged('moved_at')"
                                                     ></v-date-picker>
                                                 </v-menu>
                                             </ValidationProvider>
@@ -740,7 +738,7 @@
                                                         v-model="chatbot_app.id_detail.identification_expire_date"
                                                         v-bind="attrs"
                                                         hide-details="auto"
-                                                        @change="updateExpireDatePicker"
+                                                        @keyup="updateExpireDatePicker"
                                                         :error-messages="errors[0]"
                                                     >
                                                         <template slot="append">
@@ -752,7 +750,6 @@
                                             <v-date-picker
                                                 v-model="expire_date"
                                                 @input="showExpireDate = false"
-                                                @change="idDetailsChanged('identification_expire_date')"
                                             ></v-date-picker>
                                         </v-menu>
                                     </div>
@@ -937,7 +934,7 @@
                                                     v-bind="attrs"
                                                     :error-messages="errors[0]"
                                                     hide-details="auto"
-                                                    @change="updateConcessionStartDatePicker"
+                                                    @keyup="updateConcessionStartDatePicker"
                                                 >
                                                     <template slot="append">
                                                         <v-icon v-on="on">mdi-calendar</v-icon>
@@ -948,7 +945,6 @@
                                         <v-date-picker
                                             v-model="concession_start_date"
                                             @input="isConcessionStartDate = false"
-                                            @change="concessionDetailsChanged('concession_card_start_date')"
                                         ></v-date-picker>
                                     </v-menu>
                                 </v-col>
@@ -980,7 +976,7 @@
                                                     v-bind="attrs"
                                                     :error-messages="errors[0]"
                                                     hide-details="auto"
-                                                    @change="updateConcessionEndDatePicker"
+                                                    @keyup="updateConcessionEndDatePicker"
                                                 >
                                                     <template slot="append">
                                                         <v-icon v-on="on">mdi-calendar</v-icon>
@@ -991,7 +987,6 @@
                                         <v-date-picker
                                             v-model="concession_end_date"
                                             @input="isConcessionEndDate = false"
-                                            @change="concessionDetailsChanged('concession_end_date')"
                                         ></v-date-picker>
                                     </v-menu>
                                 </v-col>
@@ -1036,7 +1031,7 @@ import DayJs from "dayjs";
 const {titlesMapperForDropdownCb} = require("@scripts/data/titleMapper");
 import ChatbotApplicationNote from "@scripts/components/chatbot/ChatbotApplicationNote";
 import ChatbotApplicationService from "@scripts/services/chatbot/ChatbotApplicationService";
-import {isNull, cloneDeep} from "lodash-es";
+import {isNull, cloneDeep, clone} from "lodash-es";
 import CustomerService from "@scripts/services/CustomerService";
 import RejectionReasonModal from "@scripts/components/crm/modals/RejectionReasonModal";
 import IdCopyToClipboard from "@scripts/components/common/IdCopyToClipboard";
@@ -1106,11 +1101,7 @@ export default {
             address_loader: false,
             nmi_loader: false,
             mirn_loader: false,
-
-            cafStatus: [
-                'CAF Submitted',
-                '--'
-            ],
+            cafStatus: CHATBOT_APP_DATA.CAF_STATUS,
             canceleleStatusLoader: false,
             saveeleStatusLoader: false,
             cancelgasStatusLoader: false,
@@ -1169,8 +1160,6 @@ export default {
                 this.chatbot_app.cafStatus !== this.chatbot_app_backup.cafStatus;
         }
 
-
-
     },
     methods: {
         handleExpansionPanel(){
@@ -1190,10 +1179,8 @@ export default {
         },
 
         async cancelPersonalDetails(){
-            console.log(this.chatbot_app.personal_details.dob, this.chatbot_app_backup.personal_details.dob)
             this.cancelPersonalLoading = true;
             this.chatbot_app.personal_details = cloneDeep(this.chatbot_app_backup.personal_details);
-            this.dob = DayJs(this.chatbot_app.personal_details.dob).format("YYYY-MM-DD");
             this.cancelPersonalLoading = false;
             this.personalDetailsFlag = [];
         },
@@ -1211,7 +1198,6 @@ export default {
         async cancelPropertyDetails(){
             this.cancelPropertyLoading = true;
             this.chatbot_app.property_details = cloneDeep(this.chatbot_app_backup.property_details);
-            this.moved_at = DayJs(this.chatbot_app_backup.property_details.moved_at).format("YYYY-MM-DD");
             this.cancelPropertyLoading = false;
             this.propertyDetailsFlag = [];
         },
@@ -1229,7 +1215,6 @@ export default {
         async cancelIdDetails(){
             this.cancelIdLoading = true;
             this.chatbot_app.id_detail = cloneDeep(this.chatbot_app_backup.id_detail);
-            this.expire_date = DayJs(this.chatbot_app.id_detail.identification_expire_date).format("YYYY-MM-DD");
             this.cancelIdLoading = false;
             this.idDetailsFlag = [];
         },
@@ -1246,10 +1231,6 @@ export default {
         async cancelConcessionDetails(){
             this.cancelConcessionLoading = true;
             this.chatbot_app.concession_details = cloneDeep(this.chatbot_app_backup.concession_details);
-            this.concession_start_date =  dayjs(this.chatbot_app.concession_details.concession_card_start_date).isValid()?
-                dayjs(this.chatbot_app.concession_details.concession_card_start_date).format("YYYY-MM-DD"): '';
-            this.concession_end_date =  dayjs(this.chatbot_app.concession_details.concession_end_date).isValid()?
-                dayjs(this.chatbot_app.concession_details.concession_end_date).format("YYYY-MM-DD"): '';
             this.cancelConcessionLoading = false;
             this.concessionDetailsFlag = [];
         },
@@ -1296,12 +1277,19 @@ export default {
         async loadApplication() {
             this.isLoadSkeleton = true;
             this.chatbot_app =  await CustomerService.getMovingData(this.app_id);
-            this.dob = this.chatbot_app.personal_details.dob
+            this.dob = this.chatbot_app.personal_details.dob;
             this.moved_at = this.chatbot_app.property_details.moved_at;
             this.expire_date = this.chatbot_app.id_detail.identification_expire_date;
             this.concession_start_date = this.chatbot_app.concession_details.concession_card_start_date;
             this.concession_end_date = this.chatbot_app.concession_details.concession_end_date;
             this.chatbot_app_backup = cloneDeep(this.chatbot_app);
+            // formatting backup dates for comparing
+            this.chatbot_app_backup.personal_details.dob = this.formatInitialDate(this.chatbot_app.personal_details.dob)
+            this.chatbot_app_backup.property_details.moved_at = this.formatInitialDate(this.chatbot_app.property_details.moved_at)
+            this.chatbot_app_backup.id_detail.identification_expire_date = this.formatInitialDate(this.chatbot_app.id_detail.identification_expire_date)
+            this.chatbot_app_backup.concession_details.concession_card_start_date = this.formatInitialDate(this.chatbot_app.concession_details.concession_card_start_date)
+            this.chatbot_app_backup.concession_details.concession_end_date = this.formatInitialDate(this.chatbot_app.concession_details.concession_end_date)
+            //  formatting end
             this.isLoadSkeleton  = false;
             this.personalDetailsFlag = [];
             this.propertyDetailsFlag = [];
@@ -1310,8 +1298,8 @@ export default {
             this.concessionDetailsFlag = [];
         },
 
-        generateInitialDate(date){
-            return date ? new DayJs(date).format("YYYY-MM-DD") : null;
+        formatInitialDate(date){
+            return dayjs(date).isValid() ? new DayJs(date).format("DD/MM/YYYY") : null;
         },
 
         handleNewApplication(){
@@ -1333,7 +1321,6 @@ export default {
         },
 
         async changeServiceStatus() {
-
             this.savegasStatusLoader = true;
             await ChatbotApplicationService.saveServiceStatus(this.chatbot_app);
             this.chatbot_app.application_notes = await CustomerService.getApplicationNote(this.app_id);
@@ -1342,7 +1329,6 @@ export default {
             this.chatbot_app_backup.cafStatus = cloneDeep(this.chatbot_app.cafStatus);
             this.savegasStatusLoader = false;
             this.$emit("applicationDetailsUpdated");
-
         },
 
         personalDetailsChanged(attribute){
@@ -1398,7 +1384,6 @@ export default {
         },
 
         concessionDetailsChanged(attribute){
-            console.log(this.chatbot_app.concession_details[attribute])
             if(this.chatbot_app.concession_details[attribute] !== this.chatbot_app_backup.concession_details[attribute]){
                 if(!this.concessionDetailsFlag.includes(attribute))
                     this.concessionDetailsFlag.push(attribute);
@@ -1423,7 +1408,6 @@ export default {
             this.chatbot_app.cafStatus = cloneDeep(this.chatbot_app_backup.cafStatus);
             this.chatbot_app.eleService = cloneDeep(this.chatbot_app_backup.eleService);
             this.chatbot_app.gasService = cloneDeep(this.chatbot_app_backup.gasService);
-
             this.cancelgasStatusLoader = false;
         },
 
@@ -1438,18 +1422,21 @@ export default {
             this.chatbot_app.id_detail.identification_expire_date = new DayJs(this.expire_date).format(
                 "DD/MM/YYYY"
             );
+            this.idDetailsChanged('identification_expire_date')
         },
         dob() {
             if (isNull(this.dob) || this.dob === '' || this.dob === undefined ) return;
-            this.chatbot_app.personal_details.dob = new DayJs(this.dob).format(
+            this.chatbot_app.personal_details.dob = dayjs(this.dob).format(
                 "DD/MM/YYYY"
             );
+            this.personalDetailsChanged('dob');
         },
         moved_at(){
             if (isNull(this.moved_at) || this.moved_at === '' || this.moved_at === undefined ) return;
             this.chatbot_app.property_details.moved_at = new DayJs(this.moved_at).format(
                 "DD/MM/YYYY"
             );
+            this.propertyDetailsChanged('moved_at')
         },
 
         concession_start_date() {
@@ -1457,12 +1444,14 @@ export default {
             this.chatbot_app.concession_details.concession_card_start_date = new DayJs(this.concession_start_date).format(
                 "DD/MM/YYYY"
             );
+            this.concessionDetailsChanged('concession_card_start_date')
         },
         concession_end_date() {
             if (isNull(this.concession_end_date) || this.concession_end_date === '' || this.concession_end_date === undefined ) return;
             this.chatbot_app.concession_details.concession_end_date = new DayJs(this.concession_end_date).format(
                 "DD/MM/YYYY"
             );
+            this.concessionDetailsChanged('concession_end_date')
         },
         '$route': {
             handler() {
