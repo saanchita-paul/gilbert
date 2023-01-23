@@ -151,7 +151,6 @@ class IgniteLeadService
 
         try {
             foreach ($services as $value) {
-                info($value);
                 $this->connectionApplication->connectionServices()->create(
                     [
                         'service_type' => $value ,
@@ -271,7 +270,7 @@ class IgniteLeadService
         try {
             $service = new IgniteConnectionLeadService();
             $token =  $service->authenticate();
-            $leads =  $service->getIgniteLeads($token , $service->getConnctionLeadUrl());
+            $leads =  $this->getNewLeadOnly($service->getIgniteLeads($token , $service->getConnctionLeadUrl()));
             $this->verifyData($leads , $service);
             return true;
         } catch (\Exception $exception) {
@@ -279,6 +278,38 @@ class IgniteLeadService
             \Log::error($exception->getTraceAsString());
             throw $exception;
         }
+    }
+
+    private function getNewLeadOnly($leads): array
+    {
+        dump("all: " . count($leads));
+        $ids = [];
+        foreach ($leads as $lead) {
+            $id = $lead['application']['id'] ?? null;
+            if ($id) {
+                $ids[] = $id;
+            }
+        }
+
+        $oldLeads = IgniteLead::query()
+            ->select('lead_id')
+            ->whereIn('lead_id', $ids)
+            ->get()
+            ->pluck('lead_id')
+            ->toArray();
+        dump("old: " . count($oldLeads));
+
+        $newLeads = [];
+
+        foreach ($leads as $lead) {
+            $id = $lead['application']['id'] ?? null;
+            if (!in_array($id, $oldLeads)) {
+                $newLeads[] = $lead;
+            }
+        }
+        dump("new: " . count($newLeads));
+//        dd('kaka');
+        return $newLeads;
     }
 
     /**
@@ -313,17 +344,14 @@ class IgniteLeadService
      * @param IgniteConnectionLeadService $service
      * @throws Exception
      */
-    private function verifyData(array $allLead , IgniteConnectionLeadService $service)
+    private function verifyData(array $allLead, IgniteConnectionLeadService $service)
     {
         $cleanseAddress = $this->addressCleanse($allLead);
 
-        foreach ($allLead  as $key => $leadInfo) {
+        foreach ($allLead as $key => $leadInfo) {
             try {
-                $igniteLead = IgniteLead::where('lead_id' ,  $leadInfo['application']['id'])->first();
-                if(!$igniteLead){
-                    $address = $cleanseAddress[$key] ?? null;
-                    $this->insertLead($leadInfo, $address);
-                }
+                $address = $cleanseAddress[$key] ?? null;
+                $this->insertLead($leadInfo, $address);
             } catch (\Exception $exception) {
                 \Log::error($exception->getMessage());
                 \Log::error($exception->getTraceAsString());
@@ -333,10 +361,9 @@ class IgniteLeadService
         //TODO logic might be changed according to requirementes
         $nextPage = $service->getNextPageUrl();
         if ($nextPage !== '') {
-            $allLead =  $service->getIgniteLeads( $service->getToken() , $nextPage);
-            $this->verifyData($allLead , $service);
+            $allLead = $this->getNewLeadOnly($service->getIgniteLeads($service->getToken(), $nextPage));
+            $this->verifyData($allLead, $service);
         }
-
     }
 
     private function addressCleanse(array $leads): array
@@ -371,7 +398,6 @@ class IgniteLeadService
         $this->lead->agent_name  = $leadInfo['agents'][0]['name'] ?? '';
         $this->lead->agent_email = $leadInfo['agents'][0]['email'] ?? '';
         $this->lead->connectionProviderName = $leadInfo['connectionProviderName'] ?? '';
-        info("IGNITE TATA: " . $this->lead->lead_id);
     }
 
     private function setIdentificationNew (array $leadInfo)
