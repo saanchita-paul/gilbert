@@ -6,6 +6,7 @@ use App\Events\Agency\CreateApplicationEvent;
 use App\Events\NotifyAgentAfterLeadCreation;
 use App\Services\Address\GBGAddressCleanse;
 use App\Services\Address\GBGAddressMapper;
+use App\Services\Helpers\Terminal;
 use Ignite\Models\IgniteLead;
 use App\Models\Agency;
 use App\Models\Identification;
@@ -270,7 +271,7 @@ class IgniteLeadService
         try {
             $service = new IgniteConnectionLeadService();
             $token =  $service->authenticate();
-            $leads =  $this->getNewLeadOnly($service->getIgniteLeads($token , $service->getConnctionLeadUrl()));
+            $leads =  $service->getIgniteLeads($token , $service->getConnctionLeadUrl());
             $this->verifyData($leads , $service);
             return true;
         } catch (\Exception $exception) {
@@ -280,9 +281,16 @@ class IgniteLeadService
         }
     }
 
+    /**
+     * Filtering new only
+     *
+     * @param $leads
+     *
+     * @return array
+     */
     private function getNewLeadOnly($leads): array
     {
-        dump("all: " . count($leads));
+        $this->logText("all: " . count($leads));
         $ids = [];
         foreach ($leads as $lead) {
             $id = $lead['application']['id'] ?? null;
@@ -297,7 +305,6 @@ class IgniteLeadService
             ->get()
             ->pluck('lead_id')
             ->toArray();
-        dump("old: " . count($oldLeads));
 
         $newLeads = [];
 
@@ -307,8 +314,7 @@ class IgniteLeadService
                 $newLeads[] = $lead;
             }
         }
-        dump("new: " . count($newLeads));
-//        dd('kaka');
+       $this->logText("new: " . count($newLeads));
         return $newLeads;
     }
 
@@ -346,7 +352,11 @@ class IgniteLeadService
      */
     private function verifyData(array $allLead, IgniteConnectionLeadService $service)
     {
-        $cleanseAddress = $this->addressCleanse($allLead);
+        $this->logText("New page");
+        $allLead = $this->getNewLeadOnly($allLead);
+        if (sizeof($allLead) > 0) {
+            $cleanseAddress = $this->addressCleanse($allLead);
+        }
 
         foreach ($allLead as $key => $leadInfo) {
             try {
@@ -361,11 +371,18 @@ class IgniteLeadService
         //TODO logic might be changed according to requirementes
         $nextPage = $service->getNextPageUrl();
         if ($nextPage !== '') {
-            $allLead = $this->getNewLeadOnly($service->getIgniteLeads($service->getToken(), $nextPage));
+            $allLead = $service->getIgniteLeads($service->getToken(), $nextPage);
             $this->verifyData($allLead, $service);
         }
     }
 
+    /**
+     * Applying GBG address cleanse
+     *
+     * @param array $leads
+     *
+     * @return array
+     */
     private function addressCleanse(array $leads): array
     {
         $addresses = [];
@@ -429,6 +446,12 @@ class IgniteLeadService
                 'leadInfo' => $leadInfo,
             ]);
         }
+    }
+
+    private function logText(string $text): void
+    {
+        Terminal::info($text);
+        Log::info($text);
     }
 
 }
