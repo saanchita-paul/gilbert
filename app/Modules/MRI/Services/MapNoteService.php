@@ -309,7 +309,7 @@ class MapNoteService
     {
         if (!empty($noteIdentificationData['type'])) {
             $required = $this->getRequiredIdentificationFields($noteIdentificationData['type']);
-            if (count(array_intersect($noteIdentificationData, $required)) != count($required)) {
+            if (count(array_intersect(array_keys($noteIdentificationData), $required)) != count($required)) {
                 $this->createNote($conApp);
             }
         }

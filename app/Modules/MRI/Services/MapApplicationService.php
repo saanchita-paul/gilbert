@@ -10,6 +10,7 @@ use App\Models\ConnectionService;
 use App\Models\MriAgent;
 // use MRI\Services\NotifyMissingDetailsService;
 use App\Models\Office;
+use App\Events\Agency\CreateApplicationEvent;
 
 class MapApplicationService
 {
@@ -52,6 +53,7 @@ class MapApplicationService
                     $conApp->office->name ?? '',
                     $firstMriAgent ?? ''
                 );
+                CreateApplicationEvent::dispatch($conApp->id);
                 $createdApplications[] = $conApp;
             } catch (\Exception $e) {
                 $this->exceptionHandler->addException($e);
