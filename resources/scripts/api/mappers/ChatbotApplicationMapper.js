@@ -3,6 +3,7 @@ import PersonalDetail from "@scripts/models/chatbot/PersonalDetail";
 import PropertyDetail from "@scripts/models/chatbot/PropertyDetail";
 import ChatbotApplication from "@scripts/models/chatbot/ChatbotApplication";
 import ApplicationNote from "@scripts/models/chatbot/ApplicationNote";
+import StatusLog from "@scripts/models/chatbot/StatusLog";
 import * as dayjs from "dayjs";
 import ConnectionService from "@scripts/models/chatbot/ConnectionService";
 import ConcessionDetail from "@scripts/models/chatbot/ConcessionDetail";
@@ -50,6 +51,22 @@ function mapChatbotAppStatus(status) {
 
 }
 
+function mapApplicationNote(data, isInternalNote = true){
+    return data?.filter(item => {
+        if(isInternalNote && item.type === 'internal_note'){
+            return item;
+        }else if(!isInternalNote && item.type === 'status_log'){
+            return item;
+        }
+    }).map(item => {
+        if(isInternalNote){
+            return new ApplicationNote(item)
+        }else{
+            return new StatusLog(item)
+        }
+    })
+}
+
 function isCafGenerated(connection_services) {
     return  !!connection_services.find((item) => {
         return item.is_caf_file_generated;
@@ -58,11 +75,13 @@ function isCafGenerated(connection_services) {
 
 export default {
     mapApplication: (application) => {
+        console.log("applicationNote", application)
         const id_detail = new IdDetail(application);
         const personal_detail = new PersonalDetail(application);
         const property_detail = new PropertyDetail(application);
         const concession_details = new ConcessionDetail(application);
-        const application_note = application.application_notes?.map(item => new ApplicationNote(item));
+        const application_note = mapApplicationNote(application.application_notes);
+        const status_log = mapApplicationNote(application.application_notes, false);
         const connection_service = application.connection_services?.map(item => new ConnectionService(item));
         const property_address = new GBGAddress(mapPropertyAddress(application));
         let eleService = null;
@@ -97,7 +116,8 @@ export default {
             gasService : gasService,
             property_address: property_address,
             cafStatus: cafStatus,
-            id: application.id
+            id: application.id,
+            status_log : status_log
         });
     },
 
@@ -183,6 +203,9 @@ export default {
 
     },
     mapApplicationNote : (data) => {
-        return data?.map(item => new ApplicationNote(item))
+        return {
+            application_note : mapApplicationNote(data),
+            status_log : mapApplicationNote(data, false)
+        }
     }
 }

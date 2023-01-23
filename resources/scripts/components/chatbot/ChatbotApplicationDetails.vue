@@ -1011,7 +1011,7 @@
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <v-row>
-                            <ChatbotApplicationNote  :applications="chatbot_app.application_notes" ></ChatbotApplicationNote>
+                            <ChatbotApplicationNote  :applications="chatbot_app.application_notes" :statusLog="chatbot_app.status_log" ></ChatbotApplicationNote>
                         </v-row>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -1323,7 +1323,9 @@ export default {
         async changeServiceStatus() {
             this.savegasStatusLoader = true;
             await ChatbotApplicationService.saveServiceStatus(this.chatbot_app);
-            this.chatbot_app.application_notes = await CustomerService.getApplicationNote(this.app_id);
+            let allNotesStatus = await CustomerService.getApplicationNote(this.app_id);
+            this.chatbot_app.application_notes = allNotesStatus.application_note
+            this.chatbot_app.status_log = allNotesStatus.status_log
             this.chatbot_app_backup.eleService = cloneDeep(this.chatbot_app.eleService);
             this.chatbot_app_backup.gasService = cloneDeep(this.chatbot_app.gasService);
             this.chatbot_app_backup.cafStatus = cloneDeep(this.chatbot_app.cafStatus);

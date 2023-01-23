@@ -10,8 +10,8 @@ export default class {
                     concession_details = null,
                     property_address= null,
                     cafStatus = false,
-                    id = null
-
+                    id = null,
+                    status_log=null
 
                 }) {
 
@@ -26,6 +26,7 @@ export default class {
         this.property_address = property_address;
         this.cafStatus = cafStatus? 'CAF Submitted': '--';
         this.id = id;
+        this.status_log = status_log
     }
 
     setIdDetails(idDetail) {
