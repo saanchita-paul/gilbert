@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 class GetNotesService
 {
     public const CATEGORY_ID = '3db9598a-bafc-ec11-997e-0050f21d26e6';
+    public const DEFAULT_GET_NOTES_COUNT = 2;
 
     /**
      * @var string|null
@@ -103,7 +104,8 @@ class GetNotesService
     public function run()
     {
         try {
-            $query = MriApplication::with('mriOffice:id,key')->where('has_process_note', false);
+            $noteCount = !empty(config('mri.max_get_notes_count')) ? config('mri.max_get_notes_count') : self::DEFAULT_GET_NOTES_COUNT;
+            $query = MriApplication::with('mriOffice:id,key')->where('has_process_note', false)->where('fetch_notes_count', '<', $noteCount);
             if (isset($this->officeId) && !empty($this->officeId)) {
                 $query->where('mri_office_id', $this->officeId);
             }

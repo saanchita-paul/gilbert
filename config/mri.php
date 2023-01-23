@@ -20,4 +20,6 @@ return [
     'hood_tag_group_name' => env('MRI_HOOD_TAG_GROUP', 'Connect with HOOD'),
     'hood_tag_name' => env('MRI_HOOD_TAG', 'YES'),
     'get_tenancies_page_size' => env('MRI_PAGE_SIZE', 100),
+    'max_get_notes_count' => env('MRI_MAX_GET_NOTES_COUNT', 2), // max times run get notes API
+    'start_check_notes_count' => env('MRI_START_CHECK_NOTES_COUNT', 2), // start validate and send email for detail missing after checked notes enough times
 ];

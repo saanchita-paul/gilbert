@@ -10,9 +10,76 @@ use App\Services\Agency\ApplicationNoteService;
 use MRI\Services\NotifyMissingDetailsService;
 use App\Models\User;
 use App\Models\ApplicationNote;
+use App\Models\Identification;
+use Carbon\Carbon;
 
 class MapNoteService
 {
+    public const KEY_PASSPORT_NUMBER = [
+        'PASSPORT' => 'card_number',
+        'PASSPORT NUMBER' => 'card_number',
+    ];
+    public const KEY_PASSPORT_COUNTRY = [
+        'COUNTRY' => 'country',
+        'PASSPORT COUNTRY' => 'country',
+    ];
+    public const KEY_PASSPORT_EXPIRY_DATE = [
+        'EXPIRY DATE' => 'expire_date',
+        'EXPIRE DATE' => 'expire_date',
+        'PASSPORT EXPIRY DATE' => 'expire_date',
+    ];
+    public const KEY_DRIVERS_LICENSE_NUMBER = [
+        'DL' => 'card_number',
+        'DRIVERS LICENSE' => 'card_number',
+        'DRIVERS NUMBER' => 'card_number',
+        'DRIVERS LICENSE NUMBER' => 'card_number',
+        'DRIVER LICENSE' => 'card_number',
+        'DRIVER LICENSE NUMBER' => 'card_number',
+        'DRIVER NUMBER' => 'card_number',
+    ];
+    public const KEY_DRIVERS_LICENSE_STATE = [
+        'STATE' => 'state',
+        'DRIVERS LICENSE STATE' => 'state',
+        'DRIVERS STATE' => 'state',
+    ];
+    public const KEY_DRIVERS_LICENSE_EXPIRY_DATE = [
+        'EXPIRY DATE' => 'expire_date',
+        'EXPIRE DATE' => 'expire_date',
+        'DL EXPIRY DATE' => 'expire_date',
+        'DRIVERS LICENSE EXPIRY DATE' => 'expire_date',
+        'DRIVER LICENSE EXPIRY DATE' => 'expire_date'
+    ];
+    public const KEY_MEDICARE_CARD_NUMBER = [
+        'MEDICARE CARD NUMBER' => 'card_number',
+        'CARD NUMBER' => 'card_number',
+        'CN' => 'card_number',
+        'MEDICARE CARD' => 'card_number',
+    ];
+    public const KEY_MEDICARE_SPECIAL_NUMBER = [
+        'MEDICARE SPECIAL NUMBER' => 'special_number',
+        'MEDICARE SPECIAL' => 'special_number',
+        'SPECIAL NUMBER' => 'special_number',
+    ];
+    public const KEY_MEDICARE_EXPIRY_DATE = [
+        'EXPIRY DATE' => 'expire_date',
+        'EXPIRE DATE' => 'expire_date',
+        'MEDICARE EXPIRY DATE' => 'expire_date',
+    ];
+    public const KEY_MEDICARE_CARD_COLOUR = [
+        'MEDICARE CARD COLOUR' => 'card_color',
+        'MEDICARE COLOUR' => 'card_color',
+        'CARD COLOUR' => 'card_color',
+        'MEDICARE CARD COLOR' => 'card_color',
+        'MEDICARE COLOR' => 'card_color',
+        'CARD COLOR' => 'card_color',
+    ];
+    public const KEY_DATE_OF_BIRTH = [
+        'DOB' => 'dob',
+        'DATE OF BIRTH' => 'dob',
+    ];
+
+    public const DEFAULT_CHECK_NOTE_COUNT = 2;
+
     /**
      * @var HandleExceptionService
      */
@@ -27,6 +94,77 @@ class MapNoteService
     public function __construct()
     {
         $this->exceptionHandler = new HandleExceptionService(self::class);
+    }
+
+    public function getIdentificationFields()
+    {
+        return array_merge(
+            self::KEY_DRIVERS_LICENSE_NUMBER,
+            self::KEY_DRIVERS_LICENSE_STATE,
+            self::KEY_DRIVERS_LICENSE_EXPIRY_DATE,
+            self::KEY_PASSPORT_NUMBER,
+            self::KEY_PASSPORT_COUNTRY,
+            self::KEY_PASSPORT_EXPIRY_DATE,
+            self::KEY_MEDICARE_CARD_NUMBER,
+            self::KEY_MEDICARE_SPECIAL_NUMBER,
+            self::KEY_MEDICARE_CARD_COLOUR,
+            self::KEY_MEDICARE_EXPIRY_DATE
+        );
+    }
+
+    public function getConnectionApplicationFields()
+    {
+        return array_merge(
+            self::KEY_DATE_OF_BIRTH,
+        );
+    }
+
+    public function getIdentificationTypes()
+    {
+        $return = [];
+
+        foreach (self::KEY_PASSPORT_NUMBER as $key => $val) {
+            $return[$key] = Identification::TYPE_PASSPORT;
+        }
+        foreach (self::KEY_DRIVERS_LICENSE_NUMBER as $key => $val) {
+            $return[$key] = Identification::TYPE_DRIVING_LICENCE;
+        }
+        foreach (self::KEY_MEDICARE_CARD_NUMBER as $key => $val) {
+            $return[$key] = Identification::TYPE_MEDICARE;
+        }
+
+        return $return;
+    }
+
+    public function getDateFields()
+    {
+        return array_merge(
+            self::KEY_DRIVERS_LICENSE_EXPIRY_DATE,
+            self::KEY_MEDICARE_EXPIRY_DATE,
+            self::KEY_PASSPORT_EXPIRY_DATE,
+            self::KEY_DATE_OF_BIRTH
+        );
+    }
+
+    public function getRequiredIdentificationFields($type)
+    {
+        $required = [
+            'card_number',
+            'expire_date',
+        ];
+
+        if ($type === Identification::TYPE_DRIVING_LICENCE) {
+            $required[] = 'state';
+        }
+        if ($type === Identification::TYPE_MEDICARE) {
+            $required[] = 'card_color';
+            $required[] = 'special_number';
+        }
+        if ($type === Identification::TYPE_PASSPORT) {
+            $required[] = 'country';
+        }
+
+        return $required;
     }
 
     public function run()
@@ -55,13 +193,7 @@ class MapNoteService
                     $updated = true;
                 }
             } catch (\Exception $e) {
-                $gilbertNoteExist = ApplicationNote::where('connection_application_id', $conApp->id)
-                                    ->where('type', ApplicationNote::MRI_IDENTIFICATION)
-                                    ->where('text', $this->noteData)
-                                    ->exists();
-                if (!empty($this->noteData) && !$gilbertNoteExist) {
-                    $this->createNote($conApp);
-                }
+                $this->createNote($conApp);
                 $this->exceptionHandler->addException($e);
             }
 
@@ -69,9 +201,11 @@ class MapNoteService
                 $updatedApplications[] = $conApp->id;
                 $mriApp->has_process_note = true;
                 $mriApp->save();
+                $this->checkMissingFields($conApp, $noteIdentificationData);
             }
 
-            if ($updated || $mriApp->fetch_notes_count == 2) {
+            $notesCount = !empty(config('mri.start_check_notes_count')) ? config('mri.start_check_notes_count') : self::DEFAULT_CHECK_NOTE_COUNT;
+            if ($updated || $mriApp->fetch_notes_count == $notesCount) {
                 $missingService->check($conApp);
             }
         }
@@ -94,50 +228,90 @@ class MapNoteService
     {
         $conAppData = [];
         $identificationData = [];
-        $mriNoteData = $mriApp->mriNoteData;
+        $mriNotes = $mriApp->mriNotes()->where('is_checked', false)->orderBy('id', 'desc')->get();
 
-        if ($mriNoteData) {
-            $this->noteData = $mriNoteData->description;
-            $descData = explode("\n", $mriNoteData->description);
-            if (trim($descData[0] ?? '') === 'HOOD_DATA') {
-                array_shift($descData);
-                foreach ($descData as $line) {
-                    $field = explode(":", $line);
-                    $key = strtoupper(trim($field[0] ?? ''));
-                    $val = trim($field[1] ?? '');
-                    if (array_key_exists($key, MriApplication::CONNECTION_APPLICATION_FIELDS) && !empty($val)) {
-                        $columnName = MriApplication::CONNECTION_APPLICATION_FIELDS[$key];
-                        $conAppData[$columnName] = $val;
+        foreach ($mriNotes as $mriNote) {
+            if (!empty($this->noteData)) {
+                break;
+            }
+            $mriNote->is_checked = true;
+            $mriNote->save();
+            $single_n_data = preg_replace(array('/\s{2,}/', '/[\t\n\r]+/'), "\n", $mriNote->description);
+            $descData = explode("\n", $single_n_data);
+            foreach ($descData as $line) {
+                $field = explode(":", $line);
+                $key = strtoupper(trim($field[0] ?? ''));
+                $val = trim($field[1] ?? '');
+                if (array_key_exists($key, $this->getConnectionApplicationFields()) && !empty($val)) {
+                    $columnName = $this->getConnectionApplicationFields()[$key];
+                    if (in_array($key, array_keys($this->getDateFields()))) {
+                        $val = $this->getFormattedDate($val);
                     }
-                    if (array_key_exists($key, MriApplication::IDENTIFICATION_FIELDS) && !empty($val)) {
-                        $columnName = MriApplication::IDENTIFICATION_FIELDS[$key];
-                        $identificationData[$columnName] = $val;
+                    $conAppData[$columnName] = $val;
+                }
+                if (array_key_exists($key, $this->getIdentificationFields()) && !empty($val)) {
+                    $columnName = $this->getIdentificationFields()[$key];
+                    if (in_array($key, array_keys($this->getDateFields()))) {
+                        $val = $this->getFormattedDate($val);
                     }
-                    if (array_key_exists($key, MriApplication::IDENTIFICATION_TYPE) && !empty($val)) {
-                        $columnName = 'type';
-                        $columnVal = MriApplication::IDENTIFICATION_TYPE[$key];
-                        $identificationData[$columnName] = $columnVal;
-                    }
+                    $identificationData[$columnName] = $val;
+                }
+                if (array_key_exists($key, $this->getIdentificationTypes()) && !empty($val)) {
+                    $columnName = 'type';
+                    $columnVal = $this->getIdentificationTypes()[$key];
+                    $identificationData[$columnName] = $columnVal;
                 }
             }
+            if (!empty($conAppData || !empty($identificationData))) {
+                $mriNote->is_fetched = true;
+                $mriNote->save();
+                $this->noteData = $mriNote->description;
+            }
         }
+
         $return = [$conAppData, $identificationData];
         return $return;
     }
 
     private function createNote(ConnectionApplication $conApp)
     {
-        $createdBy = $conApp->createdBy;
-        if (!$createdBy) {
-            $user = User::where('email', 'admin@hood.ai')->first();
-        } else {
-            $user = $createdBy->user;
+        $gilbertNoteExist = ApplicationNote::where('connection_application_id', $conApp->id)
+                                    ->where('type', ApplicationNote::MRI_IDENTIFICATION)
+                                    ->where('text', $this->noteData)
+                                    ->exists();
+        if (!empty($this->noteData) && !$gilbertNoteExist) {
+            $createdBy = $conApp->createdBy;
+            if (!$createdBy) {
+                $user = User::where('email', 'admin@hood.ai')->first();
+            } else {
+                $user = $createdBy->user;
+            }
+            $service = new ApplicationNoteService($user);
+            $note = [
+                'type' => ApplicationNote::MRI_IDENTIFICATION,
+                'text' => $this->noteData,
+            ];
+            $service->createNotes($note, $conApp->id);
         }
-        $service = new ApplicationNoteService($user);
-        $note = [
-            'type' => ApplicationNote::MRI_IDENTIFICATION,
-            'text' => $this->noteData,
-        ];
-        $service->createNotes($note, $conApp->id);
+    }
+
+    private function getFormattedDate(string $date)
+    {
+        try {
+            return Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d');
+        } catch (\Exception $e) {
+            \Log::error($e->getMessage(), $e->getTrace());
+            return $date;
+        }
+    }
+
+    private function checkMissingFields($conApp, $noteIdentificationData)
+    {
+        if (!empty($noteIdentificationData['type'])) {
+            $required = $this->getRequiredIdentificationFields($noteIdentificationData['type']);
+            if (count(array_intersect($noteIdentificationData, $required)) != count($required)) {
+                $this->createNote($conApp);
+            }
+        }
     }
 }

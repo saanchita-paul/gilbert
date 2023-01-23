@@ -198,7 +198,7 @@ class GetTaggedTenanciesService
                     }
 
                     if (in_array(self::CONTACT_TYPE_TENANT, $contact['contact_types'])) {
-                        if (empty($mriApp->first_name)) {
+                        if (empty($mriApp->first_name) || $contact['is_primary'] === true) {
                             $mriApp->title = $contact['title'];
                             $mriApp->first_name = $contact['first_name'];
                             $mriApp->last_name = $contact['last_name'];
@@ -207,7 +207,20 @@ class GetTaggedTenanciesService
                             $mriApp->home_number = $contact['phone_number'];
                             $mriApp->is_marketing = !$contact['no_marketing'];
                             $mriApp->preferred_phone_number = $contact['preferred_phone_number'];
-                        } elseif (empty($mriApp->authorized_first_name)) {
+                            if (
+                                empty($contact['mobile_phone_number']) &&
+                                empty($contact['phone_number']) &&
+                                !empty($contact['preferred_phone_number'])
+                            ) {
+                                $isMobile = $this->checkIsMobile($contact['preferred_phone_number']);
+                                if ($isMobile) {
+                                    $mriApp->mobile_phone_number = $contact['preferred_phone_number'];
+                                } else {
+                                    $mriApp->home_number = $contact['preferred_phone_number'];
+                                }
+                            }
+                        }
+                        if (empty($mriApp->authorized_first_name) && $contact['is_primary'] === false) {
                             $mriApp->authorized_title = $contact['title'];
                             $mriApp->authorized_first_name = $contact['first_name'];
                             $mriApp->authorized_last_name = $contact['last_name'];
@@ -215,6 +228,18 @@ class GetTaggedTenanciesService
                             $mriApp->authorized_mobile_phone_number = $contact['mobile_phone_number'];
                             $mriApp->authorized_home_number = $contact['phone_number'];
                             $mriApp->authorized_preferred_phone_number = $contact['preferred_phone_number'];
+                            if (
+                                empty($contact['mobile_phone_number']) &&
+                                empty($contact['phone_number']) &&
+                                !empty($contact['preferred_phone_number'])
+                            ) {
+                                $isMobile = $this->checkIsMobile($contact['preferred_phone_number']);
+                                if ($isMobile) {
+                                    $mriApp->authorized_mobile_phone_number = $contact['preferred_phone_number'];
+                                } else {
+                                    $mriApp->authorized_home_number = $contact['preferred_phone_number'];
+                                }
+                            }
                         }
                     }
                 }
@@ -241,5 +266,19 @@ class GetTaggedTenanciesService
         }
 
         return $savedTenancyIds;
+    }
+
+    private function checkIsMobile($number)
+    {
+        $isMobile = false;
+        $mobile_format = ['61', '+61', '04'];
+
+        foreach ($mobile_format as $format) {
+            if (str_starts_with($number, $format)) {
+                $isMobile = true;
+            }
+        }
+
+        return $isMobile;
     }
 }

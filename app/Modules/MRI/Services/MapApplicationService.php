@@ -4,8 +4,10 @@ namespace MRI\Services;
 
 use App\Models\MriApplication;
 use App\Models\ConnectionApplication;
+use App\Models\MriProperty;
 use App\Services\NotifyBadAgentMailService;
 use App\Models\ConnectionService;
+use App\Models\MriAgent;
 // use MRI\Services\NotifyMissingDetailsService;
 use App\Models\Office;
 
@@ -73,7 +75,7 @@ class MapApplicationService
     {
         $mriOffice = $mriApp->mriOffice;
         $mriProperty = $mriApp->mriProperty;
-        $firstMriAgent = $mriProperty->mriAgents()->whereNotNull('agent_profile_id')->first();
+        $firstMriAgent = $this->getFirstPropertyManager($mriProperty);
         $newConnectionApp = [];
 
         $newConnectionApp['source'] = ConnectionApplication::SOURCE_MRI;
@@ -160,5 +162,22 @@ class MapApplicationService
             $conApp->connectionServices()->create($serviceDetail);
         }
         return $conApp;
+    }
+
+    private function getFirstPropertyManager(MriProperty $mriProperty)
+    {
+        $firstPropertyManager = false;
+        $mriAgents = $mriProperty->mriAgents()->whereNotNull('agent_profile_id')->get();
+        foreach ($mriAgents as $mriAgent) {
+            if ($firstPropertyManager) {
+                break;
+            }
+            $rolesList = $mriAgent->roles_list ?? [];
+            if (in_array(MriAgent::ROLE_PROPERTY_MANAGER, $rolesList)) {
+                $firstPropertyManager = $mriAgent;
+            }
+        }
+
+        return $firstPropertyManager;
     }
 }

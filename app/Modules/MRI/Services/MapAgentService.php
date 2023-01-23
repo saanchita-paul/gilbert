@@ -38,6 +38,22 @@ class MapAgentService
                 $mriAgent->agent_profile_id = $user->profile_id;
                 $mriAgent->save();
                 info('Updated MRI Agent profile with ID - ' . $mriAgent->id);
+                if (in_array(MriAgent::ROLE_PROPERTY_MANAGER, $mriAgent->roles_list)) {
+                    $this->mapApplicationCreatedBy($mriAgent);
+                }
+            }
+        }
+    }
+
+    private function mapApplicationCreatedBy(MriAgent $mriAgent)
+    {
+        $mriProperties = $mriAgent->mriProperties;
+
+        foreach ($mriProperties as $mriProperty) {
+            $conApp = $mriProperty->application->connectionApplication;
+            if ($conApp && empty($conApp->created_by)) {
+                $conApp->created_by = $mriAgent->agent_profile_id;
+                $conApp->save();
             }
         }
     }
