@@ -328,13 +328,14 @@ class IgniteLeadService
     {
         try {
             $leads = json_decode(file_get_contents(storage_path('app/ignite_lead_response.json')), true);
-            $cleanseAddress = $this->addressCleanse($leads);
+
+            $leads = $this->getNewLeadOnly($leads);
+            if (sizeof($leads) > 0) {
+                $cleanseAddress = $this->addressCleanse($leads);
+            }
 
             foreach ($leads as $key =>  $leadInfo) {
-                $igniteLead = IgniteLead::where('lead_id' ,  $leadInfo['application']['id'])->first();
-                if(!$igniteLead){
-                    $this->insertLead($leadInfo, $cleanseAddress[$key] ?? null);
-                }
+                $this->insertLead($leadInfo, $cleanseAddress[$key] ?? null);
             };
         } catch (\Exception $exception) {
             \Log::info($exception->getMessage());

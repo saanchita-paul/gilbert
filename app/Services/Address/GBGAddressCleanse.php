@@ -16,7 +16,6 @@ class GBGAddressCleanse
         ])
             ->post(config('gbg.cleanse_url'), $this->getPayload($addresses));
 
-        dump($this->getPayload($addresses));
 
         return json_decode($response->body(), true)['payload'] ?? [];
     }
