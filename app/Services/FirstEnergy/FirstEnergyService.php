@@ -28,6 +28,7 @@ class FirstEnergyService
     private function updateServiceStatus($service)
     {
         $selectedService = ConnectionService::query()
+            ->where('provider_name', ConnectionService::PROVIDER_FIRST_ENERGY)
             ->where('connection_application_id', $this->connectionApplication->id)
             ->where('service_type', $service)->first();
 

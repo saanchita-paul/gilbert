@@ -48,7 +48,7 @@ class SetOriginDistributorService
         $stateService = new StateMapService();
         $state = $stateService->getShortName($this->connectionApplication->state);
         $postCode = $this->connectionApplication->postcode;
-        
+
         $originPlanService = new OriginPlanDetailsService($state, $postCode, $this->connectionApplication->id, $this->servicesId, $this->connectionApplication->nmi ?? '');
         return $originPlanService->getPlanDetails();
     }
