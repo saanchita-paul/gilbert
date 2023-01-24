@@ -193,7 +193,11 @@ class GetTaggedTenanciesService
                 }
 
                 foreach ($tenancy['contacts'] as $contact) {
-                    if (!empty($mriApp->authorized_first_name) && !empty($mriApp->first_name)) {
+                    if (
+                        !empty($mriApp->authorized_first_name) &&
+                        !empty($mriApp->first_name) &&
+                        $mriApp->authorized_first_name != $mriApp->first_name
+                    ) {
                         break;
                     }
 
