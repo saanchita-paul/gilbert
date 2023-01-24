@@ -247,7 +247,7 @@ class IgniteLeadService
            $this->lead->save();
 
             // hubspot api call for creation
-            NotifyAgentAfterLeadCreation::dispatch($this->lead->id);
+            NotifyAgentAfterLeadCreation::dispatch($this->connectionApplication->id);
 
             CreateApplicationEvent::dispatch($this->connectionApplication->id);
 
