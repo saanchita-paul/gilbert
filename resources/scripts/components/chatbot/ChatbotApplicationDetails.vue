@@ -231,7 +231,7 @@
                                 </v-col>
 
                                 <v-col cols ="5"  class="py-0 my-1">
-                                    <p class="font-weight-bold">Marketing Emails</p>
+                                    <p class="font-weight-bold">Marketing Opt out</p>
                                 </v-col>
                                 <v-col cols ="7" class="py-0 my-1">
                                     <div class="text-field">
