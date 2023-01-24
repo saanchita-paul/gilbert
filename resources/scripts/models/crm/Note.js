@@ -72,7 +72,11 @@ export default class Note {
                 return 'invalid_property_me_note';
                 break;
 
+            case 'mri_identification':
+                return 'mri_identification';
+
             default:
+                return '';
                 break;
         }
     }
