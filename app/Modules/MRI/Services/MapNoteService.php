@@ -167,6 +167,15 @@ class MapNoteService
         return $required;
     }
 
+    public function getRequiredApplicationFields()
+    {
+        $required = [
+            'dob'
+        ];
+
+        return $required;
+    }
+
     public function run()
     {
         $missingService = new NotifyMissingDetailsService();
@@ -305,13 +314,23 @@ class MapNoteService
         }
     }
 
-    private function checkMissingFields($conApp, $noteIdentificationData)
+    private function checkMissingFields($conApp, $noteAppData, $noteIdentificationData)
     {
+        $sendNote = false;
+        $required = $this->getRequiredApplicationFields();
+        if (count(array_intersect(array_keys($noteAppData), $required)) != count($required)) {
+            $sendNote = true;
+        }
+
         if (!empty($noteIdentificationData['type'])) {
             $required = $this->getRequiredIdentificationFields($noteIdentificationData['type']);
             if (count(array_intersect(array_keys($noteIdentificationData), $required)) != count($required)) {
-                $this->createNote($conApp);
+                $sendNote = true;
             }
+        }
+
+        if ($sendNote) {
+            $this->createNote($conApp);
         }
     }
 }
