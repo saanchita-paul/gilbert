@@ -210,7 +210,7 @@ class MapNoteService
                 $updatedApplications[] = $conApp->id;
                 $mriApp->has_process_note = true;
                 $mriApp->save();
-                $this->checkMissingFields($conApp, $noteIdentificationData);
+                $this->checkMissingFields($conApp, $noteAppData, $noteIdentificationData);
             }
 
             $notesCount = !empty(config('mri.start_check_notes_count')) ? config('mri.start_check_notes_count') : self::DEFAULT_CHECK_NOTE_COUNT;
