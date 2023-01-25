@@ -6,6 +6,7 @@ use App\Events\Agency\CreateApplicationEvent;
 use App\Events\NotifyAgentAfterLeadCreation;
 use App\Services\Address\GBGAddressCleanse;
 use App\Services\Address\GBGAddressMapper;
+use App\Services\Helpers\Terminal;
 use Ignite\Models\IgniteLead;
 use App\Models\Agency;
 use App\Models\Identification;
@@ -151,7 +152,6 @@ class IgniteLeadService
 
         try {
             foreach ($services as $value) {
-                info($value);
                 $this->connectionApplication->connectionServices()->create(
                     [
                         'service_type' => $value ,
@@ -247,7 +247,7 @@ class IgniteLeadService
            $this->lead->save();
 
             // hubspot api call for creation
-            NotifyAgentAfterLeadCreation::dispatch($this->lead->id);
+            NotifyAgentAfterLeadCreation::dispatch($this->connectionApplication->id);
 
             CreateApplicationEvent::dispatch($this->connectionApplication->id);
 
@@ -282,6 +282,43 @@ class IgniteLeadService
     }
 
     /**
+     * Filtering new only
+     *
+     * @param $leads
+     *
+     * @return array
+     */
+    private function getNewLeadOnly($leads): array
+    {
+        $this->logText("all: " . count($leads));
+        $ids = [];
+        foreach ($leads as $lead) {
+            $id = $lead['application']['id'] ?? null;
+            if ($id) {
+                $ids[] = $id;
+            }
+        }
+
+        $oldLeads = IgniteLead::query()
+            ->select('lead_id')
+            ->whereIn('lead_id', $ids)
+            ->get()
+            ->pluck('lead_id')
+            ->toArray();
+
+        $newLeads = [];
+
+        foreach ($leads as $lead) {
+            $id = $lead['application']['id'] ?? null;
+            if (!in_array($id, $oldLeads)) {
+                $newLeads[] = $lead;
+            }
+        }
+       $this->logText("new: " . count($newLeads));
+        return $newLeads;
+    }
+
+    /**
      *  Create dummy new ConnectionApplication via read json from path 'Storage/app/ignite_lead_response.json'
      *
      * @return void
@@ -291,13 +328,14 @@ class IgniteLeadService
     {
         try {
             $leads = json_decode(file_get_contents(storage_path('app/ignite_lead_response.json')), true);
-            $cleanseAddress = $this->addressCleanse($leads);
+
+            $leads = $this->getNewLeadOnly($leads);
+            if (sizeof($leads) > 0) {
+                $cleanseAddress = $this->addressCleanse($leads);
+            }
 
             foreach ($leads as $key =>  $leadInfo) {
-                $igniteLead = IgniteLead::where('lead_id' ,  $leadInfo['application']['id'])->first();
-                if(!$igniteLead){
-                    $this->insertLead($leadInfo, $cleanseAddress[$key] ?? null);
-                }
+                $this->insertLead($leadInfo, $cleanseAddress[$key] ?? null);
             };
         } catch (\Exception $exception) {
             \Log::info($exception->getMessage());
@@ -313,17 +351,18 @@ class IgniteLeadService
      * @param IgniteConnectionLeadService $service
      * @throws Exception
      */
-    private function verifyData(array $allLead , IgniteConnectionLeadService $service)
+    private function verifyData(array $allLead, IgniteConnectionLeadService $service)
     {
-        $cleanseAddress = $this->addressCleanse($allLead);
+        $this->logText("New page");
+        $allLead = $this->getNewLeadOnly($allLead);
+        if (sizeof($allLead) > 0) {
+            $cleanseAddress = $this->addressCleanse($allLead);
+        }
 
-        foreach ($allLead  as $key => $leadInfo) {
+        foreach ($allLead as $key => $leadInfo) {
             try {
-                $igniteLead = IgniteLead::where('lead_id' ,  $leadInfo['application']['id'])->first();
-                if(!$igniteLead){
-                    $address = $cleanseAddress[$key] ?? null;
-                    $this->insertLead($leadInfo, $address);
-                }
+                $address = $cleanseAddress[$key] ?? null;
+                $this->insertLead($leadInfo, $address);
             } catch (\Exception $exception) {
                 \Log::error($exception->getMessage());
                 \Log::error($exception->getTraceAsString());
@@ -333,12 +372,18 @@ class IgniteLeadService
         //TODO logic might be changed according to requirementes
         $nextPage = $service->getNextPageUrl();
         if ($nextPage !== '') {
-            $allLead =  $service->getIgniteLeads( $service->getToken() , $nextPage);
-            $this->verifyData($allLead , $service);
+            $allLead = $service->getIgniteLeads($service->getToken(), $nextPage);
+            $this->verifyData($allLead, $service);
         }
-
     }
 
+    /**
+     * Applying GBG address cleanse
+     *
+     * @param array $leads
+     *
+     * @return array
+     */
     private function addressCleanse(array $leads): array
     {
         $addresses = [];
@@ -371,7 +416,6 @@ class IgniteLeadService
         $this->lead->agent_name  = $leadInfo['agents'][0]['name'] ?? '';
         $this->lead->agent_email = $leadInfo['agents'][0]['email'] ?? '';
         $this->lead->connectionProviderName = $leadInfo['connectionProviderName'] ?? '';
-        info("IGNITE TATA: " . $this->lead->lead_id);
     }
 
     private function setIdentificationNew (array $leadInfo)
@@ -403,6 +447,12 @@ class IgniteLeadService
                 'leadInfo' => $leadInfo,
             ]);
         }
+    }
+
+    private function logText(string $text): void
+    {
+        Terminal::info($text);
+        Log::info($text);
     }
 
 }

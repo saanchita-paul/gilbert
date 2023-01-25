@@ -96,7 +96,7 @@ class AddressDuplicationApplicationService implements DuplicateApplicationInterf
      * prepare address using separated address part
      * @return string
      */
-    private function getAddress():string
+    public function getAddress():string
     {
         $address = $this->streetName.' '.
         $address = $this->streetNumber.' '.
