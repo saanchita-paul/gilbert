@@ -216,6 +216,8 @@ class IgniteLeadService
         try {
             $this->connectionApplication = new ConnectionApplication;
             $this->connectionApplication->fill(GBGAddressMapper::toAppAddress($cleanseAddress));
+            $this->connectionApplication->fill(GBGAddressMapper::toBillingAddress($cleanseAddress));
+            $this->connectionApplication->is_billing_same = 1;
 
             $this->lead = new IgniteLead();
 
