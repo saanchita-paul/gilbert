@@ -33,7 +33,7 @@ function mapPropertyAddress(dt) {
         billing_street_name_only : dt?.billing_street_name_only,
         billing_street_type : dt?.billing_street_type,
         billing_mannual_address : false,
-        is_billing_same : dt.is_billing_same,
+        is_billing_same : dt.is_billing_same ?? 0,
     };
 }
 

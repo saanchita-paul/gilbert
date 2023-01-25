@@ -228,7 +228,7 @@
                                                             dense
                                                             :readonly="!propertyDetails.billing_mannual_address"
                                                             placeholder="Street Name*"
-                                                            v-model="propertyDetails.billing_street_name_only"
+                                                            v-model="propertyDetails.billing_street_name"
                                                             :error-messages=" errors[0]"
                                                         ></v-text-field>
                                                     </ValidationProvider>
