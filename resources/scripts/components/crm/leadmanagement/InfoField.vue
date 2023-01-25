@@ -238,7 +238,7 @@
             rules="required|email"
             v-slot="{ errors }"
           >
-            <v-text-field :class="emailCheck ? 'v-input--has-state error--text' : ''"
+            <v-text-field :class="isInvalidEmail ? 'v-input--has-state error--text' : ''"
               v-model="person_details.email"
               @input="updateLeads"
               outlined
@@ -248,7 +248,7 @@
               @blur="saveDraft('email', person_details.email)"
             ></v-text-field>
           </ValidationProvider>
-            <span class="error--text d-block line-height-initial" v-if="emailCheck">
+            <span class="error--text d-block line-height-initial" v-if="isInvalidEmail">
                   <span class="font-12">Email could not be verified. Please confirm it’s valid email.</span>
             </span>
         <div class="text-field">
@@ -1383,7 +1383,7 @@ export default {
     services: {
       require: false,
     },
-    emailCheck: {
+      isInvalidEmail: {
         required: true,
     },
   },

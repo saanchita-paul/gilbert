@@ -18,7 +18,7 @@
                 @updateDraft="updateDraft"
                 @duplicateLead="duplicatedLead"
                 :isLocked="isLocked"
-                :emailCheck="emailCheck"
+                :isInvalidEmail="isInvalidEmail"
             ></LeadUserDetails>
         </ValidationObserver>
 
@@ -179,7 +179,7 @@ export default {
                 chatbot_id: null,
                 is_locked: false,
             },
-            emailCheck: false
+            isInvalidEmail: false
         }
     },
     computed: {
@@ -290,7 +290,7 @@ export default {
             this.readMoreFlag = false;
         },
         updateLead(lead) {
-            this.emailCheck = false;
+            this.isInvalidEmail = false;
             this.fullName = lead.person_details.first_name + ' ' + lead.person_details.last_name;
             this.lead = lead;
         },
@@ -306,7 +306,7 @@ export default {
                 await this.gbgEmailValidate();
             }
 
-            if (this.emailCheck) {
+            if (this.isInvalidEmail) {
                 return;
             }
 
@@ -356,14 +356,14 @@ export default {
         },
 
         async gbgEmailValidate() {
-            this.emailCheck = false;
+            this.isInvalidEmail = false;
             try {
                 const res = await GBGService.validateEmail(this.leadSummary.email);
-                this.emailCheck = false;
+                this.isInvalidEmail = !res;
             } catch (error) {
-                this.emailCheck = true;
+                this.isInvalidEmail = true;
             }
-            return this.emailCheck;
+            return this.isInvalidEmail;
         },
 
         closePreventSubmissionModal() {
@@ -435,7 +435,7 @@ export default {
         async updateDraft(field, value, isDate, identification, isManualChangeFlag) {
             if (isNull(value)) return;
 
-            this.emailCheck = false;
+            this.isInvalidEmail = false;
 
             if (isDate) {
                 if (field == 'dob' && dayjs(value, 'DD/MM/YYYY').isSame(this.leadSummary.dob)) {

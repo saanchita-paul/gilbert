@@ -12,7 +12,7 @@
         ></LeadDetailsHeader>
         <InfoField v-bind="$attrs" :services="services" @updateLead="updateLead" :nmiMernFlag="nmiMernFlag"
                    :lead="leadSummary" @updateDraft="updateDraft" @readMore="readMore"
-                   @updateAddress="updateAddress" :emailCheck="emailCheck"></InfoField>
+                   @updateAddress="updateAddress" :isInvalidEmail="isInvalidEmail"></InfoField>
     </v-card>
 </template>
 
@@ -37,7 +37,7 @@ export default {
         isLocked: {
             required: true
         },
-        emailCheck: {
+        isInvalidEmail: {
             required: true
         }
 
