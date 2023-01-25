@@ -27,7 +27,8 @@ export default class PersonalDetail{
                     fullName =  null,
                     billing_preference = null,
                     enabled_marketing_offer = null,
-                    is_property_on_life_support = null
+                    is_property_on_life_support = null,
+                    connection_services = []
 
                 }) {
 
@@ -48,12 +49,19 @@ export default class PersonalDetail{
         this.fullName = getFullName(this.titleUcFirst, this.firstnameUcFirst, this.lastnameUcFirst);
         this.connection_type = this.generateConnectionType(abn, business_name);
         this.billing_preference = billing_preference; //value-> email/post
-        this.enabled_marketing_offer = enabled_marketing_offer; //value-> yes/no
+        this.enabled_marketing_offer = this.mapMarketingOffer(enabled_marketing_offer, connection_services); //value-> yes/no
         this.is_property_on_life_support = parseInt(is_property_on_life_support); //value-> yes/no
     }
     generateConnectionType(abn, business_name){
         if(abn || business_name) return "Temporary";
         return "Default"
+    }
+
+    mapMarketingOffer(offer, service) {
+        if(service.length > 0 &&  service[0].provider_name === 'origin') {
+            return offer === 1 ? 0 : 1;
+        }
+        return offer;
     }
 
 
