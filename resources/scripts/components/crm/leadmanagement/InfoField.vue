@@ -235,10 +235,10 @@
         <div class="text-field">
           <ValidationProvider
             name="Email"
-            :rules="`${isManuallyVerified?'':'gbg-email-validate|'}required|email`"
+            rules="required|email"
             v-slot="{ errors }"
           >
-            <v-text-field
+            <v-text-field :class="isInvalidEmail ? 'v-input--has-state error--text' : ''"
               v-model="person_details.email"
               @input="updateLeads"
               outlined
@@ -248,6 +248,9 @@
               @blur="saveDraft('email', person_details.email)"
             ></v-text-field>
           </ValidationProvider>
+            <span class="error--text d-block line-height-initial" v-if="isInvalidEmail">
+                  <span class="font-12">Email could not be verified. Please confirm it’s valid email.</span>
+            </span>
         <div class="text-field">
             <v-checkbox
                 v-model="person_details.email_manually_verified_by"
@@ -1380,6 +1383,9 @@ export default {
     services: {
       require: false,
     },
+      isInvalidEmail: {
+        required: true,
+    },
   },
   components: {
     ServiceAddress,
@@ -2198,5 +2204,11 @@ export default {
 }
 .mt-4 {
     margin-top: 4px !important;
+}
+.line-height-initial {
+    line-height: initial;
+}
+.font-12 {
+    font-size: 12px;
 }
 </style>
