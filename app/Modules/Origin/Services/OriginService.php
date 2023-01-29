@@ -134,7 +134,7 @@ class OriginService
                 ],
             ];
 
-            if($application->is_billing_same != 1){
+            if($application->is_billing_same == 0){
                 $data['correspondenceAddress'] = [
                     'roomNo' => $application->billing_unit_number ?? '',
                     'roomType' => $application->billing_unit_number ? 'U' : '', // todo: create new column for unit/room type
