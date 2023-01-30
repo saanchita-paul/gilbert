@@ -1,7 +1,7 @@
 import dayJs from "dayjs";
 import {isNull} from "lodash-es";
 
-function mapServiceStatus(status = '') {
+function mapServiceStatus(status) {
     if(isNull(status)) {
         status = '';
     }
@@ -16,10 +16,10 @@ function mapServiceStatus(status = '') {
             return 'Manual Processing';
         case '':
             return 'Not Submitted';
+        case 'Complete':
+            return 'Accepted';
         default:
             return status;
-
-
     }
 }
 
