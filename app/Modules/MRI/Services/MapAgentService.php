@@ -50,7 +50,7 @@ class MapAgentService
         $mriProperties = $mriAgent->mriProperties;
 
         foreach ($mriProperties as $mriProperty) {
-            $conApp = $mriProperty->application->connectionApplication;
+            $conApp = $mriProperty->application?->connectionApplication;
             if ($conApp && empty($conApp->created_by)) {
                 $conApp->created_by = $mriAgent->agent_profile_id;
                 $conApp->save();

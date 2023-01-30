@@ -306,8 +306,17 @@ class MapNoteService
 
     private function getFormattedDate(string $date)
     {
+        $createFromFormat = 'd/m/Y';
+        if (substr_count($date, "/") == 1) {
+            $breakDate = explode("/", $date);
+            if (strlen($breakDate[1]) == 2) {
+                $createFromFormat = 'm/y';
+            } else {
+                $createFromFormat = 'm/Y';
+            }
+        }
         try {
-            return Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d');
+            return Carbon::createFromFormat($createFromFormat, $date)->format('Y-m-d');
         } catch (\Exception $e) {
             \Log::error($e->getMessage(), $e->getTrace());
             return $date;
