@@ -120,6 +120,7 @@ class MapApplicationService
             $newConnectionApp['street_address'] = $newConnectionApp['unit_number'] . ' / ' . $newConnectionApp['street_address'];
         }
         $newConnectionApp['address_text'] = $newConnectionApp['street_address'] . ', ' . $newConnectionApp['city'] . ' ' . $newConnectionApp['state']  . ' ' . $newConnectionApp['postcode'];
+        $newConnectionApp['is_billing_same'] = true;
         if (!empty($mriProperty->management_type)) {
             $managementType = strtolower($mriProperty->management_type);
             $newConnectionApp['property_type'] = ConnectionApplication::PROPERTY_TYPE_MAPPING[$managementType];

@@ -24,7 +24,7 @@
                     <p class="lead-source-value"><span>{{ summaryData.source_all.hood }}</span> Hood</p>
                     <p class="lead-source-value"><span>{{ summaryData.source_all.hood_ai }}</span> Hood.ai</p>
                     <p class="lead-source-value"><span>{{ summaryData.source_all.t_app }}</span> tApp</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_all.mri }}</span> Mri</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_all.mri }}</span> MRI</p>
                 </div>
             </div>
             <v-divider vertical class="divider"></v-divider>
@@ -58,7 +58,7 @@
                     <p class="lead-source-value"><span>{{ summaryData.source_submitted.hood }}</span> Hood</p>
                     <p class="lead-source-value"><span>{{ summaryData.source_submitted.hood_ai }}</span> Hood.ai</p>
                     <p class="lead-source-value"><span>{{ summaryData.source_submitted.t_app }}</span> tApp</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_submitted.mri }}</span> Mri</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_submitted.mri }}</span> MRI</p>
                 </div>
             </div>
             <v-divider vertical class="divider"></v-divider>
@@ -78,7 +78,7 @@
                     <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.hood }}%</span> Hood</p>
                     <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.hood_ai }}%</span> Hood.ai</p>
                     <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.t_app }}%</span> tApp</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.mri }}%</span> Mri</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.mri }}%</span> MRI</p>
                 </div>
             </div>
             <v-divider vertical class="divider"></v-divider>

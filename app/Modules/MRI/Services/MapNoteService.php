@@ -27,6 +27,8 @@ class MapNoteService
         'EXPIRY DATE' => 'expire_date',
         'EXPIRE DATE' => 'expire_date',
         'PASSPORT EXPIRY DATE' => 'expire_date',
+        'EXPIRE' => 'expire_date',
+        'EXPIRY' => 'expire_date',
     ];
     public const KEY_DRIVERS_LICENSE_NUMBER = [
         'DL' => 'card_number',
@@ -35,11 +37,17 @@ class MapNoteService
         'DRIVERS LICENSE NUMBER' => 'card_number',
         'DRIVER LICENSE' => 'card_number',
         'DRIVER LICENSE NUMBER' => 'card_number',
+        'DRIVERS LICENCE' => 'card_number',
+        'DRIVERS NUMBER' => 'card_number',
+        'DRIVERS LICENCE NUMBER' => 'card_number',
+        'DRIVER LICENCE' => 'card_number',
+        'DRIVER LICENCE NUMBER' => 'card_number',
         'DRIVER NUMBER' => 'card_number',
     ];
     public const KEY_DRIVERS_LICENSE_STATE = [
         'STATE' => 'state',
         'DRIVERS LICENSE STATE' => 'state',
+        'DRIVERS LICENCE STATE' => 'state',
         'DRIVERS STATE' => 'state',
     ];
     public const KEY_DRIVERS_LICENSE_EXPIRY_DATE = [
@@ -47,23 +55,30 @@ class MapNoteService
         'EXPIRE DATE' => 'expire_date',
         'DL EXPIRY DATE' => 'expire_date',
         'DRIVERS LICENSE EXPIRY DATE' => 'expire_date',
-        'DRIVER LICENSE EXPIRY DATE' => 'expire_date'
+        'DRIVER LICENSE EXPIRY DATE' => 'expire_date',
+        'EXPIRE' => 'expire_date',
+        'EXPIRY' => 'expire_date',
     ];
     public const KEY_MEDICARE_CARD_NUMBER = [
         'MEDICARE CARD NUMBER' => 'card_number',
         'CARD NUMBER' => 'card_number',
         'CN' => 'card_number',
         'MEDICARE CARD' => 'card_number',
+        'MEDICARE NUMBER' => 'card_number',
     ];
     public const KEY_MEDICARE_SPECIAL_NUMBER = [
         'MEDICARE SPECIAL NUMBER' => 'special_number',
         'MEDICARE SPECIAL' => 'special_number',
         'SPECIAL NUMBER' => 'special_number',
+        'INDIVIDUAL NUMBER' => 'special_number',
+        'REFERENCE NUMBER' => 'reference_number',
     ];
     public const KEY_MEDICARE_EXPIRY_DATE = [
         'EXPIRY DATE' => 'expire_date',
         'EXPIRE DATE' => 'expire_date',
         'MEDICARE EXPIRY DATE' => 'expire_date',
+        'EXPIRE' => 'expire_date',
+        'EXPIRY' => 'expire_date',
     ];
     public const KEY_MEDICARE_CARD_COLOUR = [
         'MEDICARE CARD COLOUR' => 'card_color',
@@ -72,6 +87,8 @@ class MapNoteService
         'MEDICARE CARD COLOR' => 'card_color',
         'MEDICARE COLOR' => 'card_color',
         'CARD COLOR' => 'card_color',
+        'COLOUR' => 'card_color',
+        'COLOR' => 'card_color',
     ];
     public const KEY_DATE_OF_BIRTH = [
         'DOB' => 'dob',
@@ -146,7 +163,7 @@ class MapNoteService
         );
     }
 
-    public function getRequiredIdentificationFields($type)
+    public function getRequiredIdentificationFields($type = '')
     {
         $required = [
             'card_number',
@@ -190,6 +207,7 @@ class MapNoteService
             $this->noteData = '';
             $updated = false;
             $conApp = $mriApp->connectionApplication;
+            $this->createNote($conApp);
             try {
                 list($noteAppData, $noteIdentificationData) = $this->mapApplicationNoteFields($mriApp);
                 if (!empty($noteAppData)) {
@@ -210,7 +228,7 @@ class MapNoteService
                 $updatedApplications[] = $conApp->id;
                 $mriApp->has_process_note = true;
                 $mriApp->save();
-                $this->checkMissingFields($conApp, $noteAppData, $noteIdentificationData);
+                // $this->checkMissingFields($conApp, $noteAppData, $noteIdentificationData);
             }
 
             $notesCount = !empty(config('mri.start_check_notes_count')) ? config('mri.start_check_notes_count') : self::DEFAULT_CHECK_NOTE_COUNT;
@@ -331,10 +349,14 @@ class MapNoteService
             $sendNote = true;
         }
 
-        if (!empty($noteIdentificationData['type'])) {
-            $required = $this->getRequiredIdentificationFields($noteIdentificationData['type']);
-            if (count(array_intersect(array_keys($noteIdentificationData), $required)) != count($required)) {
+        if (!empty($noteIdentificationData)) {
+            if (empty($noteIdentificationData['type'])) {
                 $sendNote = true;
+            } else {
+                $required = $this->getRequiredIdentificationFields($noteIdentificationData['type']);
+                if (count(array_intersect(array_keys($noteIdentificationData), $required)) != count($required)) {
+                    $sendNote = true;
+                }
             }
         }
 
