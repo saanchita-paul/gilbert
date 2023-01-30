@@ -43,6 +43,8 @@ class MapNoteService
         'DRIVER LICENCE' => 'card_number',
         'DRIVER LICENCE NUMBER' => 'card_number',
         'DRIVER NUMBER' => 'card_number',
+        'LICENSE' => 'card_number',
+        'LICENCE' => 'card_number',
     ];
     public const KEY_DRIVERS_LICENSE_STATE = [
         'STATE' => 'state',
@@ -71,7 +73,7 @@ class MapNoteService
         'MEDICARE SPECIAL' => 'special_number',
         'SPECIAL NUMBER' => 'special_number',
         'INDIVIDUAL NUMBER' => 'special_number',
-        'REFERENCE NUMBER' => 'reference_number',
+        'REFERENCE NUMBER' => 'special_number',
     ];
     public const KEY_MEDICARE_EXPIRY_DATE = [
         'EXPIRY DATE' => 'expire_date',
@@ -106,7 +108,7 @@ class MapNoteService
      * Fetch current MRI note data
      * @var string
      */
-    public string $noteData;
+    public string $mappedNoteData;
 
     public function __construct()
     {
@@ -163,36 +165,6 @@ class MapNoteService
         );
     }
 
-    public function getRequiredIdentificationFields($type = '')
-    {
-        $required = [
-            'card_number',
-            'expire_date',
-        ];
-
-        if ($type === Identification::TYPE_DRIVING_LICENCE) {
-            $required[] = 'state';
-        }
-        if ($type === Identification::TYPE_MEDICARE) {
-            $required[] = 'card_color';
-            $required[] = 'special_number';
-        }
-        if ($type === Identification::TYPE_PASSPORT) {
-            $required[] = 'country';
-        }
-
-        return $required;
-    }
-
-    public function getRequiredApplicationFields()
-    {
-        $required = [
-            'dob'
-        ];
-
-        return $required;
-    }
-
     public function run()
     {
         $missingService = new NotifyMissingDetailsService();
@@ -204,12 +176,11 @@ class MapNoteService
         foreach ($mriApplications as $mriApp) {
             $mriApp->fetch_notes_count += 1;
             $mriApp->save();
-            $this->noteData = '';
+            $this->mappedNoteData = '';
             $updated = false;
             $conApp = $mriApp->connectionApplication;
-            $this->createNote($conApp);
             try {
-                list($noteAppData, $noteIdentificationData) = $this->mapApplicationNoteFields($mriApp);
+                list($noteAppData, $noteIdentificationData) = $this->mapApplicationNoteFields($mriApp, $conApp);
                 if (!empty($noteAppData)) {
                     $conApp->update($noteAppData);
                     $updated = true;
@@ -220,7 +191,6 @@ class MapNoteService
                     $updated = true;
                 }
             } catch (\Exception $e) {
-                $this->createNote($conApp);
                 $this->exceptionHandler->addException($e);
             }
 
@@ -228,7 +198,6 @@ class MapNoteService
                 $updatedApplications[] = $conApp->id;
                 $mriApp->has_process_note = true;
                 $mriApp->save();
-                // $this->checkMissingFields($conApp, $noteAppData, $noteIdentificationData);
             }
 
             $notesCount = !empty(config('mri.start_check_notes_count')) ? config('mri.start_check_notes_count') : self::DEFAULT_CHECK_NOTE_COUNT;
@@ -251,16 +220,17 @@ class MapNoteService
         }
     }
 
-    private function mapApplicationNoteFields($mriApp)
+    private function mapApplicationNoteFields($mriApp, $conApp)
     {
         $conAppData = [];
         $identificationData = [];
         $mriNotes = $mriApp->mriNotes()->where('is_checked', false)->orderBy('id', 'desc')->get();
 
         foreach ($mriNotes as $mriNote) {
-            if (!empty($this->noteData)) {
+            if (!empty($this->mappedNoteData)) {
                 break;
             }
+            $this->createNote($conApp, $mriNote->description);
             $mriNote->is_checked = true;
             $mriNote->save();
             $single_n_data = preg_replace(array('/\s{2,}/', '/[\t\n\r]+/'), "\n", $mriNote->description);
@@ -292,7 +262,7 @@ class MapNoteService
             if (!empty($conAppData || !empty($identificationData))) {
                 $mriNote->is_fetched = true;
                 $mriNote->save();
-                $this->noteData = $mriNote->description;
+                $this->mappedNoteData = $mriNote->description;
             }
         }
 
@@ -300,13 +270,13 @@ class MapNoteService
         return $return;
     }
 
-    private function createNote(ConnectionApplication $conApp)
+    private function createNote(ConnectionApplication $conApp, string $noteData)
     {
         $gilbertNoteExist = ApplicationNote::where('connection_application_id', $conApp->id)
                                     ->where('type', ApplicationNote::MRI_IDENTIFICATION)
-                                    ->where('text', $this->noteData)
+                                    ->where('text', $noteData)
                                     ->exists();
-        if (!empty($this->noteData) && !$gilbertNoteExist) {
+        if (!$gilbertNoteExist) {
             $createdBy = $conApp->createdBy;
             if (!$createdBy) {
                 $user = User::where('email', 'admin@hood.ai')->first();
@@ -316,7 +286,7 @@ class MapNoteService
             $service = new ApplicationNoteService($user);
             $note = [
                 'type' => ApplicationNote::MRI_IDENTIFICATION,
-                'text' => $this->noteData,
+                'text' => $noteData,
             ];
             $service->createNotes($note, $conApp->id);
         }
@@ -338,30 +308,6 @@ class MapNoteService
         } catch (\Exception $e) {
             \Log::error($e->getMessage(), $e->getTrace());
             return $date;
-        }
-    }
-
-    private function checkMissingFields($conApp, $noteAppData, $noteIdentificationData)
-    {
-        $sendNote = false;
-        $required = $this->getRequiredApplicationFields();
-        if (count(array_intersect(array_keys($noteAppData), $required)) != count($required)) {
-            $sendNote = true;
-        }
-
-        if (!empty($noteIdentificationData)) {
-            if (empty($noteIdentificationData['type'])) {
-                $sendNote = true;
-            } else {
-                $required = $this->getRequiredIdentificationFields($noteIdentificationData['type']);
-                if (count(array_intersect(array_keys($noteIdentificationData), $required)) != count($required)) {
-                    $sendNote = true;
-                }
-            }
-        }
-
-        if ($sendNote) {
-            $this->createNote($conApp);
         }
     }
 }
