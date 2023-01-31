@@ -695,7 +695,7 @@ class ApplicationService
         $note['user_role'] = 'hood_admin';
         $note['type'] = 'assign_user';
         $note['title'] = 'Assigned to ' . $hoodProfile->first_name . ' ' . $hoodProfile->last_name;
-        $note['text'] = Carbon::parse($connectionApplication->assigned_at)->format('d/m/Y_H:i:s');
+        $note['text'] = Carbon::parse($connectionApplication->assigned_at)->toDateTimeLocalString() . '.000000Z';
         Log::info('CreateAppNoteForAssignUser: ', $note);
         return ApplicationNote::create($note);
     }
