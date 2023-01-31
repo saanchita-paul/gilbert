@@ -67,6 +67,7 @@ class MapNoteService
         'CN' => 'card_number',
         'MEDICARE CARD' => 'card_number',
         'MEDICARE NUMBER' => 'card_number',
+        'MEDICARE' => 'card_number',
     ];
     public const KEY_MEDICARE_SPECIAL_NUMBER = [
         'MEDICARE SPECIAL NUMBER' => 'special_number',
@@ -74,6 +75,9 @@ class MapNoteService
         'SPECIAL NUMBER' => 'special_number',
         'INDIVIDUAL NUMBER' => 'special_number',
         'REFERENCE NUMBER' => 'special_number',
+        'SPECIAL' => 'special_number',
+        'INDIVIDUAL' => 'special_number',
+        'REFERENCE' => 'special_number',
     ];
     public const KEY_MEDICARE_EXPIRY_DATE = [
         'EXPIRY DATE' => 'expire_date',
