@@ -116,6 +116,8 @@ class GetNotesService
                 $profileName = $mriApp->name;
                 $notesData = $this->getAPIData($token, $profileName);
                 $this->saveNotes($mriApp, $notesData);
+                $mriApp->fetch_notes_count += 1;
+                $mriApp->save();
             }
         } catch (RequestException $e) {
             $this->exceptionHandler->addException($e);

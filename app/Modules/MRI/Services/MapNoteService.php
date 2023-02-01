@@ -4,8 +4,6 @@ namespace MRI\Services;
 
 use App\Models\MriApplication;
 use App\Models\ConnectionApplication;
-use App\Services\NotifyBadAgentMailService;
-use App\Models\ConnectionService;
 use App\Services\Agency\ApplicationNoteService;
 use MRI\Services\NotifyMissingDetailsService;
 use App\Models\User;
@@ -43,6 +41,8 @@ class MapNoteService
         'DRIVER LICENCE' => 'card_number',
         'DRIVER LICENCE NUMBER' => 'card_number',
         'DRIVER NUMBER' => 'card_number',
+        'LICENCE NUMBER' => 'card_number',
+        'LICENSE NUMBER' => 'card_number',
         'LICENSE' => 'card_number',
         'LICENCE' => 'card_number',
     ];
@@ -178,8 +178,6 @@ class MapNoteService
         $updatedApplications = [];
 
         foreach ($mriApplications as $mriApp) {
-            $mriApp->fetch_notes_count += 1;
-            $mriApp->save();
             $this->mappedNoteData = '';
             $updated = false;
             $conApp = $mriApp->connectionApplication;
@@ -202,6 +200,9 @@ class MapNoteService
                 $updatedApplications[] = $conApp->id;
                 $mriApp->has_process_note = true;
                 $mriApp->save();
+                if ($this->validateRequiredFields($noteAppData, $noteIdentificationData)) {
+                    $this->deleteNote($conApp, $this->mappedNoteData);
+                }
             }
 
             $notesCount = !empty(config('mri.start_check_notes_count')) ? config('mri.start_check_notes_count') : self::DEFAULT_CHECK_NOTE_COUNT;
@@ -296,6 +297,14 @@ class MapNoteService
         }
     }
 
+    private function deleteNote(ConnectionApplication $conApp, string $noteData)
+    {
+        return ApplicationNote::where('connection_application_id', $conApp->id)
+                                    ->where('type', ApplicationNote::MRI_IDENTIFICATION)
+                                    ->where('text', $noteData)
+                                    ->delete();
+    }
+
     private function getFormattedDate(string $date)
     {
         $createFromFormat = 'd/m/Y';
@@ -313,5 +322,56 @@ class MapNoteService
             \Log::error($e->getMessage(), $e->getTrace());
             return $date;
         }
+    }
+
+    private function validateRequiredFields($noteAppData, $noteIdentificationData)
+    {
+        $valid = true;
+        $required = $this->getRequiredApplicationFields();
+        if (count(array_intersect(array_keys($noteAppData), $required)) != count($required)) {
+            $valid = false;
+        }
+        if (!array_key_exists('type', $noteIdentificationData) || empty($noteIdentificationData['type'])) {
+            $valid = false;
+        } else {
+            $required = $this->getRequiredIdentificationFields($noteIdentificationData['type']);
+            if (count(array_intersect(array_keys($noteIdentificationData), $required)) != count($required)) {
+                $valid = false;
+            }
+        }
+
+        return $valid;
+    }
+
+    private function getRequiredApplicationFields()
+    {
+        $required = [
+            'dob'
+        ];
+
+        return $required;
+    }
+
+    private function getRequiredIdentificationFields($type = '')
+    {
+        $required = [
+            'card_number',
+            'expire_date'
+        ];
+
+        switch ($type) {
+            case Identification::TYPE_DRIVING_LICENCE:
+                $required[] = 'state';
+                break;
+            case Identification::TYPE_MEDICARE:
+                $required[] = 'card_color';
+                $required[] = 'special_number';
+                break;
+            case Identification::TYPE_PASSPORT:
+                $required[] = 'country';
+                break;
+        }
+
+        return $required;
     }
 }
