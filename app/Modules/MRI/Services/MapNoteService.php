@@ -174,10 +174,13 @@ class MapNoteService
         $missingService = new NotifyMissingDetailsService();
         $mriApplications = MriApplication::with('connectionApplication')
                             ->where('has_process_note', false)
+                            ->where('fetch_notes_count', '<', GetNotesService::getMaxFetchCount())
                             ->get();
         $updatedApplications = [];
 
         foreach ($mriApplications as $mriApp) {
+            $mriApp->fetch_notes_count += 1;
+            $mriApp->save();
             $this->mappedNoteData = '';
             $updated = false;
             $conApp = $mriApp->connectionApplication;

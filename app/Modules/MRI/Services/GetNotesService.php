@@ -104,8 +104,7 @@ class GetNotesService
     public function run()
     {
         try {
-            $noteCount = !empty(config('mri.max_get_notes_count')) ? config('mri.max_get_notes_count') : self::DEFAULT_GET_NOTES_COUNT;
-            $query = MriApplication::with('mriOffice:id,key')->where('has_process_note', false)->where('fetch_notes_count', '<', $noteCount);
+            $query = MriApplication::with('mriOffice:id,key')->where('has_process_note', false)->where('fetch_notes_count', '<', self::getMaxFetchCount());
             if (isset($this->officeId) && !empty($this->officeId)) {
                 $query->where('mri_office_id', $this->officeId);
             }
@@ -116,8 +115,6 @@ class GetNotesService
                 $profileName = $mriApp->name;
                 $notesData = $this->getAPIData($token, $profileName);
                 $this->saveNotes($mriApp, $notesData);
-                $mriApp->fetch_notes_count += 1;
-                $mriApp->save();
             }
         } catch (RequestException $e) {
             $this->exceptionHandler->addException($e);
@@ -167,5 +164,10 @@ class GetNotesService
         }
 
         return $savedNoteIds;
+    }
+
+    public static function getMaxFetchCount()
+    {
+        return !empty(config('mri.max_get_notes_count')) ? config('mri.max_get_notes_count') : self::DEFAULT_GET_NOTES_COUNT;
     }
 }
