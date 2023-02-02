@@ -20,9 +20,9 @@ export default {
         }
     },
 
-   async updatePersonalData(utilityId, data) {
+   async updatePersonalData(utilityId, data, provider_name) {
         try {
-            const mappedData = ChatbotApplicationMapper.mapTosavePersonalData(data);
+            const mappedData = ChatbotApplicationMapper.mapTosavePersonalData(data, provider_name);
             const response =  (await axios.put(`${ROOT}/utility-data/${utilityId}/update`,
                 {...mappedData})).data;
             return ApplicationCafFileMapper.mapChatbotSingleApplication(response.data);

@@ -1170,7 +1170,7 @@ export default {
         async savePersonalDetails() {
             if(!await this.validateFormData('personal_details_ref')) return;
             this.savePersonDloading = true;
-            await ChatbotApplicationService.updatePersonalDetails(this.app_id, this.chatbot_app.personal_details);
+            await ChatbotApplicationService.updatePersonalDetails(this.app_id, this.chatbot_app.personal_details, this.chatbot_app.provider_name);
             this.chatbot_app_backup.personal_details = cloneDeep(this.chatbot_app.personal_details);
             this.personalDetailsFlag = [];
             this.savePersonDloading = false;

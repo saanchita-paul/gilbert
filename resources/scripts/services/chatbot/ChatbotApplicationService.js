@@ -4,8 +4,8 @@ import axios from "axios";
 import utilityAPI from "@scripts/api/UtilityAPI";
 export default {
     saveNote: note => ChatbotApplicationApi.saveNote(note),
-    updatePersonalDetails: async (utilityId, data) => {
-        const application = await ChatbotApplicationApi.updatePersonalData(utilityId, data);
+    updatePersonalDetails: async (utilityId, data, provider_name) => {
+        const application = await ChatbotApplicationApi.updatePersonalData(utilityId, data, provider_name);
         Store.commit('updateApp', application);
     },
 

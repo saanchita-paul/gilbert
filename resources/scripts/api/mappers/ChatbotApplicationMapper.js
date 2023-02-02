@@ -44,6 +44,8 @@ function mapChatbotAppStatus(status) {
         case '--':
         case 'Not Submitted':
             return null;
+        case "In Progress" :
+            return 'submitted';
         default:
             return status;
 
@@ -67,6 +69,13 @@ function mapApplicationNote(data, isInternalNote = true){
     })
 }
 
+function mapOriginMarketingOffer(data, provider_name){
+    if(provider_name === 'origin'){
+        return data.enabled_marketing_offer === 1 ? 0 : 1 ;
+    }
+    return data.enabled_marketing_offer;
+}
+
 function isCafGenerated(connection_services) {
     return  !!connection_services.find((item) => {
         return item.is_caf_file_generated;
@@ -75,7 +84,6 @@ function isCafGenerated(connection_services) {
 
 export default {
     mapApplication: (application) => {
-        console.log("applicationNote", application)
         const id_detail = new IdDetail(application);
         const personal_detail = new PersonalDetail(application);
         const property_detail = new PropertyDetail(application);
@@ -121,13 +129,16 @@ export default {
         });
     },
 
-    mapTosavePersonalData: data =>
+
+
+    mapTosavePersonalData: (data, provider_name) =>
     {
         return {
             ...data,
             dob:dayjs(data.dob,'DD/MM/YYYY').isValid()?
                 dayjs(data.dob,'DD/MM/YYYY')
-                    .format('YYYY-MM-DD'): ''
+                    .format('YYYY-MM-DD'): '',
+            enabled_marketing_offer : mapOriginMarketingOffer(data, provider_name)
         }
     },
 

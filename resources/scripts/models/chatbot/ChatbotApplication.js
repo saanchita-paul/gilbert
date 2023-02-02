@@ -11,8 +11,7 @@ export default class {
                     property_address= null,
                     cafStatus = false,
                     id = null,
-                    status_log=null
-
+                    status_log=null,
                 }) {
 
         this.id_detail = id_detail;
@@ -26,7 +25,13 @@ export default class {
         this.property_address = property_address;
         this.cafStatus = cafStatus? 'CAF Submitted': '--';
         this.id = id;
-        this.status_log = status_log
+        this.status_log = status_log;
+        this.provider_name = this.getProviderName(this.connection_services);
+    }
+
+    getProviderName(services){
+        let filteredService = services.filter(item => ['electricity', 'gas'].includes(item.service_type))
+        return filteredService[0].provider_name;
     }
 
     setIdDetails(idDetail) {
