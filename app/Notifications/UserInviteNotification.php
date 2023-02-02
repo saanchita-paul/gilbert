@@ -47,7 +47,7 @@ class UserInviteNotification extends Notification implements ShouldQueue
             ->subject("Welcome to Hood")
             ->view('email.invite_user', [
                 'token' => $this->invitation->token,
-                'name' => "$profile?->first_name $profile?->last_name"
+                'name' => $profile?->first_name
             ]);
     }
 
