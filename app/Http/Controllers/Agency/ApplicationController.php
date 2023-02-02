@@ -503,7 +503,7 @@ class ApplicationController extends Controller
     public function isGbgValidateEmail(Request $request)
     {
         $request->validate([
-            'email' => 'email'
+            'email' => 'email:rfc,dns'
         ]);
         try {
             // Check email validation is enabled or not

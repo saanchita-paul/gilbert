@@ -19,6 +19,7 @@ class GBGAddressMapper
             return [
                 'unit_number' => data_get($address, 'flatUnitNumber'),
                 'street_number' => data_get($address, 'streetNumber'),
+                'street_name' => data_get($address, 'streetName'),
                 'street_name_only' => data_get($address, 'streetName'),
                 'street_type' => StreetTypeMapper::getShortForm(data_get($address, 'streetType')) ,
                 'postcode' => data_get($address, 'postcode'),

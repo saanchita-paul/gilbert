@@ -53,7 +53,7 @@ class IgniteConnectionLeadService
      * @return void
      */
     private function setNextPageUrl(?String $nextPageUrl = '') : void{
-        $this->nextPageUrl = $nextPageUrl != '' ? 
+        $this->nextPageUrl = $nextPageUrl != '' ?
                              $this->base_url . "/applications/v1/rental" . $nextPageUrl : '';
     }
 
@@ -89,14 +89,15 @@ class IgniteConnectionLeadService
      *
      * @return void
      */
-    private function setConnctionLeadUrl() : void{
-        
-        $noOfDays = config('ignite.NO_OF_DAY_IGNITE_LEAD') ?? 1;
+    private function setConnctionLeadUrl() : void
+    {
 
-        $isoDateYesterday = date('Y-m-d',strtotime("-{$noOfDays} days"));
+        $noOfDays = (int) config('ignite.NO_OF_DAY_IGNITE_LEAD') ?? 1;
+        $from = urlencode(today()->addDays(-$noOfDays)->toISOString());
+
         $this->base_url = config('ignite.IGNITE_BASE_URL');
         $this->auth_url = $this->base_url . "/oauth/token?grant_type=client_credentials";
-        $this->connection_lead_url = $this->base_url . "/applications/v1/rental/connection-leads" . "?happenedSince={$isoDateYesterday}T00%3A00%3A01.604Z" ;
+        $this->connection_lead_url = $this->base_url . "/applications/v1/rental/connection-leads" . "?happenedSince=$from" ;
     }
 
     /**
@@ -110,7 +111,7 @@ class IgniteConnectionLeadService
 
     public function __construct() {
         $this->setConnctionLeadUrl();
-        
+
         $this->nextPageUrl = '';
 
         $client_id = config('ignite.IGNITE_CLIENT_ID');
@@ -133,7 +134,7 @@ class IgniteConnectionLeadService
                 "authorization" => $this->authorization_header ,
             ])
             ->post($this->auth_url);
-            
+
             $result = json_decode($response->body(), true);
             \Log::info('in the authenticate token');
             \Log::info($result);
