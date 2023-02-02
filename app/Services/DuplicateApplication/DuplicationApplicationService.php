@@ -201,7 +201,12 @@ class DuplicationApplicationService
                 $this->state,
                 $this->country
             );
+            if (empty($addressDuplicatedServices->getAddress())) {
+                return;
+            }
+
             $this->duplicatedAddressBuilder = $addressDuplicatedServices->getBuilder();
+
             $itemCount = $this->duplicatedAddressBuilder->count();
             info('Address duplicated items count '.$itemCount);
             if($itemCount > 0) {
