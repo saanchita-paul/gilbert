@@ -5,6 +5,7 @@ namespace Origin\Services;
 use App\Models\ConnectionService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
+use App\Models\RejectionReason;
 
 class SubmitOrderAPI extends BaseOriginAPI
 {
@@ -163,10 +164,19 @@ class SubmitOrderAPI extends BaseOriginAPI
         // $body = $this->getDummyData(); // test data
         $methodname = self::METHODNAME . self::MAP_CONNECTION_TYPE[$this->data['connection']];
 
-        $responseData = $this->postApi($url, $body, self::METHODNAME . 'CustomerMoveIn');
+        try {
+            $responseData = $this->postApi($url, $body, self::METHODNAME . 'CustomerMoveIn');
+        } catch (\Illuminate\Http\Client\RequestException $exception) {
+            $this->saveRejectedStatus($exception->response);
+            throw $exception;
+        } catch (\Exception $exception) {
+            \Log::error(sprintf('Origin POST:%s - FAILED (%s)', $methodname, $exception->getMessage()), $exception->getTrace());
+            throw $exception;
+        }
 
-        if(empty($responseData))
+        if (empty($responseData)) {
             throw new \Exception(sprintf('Origin POST:%s - FAILED (Empty response from Origin)', $methodname));
+        }
 
         $formattedData = [
             'OrderHeaderID' => $responseData['OrderHeaderID'],
@@ -179,31 +189,29 @@ class SubmitOrderAPI extends BaseOriginAPI
 
     /**
      * @return string
-     * 
+     *
      */
-    private function getPartnerReferenceNumber(){
+    private function getPartnerReferenceNumber() {
         $result = '';
 
-        if(config('origin.isTestReferenceNumber') || config('app.env') !== 'production'){
+        if (config('origin.isTestReferenceNumber') || config('app.env') !== 'production') {
             $digits = '0123456789';
             $alphas = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             $alphaLen = 4;
             $digitLen = 6;
 
             $result = '';
-            for($i = 0; $i < $alphaLen; $i++) {
+            for ($i = 0; $i < $alphaLen; $i++) {
                 $random_character = $alphas[mt_rand(0, strlen($alphas) - 1)];
                 $result .= $random_character;
             }
-            for($i = 0; $i < $digitLen; $i++) {
+            for ($i = 0; $i < $digitLen; $i++) {
                 $random_character = $digits[mt_rand(0, strlen($digits) - 1)];
                 $result .= $random_character;
             }
-        }
-        else{
+        } else {
             $result = 'HD'.strval($this->service_id);
         }
-         
         return $result;
     }
 
@@ -423,4 +431,32 @@ class SubmitOrderAPI extends BaseOriginAPI
         ];
     }
 
+    private function saveRejectedStatus($errorResponse)
+    {
+        $service = ConnectionService::findOrFail($this->service_id);
+        $statusCode = $errorResponse->status();
+        $responseJson = $errorResponse->json();
+        \Log::error('Origin Submit Failed (refer context for error response)', $responseJson);
+        $errors = $responseJson['error']['innererror']['errordetails'] ?? [];
+
+        foreach ($errors as $error) {
+            $errorCode = $error['code'];
+            $errorMessage = $error['message'];
+
+            $newRejectReason = new RejectionReason();
+            $newRejectReason->connection_service_id = $service->id;
+            $newRejectReason->connection_application_id = $service->connection_application_id;
+            $newRejectReason->service_type = $service->service_type;
+            $newRejectReason->reason_code = $errorCode;
+            $newRejectReason->reason_text = $errorMessage;
+
+            $newRejectReason->save();
+        }
+
+        if ($statusCode == 400) {
+            $service->status = ConnectionService::STATUS_REJECTED;
+            $service->rejected_at = Carbon::now();
+            $service->save();
+        }
+    }
 }
