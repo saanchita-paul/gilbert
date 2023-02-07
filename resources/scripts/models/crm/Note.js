@@ -72,6 +72,10 @@ export default class Note {
                 return 'invalid_property_me_note';
                 break;
 
+            case 'assign_user':
+                return 'assign_user';
+                break;
+
             default:
                 break;
         }
@@ -94,6 +98,8 @@ export default class Note {
              return "Inserting ID details, didn't exactly match.";
         } else if(type.toLowerCase() == 'escalated') {
             return title + ' by ' + '[' + role + ']';
+        } else if(type.toLowerCase() == 'assign_user') {
+            return title;
         }
     }
 }

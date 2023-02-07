@@ -9,7 +9,7 @@ use App\Models\APILog;
 
 class BaseOriginAPI
 {
-    const CODE_REJECT = 4; 
+    const CODE_REJECT = 4;
 
     /**
      * @var string|null $basicAuth
@@ -24,8 +24,9 @@ class BaseOriginAPI
         $this->basicAuth = AuthService::getBasicAuth();
     }
 
-    protected function getAccessToken(){
-        if(empty($this->accessToken)){
+    protected function getAccessToken()
+    {
+        if (empty($this->accessToken)) {
             $array = AuthService::getXCSRFToken();
             $this->accessToken = $array['token'];
             $this->cookiejar = $array['cookies'];
@@ -33,17 +34,17 @@ class BaseOriginAPI
     }
 
     /**
-     * Run GET Http Client 
-     * 
+     * Run GET Http Client
+     *
      * @param string $url
      * @param array $params
      * @param string $methodName
-     * 
+     *
      * @return array
-     * 
+     *
      * @throws exception
      */
-    protected function getApi(string $url, array $params = [], string $methodName = 'getOriginAPI', $isSkipLog = false){
+    protected function getApi(string $url, array $params = [], string $methodName = 'getOriginAPI', $isSkipLog = false) {
         try {
             Log::info(sprintf('Origin GET:%s - Attempting with request data:', $methodName), $params);
 
@@ -54,11 +55,11 @@ class BaseOriginAPI
                 ],
                 "query" => $params,
             ];
-            
+
             if (!$isSkipLog) {
-                $url = APILog::setLoggerQuery($url, $this->toSnakeCase('Origin'.$methodName), false);
-                
-                foreach ($params as $key => $value){
+                $url = APILog::setLoggerQuery($url, $this->toSnakeCase('Origin' . $methodName), false);
+
+                foreach ($params as $key => $value) {
                     $url = $url . '&' . $key . '=' . $value;
                 }
 
@@ -68,26 +69,24 @@ class BaseOriginAPI
             $response = Http::withOptions($options)
                         ->get($url)
                         ->throw();
-            
+
             $responseData = json_decode($response->body(), true);
 
             Log::info(sprintf('Origin GET:%s - Success with response data:', $methodName), $responseData);
 
             return $responseData['d'];
-        } catch (\Illuminate\Http\Client\RequestException $exception){
+        } catch (\Illuminate\Http\Client\RequestException $exception) {
             $statusCode = $exception->response->status();
             $responseJson = $exception->response->json();
             $errorCode = $responseJson['error'] ? $responseJson['error']['code'] : '';
             $errorMessage = $responseJson['error'] ? $responseJson['error']['message']['value'] : $exception->response->body();
 
-            if($statusCode == 400){
+            if ($statusCode == 400) {
                 throw new \Exception(sprintf('Origin GET:%s - FAILED [%s](%s)', $methodName, $errorCode, $errorMessage), self::CODE_REJECT);
-            }
-            else {
+            } else {
                 throw new \Exception(sprintf('Origin GET:%s - FAILED (%s)', $methodName, $errorMessage));
             }
-        }
-        catch (Exception $exception) {
+        } catch (Exception $exception) {
             throw new \Exception(sprintf('Origin GET:%s - FAILED (%s)', $methodName, $exception->getMessage()));
         }
 
@@ -95,63 +94,49 @@ class BaseOriginAPI
     }
 
     /**
-     * Run POST Http Client 
-     * 
+     * Run POST Http Client
+     *
      * @param string $url
      * @param array $body
      * @param string $methodName
-     * 
+     *
      * @return array
-     * 
+     *
      * @throws exception
      */
-    protected function postApi(string $url, array $body = [], string $methodName = 'postOriginAPI', $isSkipLog = false){
-        try {
-            Log::info(sprintf('Origin POST:%s - Attempting with request data:', $methodName), $body);
+    protected function postApi(string $url, array $body = [], string $methodName = 'postOriginAPI', $isSkipLog = false) 
+    {
+        Log::info(sprintf('Origin POST:%s - Attempting with request data:', $methodName), $body);
 
-            $this->getAccessToken();
-            $options = [
-                'headers' => [
-                    "X-CSRF-Token" => $this->accessToken,
-                    "Authorization" => $this->basicAuth,
-                    "Accept" => "application/json",
-                    "Content-Type" => "application/json",
-                ],
-                'cookies' => $this->cookiejar
-            ];
-            
-            if (!$isSkipLog) {
-                $url = APILog::setLoggerQuery($url, $this->toSnakeCase('Origin'.$methodName), false);
-            }
+        $this->getAccessToken();
+        $options = [
+            'headers' => [
+                "X-CSRF-Token" => $this->accessToken,
+                "Authorization" => $this->basicAuth,
+                "Accept" => "application/json",
+                "Content-Type" => "application/json",
+            ],
+            'cookies' => $this->cookiejar
+        ];
 
-            $response = Http::withOptions($options)
-                        ->withBody(json_encode($body), "application/json")
-                        ->post($url)
-                        ->throw();
-
-            $responseData = json_decode($response->getBody(), true);
-
-            Log::info(sprintf('Origin POST:%s - Success with response data:', $methodName), $responseData);
-
-            return $responseData['d'];
-        } catch (\Illuminate\Http\Client\RequestException $exception){
-            $statusCode = $exception->response->status();
-            $responseJson = $exception->response->json();
-            $errorCode = $responseJson['error'] ? $responseJson['error']['code'] : '';
-            $errorMessage = $responseJson['error'] ? $responseJson['error']['message']['value'] : $exception->response->body();
-            
-            if($statusCode == 400){
-                throw new \Exception(sprintf('Origin POST:%s - FAILED [%s](%s)', $methodName, $errorCode, $errorMessage), self::CODE_REJECT);
-            }
-            else {
-                throw new \Exception(sprintf('Origin POST:%s - FAILED (%s)', $methodName, $errorMessage));
-            }
-        } catch (Exception $exception) {
-            throw new \Exception(sprintf('Origin POST:%s - FAILED (%s)', $methodName, $exception->getMessage()));
+        if (!$isSkipLog) {
+            $url = APILog::setLoggerQuery($url, $this->toSnakeCase('Origin' . $methodName), false);
         }
+
+        $response = Http::withOptions($options)
+                    ->withBody(json_encode($body), "application/json")
+                    ->post($url)
+                    ->throw();
+
+        $responseData = json_decode($response->getBody(), true);
+
+        Log::info(sprintf('Origin POST:%s - Success with response data:', $methodName), $responseData);
+
+        return $responseData['d'];
     }
 
-    protected function toSnakeCase($string, $seperator = '_'){
+    protected function toSnakeCase($string, $seperator = '_')
+    {
         return strtolower(preg_replace('/(?<=\d)(?=[A-Za-z])|(?<=[A-Za-z])(?=\d)|(?<=[a-z])(?=[A-Z])/', $seperator, $string));
     }
 }
