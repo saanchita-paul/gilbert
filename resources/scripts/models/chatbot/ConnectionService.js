@@ -17,6 +17,7 @@ function mapServiceStatus(status) {
         case '':
             return 'Not Submitted';
         case 'Complete':
+        case 'Accepted':
             return 'Accepted';
         default:
             return status;
