@@ -17,7 +17,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
 
-        table, td, div, h1, p {font-family: 'Ubuntu'}
+        table, td, div, h1, p {font-family: 'Ubuntu', Arial, sans-serif}
         .main-container {
             width:80%;
             border-collapse:collapse;
@@ -45,10 +45,10 @@
                         <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
                             <tr>
                                 <td style="padding:0 0 20px 0;color:#252830;">
-                                    <h1 style="font-size:24px;margin:0 0 20px 0;font-family:'Ubuntu';font-weight:700;line-height:31px">Hi {{ $name }}! It happens...</h1>
-                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu';font-weight:400;">But don’t worry, we got you covered! </br>
+                                    <h1 style="font-size:24px;margin:0 0 20px 0;font-family:'Ubuntu', Arial, sans-serif;font-weight:700;line-height:31px">Hi {{ $name }}! It happens...</h1>
+                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu', Arial, sans-serif;font-weight:400;">But don’t worry, we got you covered! <br>
                                         We received a request from you to reset your password.</p>
-                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu';font-weight:400;">If you requested to reset your password, please click the button below:</p>
+                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu', Arial, sans-serif;font-weight:400;">If you requested to reset your password, please click the button below:</p>
                                 </td>
                             </tr>
 
@@ -57,22 +57,22 @@
                                     <!--[if mso]>
                                             <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ url('/reset/password/' .$token) }}" style="height:36px;v-text-anchor:middle;width:150px;" arcsize="5%" strokecolor="#542E89" fillcolor="#542E89">
                                                 <w:anchorlock/>
-                                                <center style="color:#ffffff;font-family:'Ubuntu';font-size:14px;">Reset my password</center>
+                                                <center style="color:#ffffff;font-family:'Ubuntu', Arial, sans-serif;font-size:14px;">Reset my password</center>
                                             </v:roundrect>
                                         <![endif]-->
-                                    <a href="{{ url('/reset/password/' .$token) }}" style="background-color:#542E89;border:1px solid #542E89;border-radius:10px;color:#ffffff;display:inline-block;font-family:'Ubuntu';font-size:14px;line-height:44px;text-align:center;text-decoration:none;width:150px;-webkit-text-size-adjust:none;mso-hide:all;font-weight:700;">Reset my password</a>
+                                    <a href="{{ url('/reset/password/' .$token) }}" style="background-color:#542E89;border:1px solid #542E89;border-radius:10px;color:#ffffff;display:inline-block;font-family:'Ubuntu', Arial, sans-serif;font-size:14px;line-height:44px;text-align:center;text-decoration:none;width:150px;-webkit-text-size-adjust:none;mso-hide:all;font-weight:700;">Reset my password</a>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td style="padding:0 0 20px 0;color:#252830;">
-                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu';font-weight:400;">Please ignore this email if you did not request this action.</p>
+                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu', Arial, sans-serif;font-weight:400;">Please ignore this email if you did not request this action.</p>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td style="padding:0;color:#252830;">
-                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu';font-weight:400;">Kind Regards, <br> HOOD Team</p>
+                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu', Arial, sans-serif;font-weight:400;">Kind Regards, <br> HOOD Team</p>
                                 </td>
                             </tr>
                         </table>
@@ -80,7 +80,7 @@
                 </tr>
                 <tr>
                     <td style="padding:0 0 30px 30px;">
-                        <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;font-size:9px;font-family:'Ubuntu';">
+                        <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;font-size:9px;font-family:'Ubuntu', Arial, sans-serif;">
                             <tr>
                                 <td style="padding:0;width:100%;">
                                     <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">

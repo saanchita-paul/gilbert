@@ -17,7 +17,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
 
-        table, td, div, h1, p {font-family: 'Ubuntu'}
+        table, td, div, h1, p {font-family: 'Ubuntu', Arial, sans-serif}
         .main-container {
             width:80%;
             border-collapse:collapse;
@@ -45,8 +45,8 @@
                         <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
                             <tr>
                                 <td style="padding:0 0 20px 0;color:#252830;">
-                                    <h1 style="font-size:24px;margin:0 0 20px 0;font-family:'Ubuntu';font-weight:700;line-height:31px">Hey {{$name}},</h1>
-                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu';font-weight:400;">Thank you for choosing Powershop with HOOD! As we mentioned, please provide your payment details by clicking on the button below.</p>
+                                    <h1 style="font-size:24px;margin:0 0 20px 0;font-family:'Ubuntu', Arial, sans-serif;font-weight:700;line-height:31px">Hey {{$name}},</h1>
+                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu', Arial, sans-serif;font-weight:400;">Thank you for choosing Powershop with HOOD! As we mentioned, please provide your payment details by clicking on the button below.</p>
                                 </td>
                             </tr>
 
@@ -55,16 +55,16 @@
                                     <!--[if mso]>
                                             <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ $paymentUrl }}" style="height:36px;v-text-anchor:middle;width:200px;" arcsize="5%" strokecolor="#542E89" fillcolor="#542E89">
                                                 <w:anchorlock/>
-                                                <center style="color:#ffffff;font-family:'Ubuntu';font-size:14px;">Secure Payment Link</center>
+                                                <center style="color:#ffffff;font-family:'Ubuntu', Arial, sans-serif;font-size:14px;">Secure Payment Link</center>
                                             </v:roundrect>
                                         <![endif]-->
-                                    <a href="{{ $paymentUrl }}" style="background-color:#542E89;border:1px solid #542E89;border-radius:10px;color:#ffffff;display:inline-block;font-family:'Ubuntu';font-size:14px;line-height:44px;text-align:center;text-decoration:none;width:160px;-webkit-text-size-adjust:none;mso-hide:all;font-weight:700;">Secure Payment Link</a>
+                                    <a href="{{ $paymentUrl }}" style="background-color:#542E89;border:1px solid #542E89;border-radius:10px;color:#ffffff;display:inline-block;font-family:'Ubuntu', Arial, sans-serif;font-size:14px;line-height:44px;text-align:center;text-decoration:none;width:160px;-webkit-text-size-adjust:none;mso-hide:all;font-weight:700;">Secure Payment Link</a>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td style="padding:0;color:#252830;">
-                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu';font-weight:400;">Kind Regards, <br> HOOD Team</p>
+                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu', Arial, sans-serif;font-weight:400;">Kind Regards, <br> HOOD Team</p>
                                 </td>
                             </tr>
                         </table>
@@ -72,7 +72,7 @@
                 </tr>
                 <tr>
                     <td style="padding:0 0 30px 30px;">
-                        <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;font-size:9px;font-family:'Ubuntu';">
+                        <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;font-size:9px;font-family:'Ubuntu', Arial, sans-serif;">
                             <tr>
                                 <td style="padding:0;width:100%;">
                                     <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">

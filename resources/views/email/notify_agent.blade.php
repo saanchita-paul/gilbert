@@ -17,7 +17,9 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
 
-        table, td, div, h1, p {font-family: 'Ubuntu'}
+        table, td, div, h1, p {
+            font-family: 'Ubuntu', Arial, sans-serif
+        }
         .main-container {
             width:80%;
             border-collapse:collapse;
@@ -45,8 +47,8 @@
                         <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
                             <tr>
                                 <td style="padding:0 0 20px 0;color:#252830;">
-                                    <h1 style="font-size:24px;margin:0 0 20px 0;font-family:'Ubuntu';font-weight:700;line-height:31px">Hi {{ $lead_info['agent_name'] }},</h1>
-                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu';font-weight:400;">HOOD has received an application from you.</p>
+                                    <h1 style="font-size:24px;margin:0 0 20px 0;font-family:'Ubuntu', Arial, sans-serif;font-weight:700;line-height:31px">Hi {{ $lead_info['agent_name'] }},</h1>
+                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu', Arial, sans-serif;font-weight:400;">HOOD has received an application from you.</p>
                                 </td>
                             </tr>
 
@@ -54,24 +56,24 @@
                                 <td style="padding:0 0 20px 0;color:#252830;">
                                     <table>
                                         <tr>
-                                            <td style="width:30%; font-weight:700; font-size:14px; font-family:'Ubuntu'">Submitted by</td>
-                                            <td style="width:70%; font-size:14px; font-family:'Ubuntu'">{{ $lead_info['agent_name'] }}</td>
+                                            <td style="width:30%; font-weight:700; font-size:14px; font-family:'Ubuntu', Arial, sans-serif">Submitted by</td>
+                                            <td style="width:70%; font-size:14px; font-family:'Ubuntu', Arial, sans-serif">{{ $lead_info['agent_name'] }}</td>
                                         </tr>
                                         <tr>
-                                            <td style="width:30%; font-weight:700; font-size:14px; font-family:'Ubuntu'">Tenant Name</td>
-                                            <td style="width:70%; font-size:14px; font-family:'Ubuntu'">{{ $lead_info['full_name'] }}</td>
+                                            <td style="width:30%; font-weight:700; font-size:14px; font-family:'Ubuntu', Arial, sans-serif">Tenant Name</td>
+                                            <td style="width:70%; font-size:14px; font-family:'Ubuntu', Arial, sans-serif">{{ $lead_info['full_name'] }}</td>
                                         </tr>
                                         <tr>
-                                            <td style="width:30%; font-weight:700; font-size:14px; font-family:'Ubuntu'">Address</td>
-                                            <td style="width:70%; font-size:14px; font-family:'Ubuntu'">{{ $lead_info['full_address'] }}</td>
+                                            <td style="width:30%; font-weight:700; font-size:14px; font-family:'Ubuntu', Arial, sans-serif">Address</td>
+                                            <td style="width:70%; font-size:14px; font-family:'Ubuntu', Arial, sans-serif">{{ $lead_info['full_address'] }}</td>
                                         </tr>
                                         <tr>
-                                            <td style="width:30%; font-weight:700; font-size:14px; font-family:'Ubuntu'">Move In Date</td>
-                                            <td style="width:70%; font-size:14px; font-family:'Ubuntu'">{{ $lead_info['connection_date'] }}</td>
+                                            <td style="width:30%; font-weight:700; font-size:14px; font-family:'Ubuntu', Arial, sans-serif">Move In Date</td>
+                                            <td style="width:70%; font-size:14px; font-family:'Ubuntu', Arial, sans-serif">{{ $lead_info['connection_date'] }}</td>
                                         </tr>
                                         <tr>
-                                            <td style="width:30%; font-weight:700; font-size:14px; font-family:'Ubuntu'">App ID</td>
-                                            <td style="width:70%; font-size:14px; font-family:'Ubuntu'">{{ $lead_info['id'] }}</td>
+                                            <td style="width:30%; font-weight:700; font-size:14px; font-family:'Ubuntu', Arial, sans-serif">App ID</td>
+                                            <td style="width:70%; font-size:14px; font-family:'Ubuntu', Arial, sans-serif">{{ $lead_info['id'] }}</td>
                                         </tr>
                                     </table>
                                 </td>
@@ -79,13 +81,13 @@
 
                             <tr>
                                 <td style="padding:0 0 20px 0;color:#252830;">
-                                    <p style="margin:0 0 0 0;font-size:14px;line-height:18px;font-family:'Ubuntu';font-weight:400;">One of our HOOD staff will be in touch with your client to arrange their connections shortly. For enquiries, please contact your HOOD Account Manager.</p>
+                                    <p style="margin:0 0 0 0;font-size:14px;line-height:18px;font-family:'Ubuntu', Arial, sans-serif;font-weight:400;">One of our HOOD staff will be in touch with your client to arrange their connections shortly. For enquiries, please contact your HOOD Account Manager.</p>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td style="padding:0;color:#252830;">
-                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu';font-weight:400;">Kind Regards, <br> HOOD Team</p>
+                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu', Arial, sans-serif;font-weight:400;">Kind Regards, <br> HOOD Team</p>
                                 </td>
                             </tr>
                         </table>
@@ -93,7 +95,7 @@
                 </tr>
                 <tr>
                     <td style="padding:0 0 30px 30px;">
-                        <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;font-size:9px;font-family:'Ubuntu';">
+                        <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;font-size:9px;font-family:'Ubuntu', Arial, sans-serif;">
                             <tr>
                                 <td style="padding:0;width:100%;">
                                     <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
