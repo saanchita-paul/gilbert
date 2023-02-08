@@ -180,27 +180,33 @@ class ApplicationService
 
     public function assignUser(string $agentId, int $applicationId)
     {
-        $connectionApplication = ConnectionApplication::query()
-            ->where('id', $applicationId)->first();
+        $connectionApplication = $this->findApplications($applicationId);
 
         if (!$connectionApplication) {
             throw new \Exception('assignUser: Application not found!');
         }
 
-        $connectionApplication->update(['assigned_to' => $agentId, 'status' => ConnectionApplication::STATUS_ASSIGNED]);
+        $connectionApplication->update([
+            'assigned_to' => $agentId,
+            'assigned_at' => now(),
+            'status' => ConnectionApplication::STATUS_ASSIGNED
+        ]);
 
-        if (in_array(HoodProfile::find($agentId)->user->roles->first()?->name,
+        $hoodProfile = HoodProfile::find($agentId);
+        if (in_array($hoodProfile->user->roles->first()?->name,
             [RolePermission::ROLE_EXTERNAL_HOOD_TEAM_LEAD])) {
             $tsaService = new TsaSendAppliationService($applicationId);
             $tsaService->sendApplication();
             $tsa_lead_id = $tsaService->getTsaLeadId();
-            $existingApplication = ConnectionApplication::find($applicationId);
-            $existingApplication->tsa_lead_id = $tsa_lead_id;
-            $existingApplication->save();
+            $connectionApplication->tsa_lead_id = $tsa_lead_id;
+            $connectionApplication->save();
         }
 
-        $this->sendToChatbot($applicationId, $agentId);
-        return $this->findApplications($applicationId);
+        if ($hoodProfile->user->hasAnyRole(RolePermission::ROLE_HOOD_CHATBOT_USER)) {
+            $this->sendToChatbot($connectionApplication, $hoodProfile);
+        }
+
+        return $connectionApplication->refresh();
     }
 
     private function checkAllowableForAssign($connectionApplication)
@@ -208,21 +214,21 @@ class ApplicationService
         return $connectionApplication->phone && $connectionApplication->city;
     }
 
-    public function sendToChatbot($appId, $hoodUserId)
+    public function sendToChatbot($app, $hoodProfile)
     {
-        $connectionApplication = ConnectionApplication::find($appId);
-        $checkProfile = User::where('profile_type', USER::PROFILE_TYPE_HOOD)
-            ->where('profile_id', $hoodUserId)
-            ->firstOrFail();
+        if (!$this->checkAllowableForAssign($app)) {
+            $app->update([
+                'assigned_to' => null,
+                'assigned_at' => null,
+                'status' => ConnectionApplication::STATUS_UNASSIGNED
+            ]);
+            throw new \Exception('assignUser:SendToChatbot: Application has no phone number or suburb/city!');
+        }
 
-        if ($checkProfile->hasAnyRole(RolePermission::ROLE_HOOD_CHATBOT_USER)) {
-            if (!$this->checkAllowableForAssign($connectionApplication)) {
-                $connectionApplication->update(['assigned_to' => null, 'status' => ConnectionApplication::STATUS_UNASSIGNED]);
-                throw new \Exception('assignUser: Application has no phone number or suburb/city!');
-            }
+        // Create application note
+        $this->createAppNoteForAssignUser($app, $hoodProfile);
 
-            GilbertToChatbotJob::dispatch($appId);
-        };
+        GilbertToChatbotJob::dispatch($app->id);
     }
 
 
@@ -527,13 +533,6 @@ class ApplicationService
         return $office->getVendorCode() . '_CRM' . str_pad($lead->id, 10, "0", STR_PAD_LEFT);
     }
 
-    public function closeApplication($id)
-    {
-        $connectionApplication = ConnectionApplication::find($id);
-        $connectionApplication->update(['status' => 8]);
-        return $connectionApplication->refresh();
-    }
-
     public function createApplicationSerive($id, $services): void
     {
         foreach ($services as $service) {
@@ -622,22 +621,6 @@ class ApplicationService
         return $notSubmitted;
     }
 
-    public function getNotSubmittedEaService($id, $submitType): array
-    {
-        $services = match ($submitType) {
-            'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
-            'power' => [ConnectionService::TYPE_ELECTRICITY],
-            'gas' => [ConnectionService::TYPE_GAS],
-            default => []
-        };
-
-        return ConnectionService::query()->where('connection_application_id', $id)
-            ->where('provider_name', ConnectionService::PROVIDER_EA)
-            ->whereNull('lead_reference')
-            ->whereIn('service_type', $services)
-            ->pluck('id')->toArray();
-    }
-
     public function getAssignedHoodUser($id)
     {
         $existingApplication = ConnectionApplication::find($id);
@@ -703,6 +686,18 @@ class ApplicationService
         $email_manually_verified_by = $existingApplication->email_manually_verified_by;
 
         return $email_manually_verified_by;
+    }
+
+    public function createAppNoteForAssignUser(ConnectionApplication $connectionApplication, HoodProfile $hoodProfile)
+    {
+        $note['connection_application_id'] = $connectionApplication->id;
+        $note['created_by'] = 1;
+        $note['user_role'] = 'hood_admin';
+        $note['type'] = 'assign_user';
+        $note['title'] = 'Assigned to ' . $hoodProfile->first_name . ' ' . $hoodProfile->last_name;
+        $note['text'] = Carbon::parse($connectionApplication->assigned_at)->toDateTimeLocalString() . '.000000Z';
+        Log::info('CreateAppNoteForAssignUser: ', $note);
+        return ApplicationNote::create($note);
     }
 
 }
