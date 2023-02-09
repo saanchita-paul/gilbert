@@ -13,6 +13,7 @@ use App\Services\GilbertToChatbotStatusMapping;
 use App\Services\Utility\PlanTypeSyncWithChatbotService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Models\LifeSupportEquipment;
 
 /**
  *
@@ -148,8 +149,10 @@ class ChatbotToGilbertSyncService
 //            $this->applicationData['electricity_already_on'] = $this->requestData['other_details']['electricity_already_on'];
             $this->applicationData['inspection_time'] = $this->requestData['other_details']['qld_vis_inspection_time'];
 //            $this->applicationData['i_am_home'] = $this->requestData['other_details']['meter_box_text'];
-            $this->applicationData['life_support_equipment_id'] = $this->requestData['other_details']['life_support_equipment_id'];
-            $this->applicationData['medical_reason'] = $this->requestData['other_details']['medical_reason'];
+            if (isset($this->requestData['other_details']['life_support_equipment'])) {
+                $this->applicationData['life_support_equipment_id'] = $this->mapLifeSupportEquipmentId($this->requestData['other_details']['life_support_equipment']);
+            }
+            $this->applicationData['medical_reason'] = $this->requestData['other_details']['medical_reason'] ?? null;
         }
         if (isset($this->requestData['others'])) {
 //            $this->applicationData['created_by'] = $this->requestData['others']['created_by'];
@@ -516,6 +519,12 @@ class ChatbotToGilbertSyncService
             'type' => 'escalated'
         ];
         $app->applicationNotes()->create($data);
+    }
+
+    private function mapLifeSupportEquipmentId($lifeSupport)
+    {
+        $lifeSupportEquipment = LifeSupportEquipment::query()->where('powershop_value', $lifeSupport['powershop_value'])->first();
+        return $lifeSupportEquipment ? $lifeSupportEquipment->id : null;
     }
 
 }

@@ -246,7 +246,9 @@ class ConnectionApplication extends Model
         'mirn_score',
         'nmi_score',
         'suggested_nmi',
-        'assigned_at'
+        'assigned_at',
+        'life_support_equipment_id',
+        'medical_reason'
     ];
 
 
@@ -710,5 +712,13 @@ class ConnectionApplication extends Model
                 return $gas;
             }
         }
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function lifeSupportEquipment(): BelongsTo
+    {
+        return $this->belongsTo(LifeSupportEquipment::class);
     }
 }
