@@ -82,22 +82,30 @@
                 </tr>
                 <tr>
                     <td style="padding:0 0 30px 30px;">
-                        <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;font-size:9px;font-family:'Ubuntu', Arial, sans-serif;;">
+                        <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
                             <tr>
                                 <td style="padding:0;width:100%;">
                                     <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;">
                                         <tr>
                                             <td style="padding:0 0 0 0;">
-                                                <a href="https://hoodagents.com.au/" style="color:#ffffff;"><img src="{{ asset('/assets/images/email/rea.png') }}" alt="REA" width="auto" style="height:auto;display:block;border:0;" /></a>
+                                                <a href="https://hoodagents.com.au/">
+                                                    <img src="{{ asset('/assets/images/email/rea.png') }}" alt="REA" width="auto" style="display:block;border:0;" />
+                                                </a>
                                             </td>
                                             <td style="padding:0 0 0 10px;">
-                                                <a href="https://www.facebook.com/hood.ai.official" style="color:#ffffff;"><img src="{{ asset('/assets/images/email/fb.png') }}" alt="Facebook" width="auto" style="height:auto;display:block;border:0;" /></a>
+                                                <a href="https://www.facebook.com/hood.ai.official">
+                                                    <img src="{{ asset('/assets/images/email/fb.png') }}" alt="Facebook" width="auto" style="display:block;border:0;" />
+                                                </a>
                                             </td>
                                             <td style="padding:0 0 0 10px;">
-                                                <a href="https://www.instagram.com/hood.ai_official/" style="color:#ffffff;"><img src="{{ asset('/assets/images/email/instagram.png') }}" alt="Instagram" width="auto" style="height:auto;display:block;border:0;" /></a>
+                                                <a href="https://www.instagram.com/hood.ai_official/">
+                                                    <img src="{{ asset('/assets/images/email/instagram.png') }}" alt="Instagram" width="auto" style="display:block;border:0;" />
+                                                </a>
                                             </td>
                                             <td style="padding:0 0 0 10px;">
-                                                <a href="https://www.linkedin.com/company/hood-ai/mycompany/" style="color:#ffffff;"><img src="{{ asset('/assets/images/email/linkedin.png') }}" alt="Linkedin" width="auto" style="height:auto;display:block;border:0;" /></a>
+                                                <a href="https://www.linkedin.com/company/hood-ai/mycompany/">
+                                                    <img src="{{ asset('/assets/images/email/linkedin.png') }}" alt="Linkedin" width="auto" style="display:block;border:0;" />
+                                                </a>
                                             </td>
                                         </tr>
                                     </table>
