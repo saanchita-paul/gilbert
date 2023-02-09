@@ -542,10 +542,8 @@ class ChatbotToGilbertSyncService
         $hazardData = [];
 
         foreach ($hazards as $hazard) {
-            $haz = Hazard::where([
-                ['is_active', true],
-                ['powershop_value', $hazard['powershop_value']]
-            ])->first();
+            $haz = Hazard::where('is_active', 1)
+                ->where('powershop_value', $hazard['powershop_value'])->first();
             if ($haz) {
                 $hazardData[] = $haz->id;
             }
