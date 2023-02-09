@@ -19,7 +19,7 @@
 
         table, td, div, h1, p {font-family: 'Ubuntu', Arial, sans-serif;}
         .main-container {
-            width:80%;
+            width:770px;
             border-collapse:collapse;
             text-align:left;
         }
