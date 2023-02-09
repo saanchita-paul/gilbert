@@ -5,6 +5,7 @@ namespace App\Http\Resources\Agency;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\User;
+use App\Services\HazardService;
 use App\Services\TimeZoneService;
 use App\Services\Utility\StateMapService;
 use Carbon\Carbon;
@@ -26,16 +27,6 @@ class ApplicationResource extends JsonResource
     {
         parent::__construct($resource);
         $this->tsa = is_array($tsa) ? $tsa : [];
-    }
-
-    private function isUnrestrainedAnimal()
-    {
-        return $this->hazards()->where('powershop_value', 'dog')->exists();
-    }
-
-    private function isRenovation()
-    {
-        return $this->hazards()->where('powershop_value', 'electrical_safety_issue')->exists();
     }
 
     /**
@@ -74,7 +65,7 @@ class ApplicationResource extends JsonResource
             'tsa_call_histories' => $this->mapTsaService($this->tsa),
             'identification' => $this->identification,
             'family_violance' => isset($this->family_violance) ? $this->family_violance : 3,
-            'is_renovation_on' => (int)$this->isRenovation(),
+            'is_renovation_on' => (int)HazardService::isRenovationExists($this),
             'has_electricity' => isset($this->has_electricity) ? $this->has_electricity : 1,
             'inspection_time' => $this->inspection_time,
             'is_email_billing' => $this->is_email_billing,
@@ -137,7 +128,7 @@ class ApplicationResource extends JsonResource
             'is_email_marketing' => $this->is_email_marketing,
             'is_access_require' => $this->is_access_require,
             'is_gas_life_support' => $this->is_gas_life_support,
-            'is_any_unrestrained_animal' => $this->isUnrestrainedAnimal(),
+            'is_any_unrestrained_animal' => HazardService::isDogExists($this),
             'concession_card_type' => $this->concession_card_type,
             'concession_card_number' => $this->concession_card_number,
             'concession_start_date' => $this->concession_start_date,

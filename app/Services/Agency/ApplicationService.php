@@ -135,7 +135,7 @@ class ApplicationService
         // $existingApplication->street_number = empty($address['street_address']) ? null : $address['street_number'];
         // $existingApplication->unit_number = empty($address['street_address']) ? null : $address['unit_number'];
         $existingApplication->city = $address['city'];
-        $existingApplication->is_renovation_on = $address['is_renovation_on'];
+//        $existingApplication->is_renovation_on = $address['is_renovation_on'];
         $existingApplication->has_electricity = $address['has_electricity'];
         $existingApplication->inspection_time = $address['inspection_time'];
         $existingApplication->postcode = $address['postcode'];
@@ -174,7 +174,25 @@ class ApplicationService
             $existingApplication->billing_address_unit = $address['unit_number'] ? $address['unit_number'] : null;
 
         };
+
+        // Renovation data
+        $isRenovation = false;
+        $hazards = [];
+        if (isset($address['is_renovation_on'])) {
+            $isRenovation = $address['is_renovation_on'];
+            $hazards[]= Hazard::where('powershop_value', 'electrical_safety_issue')->first()->id;
+            unset($address['is_renovation_on']);
+        }
+
         $existingApplication->save();
+
+
+        // update hazards
+        if ($isRenovation) {
+            $existingApplication->hazards()->attach($hazards);
+        } else {
+            $existingApplication->hazards()->detach($hazards);
+        }
 
         return $existingApplication;
     }
