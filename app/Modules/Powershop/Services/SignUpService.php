@@ -50,13 +50,13 @@ class SignUpService
     {
         if (!config('powershop.use_dummy_data')){
             $this->application = ConnectionApplication::findOrFail($id);
-            
+
             if (!in_array($submitType, self::OPTION_SERVICE_TYPE))
                 throw new Exception("Invalid submit service type");
             else
                 $this->submitType = $submitType;
         }
-        
+
     }
 
     /**
@@ -77,17 +77,17 @@ class SignUpService
             $filteredData = array_diff_key($data, array_flip(["payment_details"]));
 
             $this->saveRequestLog($url, json_encode($filteredData), json_encode($headers));
-            
+
             $response = Http::withHeaders($headers)
                 ->withBody(json_encode($data),'application-json')
                 ->post($url);
 
             $this->saveResponseLog($response->status(), json_encode($response->body()), json_encode($response->headers()));
-            
+
             $response->throwIf(!$response->successful() && $response->status() != 422);
 
             $results = json_decode($response->body(), true);
-            
+
             if (isset($results['data']['errors'])){
                 $results = [
                     'status' => 'rejected',
@@ -202,7 +202,7 @@ class SignUpService
                     ->where('service_type', ConnectionService::TYPE_ELECTRICITY)
                     ->where('provider_name', ConnectionService::PROVIDER_POWER_SHOP)
                     ->first();
-        
+
         if (!$service) {
             throw new Exception("Electricity connection service for application not found");
         }
@@ -240,7 +240,7 @@ class SignUpService
                     ->where('service_type', ConnectionService::TYPE_GAS)
                     ->where('provider_name', ConnectionService::PROVIDER_POWER_SHOP)
                     ->first();
-        
+
         if (!$service) {
             throw new Exception("Gas connection service for application not found");
         }
@@ -273,11 +273,11 @@ class SignUpService
     private function getUtilityDetails($submitType)
     {
         $data = [];
-        
+
         if ($submitType == 'energy' || $submitType == 'power') {
             $data[] = $this->getElecDetails();
         }
-        
+
         if ($submitType == 'energy' || $submitType == 'gas') {
             $data[] = $this->getGasDetails();
         }
@@ -288,7 +288,7 @@ class SignUpService
     private function getVulnerabilities()
     {
         $data = [];
-        
+
         if ($this->application->is_gas_life_support || $this->application->is_power_life_support) {
             $data['dependency_type'] = 'Life support';
             $data['medical_details_disclaimer_accepted_at'] = $this->getFormattedDate(Carbon::parse($this->application->life_support_accepted_at)->format('Y-m-d H:i:s')); // TODO: get timestamp
@@ -317,11 +317,17 @@ class SignUpService
     private function getHazards()
     {
         $data = [];
-        
-        if ($this->application->is_any_unrestrained_animal)
+
+        if ($this->application->hazards->count() > 0) {
+            foreach ($this->application->hazards as $hazard) {
+                $data[$hazard->powershop_value] = true;
+            }
+        }
+
+        /*if ($this->application->is_any_unrestrained_animal)
             $data['dog'] = true;
         if ($this->application->is_renovation_on)
-            $data['electrical_safety_issue'] = true;
+            $data['electrical_safety_issue'] = true;*/
 
         return $data;
     }
@@ -471,15 +477,15 @@ class SignUpService
                         foreach($subErrVal as $powerKey => $powerVal){
                             self::recursiveStore($powerVal, $powerData, $powerKey);
                         }
-                        $data[ConnectionService::TYPE_ELECTRICITY] = $powerData;  
-                    }    
+                        $data[ConnectionService::TYPE_ELECTRICITY] = $powerData;
+                    }
                     if (isset($this->gasKey) && $this->gasKey == $subErrKey) {
                         $gasData = [];
                         foreach($subErrVal as $gasKey => $gasVal){
                             self::recursiveStore($gasVal, $gasData, $gasKey);
                         }
-                        
-                        $data[ConnectionService::TYPE_GAS] = $gasData;  
+
+                        $data[ConnectionService::TYPE_GAS] = $gasData;
                     }
                 }
             }
@@ -519,17 +525,17 @@ class SignUpService
         $this->apiLog->method = 'POST';
         $this->apiLog->request_body = $body;
         $this->apiLog->request_header = $headers;
-        
+
         return $this->apiLog->save();
     }
 
     private function saveResponseLog(int $statusCode, string $body, string $headers) {
-        info('Powershop receive data', ['body' => $body]); 
+        info('Powershop receive data', ['body' => $body]);
 
         $this->apiLog->response_status = $statusCode;
         $this->apiLog->response_body = $body;
         $this->apiLog->response_header = $headers;
-        
+
         return $this->apiLog->save();
     }
 

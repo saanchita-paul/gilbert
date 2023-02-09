@@ -5,6 +5,7 @@ namespace App\Services\GilbertToCB;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
+use App\Models\Hazard;
 use App\Models\Identification;
 use App\Models\RejectionReason;
 use App\Services\Address\AddressModel;
@@ -76,6 +77,8 @@ class ChatbotToGilbertSyncService
     private $authorizedPersonData = [];
 
     private $rejectionReasonData = [];
+
+    private $hazardData = [];
 
     /**
      * @param $chatbotId
@@ -241,6 +244,11 @@ class ChatbotToGilbertSyncService
             $this->applicationData['status'] = $this->requestData['escalated_status']['status'];
             $this->setApplicationNotesForEscalated($this->requestData['escalated_status']['text']);
         }
+
+        // Map hazard data
+        if (isset($this->requestData['hazards']) && count($this->requestData['hazards']) > 0) {
+            $this->hazardData = $this->mapHazardData($this->requestData['hazards']);
+        }
     }
 
 
@@ -254,6 +262,13 @@ class ChatbotToGilbertSyncService
         Identification::where('connection_application_id', $app->id)
             ->update($this->identificationData);
         ConnectionApplicationSecondaryACC::where('connection_application_id', $app->id);
+
+        // Sync hazard data
+        if (count($this->hazardData) > 0) {
+            $app->hazards()->sync($this->hazardData);
+        } else {
+            $app->hazards()->detach();
+        }
     }
 
     /**
@@ -514,6 +529,29 @@ class ChatbotToGilbertSyncService
             'type' => 'escalated'
         ];
         $app->applicationNotes()->create($data);
+    }
+
+    /**
+     * Map the hazard data to an array of hazard ids
+     *
+     * @param $hazards
+     * @return array
+     */
+    private function mapHazardData($hazards): array
+    {
+        $hazardData = [];
+
+        foreach ($hazards as $hazard) {
+            $haz = Hazard::where([
+                ['is_active', true],
+                ['powershop_value', $hazard['powershop_value']]
+            ])->first();
+            if ($haz) {
+                $hazardData[] = $haz->id;
+            }
+        }
+
+        return $hazardData;
     }
 
 }

@@ -9,6 +9,7 @@ use Ignite\Models\IgniteLead;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
@@ -710,5 +711,15 @@ class ConnectionApplication extends Model
                 return $gas;
             }
         }
+    }
+
+    public function hazards(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Hazard::class,
+            'hazard_connection_applications',
+            'connection_application_id',
+            'hazard_id'
+        )->withTimestamps();
     }
 }
