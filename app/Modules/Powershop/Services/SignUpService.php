@@ -308,10 +308,16 @@ class SignUpService
     {
         $data = [];
 
-        if ($this->application->is_any_unrestrained_animal)
+        if ($this->application->hazards->count() > 0) {
+            foreach ($this->application->hazards as $hazard) {
+                $data[$hazard->powershop_value] = true;
+            }
+        }
+
+        /*if ($this->application->is_any_unrestrained_animal)
             $data['dog'] = true;
         if ($this->application->is_renovation_on)
-            $data['electrical_safety_issue'] = true;
+            $data['electrical_safety_issue'] = true;*/
 
         return $data;
     }
