@@ -17,12 +17,6 @@ class HazardSeeder extends Seeder
     {
         $hazards = [
             [
-                'title' => "No hazards/electrical works at the property",
-                'powershop_value' => "no_hazards",
-                'is_active' => true,
-                'created_at' => now(),
-            ],
-            [
                 'title' => "Dog on the property",
                 'powershop_value' => "dog",
                 'is_active' => true,
