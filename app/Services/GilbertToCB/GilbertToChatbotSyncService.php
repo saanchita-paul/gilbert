@@ -112,7 +112,7 @@ class GilbertToChatbotSyncService
             "reason" => $this->application->reason,
             "billing_preference" => $this->mapBillingType($this->application->is_email_billing), // is_email_billing also exists in chatbot moving utility table
             "account_type" => $this->mapPropertyType($this->application->property_type),
-            "is_property_on_life_support" => $this->application->has_life_support,
+            "is_property_on_life_support" => $this->application->is_power_life_support,
             "solar_panel" => $this->mapSolarPanel($this->application->has_solar),
             "nmi" => $this->application->nmi,
             "mirn" => $this->application->mirn,
