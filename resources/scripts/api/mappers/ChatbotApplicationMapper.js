@@ -18,7 +18,7 @@ function mapPropertyAddress(dt) {
         state : dt?.state,
         state_short : dt?.state,
         street_number : dt?.street_number,
-        unit_number : dt?.flat_or_unit_number,
+        unit_number : dt.flat_or_unit_number ? dt.flat_or_unit_number : '',
         street_name : dt?.street_name,
         street_name_only : dt?.street_name_only,
         street_type : dt?.street_type,
@@ -178,7 +178,7 @@ export default {
             suburb : address.city,
             to_postcode : address.postcode,
             to_address: address.address_text,
-            flat_or_unit_number : address.unit_number
+            flat_or_unit_number : address.unit_number ? address.unit_number : ''
         }
     },
 
