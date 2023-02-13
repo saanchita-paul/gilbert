@@ -56,7 +56,8 @@ class GilbertToChatbotSyncService
             'connectionServices',
             'authorizedPerson',
             'office',
-            'agency'
+            'agency',
+            'powershopPaymentInfo'
         ])->firstOrFail();
     }
 
