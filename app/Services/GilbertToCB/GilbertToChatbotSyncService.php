@@ -171,7 +171,8 @@ class GilbertToChatbotSyncService
             "connection_services" => $this->application->connectionServices ? $this->application->connectionServices->toArray() : [],
             "identification" => $this->application->identification ? $this->application->identification->toArray() : null,
             "authorized_person" => $this->application->authorizedPerson ? $this->application->authorizedPerson->toArray() : null,
-            "rejection_reasons" => $this->mapRejectionReasons()
+            "rejection_reasons" => $this->mapRejectionReasons(),
+            "payment_sync_data" => $this->mapPaymentData(),
         ];
     }
 
@@ -339,6 +340,14 @@ class GilbertToChatbotSyncService
             ? RejectionReason::query()->whereIn('connection_service_id', $servicesId)->get()->toArray()
             : [];
 
+    }
+
+    public function mapPaymentData(): array
+    {
+        return $this->application->powershopPaymentInfo ? [
+            'estimated_elec_billing_cost' => $this->application->powershopPaymentInfo->estimated_elec_billing_cost,
+            'estimated_gas_billing_cost' => $this->application->powershopPaymentInfo->estimated_gas_billing_cost,
+        ] : [];
     }
 }
 

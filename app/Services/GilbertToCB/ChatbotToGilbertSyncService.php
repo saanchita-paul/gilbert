@@ -6,6 +6,7 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use App\Models\Identification;
+use App\Models\PowershopPaymentInfo;
 use App\Models\RejectionReason;
 use App\Services\Address\AddressModel;
 use App\Services\AddressMapperService;
@@ -240,6 +241,11 @@ class ChatbotToGilbertSyncService
         if (isset($this->requestData['escalated_status'])) {
             $this->applicationData['status'] = $this->requestData['escalated_status']['status'];
             $this->setApplicationNotesForEscalated($this->requestData['escalated_status']['text']);
+        }
+
+        // Payment data sync
+        if (isset($this->requestData['payment_sync_data'])) {
+            $this->setPaymentData($this->requestData['payment_sync_data']);
         }
     }
 
@@ -516,4 +522,14 @@ class ChatbotToGilbertSyncService
         $app->applicationNotes()->create($data);
     }
 
+    public function setPaymentData($paymentData)
+    {
+        $app = ConnectionApplication::where('chatbot_id', $this->chatbotId)
+            ->firstOrFail();
+        PowershopPaymentInfo::query()->where('connection_application_id', $app->id)
+            ->updateOrCreate(['connection_application_id' => $app->id], [
+                'estimated_elec_billing_cost' => $paymentData['estimated_elec_billing_cost'],
+                'estimated_gas_billing_cost' => $paymentData['estimated_gas_billing_cost'],
+            ]);
+    }
 }
