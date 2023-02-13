@@ -226,8 +226,8 @@ class SignUpService
                 "promotion_terms_and_conditions_accepted_at" => $this->getFormattedDate(Carbon::now()->format('Y-m-d H:i:s')),
             ];
 
-        if (!empty($this->application->additional_access_information))
-            $data['meter_details']['meter_location_notes'] = $this->application->additional_access_information;
+        /*if (!empty($this->application->additional_access_information))
+            $data['meter_details']['meter_location_notes'] = $this->application->additional_access_information;*/
 
         $this->elecKey = $this->utilityKeyCount;
         $this->utilityKeyCount += 1;
@@ -310,7 +310,11 @@ class SignUpService
 
         if ($this->application->hazards->count() > 0) {
             foreach ($this->application->hazards as $hazard) {
-                $data[$hazard->powershop_value] = true;
+                if ($hazard->powershop_value != 'other') {
+                    $data[$hazard->powershop_value] = true;
+                } else {
+                    $data[$hazard->powershop_value] = $this->application->additional_access_information;
+                }
             }
         }
 
