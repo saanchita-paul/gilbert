@@ -251,7 +251,7 @@ class ChatbotToGilbertSyncService
         }
 
         // Map hazard data
-        if (isset($this->requestData['hazards']) && count($this->requestData['hazards']) > 0) {
+        if (array_key_exists('hazards', $this->requestData)) {
             $this->hazardData = $this->mapHazardData($this->requestData['hazards']);
         }
     }
@@ -269,11 +269,7 @@ class ChatbotToGilbertSyncService
         ConnectionApplicationSecondaryACC::where('connection_application_id', $app->id);
 
         // Sync hazard data
-        if (count($this->hazardData) > 0) {
-            $app->hazards()->sync($this->hazardData);
-        } else {
-            $app->hazards()->detach();
-        }
+        $app->hazards()->sync($this->hazardData);
     }
 
     /**
