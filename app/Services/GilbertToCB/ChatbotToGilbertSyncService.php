@@ -528,8 +528,8 @@ class ChatbotToGilbertSyncService
             ->firstOrFail();
         PowershopPaymentInfo::query()
             ->updateOrCreate(['connection_application_id' => $app->id], [
-                'estimated_elec_billing_cost' => $paymentData['estimated_elec_billing_cost'],
-                'estimated_gas_billing_cost' => $paymentData['estimated_gas_billing_cost'],
+                'estimated_elec_billing_cost' => $paymentData['estimated_elec_billing_cost'] ?? null,
+                'estimated_gas_billing_cost' => $paymentData['estimated_gas_billing_cost'] ?? null,
             ]);
     }
 }
