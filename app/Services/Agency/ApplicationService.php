@@ -175,19 +175,7 @@ class ApplicationService
 
         };
 
-        // Renovation data
-        $isRenovation = false;
-        $hazards = [];
-        if (isset($address['is_renovation_on'])) {
-            $hazards[] = Hazard::where('powershop_value', 'electrical_safety_issue')->first()->id;
-            unset($address['is_renovation_on']);
-        }
-
         $existingApplication->save();
-
-
-        // update hazards
-        $existingApplication->hazards()->sync($hazards);
 
         return $existingApplication;
     }
