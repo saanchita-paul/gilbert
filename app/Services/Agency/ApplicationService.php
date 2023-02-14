@@ -179,8 +179,7 @@ class ApplicationService
         $isRenovation = false;
         $hazards = [];
         if (isset($address['is_renovation_on'])) {
-            $isRenovation = $address['is_renovation_on'];
-            $hazards[]= Hazard::where('powershop_value', 'electrical_safety_issue')->first()->id;
+            $hazards[] = Hazard::where('powershop_value', 'electrical_safety_issue')->first()->id;
             unset($address['is_renovation_on']);
         }
 
@@ -188,11 +187,7 @@ class ApplicationService
 
 
         // update hazards
-        if ($isRenovation) {
-            $existingApplication->hazards()->attach($hazards);
-        } else {
-            $existingApplication->hazards()->detach($hazards);
-        }
+        $existingApplication->hazards()->sync($hazards);
 
         return $existingApplication;
     }
@@ -487,7 +482,7 @@ class ApplicationService
         $hazards = [];
         if (isset($application['is_any_unrestrained_animal'])) {
             $isUnrestrained = $application['is_any_unrestrained_animal'];
-            $hazards[]= Hazard::where('powershop_value', 'dog')->first()->id;
+            $hazards[] = Hazard::where('powershop_value', 'dog')->first()->id;
             unset($application['is_any_unrestrained_animal']);
         }
 
@@ -495,7 +490,7 @@ class ApplicationService
         $isRenovation = false;
         if (isset($application['is_renovation_on'])) {
             $isRenovation = $application['is_renovation_on'];
-            $hazards[]= Hazard::where('powershop_value', 'electrical_safety_issue')->first()->id;
+            $hazards[] = Hazard::where('powershop_value', 'electrical_safety_issue')->first()->id;
             unset($application['is_renovation_on']);
         }
 
