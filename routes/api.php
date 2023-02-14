@@ -26,6 +26,7 @@ use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\GilbertLeadAPIController;
 use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
 use App\Http\Controllers\ApplicationEventController;
+use App\Http\Controllers\HutlyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -300,6 +301,11 @@ Route::post('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syn
  * application events
  */
 Route::post('/application-events', [ApplicationEventController::class, 'saveEvent']);
+
+/**
+ * Source list
+ */
+Route::get('/sources', [HutlyController::class, 'index']);
 
 
 /**
