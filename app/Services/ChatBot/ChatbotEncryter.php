@@ -4,6 +4,7 @@ namespace App\Services\ChatBot;
 
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\MockObject\Exception;
 
 class ChatbotEncryter
 {
@@ -52,7 +53,11 @@ class ChatbotEncryter
      */
     public static function encryptString(?string $text): ?string
     {
-        return $text ? (new static())->getEncrypter()->encryptString($text) : null;
+        try {
+            return $text ? (new static())->getEncrypter()->encryptString($text) : null;
+        } catch (Exception $exception) {
+            throw new \Exception("Failed to encrypt with ChatbotEncryter, val: $text, Mgs: {$exception->getMessage()}");
+        }
     }
 
 
@@ -62,7 +67,11 @@ class ChatbotEncryter
      */
     public static function decryptString(?string $text): ?string
     {
-        return $text ? (new static())->getEncrypter()->decryptString($text) : null;
+        try {
+            return $text ? (new static())->getEncrypter()->decryptString($text) : null;
+        } catch (\Exception $exception) {
+            throw new \Exception("Failed to decrypt with ChatbotEncryter, val: $text, Mgs: {$exception->getMessage()}");
+        }
     }
 
 
