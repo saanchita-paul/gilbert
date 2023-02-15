@@ -51,7 +51,7 @@ class MriFetchTenanciesCommand extends Command
 
         $this->line('MRI fetch tenancies command started successfully!');
         try {
-            MriServices::handleFetchTenancies($officeId, $afterDate);
+            MriServices::handleFetchTaggedTenancies($officeId);
         } catch (\Exception $exception) {
             if ($dump) {
                 dump($exception->getMessage());

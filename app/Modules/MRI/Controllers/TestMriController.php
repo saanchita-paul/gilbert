@@ -63,7 +63,8 @@ class TestMriController extends Controller
         $exceptions = [];
 
         try {
-            MriServices::handleFetchTenancies($officeId, $afterDate);
+            // MriServices::handleFetchTenancies($officeId, $afterDate);
+            MriServices::handleFetchTaggedTenancies($officeId);
         } catch (\Exception $exception) {
             $exceptions[] = $exception->getMessage();
         }

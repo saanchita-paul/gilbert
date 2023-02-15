@@ -26,6 +26,8 @@ use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\GilbertLeadAPIController;
 use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
 use App\Http\Controllers\ApplicationEventController;
+use App\Http\Controllers\Agency\MriOfficeController;
+use MRI\Controllers\TestMriController;
 
 /*
 |--------------------------------------------------------------------------
@@ -301,6 +303,12 @@ Route::post('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syn
  */
 Route::post('/application-events', [ApplicationEventController::class, 'saveEvent']);
 
+/**
+ * MRI
+ */
+Route::get('/mri-offices', [MriOfficeController::class, 'getMriOffices']);
+Route::get('/test/mri/agents', [TestMriController::class, 'fetchAgents']);
+Route::get('/test/mri/tenancies', [TestMriController::class, 'fetchTenancies']);
 
 /**
  * Bellow API are only for testing purpose

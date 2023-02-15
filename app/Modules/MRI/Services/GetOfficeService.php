@@ -124,4 +124,21 @@ class GetOfficeService
     {
         return Carbon::parse($date)->format("Y-m-d H:i:s") ?? null;
     }
+
+    public function getMriOffices($updateFirst = false, $officeId = null)
+    {
+        if ($updateFirst) {
+            $this->run();
+        }
+        if (isset($officeId) && !empty($officeId)) {
+            $mriOffices = MriOffice::where('office_id', $officeId)->get();
+            if (count($mriOffices) == 0) {
+                throw new \Exception('Unable to find MRI office with Gilbert office id = ' . $officeId);
+            }
+        } else {
+            $mriOffices = MriOffice::get();
+        }
+
+        return $mriOffices;
+    }
 }

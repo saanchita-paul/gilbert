@@ -75,8 +75,11 @@ export default class Note {
             case 'assign_user':
                 return 'assign_user';
                 break;
+            case 'mri_identification':
+                return 'mri_identification';
 
             default:
+                return '';
                 break;
         }
     }

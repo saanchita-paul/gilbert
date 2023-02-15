@@ -44,12 +44,4 @@ class MriApplicationKeyService
 
         return $url . $endpoint . $appKey;
     }
-
-    // private function getDefaultConfig()
-    // {
-    //     if (config('mri.subscription_key')) {
-    //         return config('mri.subscription_key');
-    //     }
-    //     return config('app.env') !== 'production' ? '574800735b3b4effa9d8ef84d57d345f' : throw new \Exception('MRI_SUBSCRIPTION_KEY is null');
-    // }
 }
