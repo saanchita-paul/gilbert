@@ -57,7 +57,7 @@ export default class ApplicationCafFile {
     }
 
     getServiceProvider(services) {
-        let filteredService = services.filter(item => ["electricity", "gas"].includes(item.service_type))
+        let filteredService = services.filter(item => ["electricity", "gas"].includes(item.service_type));
         return filteredService[0]?.provider_name;
 
     }
