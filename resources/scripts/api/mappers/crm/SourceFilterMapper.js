@@ -1,7 +1,7 @@
 import Source from "@scripts/models/crm/Source";
 
 const mapSourceList = sourceList => {
-    return sourceList?.map(source => {
+    return sourceList?.data.map(source => {
         return mapSource(source);
     })
 }

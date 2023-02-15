@@ -11,8 +11,7 @@ class SourceFilterController extends Controller
     {
         try {
             $service = new SourceFilterService();
-            return $service->getSource();
-            // return SourceFilterResource::collection($service->getSource());
+             return SourceFilterResource::collection($service->getSource());
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

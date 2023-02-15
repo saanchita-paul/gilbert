@@ -290,6 +290,7 @@ export default {
         },
         async getSourceList() {
             this.sources = await SourceFilterService.getSourceList();
+            this.sources.unshift({text: 'All Lead Source', value: '', icon: ''});
         },
     },
     watch: {

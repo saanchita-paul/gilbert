@@ -20,6 +20,8 @@ class SourceFilterResource extends JsonResource
             'name' => $this->name,
             'value' => $this->value,
             'logo' => $this->logo,
+            'app_source_id' => $this->app_source_id,
+            'order' => $this->order,
             'is_active' => $this->is_active,
         ];
     }
