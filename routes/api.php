@@ -233,6 +233,10 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      * api for powershop payment
      */
     Route::post('/powershop/payment', [PaymentInfoController::class, 'updateCost']);
+    /**
+     * Source filter list
+     */
+    Route::get('/sources', [SourceFilterController::class, 'index']);
 
 });
 
@@ -301,11 +305,6 @@ Route::post('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syn
  * application events
  */
 Route::post('/application-events', [ApplicationEventController::class, 'saveEvent']);
-
-/**
- * Source list
- */
-Route::get('/sources', [SourceFilterController::class, 'index']);
 
 
 /**
