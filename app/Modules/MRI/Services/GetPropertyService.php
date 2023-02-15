@@ -4,20 +4,14 @@ namespace MRI\Services;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Pool;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
-
 use App\Models\MriAgent;
 use App\Models\MriApplication;
 use App\Models\MriOffice;
 use App\Models\MriProperty;
-use App\Models\MriAgentProperty;
 
-
-class GetPropertyService 
+class GetPropertyService
 {
-    const MANAGEMENT_TYPE = 'Residential';
+    public const MANAGEMENT_TYPE = 'Residential';
 
     /**
      * @var string|null
@@ -66,15 +60,8 @@ class GetPropertyService
 
     public function run()
     {
-        if (isset($this->officeId) && !empty($this->officeId)) {
-            $mriOffices = MriOffice::where('office_id', $this->officeId)->get();
-            if (count($mriOffices) == 0)
-                throw new \Exception('Unable to find MRI office with Gilbert office id = ' . $this->officeId);
-        }
-        else {
-            $mriOffices = MriOffice::get();
-        }
-        foreach ($mriOffices as $office){
+        $mriOffices = (new GetOfficeService())->getMriOffices(false, $this->officeId ?? null);
+        foreach ($mriOffices as $office) {
             $token = $office->key;
             $this->setToken($token);
 
@@ -88,18 +75,18 @@ class GetPropertyService
 
             $mriApps = MriApplication::doesntHave('mriProperty')->where('mri_office_id', $office->id)->get();
             $savedPropertyIds = [];
-    
+
             foreach ($mriApps as $app) {
                 try {
                     if (empty($app->property)) {
-                        throw new \Exception('Missing property id for mri application id '.$app->id);
+                        throw new \Exception('Missing property id for mri application id ' . $app->id);
                     }
-    
+
                     $this->setURL($app->property);
                     $response = $client->request('GET', $this->url);
-            
+
                     $data = json_decode($response->getBody()->getContents(), true);
-                    
+
                     $savedPropertyId = $this->saveProperty($app->id, $data);
                     $savedPropertyIds[] = $savedPropertyId;
                 } catch (RequestException $e) {
@@ -109,13 +96,12 @@ class GetPropertyService
                 }
             }
 
-            if (!empty($savedPropertyIds)){
+            if (!empty($savedPropertyIds)) {
                 $message = sprintf('Updated %s mri properties', count($savedPropertyIds));
-                // dump($message);
                 info($message, ['mri_property_ids' => $savedPropertyIds]);
             }
-            
-            if ($this->exceptionHandler->hasExceptions()){
+
+            if ($this->exceptionHandler->hasExceptions()) {
                 $this->exceptionHandler->run();
             }
         }
@@ -124,26 +110,26 @@ class GetPropertyService
     private function saveProperty($mri_app_id, $propertiesData)
     {
         try {
-            $filtered = array_filter($propertiesData, function($value){
+            $filtered = array_filter($propertiesData, function ($value) {
                 return !$value['deleted'] && !$value['archived'];
             });
-            
+
             if (count($filtered) == 0) {
                 \Log::error('No property data from response that is not deleted/archived', $propertiesData);
                 throw new \Exception("No valid property data provided for mri application id '.$mri_app_id");
             }
-            
+
             if (count($filtered) > 1) {
                 \Log::error('More than one property data that is not deleted/archived', $propertiesData);
                 throw new \Exception("More than one property data provided for mri application id '.$mri_app_id");
             }
-    
+
             $propertiesData = $filtered;
-            
+
             $property = $propertiesData[0];
-    
+
             $mriProperty = MriProperty::where('mri_application_id', $mri_app_id)->first();
-            if (!$mriProperty){
+            if (!$mriProperty) {
                 $mriProperty = new MriProperty();
                 $mriProperty->mri_application_id = $mri_app_id;
             }
@@ -158,12 +144,12 @@ class GetPropertyService
             $mriProperty->is_deleted = $property['deleted'];
             $mriProperty->is_archived = $property['archived'];
             $mriProperty->management_type = $property['management_type'];
-            
+
             $mriProperty->save();
-            
-            if (!empty($property['agents'])) 
+
+            if (!empty($property['agents'])) {
                 $mriProperty = $this->saveAgentProperty($mriProperty, $property['agents']);
-    
+            }
             return $mriProperty->id;
         } catch (\Exception $e) {
             $data = [
@@ -179,7 +165,7 @@ class GetPropertyService
         $mriProperty->agents = implode(',', $propertyAgents);
         $mriProperty->save();
 
-        $mriAgentIds = MriAgent::whereIn('agent_id', $propertyAgents)->pluck('id')->toArray(); 
+        $mriAgentIds = MriAgent::whereIn('agent_id', $propertyAgents)->pluck('id')->toArray();
         $mriProperty->mriAgents()->sync($mriAgentIds);
 
         return $mriProperty;

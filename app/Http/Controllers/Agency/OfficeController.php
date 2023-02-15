@@ -95,7 +95,8 @@ class OfficeController extends Controller
                 $mriOffice
                 && !empty($mriOffice['key'])
                 && !empty($mriOffice['company_name'])
-                && !empty($mriOffice['activation_date'])) {
+                && !empty($mriOffice['activation_date'])
+            ) {
                 $service = new HandleMRIOfficeService($office->id);
                 $service->saveMRIOffice($mriOffice);
             }
@@ -147,7 +148,10 @@ class OfficeController extends Controller
 
             // Create office commissions.
             $commissions = $ofcAndAgencySvc->createCommistions(
-                $officeCommissionsData, $office->id, $officeData['agency_id']);
+                $officeCommissionsData,
+                $office->id,
+                $officeData['agency_id']
+            );
 
             return AgencyResource::make($office);
         } catch (\Exception $exception) {
@@ -172,14 +176,15 @@ class OfficeController extends Controller
         try {
             $authUser = Auth::user();
             $office   = Office::find($id);
-            if ($authUser->profile_type === AgentProfile::class &&
-                $authUser->profile->agency_id !== $office->agency_id) {
+            if (
+                $authUser->profile_type === AgentProfile::class &&
+                $authUser->profile->agency_id !== $office->agency_id
+            ) {
                 return $this->sendUnauthorizedResponse();
             }
 
             $service = new OfficeService($id);
             return response()->json(['success' => true, 'data' => $service->getOffice()]);
-
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

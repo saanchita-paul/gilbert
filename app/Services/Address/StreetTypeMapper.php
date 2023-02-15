@@ -10,7 +10,7 @@ class StreetTypeMapper
     /**
      *
      */
-    CONST STREET_TYPES  = [
+    public const STREET_TYPES  = [
         "ACCS" => "ACCESS",
         "ALLY" => "ALLEY",
         "ALWY" => "ALLEYWAY",
@@ -213,30 +213,36 @@ class StreetTypeMapper
         "WHRF" => "WHARF",
         "WKWY" => "WALKWAY",
         "WYND" => "WYND",
-        "YARD"=> "YARD",
+        "YARD" => "YARD",
     ];
 
     /**
-     * @param string|null $type
+     * @param string|null $streetType
      * @return string|null
      */
-    public static function getFullForm(?string $type): ?string
+    public static function getFullForm(?string $streetType): ?string
     {
-        if ($type) {
-            return self::STREET_TYPES[strtoupper($type)] ?? null;
+        $streetType = strtoupper($streetType);
+        if (in_array($streetType, self::STREET_TYPES)) {
+            return $streetType;
         }
-        return null;
+        $streetType = self::STREET_TYPES[$streetType] ?? null;
+
+        return $streetType;
     }
 
     /**
-     * @param string|null $type
+     * @param string|null $streetType
      * @return string|null
      */
-    public static function  getShortForm(?string $type): ?string
+    public static function getShortForm(?string $streetType): ?string
     {
-        if ($type) {
-            return array_search(strtoupper($type), self::STREET_TYPES);
+        $streetType = strtoupper($streetType);
+        if (in_array($streetType, array_keys(self::STREET_TYPES))) {
+            return $streetType;
         }
-        return null;
+        $streetType = array_search($streetType, self::STREET_TYPES) ?? null;
+
+        return $streetType;
     }
 }

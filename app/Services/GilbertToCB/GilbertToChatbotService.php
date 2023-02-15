@@ -7,10 +7,10 @@ use App\Services\Address\AddressModel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
+use App\Services\Address\StreetTypeMapper;
 
 class GilbertToChatbotService
 {
-
     private array|Collection|ConnectionApplication|Model $application;
     const CONCESSION_MAPPER = [
         'DVA' => 1,
@@ -66,7 +66,7 @@ class GilbertToChatbotService
             "rent" => $this->mapTenancyType($this->application->tenancy_type),
             "dob" => $this->application->dob,
             "moved_at" => $this->application->moving_date,
-            "flat_or_unit_number" => $this->application->address_unit,
+            "flat_or_unit_number" => $this->application->address_unit ?? ($this->application->unit_number ?? null),
             "street_address" => $this->application->street_address,
             "street_number" => $this->application->street_number,
             "street_name" => $this->application->street_name,
@@ -84,7 +84,7 @@ class GilbertToChatbotService
             "nmi" => $this->application->nmi,
             "mirn" => $this->application->mirn,
             "supplier" => $this->application->supplier,
-            "unit_number" => $this->application->unit_number,
+            "unit_number" => $this->application->unit_number ?? ($this->application->address_unit ?? null),
             "plan_type" => $this->application->plan_type,
             "status" => $this->application->status,
             "hubspot_contact_id" => $this->application->hubspot_contact_id,
@@ -120,8 +120,8 @@ class GilbertToChatbotService
             "international_phone" => $this->application->international_phone,
             "after_hour_payee" => $this->application->after_hour_payee,
             "after_hour_flag" => $this->application->after_hour_flag,
-            "street_type" => $this->application->street_type,
-            "billing_street_type" => $this->application->billing_street_type,
+            "street_type" => StreetTypeMapper::getShortForm($this->application->street_type),
+            "billing_street_type" => StreetTypeMapper::getShortForm($this->application->billing_street_type),
             "mannual_address" => $this->application->mannual_address,
             "billing_mannual_address" => $this->application->billing_mannual_address,
             "is_address_complete" => $this->application->is_address_complete,

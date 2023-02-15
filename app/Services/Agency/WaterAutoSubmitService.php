@@ -64,7 +64,7 @@ class WaterAutoSubmitService
      */
     private function validateData(ConnectionApplication $connectionApplcation)
     {
-        if($connectionApplcation->state !== 'Victoria') {
+        if(!in_array($connectionApplcation->state, ['Victoria', 'VIC'])) {
             throw new Exception('Water Service is not available outside Victoria');
         }
         if($connectionApplcation->tenancy_type === ConnectionApplication::TENANCY_TYPE_HOME_OWNER) {

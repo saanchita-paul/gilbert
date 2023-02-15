@@ -24,7 +24,14 @@ class FastConnectProductService
         "Northern Territory" => 'NT',
         "Tasmania" => 'TAS',
         "Australian Capital Territory" => 'ACT',
-        "Western Australia" => 'WA',
+        "WA" => 'WA',
+        "NSW" => 'NSW',
+        "VIC" => 'VIC',
+        "QLD" => 'QLD',
+        "SA" => 'SA',
+        "NT" => 'NT',
+        "TAS" => 'TAS',
+        "ACT" => 'ACT',
     ];
 
     const MAP_PROPERTY_TYPE = [

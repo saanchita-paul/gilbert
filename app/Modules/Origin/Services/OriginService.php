@@ -4,11 +4,9 @@ namespace Origin\Services;
 
 use Exception;
 use Carbon\Carbon;
-
 use Illuminate\Support\Facades\Log;
 use App\Models\ConnectionApplication;
 use App\Services\Address\AddressModel;
-
 use App\Models\ConnectionService;
 use App\Models\OriginPlan;
 use App\Models\RejectionReason;
