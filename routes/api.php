@@ -26,7 +26,7 @@ use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\GilbertLeadAPIController;
 use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
 use App\Http\Controllers\ApplicationEventController;
-use App\Http\Controllers\HutlyController;
+use App\Http\Controllers\SourceFilterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -305,7 +305,7 @@ Route::post('/application-events', [ApplicationEventController::class, 'saveEven
 /**
  * Source list
  */
-Route::get('/sources', [HutlyController::class, 'index']);
+Route::get('/sources', [SourceFilterController::class, 'index']);
 
 
 /**

@@ -61,7 +61,7 @@
                             v-model="$attrs.value.source"
                             item-text="text"
                             item-value="value"
-                            :items="srcOptions"
+                            :items="sources"
                             hide-details="auto"
                             class="my-1 mr-1 width-25"
                             outlined
@@ -163,6 +163,7 @@
 
 <script>
 import CrmUserService from "@scripts/services/crm/CrmUserService";
+import SourceFilterService from "@scripts/services/crm/SourceFilterService";
 
 export default {
     name: "ApplicationFilter",
@@ -173,50 +174,50 @@ export default {
             name: "",
             address: "",
             mobile: "",
-            srcOptions: [
-                {text: "All Lead Source", value: "", icon: ""},
-                {
-                    text: "Hood Agent Portal",
-                    value: "hood",
-                    icon: "/assets/images/icons/company/hood.png",
-                },
-                {
-                    text: "Hood.AI",
-                    value: "hood_ai",
-                    icon: "/assets/images/icons/company/hood.png",
-                },
-                {
-                    text: "Foxie CRM",
-                    value: "foxie",
-                    icon: "/assets/images/icons/company/foxie.png",
-                },
-                {
-                    text: "Ignite ",
-                    value: "ignite",
-                    icon: "/assets/images/icons/company/ignite.png",
-                },
-                {
-                    text: "Our Property",
-                    value: "our-property",
-                    icon: "/assets/images/icons/company/our-property.png",
-                },
-                {
-                    text: "PropertyMe ",
-                    value: "property_me",
-                    icon: "/assets/images/icons/company/propertyMe.png",
-                },
-                {
-                    text: 'TApp',
-                    value: 't_app',
-                    icon: '/assets/images/icons/company/tapp.png'
-                },
-                // {
-                //     text: 'MRI',
-                //     value: 'mri',
-                //     icon: '/assets/images/icons/company/mri.png'
-                // },
-
-            ],
+            // srcOptions: [
+            //     {text: "All Lead Source", value: "", icon: ""},
+            //     {
+            //         text: "Hood Agent Portal",
+            //         value: "hood",
+            //         icon: "/assets/images/icons/company/hood.png",
+            //     },
+            //     {
+            //         text: "Hood.AI",
+            //         value: "hood_ai",
+            //         icon: "/assets/images/icons/company/hood.png",
+            //     },
+            //     {
+            //         text: "Foxie CRM",
+            //         value: "foxie",
+            //         icon: "/assets/images/icons/company/foxie.png",
+            //     },
+            //     {
+            //         text: "Ignite ",
+            //         value: "ignite",
+            //         icon: "/assets/images/icons/company/ignite.png",
+            //     },
+            //     {
+            //         text: "Our Property",
+            //         value: "our-property",
+            //         icon: "/assets/images/icons/company/our-property.png",
+            //     },
+            //     {
+            //         text: "PropertyMe ",
+            //         value: "property_me",
+            //         icon: "/assets/images/icons/company/propertyMe.png",
+            //     },
+            //     {
+            //         text: 'TApp',
+            //         value: 't_app',
+            //         icon: '/assets/images/icons/company/tapp.png'
+            //     },
+            //     // {
+            //     //     text: 'MRI',
+            //     //     value: 'mri',
+            //     //     icon: '/assets/images/icons/company/mri.png'
+            //     // },
+            //
+            // ],
             tanancyTypeOptions: [
                 {text: "Renter", value: "renter"},
                 {
@@ -245,6 +246,7 @@ export default {
             options: {
                 itemsPerPage: 10
             },
+            sources: []
         };
     },
     computed: {
@@ -260,6 +262,7 @@ export default {
     },
     async mounted() {
         await this.loadUserList();
+        await this.getSourceList();
         this.dataLoaded = true;
     },
     methods: {
@@ -284,6 +287,9 @@ export default {
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
             this.totalUserItem = data.pagination.total;
+        },
+        async getSourceList() {
+            this.sources = await SourceFilterService.getSourceList();
         },
     },
     watch: {
