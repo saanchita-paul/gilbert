@@ -75,6 +75,11 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespaceExternalLead)
                 ->group(base_path('routes/external-lead.php'));
 
+            Route::prefix('api/v2/external')
+                ->middleware('api')
+                ->namespace($this->namespaceExternalLead)
+                ->group(base_path('routes/external-lead-v2.php'));
+
             Route::middleware([])
                 ->group(base_path('app/Modules/PropertyMe/route.php'));
 

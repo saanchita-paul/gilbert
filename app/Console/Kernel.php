@@ -19,6 +19,7 @@ use App\Console\Commands\MRIOfficeCommand;
 use MRI\Commands\MriFetchTenanciesCommand;
 use MRI\Commands\MriFetchAgentsCommand;
 use MRI\Commands\MriFetchNotesCommand;
+use ExternalLead\Commands\NewSourceCommand;
 use Carbon\Carbon;
 
 class Kernel extends ConsoleKernel
@@ -44,6 +45,7 @@ class Kernel extends ConsoleKernel
         MriFetchTenanciesCommand::class,
         MriFetchAgentsCommand::class,
         MriFetchNotesCommand::class,
+        NewSourceCommand::class,
     ];
 
     /**

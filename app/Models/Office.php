@@ -22,7 +22,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $country
  * @property string|null $abn
  * @property string|null $phone
- * @property string|null $email
+ * @property string|null $
+ * @property boolean $is_default_office
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Agency $agency
@@ -77,7 +78,12 @@ class Office extends Model
         'rent_roll',
         'property_me_refresh_token',
         'should_notify_agent',
-        'is_chatbot_office'
+        'is_chatbot_office',
+        'is_default_office',
+    ];
+
+    protected $casts = [
+        'is_default_office' => 'boolean'
     ];
 
     /**
@@ -170,5 +176,10 @@ class Office extends Model
     protected static function newFactory()
     {
         return OfficeFactory::new();
+    }
+
+    public function externalSource()
+    {
+        return $this->hasOne(ExternalSource::class, 'default_office_id');
     }
 }
