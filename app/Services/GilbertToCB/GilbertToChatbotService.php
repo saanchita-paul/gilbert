@@ -27,7 +27,8 @@ class GilbertToChatbotService
             'connectionServices',
             'authorizedPerson',
             'office',
-            'agency'
+            'agency',
+            'powershopPaymentInfo'
         ])->firstOrFail();
     }
 
@@ -165,7 +166,8 @@ class GilbertToChatbotService
             "is_generated_caf" => $this->application->is_generated_caf,
             "connection_services" => $this->application->connectionServices ? $this->application->connectionServices->toArray() : [],
             "identification" => $this->application->identification ? $this->application->identification->toArray() : null,
-            "authorized_person" => $this->application->authorizedPerson ? $this->application->authorizedPerson->toArray() : null
+            "authorized_person" => $this->application->authorizedPerson ? $this->application->authorizedPerson->toArray() : null,
+            "payment_sync_data" => $this->mapPaymentData(),
         ];
     }
 
@@ -190,6 +192,37 @@ class GilbertToChatbotService
             0 => 'connection_address',
             default => null
         };
+    }
+
+    public function mapPaymentData(): array
+    {
+        $paymentData = $this->application->powershopPaymentInfo ?
+            collect($this->application->powershopPaymentInfo->getAttributes()) : collect([]);
+
+        return $paymentData->only([
+            "status",
+            "estimated_elec_billing_cost",
+            "estimated_gas_billing_cost",
+            "invited_at",
+            "verified_at",
+            "rejected_at",
+            "customer_full_name",
+            "customer_email",
+            "customer_phone",
+            "px_transaction_type",
+            "px_amount",
+            "px_currency_type",
+            "px_txn_id",
+            "px_is_enable_billing",
+            "px_recurring_mode",
+            "px_response_text",
+            "px_card_type",
+            "px_card_number",
+            "px_card_expire_date",
+            "px_card_holder_name",
+            "px_dps_billing_id",
+            "px_response_text_desc"
+        ])->toArray();
     }
 
 
