@@ -59,7 +59,7 @@ export default class PersonalDetail{
 
     mapMarketingOffer(offer, service) {
         if(service.length > 0 &&  service[0].provider_name === 'origin') {
-            return offer === 1 ? 0 : 1;
+            return offer !== 1 ? 0 : 1;
         }
         return offer;
     }

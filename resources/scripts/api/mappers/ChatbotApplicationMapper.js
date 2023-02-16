@@ -71,7 +71,7 @@ function mapApplicationNote(data, isInternalNote = true){
 
 function mapOriginMarketingOffer(data, provider_name){
     if(provider_name === 'origin'){
-        return data.enabled_marketing_offer === 1 ? 0 : 1 ;
+        return data.enabled_marketing_offer;
     }
     return data.enabled_marketing_offer;
 }

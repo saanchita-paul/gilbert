@@ -242,7 +242,7 @@
                                             <v-select
                                                 placeholder="Yes/No"
                                                 v-model="chatbot_app.personal_details.enabled_marketing_offer"
-                                                :items="marketingOptOut"
+                                                :items="userConcentDD"
                                                 item-text="text"
                                                 item-value="value"
                                                 outlined
