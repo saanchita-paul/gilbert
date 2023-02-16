@@ -12,7 +12,6 @@ use App\Http\Controllers\Agency\ReaExtractsReportController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\UserInvitationController;
 use App\Models\ConnectionApplication;
-use App\Models\ExternalSource;
 use Powershop\Http\Controllers\PowerShopController;
 use App\Services\RolePermission;
 use App\Services\RolePermissionService;
@@ -353,7 +352,10 @@ Route::get('/applications/{applicationId}/{submitType}/same-day-connection', [Po
 
 
 Route::get('/kaka', function () {
-    return ExternalSource::intToStr(0);
+    $m = new \App\Services\Address\AddressModel(connection_application_id: 2);
+    $s= new \App\Services\Address\GBGServices($m);
+    dd($s->findAddressByText());
+
 });
 
 
