@@ -13,6 +13,8 @@ class ExternalSource extends Model
         'is_active' => 'boolean'
     ];
 
+    protected $guarded = [];
+
     public function defaultOffice()
     {
         return $this->belongsTo(Office::class, 'id', 'default_office_id');
