@@ -15,10 +15,11 @@ class CreateApplicationSourcesTable extends Migration
     {
         Schema::create('application_sources', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100);
-            $table->string('value', 100)->nullable();
-            $table->string('logo', 255)->nullable();
-            $table->integer('app_source_id')->nullable();
+            $table->string('name', 50);
+            $table->string('value', 50)->nullable();
+            $table->string('logo')->nullable();
+            $table->integer('source_id')->nullable();
+            $table->string('table_name', 50)->nullable();
             $table->integer('order')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
