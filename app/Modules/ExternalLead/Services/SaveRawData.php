@@ -7,10 +7,11 @@ use ExternalLead\Models\TApp;
 class SaveRawData
 {
     /** save all fields to dump
-     * @param void
-     * @return void
+     * @param int externalLeadId
+     * @param array data
+     * @return TApp
      */
-    public static function dump(int $externalLeadId, array $data)
+    public static function dump(int $externalLeadId, array $data): TApp
     {
         $newDump = new TApp();
         $newDump->lead_id = $data['tapp_lead_id'] ?? null;

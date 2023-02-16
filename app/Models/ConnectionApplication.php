@@ -246,7 +246,8 @@ class ConnectionApplication extends Model
         'mirn_score',
         'nmi_score',
         'suggested_nmi',
-        'assigned_at'
+        'assigned_at',
+        'external_source_id',
     ];
 
 
@@ -595,6 +596,14 @@ class ConnectionApplication extends Model
     }
 
     /**
+     * @return BelongsTo
+     */
+    public function externalSource()
+    {
+        return $this->belongsTo(ExternalSource::class);
+    }
+
+    /**
      * saving fast connect customer ref
      *
      * @param $ref
@@ -609,6 +618,13 @@ class ConnectionApplication extends Model
 
     public function getAgencyName()
     {
+        if (!empty($this->external_source_id)) {
+            if ($this->office) {
+                return $this->office?->agency?->name ?? '';
+            }
+            return $this->externalSource?->defaultOffice?->agency?->name ?? '';
+        }
+
         return match ($this->source) {
             ConnectionApplication::SOURCE_HOOD,
             ConnectionApplication::SOURCE_PROPERTY_ME => $this->office?->name,
@@ -623,6 +639,10 @@ class ConnectionApplication extends Model
 
     public function getAgentName()
     {
+        if (!empty($this->external_source_id)) {
+            return $this->createdBy?->full_name ?? '';
+        }
+
         return match ($this->source) {
             ConnectionApplication::SOURCE_HOOD,
             ConnectionApplication::SOURCE_PROPERTY_ME, ConnectionApplication::SOURCE_T_APP =>
@@ -710,5 +730,14 @@ class ConnectionApplication extends Model
                 return $gas;
             }
         }
+    }
+
+    public function getSourceNameAttribute()
+    {
+        if (!empty($this->external_source_id)) {
+            return $this->externalSource?->display_type_name ?? '';
+        }
+
+        return self::SOURCE_NAME_MAPPING[$this->source];
     }
 }

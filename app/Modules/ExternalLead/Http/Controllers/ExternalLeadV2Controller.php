@@ -45,7 +45,7 @@ class ExternalLeadV2Controller extends Controller
             $newLead = $service->create($externalSource, $request->all());
             $response = [
                 "status" => "success",
-                // "hood_lead_id" => $newLead->id,
+                "hood_lead_id" => $newLead->id,
                 "message" => "Hood lead has been added successfully"
             ];
             return response($response, 201);

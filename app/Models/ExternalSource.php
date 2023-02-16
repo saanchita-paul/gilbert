@@ -17,4 +17,13 @@ class ExternalSource extends Model
     {
         return $this->belongsTo(Office::class, 'id', 'default_office_id');
     }
+
+    public function getDisplayTypeNameAttribute($value)
+    {
+        if (empty($value)) {
+            return ucfirst($this->source_type);
+        }
+
+        return $value;
+    }
 }

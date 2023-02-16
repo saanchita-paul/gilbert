@@ -112,7 +112,7 @@ class ExportReaIndividualReport
         foreach ($data as $datum) {
             $count = [
                 "app_id" => $datum['id'],
-                "lead_source" => $this->getLeadSource($datum['lead_source']),
+                "lead_source" => $this->getLeadSource($datum['id'], $datum['lead_source']),
                 "customer_name" => $datum['customer_first_name'] . ' ' . $datum['customer_last_name'],
                 "created_date" => Carbon::parse($datum['created_date'])->format('d/m/y'),
                 "connection_date" => Carbon::parse($datum['connection_date'])->format('d/m/y'),
@@ -177,8 +177,12 @@ class ExportReaIndividualReport
         return $builder->get()->toArray();
     }
 
-    private function getLeadSource(?int $src): string
+    private function getLeadSource(?int $appId, ?int $src): string
     {
+        $app = ConnectionApplication::find($appId);
+        if ($app) {
+            return $app->source_name;
+        }
         return ConnectionApplication::SOURCE_NAME_MAPPING[$src] ?? 'null';
     }
 

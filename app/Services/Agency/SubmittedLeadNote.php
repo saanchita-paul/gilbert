@@ -47,6 +47,10 @@ class SubmittedLeadNote
            'ea_go_neutral' => $this->existLead && $provider_name === 'EA'? $this->existLead->ea_go_neutral : 'N/A',
         ];
 
+        if ($this->existLead) {
+            $leadData['source'] = $this->existLead->source_name;
+        }
+
         if ($provider_name == 'Powershop' && in_array($submittedService, ['Elec & Gas'])){
             $sameDayService = new SameDayConnectionService($this->existLead->id, $this->getSubmitType($submittedService));
             $leadData['gas_moving_date'] = $sameDayService->getNextGasConnectionDate();

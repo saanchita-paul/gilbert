@@ -3,19 +3,25 @@
 namespace ExternalLead\Services;
 
 use App\Models\ExternalSource;
+use App\Models\ConnectionApplication;
 
 class CreateLeadService
 {
+    private ConnectionApplication $createdApp;
+
     public function create(ExternalSource $externalSource, array $data)
     {
-        dd($data);
-        // 1. save raw data
-        SaveRawData::dump($externalSource->id, $data);
-        // 2. save connection application data
-        // 3. notify Georgie if missing agent email in Hood
-        // 4. save identification
-        // 5. save authorized person
-        // 6. dispatch NotifyAgentAfterLeadCreation
-        // 7. dispatch CreateApplicationEvent
+        $sourceType = $externalSource->source_type;
+        info("CreateLeadService:create $sourceType (refer context for data)", $data);
+        $dump = SaveRawData::dump($externalSource->id, $data);
+
+        $newAppService = new CreateAppService();
+        $newApp = $newAppService->create($externalSource, $data);
+
+        $dump->connection_application_id = $newApp->id;
+        $dump->save();
+
+        $this->createdApp = $newApp;
+        return $this->createdApp;
     }
 }
