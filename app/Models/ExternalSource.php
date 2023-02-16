@@ -15,7 +15,7 @@ class ExternalSource extends Model
 
     public function defaultOffice()
     {
-        return $this->belongsTo(Office::class, 'id', 'default_office_id');
+        return $this->belongsTo(Office::class, 'default_office_id');
     }
 
     public function getDisplayTypeNameAttribute($value)

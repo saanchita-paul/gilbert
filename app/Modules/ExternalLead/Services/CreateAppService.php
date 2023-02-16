@@ -12,7 +12,7 @@ class CreateAppService
 {
     public function create(ExternalSource $source, array $data): ConnectionApplication
     {
-        $defaultOffice = $source->default_office;
+        $defaultOffice = $source->defaultOffice;
         $newApp = new ConnectionApplication();
 
         $newApp->agency_id = $defaultOffice->agency_id;
