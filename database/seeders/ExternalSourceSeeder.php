@@ -6,7 +6,7 @@ use App\Models\ExternalSource;
 use App\Models\ConnectionApplication;
 use Illuminate\Database\Seeder;
 
-class ApplicationSourceSeeder extends Seeder
+class ExternalSourceSeeder extends Seeder
 {
     /**
      * Run the database seeds.
