@@ -308,13 +308,23 @@ export default {
             value: 1,
         },
     ],
+    MARKETING_OPT_OUT : [
+        {
+            text: "Yes",
+            value: 0,
+        },
+        {
+            text: "No",
+            value: 1,
+        },
+    ],
     EMAIL_BILLING_ITEMS : [
         {
-            text: "Email",
+            text: "Yes",
             value: "email",
         },
         {
-            text: "Post",
+            text: "No",
             value: "connection_address",
         },
     ],

@@ -242,7 +242,7 @@
                                             <v-select
                                                 placeholder="Yes/No"
                                                 v-model="chatbot_app.personal_details.enabled_marketing_offer"
-                                                :items="userConcentDD"
+                                                :items="marketingOptOut"
                                                 item-text="text"
                                                 item-value="value"
                                                 outlined
@@ -1107,6 +1107,7 @@ export default {
             cancelgasStatusLoader: false,
             savegasStatusLoader: false,
             userConcentDD : CHATBOT_APP_DATA.YES_NO_OPTIONS,
+            marketingOptOut : CHATBOT_APP_DATA.MARKETING_OPT_OUT,
             emailBillingItems : CHATBOT_APP_DATA.EMAIL_BILLING_ITEMS,
             unsavedWarningMessage : CHATBOT_APP_DATA.WARNING_MESSAGE
         }
