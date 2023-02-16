@@ -1107,7 +1107,6 @@ export default {
             cancelgasStatusLoader: false,
             savegasStatusLoader: false,
             userConcentDD : CHATBOT_APP_DATA.YES_NO_OPTIONS,
-            marketingOptOut : CHATBOT_APP_DATA.MARKETING_OPT_OUT,
             emailBillingItems : CHATBOT_APP_DATA.EMAIL_BILLING_ITEMS,
             unsavedWarningMessage : CHATBOT_APP_DATA.WARNING_MESSAGE
         }
