@@ -532,6 +532,7 @@ class ChatbotToGilbertSyncService
 
         $paymentInfo
             ->fill([
+                'connection_application_id' => $app->id,
                 "status" => $paymentData['status'] ?? null,
                 'estimated_elec_billing_cost' => $paymentData['estimated_elec_billing_cost'] ?? null,
                 'estimated_gas_billing_cost' => $paymentData['estimated_gas_billing_cost'] ?? null,
