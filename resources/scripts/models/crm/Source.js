@@ -4,13 +4,13 @@ class Source {
      *
      * @param {number} id
      * @param {string} name
-     * @param {string} value
+     * @param {string} source_id
      * @param {string} logo
      */
-    constructor({id, name, value, logo} = {}) {
+    constructor({id, name, source_id, logo} = {}) {
         this.id = id;
         this.text = name;
-        this.value = value;
+        this.value = source_id;
         this.icon = logo;
     }
 }
