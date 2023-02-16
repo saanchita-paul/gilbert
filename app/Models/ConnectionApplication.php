@@ -243,6 +243,10 @@ class ConnectionApplication extends Model
         'is_embedded',
         'loading_address_info',
         'embedded_nmi',
+        'mirn_score',
+        'nmi_score',
+        'suggested_nmi',
+        'assigned_at'
     ];
 
 

@@ -83,7 +83,6 @@ class PostSalesService
             'preferredContactMethod' => 'EMAIL',
             'identification'=> $this->getIdentification()
         ];
-        $streetType = self::getStreetType($this->connection->street_name);
 
         $energisation = [
             'connectionDate'=>(new Carbon($this->connection->moving_date))->format('Y-m-d'),

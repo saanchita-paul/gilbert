@@ -18,6 +18,7 @@
                 @updateDraft="updateDraft"
                 @duplicateLead="duplicatedLead"
                 :isLocked="isLocked"
+                :isInvalidEmail="isInvalidEmail"
             ></LeadUserDetails>
         </ValidationObserver>
 
@@ -105,6 +106,7 @@ import DuplicateLeadModal from "@scripts/components/crm/modals/DuplicateLeadModa
 import ApplicationUnlockModal from "@scripts/components/crm/modals/ApplicationUnlockModal";
 import ApplicationUnlockConfirmModal from "@scripts/components/crm/modals/ApplicationUnlockConfirmModal";
 import SendToChatbotConfirmModal from "@scripts/components/crm/modals/SendToChatbotConfirmModal";
+import GBGService from "@scripts/services/GBGService";
 
 
 export default {
@@ -177,6 +179,7 @@ export default {
                 chatbot_id: null,
                 is_locked: false,
             },
+            isInvalidEmail: false
         }
     },
     computed: {
@@ -287,6 +290,7 @@ export default {
             this.readMoreFlag = false;
         },
         updateLead(lead) {
+            this.isInvalidEmail = false;
             this.fullName = lead.person_details.first_name + ' ' + lead.person_details.last_name;
             this.lead = lead;
         },
@@ -297,6 +301,14 @@ export default {
             if (!isProperAddress) Store.commit('setInvalidAddress', true);
 
             if (!v || !isProperAddress) return;
+
+            if (!this.lead.person_details.email_manually_verified_by) {
+                await this.gbgEmailValidate();
+            }
+
+            if (this.isInvalidEmail) {
+                return;
+            }
 
             let assignedHoodUser = await this.getAssignedHoodUser();
             if (!assignedHoodUser) {
@@ -343,6 +355,16 @@ export default {
             return false;
         },
 
+        async gbgEmailValidate() {
+            this.isInvalidEmail = false;
+            try {
+                const res = await GBGService.validateEmail(this.leadSummary.email);
+                this.isInvalidEmail = !res;
+            } catch (error) {
+                this.isInvalidEmail = true;
+            }
+            return this.isInvalidEmail;
+        },
 
         closePreventSubmissionModal() {
             this.preventSubmissionFlag = false;
@@ -412,6 +434,8 @@ export default {
 
         async updateDraft(field, value, isDate, identification, isManualChangeFlag) {
             if (isNull(value)) return;
+
+            this.isInvalidEmail = false;
 
             if (isDate) {
                 if (field == 'dob' && dayjs(value, 'DD/MM/YYYY').isSame(this.leadSummary.dob)) {

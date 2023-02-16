@@ -222,6 +222,7 @@ class ApplicationController extends Controller
 
             foreach ($provider_service_ids as $key => $ids) {
                 $service_ids = array_merge($service_ids, $ids);
+//                dd($service_ids, $res, $ids, $submitType);
                 if ($submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_ENERGY
                     || $submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_POWER
                     || $submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_GAS) {
@@ -502,7 +503,7 @@ class ApplicationController extends Controller
     public function isGbgValidateEmail(Request $request)
     {
         $request->validate([
-            'email' => 'email'
+            'email' => 'email:rfc,dns'
         ]);
         try {
             // Check email validation is enabled or not
