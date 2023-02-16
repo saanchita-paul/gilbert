@@ -16,11 +16,10 @@ class AddNameAndValueToExternalSourcesTable extends Migration
         Schema::table('external_sources', function (Blueprint $table) {
             $table->string('password')->nullable()->change();
             $table->string('name', 50)->after('password');
-            $table->string('value', 50)->nullable()->after('name');
-            $table->string('logo')->nullable()->after('value');
-            $table->integer('source_id')->nullable()->after('source_type');
+            $table->string('logo')->nullable()->after('name');
+            $table->unsignedInteger('source_id')->nullable()->after('source_type');
             $table->string('table_name', 50)->nullable()->after('source_id');
-            $table->integer('order')->nullable();
+            $table->tinyInteger('order')->nullable()->after('is_active');
         });
     }
 
@@ -33,12 +32,10 @@ class AddNameAndValueToExternalSourcesTable extends Migration
     {
         Schema::table('external_sources', function (Blueprint $table) {
             $table->dropColumn('name');
-            $table->dropColumn('value');
             $table->dropColumn('logo');
             $table->dropColumn('source_id');
             $table->dropColumn('table_name');
             $table->dropColumn('order');
-            $table->string('password')->change();
         });
     }
 }
