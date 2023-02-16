@@ -65,7 +65,6 @@ class ExternalSource extends Model
                 ->select(['id', 'name', 'source_type', 'source_id', 'logo', 'table_name', 'default_office_id'])
                 ->orderBy('order')
                 ->where('is_active', 1)
-                ->where('is_active', 1)
                 ->get();
         });
     }
