@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\ApplicationSource;
+use App\Models\ExternalSource;
 
 class SourceFilterService
 {
     public function getSource()
     {
-        return ApplicationSource::query()
+        return ExternalSource::query()
             ->where('is_active', true)
             ->orderBy('order')
             ->get();

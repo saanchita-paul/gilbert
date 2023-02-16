@@ -17,12 +17,15 @@ class SourceFilterResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'email' => $this->email,
+            'source_type' => $this->source_type,
             'name' => $this->name,
-            'value' => $this->value,
             'logo' => $this->logo,
-            'app_source_id' => $this->app_source_id,
+            'source_id' => $this->source_id,
+            'table_name' => $this->table_name,
             'order' => $this->order,
             'is_active' => $this->is_active,
+            'default_office_id' => $this->default_office_id,
         ];
     }
 }
