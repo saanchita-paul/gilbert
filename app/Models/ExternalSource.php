@@ -18,6 +18,11 @@ class ExternalSource extends Model
         return $this->belongsTo(Office::class, 'default_office_id');
     }
 
+    public function connectionApplications()
+    {
+        return $this->hasMany('ConnectionApplication', 'external_source_id');
+    }
+
     public function getDisplayTypeNameAttribute($value)
     {
         if (empty($value)) {

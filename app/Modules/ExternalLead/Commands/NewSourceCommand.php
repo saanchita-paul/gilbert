@@ -98,9 +98,11 @@ class NewSourceCommand extends Command
 
         $this->line('Successfully set source type: ' . $sourceType);
 
-        $sourceNameDisplay = $this->ask("(OPTIONAL) Please input the source name for display purpose");
+        $defaultNameDisplay = ucwords($sourceType);
 
-        $this->line("Successfully set source display name: " . (empty($sourceNameDisplay) ? ucwords($sourceType) : $sourceNameDisplay));
+        $sourceNameDisplay = $this->ask("(OPTIONAL) Please input the source name for display purpose (Enter empty for: $defaultNameDisplay)", $defaultNameDisplay);
+
+        $this->line("Successfully set source display name: $sourceNameDisplay");
 
         $newExternalSource = new ExternalSource();
         $newExternalSource->email = $userEmail;
@@ -108,10 +110,7 @@ class NewSourceCommand extends Command
         $newExternalSource->is_active = true;
         $newExternalSource->default_office_id = $selectedOffice->id;
         $newExternalSource->source_type = $sourceType;
-
-        if (!empty($sourceNameDisplay)) {
-            $newExternalSource->display_type_name = $sourceNameDisplay;
-        }
+        $newExternalSource->display_type_name = $sourceNameDisplay;
 
         $newExternalSource->save();
 
