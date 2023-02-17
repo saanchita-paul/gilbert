@@ -26,6 +26,7 @@ use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\GilbertLeadAPIController;
 use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
 use App\Http\Controllers\ApplicationEventController;
+use App\Http\Controllers\SourceFilterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -232,6 +233,10 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      * api for powershop payment
      */
     Route::post('/powershop/payment', [PaymentInfoController::class, 'updateCost']);
+    /**
+     * Source filter list
+     */
+    Route::get('/sources', [SourceFilterController::class, 'index']);
 
 });
 

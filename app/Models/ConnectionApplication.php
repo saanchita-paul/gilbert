@@ -326,6 +326,7 @@ class ConnectionApplication extends Model
     public const SOURCE_HOOD_LEAD = 10;
     public const SOURCE_T_APP = 11;
     public const SOURCE_MRI = 12;
+    public const SOURCE_HUTLY = 13;
 
     public const EMAIL_BILLING_EMAIL = 1;
     public const EMAIL_BILLING_PAPER = 2;
@@ -376,6 +377,7 @@ class ConnectionApplication extends Model
         'hood_ai' => self::SOURCE_HOOD_LEAD,
         't_app' => self::SOURCE_T_APP,
         'mri' => self::SOURCE_MRI,
+        'hutly' => self::SOURCE_HUTLY,
     ];
 
     public const PLAN_TYPE_MAPPER = [
