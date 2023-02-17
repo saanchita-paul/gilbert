@@ -88,11 +88,19 @@ class NewSourceCommand extends Command
 
         $sourceType = '';
 
-        while (empty($sourceType)) {
+        while (empty($sourceType) || ExternalSource::where('source_type', $sourceType)->exists()) {
             $sourceType = $this->ask('Please input the source type name (example: tapp)');
+
+            if (ExternalSource::where('source_type', $sourceType)->exists()) {
+                $this->line("Source type $sourceType already exists");
+            }
         }
 
         $this->line('Successfully set source type: ' . $sourceType);
+
+        $sourceNameDisplay = $this->ask("(OPTIONAL) Please input the source name for display purpose");
+
+        $this->line("Successfully set source display name: " . (empty($sourceNameDisplay) ? ucwords($sourceType) : $sourceNameDisplay));
 
         $newExternalSource = new ExternalSource();
         $newExternalSource->email = $userEmail;
@@ -100,6 +108,11 @@ class NewSourceCommand extends Command
         $newExternalSource->is_active = true;
         $newExternalSource->default_office_id = $selectedOffice->id;
         $newExternalSource->source_type = $sourceType;
+
+        if (!empty($sourceNameDisplay)) {
+            $newExternalSource->display_type_name = $sourceNameDisplay;
+        }
+
         $newExternalSource->save();
 
         $this->line('Successfully created a new external source with ID ' . $newExternalSource->id);

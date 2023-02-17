@@ -106,7 +106,7 @@ class CreateAppService
         $app->billing_postcode = $data['tenancy_billing_postcode'] ?? null;
         $app->is_renovation_on = $data['tenancy_is_renovation_on'] ?
             $mapperService->mapYesNoToBool($data['tenancy_is_renovation_on']) : null;
-
+        $app->status = ConnectionApplication::STATUS_UNASSIGNED;
         return $app;
     }
 
