@@ -8,8 +8,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use ExternalLead\Http\Requests\ValidateCreateLeadRequest;
+use ExternalLead\Http\Requests\ValidateCreateSourceRequest;
 use ExternalLead\Services\AuthService;
 use ExternalLead\Services\CreateLeadService;
+use ExternalLead\Services\CreateExternalSourceService;
+use App\Models\Office;
 
 class ExternalLeadV2Controller extends Controller
 {
@@ -36,7 +39,7 @@ class ExternalLeadV2Controller extends Controller
         }
     }
 
-    public function createLeads(ValidateCreateLeadRequest $request)
+    public function createLead(ValidateCreateLeadRequest $request)
     {
         try {
             Log::info('** Create External Leads Request Body', [$request->toArray()]);
@@ -59,5 +62,13 @@ class ExternalLeadV2Controller extends Controller
             ];
             return response($response, 400);
         }
+    }
+
+    public function createSource(ValidateCreateSourceRequest $request)
+    {
+        $service = new CreateExternalSourceService();
+        $newSource = $service->save($request->all());
+
+        return response(['external_source_id' => $newSource->id], 200);
     }
 }
