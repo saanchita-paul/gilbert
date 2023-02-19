@@ -58,7 +58,7 @@
                         <!-- lead source start -->
                         <v-select
                             placeholder="Source"
-                            v-model="$attrs.value.source"
+                            v-model="selectedSource"
                             item-text="text"
                             item-value="value"
                             :items="sources"
@@ -213,6 +213,16 @@ export default {
             },
             set: function (newValue) {
                 this.$attrs.value.assignee = newValue;
+            }
+        },
+
+        selectedSource: {
+            get: function () {
+                let source = this.$attrs.value.source ?? this.$route.query.source;
+                return this.sources.find((src) => src.value == source);
+            },
+            set: function (newValue) {
+                this.$attrs.value.source = newValue;
             }
         },
     },
