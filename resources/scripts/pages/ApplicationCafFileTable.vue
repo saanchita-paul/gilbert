@@ -159,8 +159,8 @@ export default {
             return false;
         },
 
-        // checkedCafKey(service_type, services){
-        //     let key = ApplicationCafFileService.isPossibleToCreateCaf(service_type, services);
+        // checkedCafKey(service_type, Services){
+        //     let key = ApplicationCafFileService.isPossibleToCreateCaf(service_type, Services);
         //     return key;
         // }
         updateSelectedMovingData(moving_id, selectedServiceType) {

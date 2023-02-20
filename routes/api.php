@@ -3,6 +3,7 @@
 use App\Http\Controllers\Agency\AgencyController;
 use App\Http\Controllers\Agency\AgentProfileController;
 use App\Http\Controllers\Agency\AppCloseReasonController;
+use App\Http\Controllers\Agency\ApplicationCafController;
 use App\Http\Controllers\Agency\ApplicationController;
 use App\Http\Controllers\Agency\DuplicationApplicationController;
 use App\Http\Controllers\Agency\HoodUserController;
@@ -279,9 +280,12 @@ Route::post('/our-property/lead', [OurPropertyController::class, 'createOurPrope
  * Powershop
  */
 
-Route::get('/powershop/applications', [PowerShopController::class, 'getPowerShop'])
-    ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
-Route::get('/powershop/generate-caf', [PowerShopController::class, 'generatePowerShopCaf']);
+//Route::get('/powershop/applications', [PowerShopController::class, 'getPowerShop'])
+//    ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
+//Route::get('/powershop/generate-caf', [PowerShopController::class, 'generatePowerShopCaf']);
+
+Route::get('/gilbert/applications', [ApplicationCafController::class, "getGilbertApplications"]);
+Route::get('/gilbert/generate-caf', [ApplicationCafController::class, "generateGilbertCaf"]);
 
 
 Route::post('/powershop/payment/invite', [PaymentInfoController::class, 'inviteCustomer']);

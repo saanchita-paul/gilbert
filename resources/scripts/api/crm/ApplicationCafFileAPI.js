@@ -22,6 +22,7 @@ export default {
         };
     },
 
+
     updateApplicationCafFileData: async (cafId, cafDetail) => {
         try{
             const data = await axios.put(`${BASE_URL}/applications/${cafId}`, cafDetail);
@@ -35,8 +36,21 @@ export default {
 
     },
 
+    rejectionReasonCafFileData: async (connectionServiceId) => {
+        try{
+            const data = await axios.put(`${BASE_URL}/rejection-reasons/${connectionServiceId}`);
+            let response = data.data.data
+            return ApplicationCafFileMapper.mapSingleData(response)
+        } catch (e) {
+            console.log('No rejection reason found')
+            console.log(e);
+            return false;
+        }
+
+    },
+
     getGilbertApplicationData: async (sort_search_meta, params) => {
-        const data = await axios.get('/api/powershop/applications',{params:{...sort_search_meta, ...params}});
+        const data = await axios.get('/api/gilbert/applications',{params:{...sort_search_meta, ...params, provider_name: sort_search_meta.provider_name ?? ''}});
 
         return {
             data: GilbertApplicationCafFileMapper.mapGilbertApplicationList(data.data),
@@ -51,7 +65,7 @@ export default {
 
     generateGilbertCafFIle: async (params) => {
         try{
-            const url = `/api/powershop/generate-caf?ids=`+ params;
+            const url = `/api/gilbert/generate-caf?ids=`+ params;
 
             window.open(
                 url,
