@@ -50,7 +50,7 @@ class PxPaymentInviteNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject("New Lead Submitted")
+            ->subject("Powershop Payment Link")
             ->view('powershop.email_px_invite', [
                 'paymentUrl' => $this->url,
                 'name' => $this->name

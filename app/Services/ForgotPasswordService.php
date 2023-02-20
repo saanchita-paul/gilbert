@@ -28,20 +28,22 @@ class ForgotPasswordService
     {
         $email = $request->input('email');
 
-        if(User::where('email', $email)->doesntExist()){
-            return response()->json(['success' => true, 'message' => 'Please check your email']);
+        $user = User::where('email', $email)->first();
+
+        if (!$user || !$user->profile) {
+            return response()->json(['success' => false, 'message' => 'User does not exists']);
         }
 
         $token = Str::random('40');
+        $name = $user->profile?->first_name;
+
         try{
             DB::table('password_resets')->insert([
                 'email' => $email,
                 'token' => $token,
             ]);
 
-            info($token, [$email]);
-
-            Notification::route('mail', $email)->notify(new ResetPasswordNotification($token));
+            Notification::route('mail', $email)->notify(new ResetPasswordNotification($token, $name));
             return response()->json(['success' => true, 'message' => 'Please check your email']);
 
         } catch (\Exception $exception) {
