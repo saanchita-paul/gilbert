@@ -82,7 +82,7 @@ class CreateAppService
         $app->street_name = $data['tenancy_street_name'] ?? null;
         $app->street_name_only = $data['tenancy_street_name'] ?? null;
         $app->street_type = $data['tenancy_street_type'] ?? null;
-        $app->city = $data['tenancy_suburb'] ?? null;
+        $app->city = $data['tenancy_suburb'] ?? ($data['tenancy_city'] ?? null);
         $app->postcode = $data['tenancy_postcode'] ?? null;
         $app->state = $data['tenancy_state'] ?
             $addressService->mapState($data['tenancy_state']) : null;
@@ -95,7 +95,7 @@ class CreateAppService
         $app->billing_street_number = $data['tenancy_billing_street_number'] ?? null;
         $app->billing_street_name = $data['tenancy_billing_street_name'] ?? null;
         $app->billing_street_name_only = $data['tenancy_billing_street_name'] ?? null;
-        $app->billing_city = $data['tenancy_billing_city'] ?? null;
+        $app->billing_city = $data['tenancy_billing_suburb'] ?? ($data['tenancy_billing_city'] ?? null);
         $app->billing_state = $data['tenancy_billing_state'] ?
             $addressService->mapState($data['tenancy_billing_state']) : null;
         $app->billing_postcode = $data['tenancy_billing_postcode'] ?? null;
