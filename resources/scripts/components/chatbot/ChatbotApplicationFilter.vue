@@ -207,7 +207,7 @@ export default {
             let allCaf = this.cafFiles.map(cf => cf.id);
             const selectedCaf = selectedId.filter(si => allCaf.includes(si));
             let selectedRow = selectedCaf.map(dt => {
-                return dt.id + '-' + 'both'
+                return dt + '-' + 'both'
             });
             let query = selectedRow.join('_');
             console.log('selected rows', query);
