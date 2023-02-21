@@ -204,10 +204,10 @@ export default {
         async generateCafFIle()
         {
             let selectedId = this.selected.map(dt => dt.id);
-
-            let selectedLeads = this.cafFiles.filter(cf => selectedId.includes(cf.id));
-            let selectedRow = this.selected.map(dt => {
-                return dt.id + '-' + 'both'
+            let allCaf = this.cafFiles.map(cf => cf.id);
+            const selectedCaf = selectedId.filter(si => allCaf.includes(si));
+            let selectedRow = selectedCaf.map(dt => {
+                return dt + '-' + 'both'
             });
             let query = selectedRow.join('_');
             console.log('selected rows', query);
