@@ -19,6 +19,7 @@ class CreateLeadService
         $newApp = $newAppService->create($externalSource, $data);
 
         $dump->connection_application_id = $newApp->id;
+        $dump->agency_name = $newApp->agency->name ?? null;
         $dump->save();
 
         $this->createdApp = $newApp;

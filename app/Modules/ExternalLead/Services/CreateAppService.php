@@ -66,23 +66,14 @@ class CreateAppService
             $mapperService->mapTenancy($data['tenancy_type']) : null;
         $app->moving_date = $data['tenancy_moving_date'] ?? null;
         $app->additional_instruction = $data['additional_instruction'] ?? null;
-
-        $app->city = $data['tenancy_suburb'] ?? null;
-        $app->postcode = $data['tenancy_postcode'] ?? null;
-        $app->state = $data['tenancy_state'] ?
-            $addressService->mapState($data['tenancy_state']) : null;
-        $app->country = $data['tenancy_country'] ?
-            $addressService->mapCountry($data['tenancy_country']) : null;
-        // $app->address_text = $data[tenancy_address_text ?? null;
         $app->is_email_billing = $data['is_email_billing'] ?
             $mapperService->mapYesNoToBool($data['is_email_billing']) : null;
         $app->property_type = $data['tenancy_property_type'] ?
-            $mapperService->mapPropertyType($data['tenancy_property_type']) : null;
+        $mapperService->mapPropertyType($data['tenancy_property_type']) : null;
         $app->has_life_support = $data['tenancy_has_life_support'] ?
             $mapperService->mapYesNoToBool($data['tenancy_has_life_support']) : null;
         $app->has_solar = $data['tenancy_has_solar'] ?
             $mapperService->mapYesNoToBool($data['tenancy_has_solar']) : null;
-
 
         $app->nmi = $data['tenancy_nmi'] ?? null;
         $app->mirn = $data['tenancy_mirn'] ?? null;
@@ -91,19 +82,25 @@ class CreateAppService
         $app->street_name = $data['tenancy_street_name'] ?? null;
         $app->street_name_only = $data['tenancy_street_name'] ?? null;
         $app->street_type = $data['tenancy_street_type'] ?? null;
-        $app->address_text = $data['tenancy_address_text'] ?? null;
+        $app->city = $data['tenancy_suburb'] ?? null;
+        $app->postcode = $data['tenancy_postcode'] ?? null;
+        $app->state = $data['tenancy_state'] ?
+            $addressService->mapState($data['tenancy_state']) : null;
+        $app->country = $data['tenancy_country'] ?
+            $addressService->mapCountry($data['tenancy_country']) : null;
+        $app->street_address = ($app->unit_number ? $app->unit_number . ' / ' : '') . $app->street_number . ' ' . $app->street_name . ' ' . $app->street_type;
+        $app->address_text = $app->street_address . ', ' . $app->city . ' ' . $app->state . ' ' . $app->postcode;
         $app->billing_street_type = $data['tenancy_billing_street_type'] ?? null;
         $app->billing_unit_number = $data['tenancy_billing_unit_number'] ?? null;
         $app->billing_street_number = $data['tenancy_billing_street_number'] ?? null;
         $app->billing_street_name = $data['tenancy_billing_street_name'] ?? null;
         $app->billing_street_name_only = $data['tenancy_billing_street_name'] ?? null;
-        $app->billing_address_text = $data['tenancy_billing_address_text'] ?? null;
-        $app->street_address = $data['tenancy_street_address'] ?? null;
         $app->billing_city = $data['tenancy_billing_city'] ?? null;
-        $app->billing_street_address = $data['tenancy_billing_street_address'] ?? null;
         $app->billing_state = $data['tenancy_billing_state'] ?
             $addressService->mapState($data['tenancy_billing_state']) : null;
         $app->billing_postcode = $data['tenancy_billing_postcode'] ?? null;
+        $app->billing_street_address = ($app->billing_unit_number ? $app->billing_unit_number . ' / ' : '') . $app->billing_street_number . ' ' . $app->billing_street_name . ' ' . $app->billing_street_type;
+        $app->billing_address_text = $app->billing_street_address . ', ' . $app->billing_city . ' ' . $app->billing_state . ' ' . $app->billing_postcode;
         $app->is_renovation_on = $data['tenancy_is_renovation_on'] ?
             $mapperService->mapYesNoToBool($data['tenancy_is_renovation_on']) : null;
         $app->status = ConnectionApplication::STATUS_UNASSIGNED;

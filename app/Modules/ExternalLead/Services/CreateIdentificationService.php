@@ -25,7 +25,7 @@ class CreateIdentificationService
         $identification->card_color = $data['tenancy_medicare_card_color'] ?
             strtoupper($data['tenancy_medicare_card_color']) : null;
         $identification->special_number = $data['tenancy_medicare_reference_number'] ?? null;
-        $identification->expire_date = $data['tenancy_indentification_expire_date'] ?? null;
+        $identification->expire_date = $data['tenancy_identification_expire_date'] ?? null;
         $identification->save();
 
         return $identification;
