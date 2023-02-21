@@ -467,20 +467,20 @@ export default {
             this.searchResultBilling = []
             MapService.getAddressDetailsById(place.id)
                 .then((data) => {
-                    this.propertyDetails.billing_unit_number = data.unit_number,
-                        this.propertyDetails.billing_street_number = data.street_number,
-                        this.propertyDetails.billing_street_name = data.street_name,
-                        this.propertyDetails.billing_street_name_only = data.street_name_only,
-                        this.propertyDetails.billing_address_text = data.address_text,
-                        this.billing_search_address_text = data.address_text,
-                        this.propertyDetails.billing_country = data.country,
-                        this.propertyDetails.billing_state = getStateKey(data.state),
-                        this.propertyDetails.billing_street_type = data.street_type,
-                        this.propertyDetails.billing_street_number = data.street_number,
-                        this.propertyDetails.billing_address_unit = data.address_unit,
-                        this.propertyDetails.billing_street_address = data.street_address,
-                        this.propertyDetails.billing_city = data.city,
-                        this.propertyDetails.billing_postcode = data.postcode,
+                        this.propertyDetails.billing_unit_number = data?.unit_number ?? '',
+                        this.propertyDetails.billing_street_number = data?.street_number ?? '',
+                        this.propertyDetails.billing_street_name = data?.street_name ?? '',
+                        this.propertyDetails.billing_street_name_only = data?.street_name_only ?? '',
+                        this.propertyDetails.billing_address_text = data?.address_text ?? '',
+                        this.billing_search_address_text = data?.address_text ?? '',
+                        this.propertyDetails.billing_country = data?.country ?? '',
+                        this.propertyDetails.billing_state = getStateKey(data?.state) ?? '';
+                        this.propertyDetails.billing_street_type = data?.street_type ?? '',
+                        this.propertyDetails.billing_street_number = data?.street_number ?? '',
+                        this.propertyDetails.billing_address_unit = data?.address_unit ?? '',
+                        this.propertyDetails.billing_street_address = data?.street_address ?? '',
+                        this.propertyDetails.billing_city = data?.city ?? '',
+                        this.propertyDetails.billing_postcode = data?.postcode ?? '',
                         this.selectBillingAddress();
                 });
         },
@@ -490,21 +490,20 @@ export default {
                 .then((data) => {
 
                     // this.propertyDetails = { ...this.propertyDetails, ...data }
-                    this.st
-                    this.propertyDetails.address_text = data.address_text;
-                    this.propertyDetails.street_address = data.street_address;
-                    this.propertyDetails.city = data.city;
-                    this.propertyDetails.country = data.country;
-                    this.propertyDetails.postcode = data.postcode;
-                    this.propertyDetails.state = getStateKey(data.state);
-                    this.propertyDetails.state_short = data.state_short;
+                    this.propertyDetails.address_text = data?.address_text ?? '';
+                    this.propertyDetails.street_address = data?.street_address ?? '';
+                    this.propertyDetails.city = data?.city ?? '';
+                    this.propertyDetails.country = data?.country ?? '';
+                    this.propertyDetails.postcode = data?.postcode ?? '';
+                    this.propertyDetails.state = getStateKey(data?.state) ?? '';
+                    this.propertyDetails.state_short = data?.state_short ?? '';
                     // this.propertyDetails.street_number = data.street_number?data.street_number:null;
-                    this.propertyDetails.unit_number = data.unit_number;
-                    this.propertyDetails.street_number = data.street_number;
-                    this.propertyDetails.street_name = data.street_name;
-                    this.propertyDetails.street_name_only = data.street_name_only;
-                    this.propertyDetails.street_type = data.street_type;
-                    this.propertyDetails.unit_number = data.unit_number;
+                    this.propertyDetails.unit_number = data?.unit_number ?? '';
+                    this.propertyDetails.street_number = data?.street_number ?? '';
+                    this.propertyDetails.street_name = data?.street_name ?? '';
+                    this.propertyDetails.street_name_only = data?.street_name_only ?? '';
+                    this.propertyDetails.street_type = data?.street_type ?? '';
+                    this.propertyDetails.unit_number = data?.unit_number ?? '';
 
                     this.selectAddress();
                 });
@@ -568,7 +567,7 @@ export default {
             {
                 let unit_number = isEmpty(this.propertyDetails.billing_unit_number) ? "" : this.propertyDetails.billing_unit_number + " /";
 
-                this.propertyDetails.billing_address_text = unit_number + ' ' + this.propertyDetails.billing_street_number + ' ' + this.propertyDetails.billing_street_name_only + ' ' + this.propertyDetails.billing_street_type + ' ' + this.propertyDetails.billing_city + ' ' + this.propertyDetails.billing_state + ' ' + this.propertyDetails.billing_postcode + ' ' + this.propertyDetails.billing_country;
+                this.propertyDetails.billing_address_text = unit_number + ' ' + this.propertyDetails.billing_street_number + ' ' + this.propertyDetails.billing_street_name_only + ' ' + this.propertyDetails.billing_street_type + ' ' + this.propertyDetails.billing_city + ' ' + this.propertyDetails.billing_state + ' ' + this.propertyDetails.billing_postcode;
             }
 
             unit_number = isEmpty(this.propertyDetails.unit_number) ? "" : this.propertyDetails.unit_number + " /";
@@ -576,7 +575,7 @@ export default {
             this.propertyDetails.street_address = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name_only;
 
             if(this.propertyDetails.mannual_address || this.propertyDetails.address_text == "" || this.propertyDetails.address_text == null ){
-                this.propertyDetails.address_text = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name_only + ' ' + this.propertyDetails.street_type + ' ' + this.propertyDetails.city + ' ' + this.propertyDetails.state + ' ' + this.propertyDetails.postcode + ' ' + this.propertyDetails.country ;
+                this.propertyDetails.address_text = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name_only + ' ' + this.propertyDetails.street_type + ' ' + this.propertyDetails.city + ' ' + this.propertyDetails.state + ' ' + this.propertyDetails.postcode;
             }
         },
         mapStreetName(){
