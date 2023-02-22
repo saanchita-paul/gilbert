@@ -4,7 +4,8 @@ namespace ExternalLead\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\ExternalSource;
-
+use Illuminate\Validation\Rule;
+use App\Services\Utility\StateMapService;
 class ValidateCreateLeadRequest extends FormRequest
 {
     /**
@@ -30,21 +31,33 @@ class ValidateCreateLeadRequest extends FormRequest
         $selectedSource = ExternalSource::where('email', $username)->firstOrFail();
 
         return [
-            'tenancy_title' => 'required', // TODO: set options mr, ms, mrs, etc
+            'lead_id' => 'required',
+            'tenancy_title' => ['required', Rule::in(['mr', 'ms', 'mrs', 'miss', 'dr'])],
             'tenancy_first_name' => 'required',
             'tenancy_last_name' => 'required',
             'tenancy_email' => 'required|email',
             'tenancy_dob' => 'required|date_format:Y-m-d',
-            'tenancy_phone_number' => 'required_without:tenancy_homephone',
-            'tenancy_homephone' => 'required_without:tenancy_phone_number',
-            'tenancy_type' => 'required', // TODO: set options renter, homeowner
-            'tenancy_identification_type' => 'required', // TODO: set options medicare, passport, licence
+            'tenancy_phone_type' => ['required', Rule::in(['mobile', 'homephone', 'international mobile'])],
+            'tenancy_phone_number' => 'required_if:tenancy_phone_type,mobile,international mobile',
+            'tenancy_homephone' => 'required_if:tenancy_phone_type,homephone',
+            'tenancy_type' => ['required', Rule::in(['renter', 'owner'])],
+            'tenancy_identification_type' => ['required', Rule::in(['medicare', 'passport', 'driver_license'])], // TODO: set options medicare, passport, licence
             'tenancy_identification_number' => 'required',
-            'tenancy_identification_state' => 'required_if:tenancy_identification_type,state',
+            'tenancy_identification_state' => 'required_if:tenancy_identification_type,driver_license',
             'tenancy_identification_country' => 'required_if:tenancy_identification_type,passport',
             'tenancy_medicare_card_color' => 'required_if:tenancy_identification_type,medicare',
             'tenancy_medicare_reference_number' => 'required_if:tenancy_identification_type,medicare',
             'tenancy_identification_expire_date' => 'required|date_format:Y-m-d',
+            'tenancy_moving_date' => 'required|date_format:Y-m-d',
+            'tenancy_street_number' => 'required',
+            'tenancy_street_name' => 'required',
+            'tenancy_street_type' => 'required',
+            'tenancy_city' => 'required_without:tenancy_suburb',
+            'tenancy_suburb' => 'required_without:tenancy_city',
+            'tenancy_postcode' => 'required',
+            'tenancy_state' => ['required', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
+            'tenancy_country' => ['required', Rule::in(['AUS'])],
+            'agent_email' => 'required|email',
         ];
     }
 }
