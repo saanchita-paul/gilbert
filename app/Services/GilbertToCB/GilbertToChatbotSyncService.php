@@ -310,9 +310,8 @@ class GilbertToChatbotSyncService
     private function mapPropertyType($propertyType): ?string
     {
         return match ((int)$propertyType) {
-            1 => self::PROPERTY_TYPE_RESIDENTIAL,
             2 => self::PROPERTY_TYPE_BUSINESS,
-            default => null
+            default =>  self::PROPERTY_TYPE_RESIDENTIAL
         };
     }
 

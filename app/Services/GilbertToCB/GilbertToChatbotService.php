@@ -19,6 +19,10 @@ class GilbertToChatbotService
         'QSC' => 4
     ];
 
+    /** PROPERTY TYPE CONSTANTS */
+    const PROPERTY_TYPE_RESIDENTIAL = 'residential';
+    const PROPERTY_TYPE_BUSINESS    = 'business';
+
 
     public function __construct($id)
     {
@@ -78,7 +82,7 @@ class GilbertToChatbotService
             "to_address" => $this->application->address_text,
             "reason" => $this->application->reason,
             "billing_preference" => $this->mapbillingType($this->application->is_email_billing),
-            "account_type" => $this->application->property_type,
+            "account_type" => $this->mapPropertyType($this->application->property_type),
             "is_property_on_life_support" => $this->application->has_life_support,
             "solar_panel" => $this->application->has_solar,
             "nmi" => $this->application->nmi,
@@ -189,6 +193,20 @@ class GilbertToChatbotService
             1 => 'email',
             0 => 'connection_address',
             default => null
+        };
+    }
+
+    /**
+     * map property type
+     *
+     * @param $propertyType
+     * @return string|null
+     */
+    private function mapPropertyType($propertyType): ?string
+    {
+        return match ((int)$propertyType) {
+            2 => self::PROPERTY_TYPE_BUSINESS,
+            default =>  self::PROPERTY_TYPE_RESIDENTIAL
         };
     }
 
