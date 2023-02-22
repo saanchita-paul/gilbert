@@ -11,6 +11,10 @@ class ExternalSource extends Model
 {
     use HasFactory;
 
+    public const CACHE_KEY_EXTERNAL_SOURCE = 'external_sources';
+    public const CACHE_KEY_STR_TO_INT = 'external_sources_strtoint';
+    public const CACHE_KEY_INT_TO_STR = 'external_sources_inttostr';
+
     protected $casts = [
         'is_active' => 'boolean'
     ];
@@ -45,7 +49,7 @@ class ExternalSource extends Model
      */
     public static function strToInt(?string $sourceType): ?int
     {
-        $maps = Cache::rememberForever('external_sources_strtoint', function () {
+        $maps = Cache::rememberForever(self::CACHE_KEY_STR_TO_INT, function () {
             return  ExternalSource::fromCache()->mapWithKeys(fn($source) => [$source->source_type => $source->source_id]);
         });
 
@@ -60,7 +64,7 @@ class ExternalSource extends Model
      */
     public static function intToStr(?int $sourceType): ?string
     {
-        $maps = Cache::rememberForever('external_sources_inttostr', function () {
+        $maps = Cache::rememberForever(self::CACHE_KEY_INT_TO_STR, function () {
             return  ExternalSource::fromCache()->mapWithKeys(fn($source) => [$source->source_id => $source->source_type]);
         });
 
@@ -74,7 +78,7 @@ class ExternalSource extends Model
      */
     public static function fromCache(): array | Collection
     {
-        return Cache::rememberForever('external_sources', function () {
+        return Cache::rememberForever(self::CACHE_KEY_EXTERNAL_SOURCE, function () {
             return  ExternalSource::query()
                 ->select(['id', 'name', 'source_type', 'source_id', 'logo', 'table_name', 'default_office_id'])
                 ->orderBy('order')

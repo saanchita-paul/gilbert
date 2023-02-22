@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Agency;
 use App\Models\Office;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class CreateExternalSourceService
 {
@@ -35,6 +36,7 @@ class CreateExternalSourceService
             $sourceNameDisplay,
             $logo
         );
+        Cache::forget(ExternalSource::CACHE_KEY_EXTERNAL_SOURCE);
         return $externalSource;
     }
 
@@ -72,10 +74,15 @@ class CreateExternalSourceService
         $newExternalSource->source_type = $sourceType;
         $newExternalSource->display_type_name = $sourceNameDisplay;
         $newExternalSource->name = $sourceNameDisplay;
+        $newExternalSource->source_id = (ExternalSource::orderBy('source_id', 'desc')->first()->source_id ?? 0) + 1;
+        $newExternalSource->order = (ExternalSource::orderBy('order', 'desc')->first()->order ?? 0) + 1;
         $newExternalSource->save();
 
         if (!empty($logo)) {
             $this->saveLogo($newExternalSource, $logo);
+        } else {
+            $newExternalSource->logo = '/assets/images/icons/company/hood.png';
+            $newExternalSource->save();
         }
 
         return $newExternalSource;
@@ -84,8 +91,8 @@ class CreateExternalSourceService
     private function saveLogo(ExternalSource $source, UploadedFile $image)
     {
         $fileName = $source->source_type . "." . $image->extension();
-        $path = $image->storeAs('logo', $fileName);
-        $source->logo = $path;
+        $path = $image->storeAs('', $fileName, ['disk' => 'logo']);
+        $source->logo = '/assets/images/icons/company/' . $path;
         $source->save();
 
         return $source;
