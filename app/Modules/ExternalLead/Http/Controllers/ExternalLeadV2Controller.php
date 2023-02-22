@@ -46,12 +46,18 @@ class ExternalLeadV2Controller extends Controller
             $externalSource = ExternalSource::where('email', $request->username ?? '')->firstOrFail();
             $service = new CreateLeadService();
             $newLead = $service->create($externalSource, $request->all());
+            $code = 200;
             $response = [
                 "status" => "success",
                 "hood_lead_id" => $newLead->id,
                 "message" => "Hood lead has been added successfully"
             ];
-            return response($response, 201);
+            if (empty($newLead->created_by)) {
+                $response["status"] = "success_unidentified_agent";
+                $response["message"] = "Hood lead has been added successfully. Agent does not exist please check with HOOD.";
+                $code = 201;
+            }
+            return response($response, $code);
         } catch (\Exception $ex) {
             \Log::error("Hood lead can not be stored");
             \Log::error($ex->getMessage());
@@ -60,7 +66,7 @@ class ExternalLeadV2Controller extends Controller
                 "status" => "failed",
                 "message" => $ex->getMessage()
             ];
-            return response($response, 400);
+            return response($response, 500);
         }
     }
 
