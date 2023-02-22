@@ -171,7 +171,9 @@ class CalculateEnergyApplicationSummary
             ->toArray();
         $breakdown['total'] = 0;
 
-
+        $sourceDisplayName = $sources
+            ->mapWithKeys(fn($source) => [$source->source_type => $source->name])
+            ->toArray();
 
         $this->applicationSummary = [
             "all" => $breakdown,
@@ -182,6 +184,7 @@ class CalculateEnergyApplicationSummary
             "consent_pending" => $breakdown,
             "closed" => $breakdown,
             "escalated" => $breakdown,
+            "source_display_name" => $sourceDisplayName,
         ];
     }
 }
