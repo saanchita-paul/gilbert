@@ -15,7 +15,8 @@
                             <IdCopyToClipboard :applicationId="app_id"></IdCopyToClipboard>
                         </v-col>
                         <v-col cols="8">
-                            <p :hidden="shouldShowConnectionType">Temporary Connection</p>
+                            <p v-if="shouldShowConnectionType">Temporary Connection</p>
+                            <p v-else>Default</p>
                         </v-col>
                     </v-row>
                 </v-col>
@@ -1146,7 +1147,7 @@ export default {
             return !this.isLoadSkeleton && this.chatbot_app;
         },
         shouldShowConnectionType() {
-            return !(this.chatbot_app.personal_details.connection_type === 'Temporary');
+            return this.chatbot_app.personal_details.connection_type === 'Temporary'
         },
         isMIRNRequired(){
             if(this.chatbot_app.property_details.which_utility === 'electricity_and_gas' || this.chatbot_app.property_details.which_utility === 'gas'){

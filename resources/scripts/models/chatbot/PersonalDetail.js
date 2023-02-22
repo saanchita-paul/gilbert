@@ -28,7 +28,8 @@ export default class PersonalDetail{
                     billing_preference = null,
                     enabled_marketing_offer = null,
                     is_property_on_life_support = null,
-                    connection_services = []
+                    connection_services = [],
+                    rent = null
 
                 }) {
 
@@ -47,13 +48,14 @@ export default class PersonalDetail{
         this.firstnameUcFirst = first_name?.charAt(0)?.toUpperCase() + first_name?.slice(1);
         this.lastnameUcFirst = last_name?.charAt(0)?.toUpperCase() + last_name?.slice(1);
         this.fullName = getFullName(this.titleUcFirst, this.firstnameUcFirst, this.lastnameUcFirst);
-        this.connection_type = this.generateConnectionType(abn, business_name);
+        this.connection_type = this.generateConnectionType(abn, business_name, connection_services, rent);
         this.billing_preference = billing_preference; //value-> email/post
         this.enabled_marketing_offer = this.mapMarketingOffer(enabled_marketing_offer, connection_services); //value-> yes/no
         this.is_property_on_life_support = parseInt(is_property_on_life_support); //value-> yes/no
     }
-    generateConnectionType(abn, business_name){
-        if(abn || business_name) return "Temporary";
+    generateConnectionType(abn, business_name, connection_services, rent){
+        let provider_name = this.getProviderName(connection_services)
+        if(abn && business_name && provider_name === 'ea' && rent === "2") return "Temporary";
         return "Default"
     }
 
@@ -64,5 +66,9 @@ export default class PersonalDetail{
         return offer;
     }
 
+    getProviderName(services){
+        let filteredService = services.filter(item => ['electricity', 'gas'].includes(item.service_type))
+        return filteredService[0].provider_name;
+    }
 
 }
