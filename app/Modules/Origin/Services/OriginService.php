@@ -55,6 +55,11 @@ class OriginService
                 ['provider_name', 'origin']
             ])->firstOrFail();
 
+            if (empty($service->lead_reference)) {
+                $service->lead_reference = SubmitOrderAPI::getPartnerReferenceNumber($service->id);
+                $service->save();
+            }
+
             $connection_date = $application->moving_date;
 
             $plan = GetPlans::getActivePlanByStateFuel(strtoupper(AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($application->state)]), $type == 'power' ? 'electricity': $type);
@@ -98,6 +103,7 @@ class OriginService
 
             // 3. submit order
             $data = [
+                "partnerReferenceNumber" => $service->lead_reference,
                 "connection" => 'move',
                 "connectionDate" => $connection_date,
                 "isExistingCustomer" => false,

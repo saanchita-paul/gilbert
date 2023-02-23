@@ -191,7 +191,8 @@ class SubmitOrderAPI extends BaseOriginAPI
      * @return string
      *
      */
-    private function getPartnerReferenceNumber() {
+    public static function getPartnerReferenceNumber($service_id)
+    {
         $result = '';
 
         if (config('origin.isTestReferenceNumber') || config('app.env') !== 'production') {
@@ -210,7 +211,7 @@ class SubmitOrderAPI extends BaseOriginAPI
                 $result .= $random_character;
             }
         } else {
-            $result = 'HD'.strval($this->service_id);
+            $result = 'HD' . strval($service_id);
         }
         return $result;
     }
@@ -223,7 +224,7 @@ class SubmitOrderAPI extends BaseOriginAPI
             "OrderType" => "Contract",
             "ConnectionScenarioID" => self::MAP_CONNECTION_TYPE[$this->data['connection'] ?? 'move'],
             "OrderStatus" => "Submitted",
-            "PartnerReferenceNumber" => $this->getPartnerReferenceNumber(),
+            "PartnerReferenceNumber" => $this->data['partnerReferenceNumber'] ?? self::getPartnerReferenceNumber($this->service_id),
             "DateOfSale" => Carbon::now()->setTimezone('Australia/Melbourne')->toDateTimeLocalString(), // "2022-05-05T16:22:00",
             "CancellationReason" => "",
             "CustomerTypeID" => $this->data['productInfo']['customerTypeId'],
@@ -331,7 +332,7 @@ class SubmitOrderAPI extends BaseOriginAPI
             "OrderType" => "Contract", 
             "ConnectionScenarioID" => "CUST_MOVE", 
             "OrderStatus" => "Submitted", 
-            "PartnerReferenceNumber" => $this->getPartnerReferenceNumber(), 
+            "PartnerReferenceNumber" => self::getPartnerReferenceNumber($this->service_id),
             "DateOfSale" => Carbon::now()->toDateTimeLocalString(), // "2022-05-05T16:22:00" 
             "CancellationReason" => "", 
             "CustomerTypeID" => "0001", 
