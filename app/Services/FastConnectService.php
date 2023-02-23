@@ -25,11 +25,19 @@ class FastConnectService
         return $this;
     }
 
-    public function searchAddress($body = [], $applicationFlag = false, $id = null)
+    public function searchAddress($body = [], $applicationFlag = false, $id = null, $skipNmi = false, $skipMirn = false)
     {
         try {
             if ($applicationFlag) {
                 $body = ConnectionApplication::find($id)->toArray();
+            }
+
+            if ($skipNmi && $skipMirn) {
+                info("FastConnectService:searchAddress Skipping fetch NMI and MIRN", $body);
+                return [
+                    'mirn' => null,
+                    'nmi' => null,
+                ];
             }
 
             $payload = FastConnectService::makeAddressPayload($body);
@@ -50,11 +58,11 @@ class FastConnectService
             $response_decoded = json_decode($response->body(), true);
             $mirn = null;
             $nmi = null;
-            if (!empty($response_decoded['mirn']['result']) && count($response_decoded['mirn']['result']) === 1) {
+            if (!$skipMirn && !empty($response_decoded['mirn']['result']) && count($response_decoded['mirn']['result']) === 1) {
                 $mirn = $response_decoded['mirn']['result'][0]['mirn'];
             }
 
-            if (!empty($response_decoded['nmi']['result']) && count($response_decoded['nmi']['result'])  === 1) {
+            if (!$skipNmi && !empty($response_decoded['nmi']['result']) && count($response_decoded['nmi']['result'])  === 1) {
                 $nmi = $response_decoded['nmi']['result'][0]['nmi'];
             }
 
