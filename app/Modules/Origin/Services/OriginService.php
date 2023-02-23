@@ -57,8 +57,10 @@ class OriginService
                 ['provider_name', 'origin']
             ])->firstOrFail();
 
-            $service->lead_reference = SubmitOrderAPI::getPartnerReferenceNumber($service->id);
-            $service->save();
+            if (empty($service->lead_reference)) {
+                $service->lead_reference = SubmitOrderAPI::getPartnerReferenceNumber($service->id);
+                $service->save();
+            }
 
             $connection_date = $application->moving_date;
 
