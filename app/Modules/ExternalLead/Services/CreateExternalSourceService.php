@@ -65,8 +65,6 @@ class CreateExternalSourceService
     private function createExternalSource(Office $office, string $email, string $password, string $sourceType, string $sourceNameDisplay, UploadedFile $logo = null)
     {
         $newExternalSource = new ExternalSource();
-
-        $newExternalSource = new ExternalSource();
         $newExternalSource->email = $email;
         $newExternalSource->password = Hash::make($password);
         $newExternalSource->is_active = true;
