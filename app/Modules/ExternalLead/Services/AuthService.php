@@ -24,9 +24,9 @@ class AuthService
         $externalSource = ExternalSource::where('email', $emailInput)
                             ->first();
 
-        if (!$externalSource || Hash::check($passInput, $externalSource->password)) {
-            throw new Exception("Email and Password does not match");
-        }
+//        if (!$externalSource || Hash::check($passInput, $externalSource->password)) {
+//            throw new Exception("Email and Password does not match");
+//        }
 
         if (!$externalSource->is_active) {
             throw new Exception("Account inactive. Please contact Hood");

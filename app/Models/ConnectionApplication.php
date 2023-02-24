@@ -342,6 +342,7 @@ class ConnectionApplication extends Model
 
     public const PHONE_TYPE_MOBILE = 1;
     public const PHONE_TYPE_HOMEPHONE = 2;
+    public const PHONE_TYPE_INTERNATION_MOBILE = 2;
 
     public const LEAD_SUBMIT_TYPE_ENERGY = 'energy';
     public const LEAD_SUBMIT_TYPE_POWER = 'power';

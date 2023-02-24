@@ -14,9 +14,9 @@ class MapAgentService
     public function map(ExternalSource $source, ConnectionApplication $app, array $data)
     {
         $defaultOffice = $source->defaultOffice;
-        $agentEmail = $data['agent_email'];
-        $agencyName = $data['agency_name'] ?? $defaultOffice->agency->name;
-        $officeName = $data['office_name'] ?? $defaultOffice->name;
+        $agentEmail = $data['agency']['agent_email'];
+        $agencyName = $data['agency']['agency_name'] ?? $defaultOffice->agency->name;
+        $officeName = $data['agency']['office_name'] ?? $defaultOffice->name;
         $officeId = $defaultOffice->id;
         $agencyId = $defaultOffice->agency_id;
         $agentId = null;

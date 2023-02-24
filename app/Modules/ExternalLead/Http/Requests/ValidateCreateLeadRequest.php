@@ -45,53 +45,25 @@ class ValidateCreateLeadRequest extends FormRequest
         ];
     }
 
-    private function getRules()
+    private function getRules(): array
     {
-        $rules = [
-            'lead_id' => 'required',
-            'tenancy_title' => ['required', Rule::in(['mr', 'ms', 'mrs', 'miss', 'dr'])],
-            'tenancy_first_name' => 'required',
-            'tenancy_last_name' => 'required',
-            'tenancy_email' => 'required|email',
-            'tenancy_dob' => 'required|date_format:Y-m-d',
-            'tenancy_phone_type' => ['required', Rule::in(['mobile', 'homephone', 'international mobile'])],
-            'tenancy_phone_number' => 'required_if:tenancy_phone_type,mobile,international mobile',
-            'tenancy_homephone' => 'required_if:tenancy_phone_type,homephone',
-            'tenancy_type' => ['required', Rule::in(['renter', 'owner'])],
-            'tenancy_property_type' => Rule::in(array_keys(ConnectionApplication::PROPERTY_TYPE_MAPPING)),
-            'tenancy_identification_type' => ['required', Rule::in(['medicare', 'passport', 'driver_license'])], // TODO: set options medicare, passport, licence
-            'tenancy_identification_number' => 'required',
-            'tenancy_identification_state' => 'required_if:tenancy_identification_type,driver_license',
-            'tenancy_identification_country' => 'required_if:tenancy_identification_type,passport',
-            'tenancy_medicare_card_color' => 'required_if:tenancy_identification_type,medicare',
-            'tenancy_medicare_reference_number' => 'required_if:tenancy_identification_type,medicare',
-            'tenancy_identification_expire_date' => 'required|date_format:Y-m-d',
-            'tenancy_moving_date' => 'required|date_format:Y-m-d',
-            'tenancy_street_number' => 'required',
-            'tenancy_street_name' => 'required',
-            'tenancy_street_type' => 'required',
-            'tenancy_city' => 'required_without:tenancy_suburb',
-            'tenancy_suburb' => 'required_without:tenancy_city',
-            'tenancy_postcode' => 'required',
-            'tenancy_state' => ['required', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
-            'tenancy_country' => ['required', Rule::in(['AUS'])],
-            'agent_email' => 'required|email',
-            'agency_name' => 'nullable|string',
-            'office_name' => 'nullable|string',
-        ];
-
-        $ruless = [
-            'lead_reference' => 'required',
+        return [
+            'lead_reference' => 'required:|string',
             'primary_account.title' => ['required', Rule::in(['mr', 'ms', 'mrs', 'miss', 'dr'])],
-            'primary_account.first_name' => 'required',
-            'primary_account.last_name' => 'required',
+            'primary_account.first_name' => 'required|string',
+            'primary_account.middle_name' => 'nullable|string',
+            'primary_account.last_name' => 'required|string',
             'primary_account.email' => 'required|email',
             'primary_account.dob' => 'required|date_format:Y-m-d',
-            'primary_account.phone_type' => ['required', Rule::in(['mobile', 'homephone', 'international mobile'])],
-            'primary_account.phone_number' => 'required_if:tenancy_phone_type,mobile,international mobile',
-            'primary_account.homephone' => 'required_if:tenancy_phone_type,homephone',
+            'primary_account.phone_type' => ['required', Rule::in(['mobile', 'homephone', 'international_mobile'])],
+            'primary_account.phone_number' => 'required_if:primary_account.phone_type,mobile,international_mobile',
+            'primary_account.homephone' => 'required_if:primary_account.homephone,homephone',
 
-            'primary_account.identification.type' => ['required', Rule::in(['medicare', 'passport', 'driver_license'])], // TODO: set options medicare, passport, licence
+            'utility_services.0' =>  'required',
+            'utility_services.*' =>  Rule::in("gas", 'power'),
+
+            'primary_account.identification.type' => ['required', Rule::in(['medicare', 'passport', 'driver_license'])],
+            // TODO: set options medicare, passport, licence
             'primary_account.identification.number' => 'required',
             'primary_account.identification.state' => 'required_if:tenancy_identification.type,driver_license',
             'primary_account.identification.country' => 'required_if:identification.type,passport',
@@ -99,10 +71,26 @@ class ValidateCreateLeadRequest extends FormRequest
             'primary_account.medicare_reference_number' => 'required_if:identification.type,medicare',
             'primary_account.identification.expire_date' => 'required|date_format:Y-m-d',
 
-            'connection_details.tenancy_type' => ['required', Rule::in(['renter', 'owner'])],
-            'connection_details.property_type' => Rule::in(array_keys(ConnectionApplication::PROPERTY_TYPE_MAPPING)),
-            'connection_details.moving_date' => 'required|date_format:Y-m-d',
+            'secondary_account.title' => ['required_with:secondary_account', Rule::in(['mr', 'ms', 'mrs', 'miss', 'dr'])],
+            'secondary_account.first_name' => 'required_with:secondary_account',
+            'secondary_account.last_name' => 'required_with:secondary_account',
+            'secondary_account.email' => 'required_with:secondary_account',
+            'secondary_account.dob' => 'required_with:secondary_account|date_format:Y-m-d',
+            'secondary_account.phone_number' => 'required_with:secondary_account',
+            'secondary_account.permission_type' => 'required_with:secondary_account',
 
+            'connection_details.tenancy_type' => ['required', Rule::in(['renter', 'home_owner'])],
+            'connection_details.property_type' => Rule::in(array_keys(ConnectionApplication::PROPERTY_TYPE_MAPPING)),
+            'connection_details.is_email_billing' => ['required', 'boolean'],
+            'connection_details.moving_date' => 'required|date_format:Y-m-d',
+            "additional_instruction" => "Additional instruction here",
+            "has_life_support" => "nullable|boolean",
+            "is_renovation_on" => "nullable|boolean",
+            "has_solar" => "nullable|boolean",
+            "nmi" => "nullable|string",
+            "mirn" => "nullable|string",
+
+            'property_address.unit_number' => 'nullable',
             'property_address.street_number' => 'required',
             'property_address.street_name' => 'required',
             'property_address.street_type' => 'required',
@@ -112,29 +100,19 @@ class ValidateCreateLeadRequest extends FormRequest
             'property_address.state' => ['required', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
             'property_address.country' => ['required', Rule::in(['AUS'])],
 
+            'billing_address.unit_number' => 'nullable',
+            'billing_address.street_number' => 'required',
+            'billing_address.street_name' => 'required',
+            'billing_address.street_type' => 'required',
+            'billing_address.city' => 'required_without:property_address.suburb',
+            'billing_address.suburb' => 'required_without:property_address.city',
+            'billing_address.postcode' => 'required',
+            'billing_address.state' => ['required', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
 
-            'agent.email' => 'required|email',
-            'agency_name' => 'nullable|string',
-            'office_name' => 'nullable|string',
+
+            'agency.agent_email' => 'required|email',
+            'agency.name' => 'nullable|string',
+            'agency.office_name' => 'nullable|string',
         ];
-
-        // $billingAddressFields = [
-        //     'tenancy_billing_street_number',
-        //     'tenancy_billing_street_name',
-        //     'tenancy_billing_street_type',
-        //     'tenancy_billing_city',
-        //     'tenancy_billing_suburb',
-        //     'tenancy_billing_postcode',
-        //     'tenancy_billing_state',
-        //     'tenancy_billing_country',
-        // ];
-
-        // foreach ($billingAddressFields as $field) {
-        //     $rules[$field] = Rule::requiredIf(function () {
-        //         $valid = true;
-        //     });
-        // }
-
-        return $ruless;
     }
 }
