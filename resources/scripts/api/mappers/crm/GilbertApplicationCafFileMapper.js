@@ -62,7 +62,7 @@ const mapStatus = (status, is_generated_caf=false) => {
 }
 
 const mapSupplier = services => {
-    let service = services.find(svc => ((svc.service_type === 'power' || svc.service_type === 'gas') &&  !!sv.provider_name ));
+    let service = services.find(svc => ((svc.service_type === 'power' || svc.service_type === 'gas') &&  !!svc.provider_name ));
     return service?.provider_name;
 
 }
