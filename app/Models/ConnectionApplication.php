@@ -711,4 +711,17 @@ class ConnectionApplication extends Model
             }
         }
     }
+
+    public function getSalesReferenceIdAttribute()
+    {
+        $ref = ConnectionService::where('connection_application_id', $this->id)
+                ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
+                ->pluck('lead_reference');
+
+        if (!empty($ref)) {
+            return implode(',', $ref->toArray());
+        }
+
+        return '';
+    }
 }

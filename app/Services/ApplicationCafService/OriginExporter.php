@@ -663,7 +663,7 @@ class OriginExporter
         if(empty($gas)) {
             return '';
         }
-        return $gas->plan_type;
+        return $gas->plan_type ?? "";
     }
 
     private function getCampaignCode(string $state, string $fueltype = '')
