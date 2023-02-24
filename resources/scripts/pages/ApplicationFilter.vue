@@ -70,7 +70,7 @@
                             <template v-slot:item="{ item, attrs, on }">
                                 <v-list-item link v-bind="attrs" v-on="on">
                                     <v-list-item-avatar>
-                                        <v-img :src="`/storage/images/company/${item.icon}`" width="20px" alt="Icon" />
+                                        <v-img v-if="item.icon" :src="`/storage/images/company/${item.icon}`" width="20px" alt="Icon" />
                                     </v-list-item-avatar>
                                     <v-list-item-content>
                                         <v-list-item-title>{{ item.text }}</v-list-item-title>
