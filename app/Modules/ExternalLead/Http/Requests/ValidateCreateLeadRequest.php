@@ -80,22 +80,22 @@ class ValidateCreateLeadRequest extends FormRequest
             'office_name' => 'required',
         ];
 
-        $billingAddressFields = [
-            'tenancy_billing_street_number',
-            'tenancy_billing_street_name',
-            'tenancy_billing_street_type',
-            'tenancy_billing_city',
-            'tenancy_billing_suburb',
-            'tenancy_billing_postcode',
-            'tenancy_billing_state',
-            'tenancy_billing_country',
-        ];
+        // $billingAddressFields = [
+        //     'tenancy_billing_street_number',
+        //     'tenancy_billing_street_name',
+        //     'tenancy_billing_street_type',
+        //     'tenancy_billing_city',
+        //     'tenancy_billing_suburb',
+        //     'tenancy_billing_postcode',
+        //     'tenancy_billing_state',
+        //     'tenancy_billing_country',
+        // ];
 
-        foreach ($billingAddressFields as $field) {
-            $rules[$field] = Rule::requiredIf(function () {
-                $valid = true;
-            });
-        }
+        // foreach ($billingAddressFields as $field) {
+        //     $rules[$field] = Rule::requiredIf(function () {
+        //         $valid = true;
+        //     });
+        // }
 
         return $rules;
     }
