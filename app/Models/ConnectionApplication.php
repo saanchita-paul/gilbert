@@ -737,7 +737,7 @@ class ConnectionApplication extends Model
     public function getSourceNameAttribute()
     {
         if (!empty($this->external_source_id)) {
-            return $this->externalSource?->display_type_name ?? '';
+            return $this->externalSource?->name ?? '';
         }
 
         return self::SOURCE_NAME_MAPPING[$this->source];

@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Cache;
 
 class CreateExternalSourceService
 {
+    private Agency $agency;
+    private ExternalSource $source;
+
     public function __construct()
     {
     }
@@ -27,63 +30,69 @@ class CreateExternalSourceService
         $officeName = $data['office_name'] ?? $sourceNameDisplay . "-Hood Office";
         $officeEmail = $data['agency_email'] ?? $sourceType . "@hood.ai";
 
-        $defaultOffice = $this->createDefaultOffice($agencyName, $officeName, $officeEmail);
-        $externalSource = $this->createExternalSource(
-            $defaultOffice,
-            $email,
-            $password,
-            $sourceType,
-            $sourceNameDisplay,
-            $logo
-        );
-        Cache::forget(ExternalSource::CACHE_KEY_EXTERNAL_SOURCE);
-        return $externalSource;
+        try {
+            $defaultOffice = $this->createDefaultOffice($agencyName, $officeName, $officeEmail);
+            $externalSource = $this->createExternalSource(
+                $defaultOffice,
+                $email,
+                $password,
+                $sourceType,
+                $sourceNameDisplay,
+                $logo
+            );
+            Cache::forget(ExternalSource::CACHE_KEY_EXTERNAL_SOURCE);
+            return $externalSource;
+        } catch (\Exception $e) {
+            if (!empty($this->agency->id)) {
+                $this->agency->delete();
+            }
+            if (!empty($this->source->id)) {
+                $this->source->delete();
+            }
+            throw $e;
+        }
     }
 
     private function createDefaultOffice($agencyName, $officeName, $email)
     {
-        $agency = Agency::where('name', $agencyName)->first();
-        if (!$agency) {
-            $agency =  Agency::create(["name" => $agencyName, "type" => Agency::TYPE_INDEPENDENT]);
-            $office = $agency->offices()->create([
-                'name' => $officeName,
-                'street_address' => "100 Plenty Rd",
-                'city' => "Preston",
-                'state' => "VIC",
-                'postcode' => "3072",
-                'country' => "Australia",
-                'abn' => "2",
-                'phone' => "0417145569",
-                'email' => $email,
-                'is_default_office' => true,
-            ]);
-        }
+        $this->agency =  Agency::create(["name" => $agencyName, "type" => Agency::TYPE_INDEPENDENT]);
+        $office = $this->agency->offices()->create([
+            'name' => $officeName,
+            'street_address' => "100 Plenty Rd",
+            'city' => "Preston",
+            'state' => "VIC",
+            'postcode' => "3072",
+            'country' => "Australia",
+            'abn' => "2",
+            'phone' => "0417145569",
+            'email' => $email,
+            'is_default_office' => true,
+        ]);
 
         return $office;
     }
 
     private function createExternalSource(Office $office, string $email, string $password, string $sourceType, string $sourceNameDisplay, UploadedFile $logo = null)
     {
-        $newExternalSource = new ExternalSource();
-        $newExternalSource->email = $email;
-        $newExternalSource->password = Hash::make($password);
-        $newExternalSource->is_active = true;
-        $newExternalSource->default_office_id = $office->id;
-        $newExternalSource->source_type = $sourceType;
-        $newExternalSource->display_type_name = $sourceNameDisplay;
-        $newExternalSource->name = $sourceNameDisplay;
-        $newExternalSource->source_id = (ExternalSource::orderBy('source_id', 'desc')->first()->source_id ?? 0) + 1;
-        $newExternalSource->order = (ExternalSource::orderBy('order', 'desc')->first()->order ?? 0) + 1;
-        $newExternalSource->save();
+        $this->source = new ExternalSource();
+        $this->source->email = $email;
+        $this->source->password = Hash::make($password);
+        $this->source->is_active = true;
+        $this->source->default_office_id = $office->id;
+        $this->source->source_type = $sourceType;
+        $this->source->name = $sourceNameDisplay;
+        $this->source->source_id = (ExternalSource::orderBy('source_id', 'desc')->first()->source_id ?? 0) + 1;
+        $this->source->order = (ExternalSource::orderBy('order', 'desc')->first()->order ?? 0) + 1;
+        $this->source->save();
 
         if (!empty($logo)) {
-            $this->saveLogo($newExternalSource, $logo);
+            $this->saveLogo($this->source, $logo);
         } else {
-            $newExternalSource->logo = '/assets/images/icons/company/hood.png';
-            $newExternalSource->save();
+            $this->source->logo = '/assets/images/icons/company/hood.png';
+            $this->source->save();
         }
 
-        return $newExternalSource;
+        return $this->source;
     }
 
     private function saveLogo(ExternalSource $source, UploadedFile $image)

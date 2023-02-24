@@ -11,9 +11,12 @@ use App\Services\NotifyBadAgentMailService;
 
 class MapAgentService
 {
-    public function map(ExternalSource $source, ConnectionApplication $app, string $agentEmail = '')
+    public function map(ExternalSource $source, ConnectionApplication $app, array $data)
     {
         $defaultOffice = $source->defaultOffice;
+        $agentEmail = $data['agent_email'];
+        $agencyName = $data['agency_name'] ?? $defaultOffice->agency->name;
+        $officeName = $data['office_name'] ?? $defaultOffice->name;
         $officeId = $defaultOffice->id;
         $agencyId = $defaultOffice->agency_id;
         $agentId = null;
@@ -34,9 +37,9 @@ class MapAgentService
 
             NotifyBadAgentMailService::check(
                 $app,
-                $source->display_type_name,
-                $defaultOffice->agency->name,
-                $defaultOffice->name,
+                $source->name,
+                $agencyName,
+                $officeName,
                 $agentEmail
             );
             return $app;

@@ -2,7 +2,9 @@
 
 namespace ExternalLead\Http\Requests;
 
+use App\Models\ExternalSource;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ValidateCreateSourceRequest extends FormRequest
 {
@@ -27,7 +29,7 @@ class ValidateCreateSourceRequest extends FormRequest
         return [
             'email' => 'required|email',
             'password' => 'required',
-            'source_type' => 'required',
+            'source_type' => ['required', Rule::notIn(ExternalSource::pluck('source_type')->toArray())],
             'logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
