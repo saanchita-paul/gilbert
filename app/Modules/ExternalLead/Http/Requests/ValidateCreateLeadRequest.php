@@ -48,7 +48,7 @@ class ValidateCreateLeadRequest extends FormRequest
     private function getRules(): array
     {
         return [
-            'lead_reference' => 'required:|string',
+            'lead_reference' => 'required|string|unique:t_app,lead_id',
             'primary_account.title' => ['required', Rule::in(['mr', 'ms', 'mrs', 'miss', 'dr'])],
             'primary_account.first_name' => 'required|string',
             'primary_account.middle_name' => 'nullable|string',
