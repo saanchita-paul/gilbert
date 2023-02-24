@@ -10,20 +10,6 @@ use App\Services\AuthService\JwtAuthService;
 class AuthService
 {
     /**
-     * credential email
-     *
-     * @var string
-     */
-    private string $email;
-
-    /**
-     * credential password
-     *
-     * @var string
-     */
-    private string $password;
-
-    /**
      * Generate token.
      *
      * @param array $leadInfo
@@ -32,19 +18,22 @@ class AuthService
      */
     public function generateAccessToken(array $credentials): array|Exception
     {
-        $externalSources = ExternalSource::where('is_active', true)->get();
+        $emailInput = $credentials['email'];
+        $passInput = $credentials['password'];
 
-        foreach ($externalSources as $externalSource) {
-            $this->email = $externalSource['email'];
-            $this->password = $externalSource['password'];
-            $isEmailValid = $this->email == $credentials['email'];
-            $isPassValid = Hash::check($credentials['password'], $this->password);
-            if ($isEmailValid && $isPassValid) {
-                return $this->getAccessToken($credentials);
-            }
+        $externalSource = ExternalSource::where('email', $emailInput)
+                            ->where('password', Hash::check($passInput))
+                            ->first();
+
+        if (!$externalSource) {
+            throw new Exception("Email and Password does not match");
         }
 
-        throw new Exception("Email and Password does not match");
+        if (!$externalSource->is_active) {
+            throw new Exception("Account inactive. Please contact Hood");
+        }
+
+        return $this->getAccessToken($credentials);
     }
 
     /**
