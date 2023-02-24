@@ -1582,7 +1582,7 @@ export default {
         },
         {
           text: "No",
-          value: 2,
+          value: 0,
         },
       ],
       solarPowerDD: [

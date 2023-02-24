@@ -29,6 +29,11 @@ Route::get('/email', function () {
     return response('hello world');
 });
 
+Route::get('mi-test', function () {
+    $string = '8am - 1pm';
+    dd(\Illuminate\Support\Str::upper($string));
+});
+
 
 Route::get('/{vue_capture?}', fn() => view('app'))
     ->where('vue_capture', '[\/\w\.-]*');

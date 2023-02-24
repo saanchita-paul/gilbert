@@ -19,6 +19,20 @@ class GilbertToChatbotService
         'QSC' => 4
     ];
 
+    // Inspection time mapper
+    const inspectionTimes = [
+        '8:00am - 1:00pm' => '8AM - 1PM',
+        '9:00am - 2:00pm' => '9AM - 2PM',
+        '10:00am - 3:00pm' => '10AM - 3PM',
+        '11:00am - 4:00pm' => '11AM - 4PM',
+        '12:00pm - 5:00pm' => '12AM - 5PM',
+        '1:00pm - 6:00pm' => '1PM - 6PM',
+
+        //Nsw
+        '8:00am - 12:00pm' => '8AM - 12PM',
+        '1:00pm - 5:00pm' => '1PM - 5PM',
+    ];
+
 
     public function __construct($id)
     {
@@ -79,7 +93,7 @@ class GilbertToChatbotService
             "reason" => $this->application->reason,
             "billing_preference" => $this->mapbillingType($this->application->is_email_billing),
             "account_type" => $this->application->property_type,
-            "is_property_on_life_support" => $this->application->has_life_support,
+            "is_property_on_life_support" => $this->application->is_power_life_support,
             "solar_panel" => $this->application->has_solar,
             "nmi" => $this->application->nmi,
             "mirn" => $this->application->mirn,
@@ -103,7 +117,7 @@ class GilbertToChatbotService
             "is_renovation_on" => $this->application->is_renovation_on,
             "vendor_id" => $this->application->vendor_id,
             "homephone" => $this->application->homephone,
-            "qld_vis_inspection_time" => $this->application->inspection_time,
+            "qld_vis_inspection_time" => self::inspectionTimes[$this->application->inspection_time],
             "family_violance" => $this->application->family_violance,
             "source" => $this->application->source,
             "is_contacted" => $this->application->is_contacted,
