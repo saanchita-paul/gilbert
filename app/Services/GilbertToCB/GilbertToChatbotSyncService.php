@@ -133,7 +133,7 @@ class GilbertToChatbotSyncService
             "has_electricity" => $this->application->has_electricity,
             "is_renovation_on" => $this->application->is_renovation_on,
             "homephone" => $this->application->homephone,
-            "qld_vis_inspection_time" => $this->mapInspectionTime($this->application->inspection_time),
+            "qld_vis_inspection_time" => $this->application->inspection_time ? $this->mapInspectionTime($this->application->inspection_time) : null,
             "family_violance" => $this->application->family_violance,
             "source" => $this->application->source,
             "is_contacted" => $this->application->is_contacted,

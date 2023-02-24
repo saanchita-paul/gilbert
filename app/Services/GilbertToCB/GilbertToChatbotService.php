@@ -117,7 +117,7 @@ class GilbertToChatbotService
             "is_renovation_on" => $this->application->is_renovation_on,
             "vendor_id" => $this->application->vendor_id,
             "homephone" => $this->application->homephone,
-            "qld_vis_inspection_time" => self::inspectionTimes[$this->application->inspection_time],
+            "qld_vis_inspection_time" => $this->application->inspection_time ? self::inspectionTimes[$this->application->inspection_time] : null,
             "family_violance" => $this->application->family_violance,
             "source" => $this->application->source,
             "is_contacted" => $this->application->is_contacted,
