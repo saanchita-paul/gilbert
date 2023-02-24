@@ -64,12 +64,6 @@ return [
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
         ],
-
-        'logo' => [
-            'driver' => 'local',
-            'root' => public_path() . '/assets/images/icons/company',
-        ],
-
     ],
 
     /*

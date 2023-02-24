@@ -9,6 +9,9 @@ use App\Models\Agency;
 use App\Models\Office;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class CreateExternalSourceService
 {
@@ -72,6 +75,9 @@ class CreateExternalSourceService
         return $office;
     }
 
+    /**
+     * @throws FileNotFoundException
+     */
     private function createExternalSource(Office $office, string $email, string $password, string $sourceType, string $sourceNameDisplay, UploadedFile $logo = null)
     {
         $this->source = new ExternalSource();
@@ -88,20 +94,22 @@ class CreateExternalSourceService
         if (!empty($logo)) {
             $this->saveLogo($this->source, $logo);
         } else {
-            $this->source->logo = '/assets/images/icons/company/hood.png';
+            $this->source->logo = 'hood.png';
             $this->source->save();
         }
 
         return $this->source;
     }
 
+    /**
+     * @throws FileNotFoundException
+     */
     private function saveLogo(ExternalSource $source, UploadedFile $image)
     {
-        $fileName = $source->source_type . "." . $image->extension();
-        $path = $image->storeAs('', $fileName, ['disk' => 'logo']);
-        $source->logo = '/assets/images/icons/company/' . $path;
+        $fileName = $source->source_type . '.' . $image->extension();
+        Storage::disk('public')->put('images/company/' . $fileName, File::get($image));
+        $source->logo = $fileName;
         $source->save();
-
         return $source;
     }
 }
