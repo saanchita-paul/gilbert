@@ -39,7 +39,11 @@ class GetAddressInfoAndAutoAssign implements ShouldQueue
      */
     public function handle($event)
     {
-        $application = MirnNmiService::dispatchAllService($event->applicationId);
+        $application = ConnectionApplication::findOrFail($event->applicationId);
+
+        if (!$application->mirn || !$application->nmi) {
+            MirnNmiService::dispatchAllService($event->applicationId);
+        }
 
         if (!$application) {
             Log::warning(

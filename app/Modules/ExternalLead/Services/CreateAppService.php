@@ -4,9 +4,11 @@ namespace ExternalLead\Services;
 
 use App\Models\ExternalSource;
 use App\Models\ConnectionApplication;
+use App\Services\Address\StreetTypeMapper;
 use App\Services\AddressMapperService;
 use App\Events\NotifyAgentAfterLeadCreation;
 use App\Events\Agency\CreateApplicationEvent;
+use App\Services\Utility\StateMapService;
 
 class CreateAppService
 {
@@ -24,7 +26,7 @@ class CreateAppService
         $newApp->save();
 
         $mapAgentService = new MapAgentService();
-        $newApp = $mapAgentService->map($source, $newApp, $data['agent_email'] ?? '');
+        $newApp = $mapAgentService->map($source, $newApp, $data ?? []);
 
         $identificationService = new CreateIdentificationService();
         $identificationService->save($newApp, $data);
@@ -40,71 +42,76 @@ class CreateAppService
         return $newApp;
     }
 
+    private function mapPhoneType(?string $type): ?int
+    {
+        return match ($type) {
+            'mobile' => 1,
+            'homephone' => 2,
+            'international_mobile' => 3,
+            default => null
+        };
+    }
+
     private function mapConnectionApplicationFields(ConnectionApplication $app, array $data)
     {
         $mapperService = new TAppMapper();
         $addressService = new AddressMapperService();
 
-        $app->title = !empty($data['tenancy_title']) ?
-            ucfirst($data['tenancy_title']) : null;
-        $app->first_name = $data['tenancy_first_name'] ?? null;
-        $app->middle_name = $data['tenancy_middle_name'] ?? null;
-        $app->last_name = $data['tenancy_last_name'] ?? null;
-        $app->dob = $data['tenancy_dob'] ?? null;
-        $app->phone_type = !empty($data['tenancy_phone_type']) ?
-            $mapperService->mapPhoneType($data['tenancy_phone_type']) : null;
-        $app->phone = $mapperService->mapPhone(
-            $data['tenancy_phone_type'],
-            $data['tenancy_phone_number']
-        ) ?? null;
-        $app->international_phone = $mapperService->mapInternationalPhone(
-            $data['tenancy_phone_type'],
-            $data['tenancy_phone_number']
-        ) ?? null;
-        $app->homephone = $data['tenancy_homephone'] ?? null;
-        $app->email = $data['tenancy_email'] ?? null;
-        $app->tenancy_type = !empty($data['tenancy_type']) ?
-            $mapperService->mapTenancy($data['tenancy_type']) : null;
-        $app->moving_date = $data['tenancy_moving_date'] ?? null;
-        $app->additional_instruction = $data['additional_instruction'] ?? null;
-        $app->is_email_billing = !empty($data['is_email_billing']) ?
-            $mapperService->mapYesNoToBool($data['is_email_billing']) : null;
-        $app->property_type = !empty($data['tenancy_property_type']) ?
-        $mapperService->mapPropertyType($data['tenancy_property_type']) : null;
-        $app->has_life_support = !empty($data['tenancy_has_life_support']) ?
-            $mapperService->mapYesNoToBool($data['tenancy_has_life_support']) : null;
-        $app->has_solar = !empty($data['tenancy_has_solar']) ?
-            $mapperService->mapYesNoToBool($data['tenancy_has_solar']) : null;
+        $phoneType = $this->mapPhoneType(($data['primary_account']['phone_type'] ?? null));
 
-        $app->nmi = $data['tenancy_nmi'] ?? null;
-        $app->mirn = $data['tenancy_mirn'] ?? null;
-        $app->unit_number = $data['tenancy_unit_number'] ?? null;
-        $app->street_number = $data['tenancy_street_number'] ?? null;
-        $app->street_name = $data['tenancy_street_name'] ?? null;
-        $app->street_name_only = $data['tenancy_street_name'] ?? null;
-        $app->street_type = $data['tenancy_street_type'] ?? null;
-        $app->city = $data['tenancy_suburb'] ?? ($data['tenancy_city'] ?? null);
-        $app->postcode = $data['tenancy_postcode'] ?? null;
-        $app->state = !empty($data['tenancy_state']) ?
-            $addressService->mapState($data['tenancy_state']) : null;
-        $app->country = !empty($data['tenancy_country']) ?
-            $addressService->mapCountry($data['tenancy_country']) : null;
+        $app->title = ucfirst(($data['primary_account']['title'] ?? null));
+        $app->first_name = $data['primary_account']['first_name'] ?? null;
+        $app->middle_name = $data['primary_account']['middle_name'] ?? null;
+        $app->last_name = $data['primary_account']['last_name'] ?? null;
+        $app->dob = $data['primary_account']['dob'] ?? null;
+        $app->phone_type = $phoneType;
+
+        $app->phone = $phoneType === ConnectionApplication::PHONE_TYPE_MOBILE
+            ? ($data['primary_account']['phone_number'] ?? null)
+            : null;
+        $app->international_phone = $phoneType === ConnectionApplication::PHONE_TYPE_INTERNATION_MOBILE
+            ? ($data['primary_account']['phone_number'] ?? null)
+            : null;
+
+        $app->homephone = $data['primary_account']['homephone'] ?? null;
+        $app->email = $data['primary_account']['email'] ?? null;
+
+        $app->tenancy_type = ConnectionApplication::TENANCY_MAPPING[($data['connection_details']['tenancy_type'] ?? null)] ?? null;
+        $app->moving_date = $data['connection_details']['moving_date'] ?? null;
+        $app->additional_instruction = $data['connection_details']['additional_instruction'] ?? null;
+        $app->is_email_billing = $data['connection_details']['is_email_billing'] ?? true;
+        $app->property_type = ConnectionApplication::PROPERTY_TYPE_MAPPING[($data['connection_details']['tenancy_type'] ?? null)] ?? false;
+        $app->has_life_support = $data['connection_details']['has_life_support'] ?? false;
+        $app->has_solar = $data['connection_details']['has_solar'] ?? false;
+        $app->is_renovation_on = $data['connection_details']['is_renovation_on'] ?? false;
+        $app->nmi = $data['connection_details']['nmi'] ?? null;
+        $app->mirn = $data['connection_details']['mirn'] ?? null;
+
+        $app->unit_number = $data['property_address']['unit_number'] ?? null;
+        $app->street_number = $data['property_address']['street_number'] ?? null;
+        $app->street_name = $data['property_address']['street_name'] ?? null;
+        $app->street_name_only = $data['property_address']['street_name'] ?? null;
+        $app->street_type = StreetTypeMapper::getShortForm(($data['property_address']['street_type'] ?? null));
+        $app->city = $data['property_address']['suburb'] ?? ($data['property_address']['city'] ?? null);
+        $app->postcode = $data['property_address']['postcode'] ?? null;
+        $app->billing_state = !empty($data['property_address']['state']) ?
+            $addressService->mapState($data['property_address']['state']) : null;
+        $app->country = $addressService->mapCountry(($data['property_address']['country'] ?? null));
         $app->street_address = ($app->unit_number ? $app->unit_number . ' / ' : '') . $app->street_number . ' ' . $app->street_name . ' ' . $app->street_type;
         $app->address_text = $app->street_address . ', ' . $app->city . ' ' . $app->state . ' ' . $app->postcode;
-        $app->billing_street_type = $data['tenancy_billing_street_type'] ?? null;
-        $app->billing_unit_number = $data['tenancy_billing_unit_number'] ?? null;
-        $app->billing_street_number = $data['tenancy_billing_street_number'] ?? null;
-        $app->billing_street_name = $data['tenancy_billing_street_name'] ?? null;
-        $app->billing_street_name_only = $data['tenancy_billing_street_name'] ?? null;
-        $app->billing_city = $data['tenancy_billing_suburb'] ?? ($data['tenancy_billing_city'] ?? null);
-        $app->billing_state = !empty($data['tenancy_billing_state']) ?
-            $addressService->mapState($data['tenancy_billing_state']) : null;
-        $app->billing_postcode = $data['tenancy_billing_postcode'] ?? null;
+
+        $app->billing_street_type = $data['billing_address']['street_type'] ?? null;
+        $app->billing_unit_number = $data['billing_address']['unit_number'] ?? null;
+        $app->billing_street_number = $data['billing_address']['street_number'] ?? null;
+        $app->billing_street_name = $data['billing_address']['street_name'] ?? null;
+        $app->billing_street_name_only = $data['billing_address']['street_name'] ?? null;
+        $app->billing_city = $data['billing_address']['suburb'] ?? ($data['billing_address']['city'] ?? null);
+        $app->billing_state = !empty($data['billing_address']['state']) ?
+            $addressService->mapState($data['billing_address']['state']) : null;
+        $app->billing_postcode = $data['billing_address']['postcode'] ?? null;
         $app->billing_street_address = ($app->billing_unit_number ? $app->billing_unit_number . ' / ' : '') . $app->billing_street_number . ' ' . $app->billing_street_name . ' ' . $app->billing_street_type;
         $app->billing_address_text = $app->billing_street_address . ', ' . $app->billing_city . ' ' . $app->billing_state . ' ' . $app->billing_postcode;
-        $app->is_renovation_on = !empty($data['tenancy_is_renovation_on']) ?
-            $mapperService->mapYesNoToBool($data['tenancy_is_renovation_on']) : null;
-        $app->status = ConnectionApplication::STATUS_UNASSIGNED;
+
         return $app;
     }
 

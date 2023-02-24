@@ -15,17 +15,22 @@ class CreateIdentificationService
 
         $identification = new Identification();
         $identification->connection_application_id = $app->id;
-        $identification->type = !empty($data['tenancy_identification_type']) ?
-            $mapperService->mapIdType($data['tenancy_identification_type']) : null;
-        $identification->card_number = !empty($data['tenancy_identification_number']) ?? null;
-        $identification->state = !empty($data['tenancy_identification_state']) ?
-            $addressService->mapState($data['tenancy_identification_state']) : null;
-        $identification->country = !empty($data['tenancy_identification_country']) ?
-            $addressService->mapCountry($data['tenancy_identification_country']) : null;
-        $identification->card_color = !empty($data['tenancy_medicare_card_color']) ?
-            strtoupper($data['tenancy_medicare_card_color']) : null;
-        $identification->special_number = $data['tenancy_medicare_reference_number'] ?? null;
-        $identification->expire_date = $data['tenancy_identification_expire_date'] ?? null;
+        $identification->type = !empty($data['primary_account']['identification']['type'])
+            ? $mapperService->mapIdType($data['primary_account']['identification']['type'])
+            : null;
+        $identification->card_number = $data['primary_account']['identification']['number'] ?? null;
+        $identification->state = !empty($data['primary_account']['identification']['state'])
+            ? $addressService->mapState($data['primary_account']['identification']['state'])
+            : null;
+        $identification->country = !empty($data['primary_account']['identification']['country'])
+            ? $addressService->mapCountry($data['primary_account']['identification']['country'])
+            : null;
+        $identification->card_color = !empty($data['primary_account']['identification']['medicare_card_color'])
+            ? strtoupper($data['primary_account']['identification']['medicare_card_color'])
+            : null;
+        $identification->special_number = $data['primary_account']['identification']['medicare_reference_number'] ?? null;
+        $identification->expire_date = $data['primary_account']['identification']['expire_date'] ?? null;
+
         $identification->save();
 
         return $identification;

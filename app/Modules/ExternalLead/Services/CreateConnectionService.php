@@ -16,7 +16,7 @@ class CreateConnectionService
     public function save(ConnectionApplication $app, array $data)
     {
         $createdServices = [];
-        $requestedServices = $data['tenancy_service_type'];
+        $requestedServices = $data['utility_services'] ?? [];
 
         foreach ($requestedServices as $service) {
             $connectionService = new ConnectionService();
