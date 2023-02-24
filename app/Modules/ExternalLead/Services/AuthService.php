@@ -22,10 +22,9 @@ class AuthService
         $passInput = $credentials['password'];
 
         $externalSource = ExternalSource::where('email', $emailInput)
-                            ->where('password', Hash::check($passInput))
                             ->first();
 
-        if (!$externalSource) {
+        if (!$externalSource || Hash::check($passInput, $externalSource->password)) {
             throw new Exception("Email and Password does not match");
         }
 
