@@ -94,8 +94,8 @@ class CreateAppService
         $app->street_type = StreetTypeMapper::getShortForm(($data['property_address']['street_type'] ?? null));
         $app->city = $data['property_address']['suburb'] ?? ($data['property_address']['city'] ?? null);
         $app->postcode = $data['property_address']['postcode'] ?? null;
-        $app->billing_state = !empty($data['property_address']['state']) ?
-            $addressService->mapState($data['property_address']['state']) : null;
+        $app->state = !empty($data['property_address']['state']) ?
+            $addressService->mapState(strtoupper($data['property_address']['state'])) : null;
         $app->country = $addressService->mapCountry(($data['property_address']['country'] ?? null));
         $app->street_address = ($app->unit_number ? $app->unit_number . ' / ' : '') . $app->street_number . ' ' . $app->street_name . ' ' . $app->street_type;
         $app->address_text = $app->street_address . ', ' . $app->city . ' ' . $app->state . ' ' . $app->postcode;
@@ -107,7 +107,7 @@ class CreateAppService
         $app->billing_street_name_only = $data['billing_address']['street_name'] ?? null;
         $app->billing_city = $data['billing_address']['suburb'] ?? ($data['billing_address']['city'] ?? null);
         $app->billing_state = !empty($data['billing_address']['state']) ?
-            $addressService->mapState($data['billing_address']['state']) : null;
+            $addressService->mapState(strtoupper($data['billing_address']['state'])) : null;
         $app->billing_postcode = $data['billing_address']['postcode'] ?? null;
         $app->billing_street_address = ($app->billing_unit_number ? $app->billing_unit_number . ' / ' : '') . $app->billing_street_number . ' ' . $app->billing_street_name . ' ' . $app->billing_street_type;
         $app->billing_address_text = $app->billing_street_address . ', ' . $app->billing_city . ' ' . $app->billing_state . ' ' . $app->billing_postcode;
