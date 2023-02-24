@@ -113,7 +113,7 @@ class GilbertToChatbotSyncService
             "reason" => $this->application->reason,
             "billing_preference" => $this->mapBillingType($this->application->is_email_billing), // is_email_billing also exists in chatbot moving utility table
             "account_type" => $this->mapPropertyType($this->application->property_type),
-            "is_property_on_life_support" => $this->application->has_life_support,
+            "is_property_on_life_support" => $this->application->is_power_life_support,
             "solar_panel" => $this->mapSolarPanel($this->application->has_solar),
             "nmi" => $this->application->nmi,
             "mirn" => $this->application->mirn,
@@ -134,7 +134,7 @@ class GilbertToChatbotSyncService
             "has_electricity" => $this->application->has_electricity,
             "is_renovation_on" => $this->application->is_renovation_on,
             "homephone" => $this->application->homephone,
-            "qld_vis_inspection_time" => $this->mapInspectionTime($this->application->inspection_time),
+            "qld_vis_inspection_time" => $this->application->inspection_time ? $this->mapInspectionTime($this->application->inspection_time) : null,
             "family_violance" => $this->application->family_violance,
             "source" => $this->application->source,
             "is_contacted" => $this->application->is_contacted,
@@ -258,6 +258,7 @@ class GilbertToChatbotSyncService
      */
     private function mapHasConcessionCard($concessionCardType): int
     {
+        $hasConcession = null;
         return $concessionCardType ? self::CONCESSION_CARD_YES : self::CONCESSION_CARD_NO;
     }
 

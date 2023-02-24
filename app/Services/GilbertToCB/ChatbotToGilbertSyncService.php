@@ -148,6 +148,7 @@ class ChatbotToGilbertSyncService
 //            $this->applicationData['electricity_already_on'] = $this->requestData['other_details']['electricity_already_on'];
             $this->applicationData['inspection_time'] = $this->requestData['other_details']['qld_vis_inspection_time'];
 //            $this->applicationData['i_am_home'] = $this->requestData['other_details']['meter_box_text'];
+            $this->applicationData['is_email_marketing'] = $this->requestData['other_details']['is_email_marketing'];
         }
         if (isset($this->requestData['others'])) {
 //            $this->applicationData['created_by'] = $this->requestData['others']['created_by'];
@@ -159,7 +160,7 @@ class ChatbotToGilbertSyncService
 //            $this->applicationData['street_name'] = $this->requestData['others']['street_name'];
             $this->applicationData['additional_instruction'] = $this->requestData['others']['additional_instruction'];
             $this->applicationData['reason'] = $this->requestData['others']['reason'];
-            $this->applicationData['has_life_support'] = $this->requestData['others']['is_property_on_life_support'];
+            $this->applicationData['is_power_life_support'] = $this->requestData['others']['is_property_on_life_support'];
             $this->applicationData['nmi'] = $this->requestData['others']['nmi'];
             $this->applicationData['mirn'] = $this->requestData['others']['mirn'];
             $this->applicationData['supplier'] = $this->requestData['others']['supplier'];
