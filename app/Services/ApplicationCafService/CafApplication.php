@@ -38,11 +38,15 @@ class CafApplication
     }
 
     public function prepareCafFileData():void{
-        $urgentFile = sprintf('HOOD-Powershop-Sales-Date-%s.csv', $this->getCAFPostfix());
-        $this->generate($this->powerShopApplicationList ,$urgentFile, ConnectionService::PROVIDER_POWER_SHOP);
+        if($this->powerShopApplicationList->count() > 0){
+            $urgentFile = sprintf('HOOD-Powershop-Sales-Date-%s.csv', $this->getCAFPostfix());
+            $this->generate($this->powerShopApplicationList ,$urgentFile, ConnectionService::PROVIDER_POWER_SHOP);
+        }
 
-        $urgentFile = sprintf('HOOD-Origin-Sales-Date-%s.csv', $this->getCAFPostfix());
-        $this->generate($this->originApplicationList ,$urgentFile, ConnectionService::PROVIDER_ORIGIN);
+        if($this->originApplicationList->count() > 0){
+            $urgentFile = sprintf('HOOD-Origin-Sales-Date-%s.csv', $this->getCAFPostfix());
+            $this->generate($this->originApplicationList ,$urgentFile, ConnectionService::PROVIDER_ORIGIN);
+        }
     }
 
     private function getCAFPostfix(): string{
