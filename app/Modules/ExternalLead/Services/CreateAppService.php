@@ -24,7 +24,7 @@ class CreateAppService
         $newApp->save();
 
         $mapAgentService = new MapAgentService();
-        $newApp = $mapAgentService->map($source, $newApp, $data['agent_email'] ?? '');
+        $newApp = $mapAgentService->map($source, $newApp, $data ?? []);
 
         $identificationService = new CreateIdentificationService();
         $identificationService->save($newApp, $data);
