@@ -7,6 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Models\ExternalSource;
 use Illuminate\Validation\Rule;
 use App\Services\Utility\StateMapService;
+use App\Models\ConnectionApplicationSecondaryACC as AuthorizedPerson;
 
 class ValidateCreateLeadRequest extends FormRequest
 {
@@ -39,9 +40,9 @@ class ValidateCreateLeadRequest extends FormRequest
     {
         $dateFormatMessage = 'The tenancy dob does not match the format yyyy-mm-dd';
         return [
-            'tenancy_dob.date_format' => $dateFormatMessage,
-            'tenancy_identification_expire_date.date_format' => $dateFormatMessage,
-            'tenancy_moving_date.date_format' => $dateFormatMessage,
+            'primary_account.dob.date_format' => $dateFormatMessage,
+            'primary_account.identification.expire_date.date_format' => $dateFormatMessage,
+            'connection_details.moving_date.date_format' => $dateFormatMessage,
         ];
     }
 
@@ -56,14 +57,13 @@ class ValidateCreateLeadRequest extends FormRequest
             'primary_account.email' => 'required|email',
             'primary_account.dob' => 'required|date_format:Y-m-d',
             'primary_account.phone_type' => ['required', Rule::in(['mobile', 'homephone', 'international_mobile'])],
-            'primary_account.phone_number' => 'required_if:primary_account.phone_type,mobile,international_mobile',
+            'primary_account.phone_number' => 'required_if:primary_account.phone_type,mobile,international_mobile', // TODO: handle homephone
             'primary_account.homephone' => 'required_if:primary_account.homephone,homephone',
 
-            'utility_services.0' =>  'required',
+            'utility_services' => 'required|array',
             'utility_services.*' =>  Rule::in("gas", 'power'),
 
             'primary_account.identification.type' => ['required', Rule::in(['medicare', 'passport', 'driver_license'])],
-            // TODO: set options medicare, passport, licence
             'primary_account.identification.number' => 'required',
             'primary_account.identification.state' => 'required_if:tenancy_identification.type,driver_license',
             'primary_account.identification.country' => 'required_if:identification.type,passport',
@@ -77,18 +77,20 @@ class ValidateCreateLeadRequest extends FormRequest
             'secondary_account.email' => 'required_with:secondary_account',
             'secondary_account.dob' => 'required_with:secondary_account|date_format:Y-m-d',
             'secondary_account.phone_number' => 'required_with:secondary_account',
-            'secondary_account.permission_type' => 'required_with:secondary_account',
+            'secondary_account.permission_type' => ['required_with:secondary_account', Rule::in(array_keys(AuthorizedPerson::ROLE_TYPE_MAPPER))],
+
+            //TODO: secondary account identification
 
             'connection_details.tenancy_type' => ['required', Rule::in(['renter', 'home_owner'])],
             'connection_details.property_type' => Rule::in(array_keys(ConnectionApplication::PROPERTY_TYPE_MAPPING)),
-            'connection_details.is_email_billing' => ['required', 'boolean'],
             'connection_details.moving_date' => 'required|date_format:Y-m-d',
-            "additional_instruction" => "Additional instruction here",
-            "has_life_support" => "nullable|boolean",
-            "is_renovation_on" => "nullable|boolean",
-            "has_solar" => "nullable|boolean",
-            "nmi" => "nullable|string",
-            "mirn" => "nullable|string",
+            "connection_details.additional_instruction" => "Additional instruction here",
+            "connection_details.has_life_support" => "nullable|boolean",
+            "connection_details.is_renovation_on" => "nullable|boolean",
+            'connection_details.is_email_billing' => 'nullable|boolean',
+            "connection_details.has_solar" => "nullable|boolean",
+            "connection_details.nmi" => "nullable|string",
+            "connection_details.mirn" => "nullable|string",
 
             'property_address.unit_number' => 'nullable',
             'property_address.street_number' => 'required',
@@ -112,7 +114,7 @@ class ValidateCreateLeadRequest extends FormRequest
             }),
             'billing_address.postcode' => 'required_with:billing_address',
             'billing_address.state' => ['required_with:billing_address', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
-
+            // billing address country?
 
             'agency.agent_email' => 'required|email',
             'agency.name' => 'nullable|string',
