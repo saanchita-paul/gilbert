@@ -84,7 +84,6 @@ class ValidateCreateLeadRequest extends FormRequest
             'connection_details.tenancy_type' => ['required', Rule::in(['renter', 'home_owner'])],
             'connection_details.property_type' => Rule::in(array_keys(ConnectionApplication::PROPERTY_TYPE_MAPPING)),
             'connection_details.moving_date' => 'required|date_format:Y-m-d',
-            "connection_details.additional_instruction" => "Additional instruction here",
             "connection_details.has_life_support" => "nullable|boolean",
             "connection_details.is_renovation_on" => "nullable|boolean",
             'connection_details.is_email_billing' => 'nullable|boolean',
