@@ -145,7 +145,7 @@ class ChatbotToGilbertSyncService
             $this->applicationData['is_power_life_support'] = $this->requestData['other_details']['is_property_on_life_support'];
             $this->applicationData['additional_access_information'] = $this->requestData['other_details']['additional_access_information'];
             $this->applicationData['is_access_require'] = $this->requestData['other_details']['is_access_require'];
-//            $this->applicationData['electricity_already_on'] = $this->requestData['other_details']['electricity_already_on'];
+            $this->applicationData['has_electricity'] = $this->requestData['other_details']['electricity_already_on'];
             $this->applicationData['inspection_time'] = $this->requestData['other_details']['qld_vis_inspection_time'];
 //            $this->applicationData['i_am_home'] = $this->requestData['other_details']['meter_box_text'];
             $this->applicationData['is_email_marketing'] = $this->requestData['other_details']['is_email_marketing'];
