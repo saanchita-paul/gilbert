@@ -410,7 +410,7 @@ class ChatbotToGilbertSyncService
                 $mappedIdentificationData['card_number'] = $identificationData['medicare_card_number'];
                 $mappedIdentificationData['special_number'] = $identificationData['individual_reference_number'];
                 $mappedIdentificationData['card_color'] = $this->mapCardColorType($identificationData['medicare_card_color']);
-                $mappedIdentificationData['expire_date'] = $identificationData['identification_expire_date'];
+                $mappedIdentificationData['expire_date'] = Carbon::parse($identificationData['identification_expire_date'])->endOfMonth()->format('Y-m-d');
                 break;
             default:
                 break;
