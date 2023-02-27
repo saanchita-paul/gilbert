@@ -23,7 +23,7 @@ class AutoAssignApplicationService
     public function assignApplication($application)
     {
         try {
-            if ($application->mirn && $application->nmi) {
+            if ($application->mirn && $application->nmi && !$application->embedded_nmi) {
                 $this->assignUser($application);
             } else {
                 Log::warning('AutoAssignApplicationService: MIRN or NMI is missing or Application is in embedded network!');

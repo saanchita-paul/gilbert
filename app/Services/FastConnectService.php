@@ -49,7 +49,7 @@ class FastConnectService
      *
      * @param array|null $address
      *
-     * @return array{mirn: ?numeric, mirn_score: string, nmi: ?numeric, nmi_score: string}
+     * @return array{mirn: ?numeric, mirn_score: string, nmi: ?numeric, nmi_score: string, suggested_nmi: ?string}
      */
     public function searchAddress(?array $address = null): array
     {

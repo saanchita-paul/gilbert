@@ -64,7 +64,9 @@ use Carbon\Carbon;
  * @property int|null $has_life_support
  * @property int|null $has_solar
  * @property string|null $nmi
+ * @property string|null $nmi_score
  * @property string|null $mirn
+ * @property string|null $mirn_score
  * @property string|null $family_violance
  * @property int|null $supplier
  * @property int|null $plan_type

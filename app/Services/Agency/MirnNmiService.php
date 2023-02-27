@@ -25,6 +25,34 @@ class MirnNmiService
     }
 
     /**
+     * Fetching and save  missing  mirn & nmi
+     *
+     * @param ConnectionApplication $application
+     * @return void
+     */
+    public static function saveMissingMirnNMI(ConnectionApplication $application): void
+    {
+        if ($application->nmi && $application->mirn) {
+            return;
+        }
+
+        $svcUtilities = new FastConnectService($application->toArray());
+        $result = $svcUtilities->searchAddress();
+
+        if (!$application->mirn) {
+            $application->mirn = $result['mirn'];
+            $application->mirn_score = $result['mirn_score'];
+        }
+
+        if (!$application->nmi) {
+            $application->nmi = $result['nmi'];
+            $application->nmi_score = $result['nmi_score'];
+            $application->suggested_nmi = $result['suggested_nmi'];
+        }
+        $application->save();
+    }
+
+    /**
      * Save Application NMI Embedded
      *
      * @param ConnectionApplication $app
@@ -50,7 +78,7 @@ class MirnNmiService
      * @return ConnectionApplication
      * @throws \Exception
      */
-    public static function dispatchAllService($applicationId): ConnectionApplication
+    public static function dispatchAllService($applicationId, bool $forceUpdate = false): ConnectionApplication
     {
         /** @var ConnectionApplication $application */
         $application = ConnectionApplication::find($applicationId);
@@ -59,7 +87,12 @@ class MirnNmiService
             throw new \Exception("No Application found with ID: $applicationId");
         }
 
-        MirnNmiService::saveApplicationMirnNmi($application);
+        if ($forceUpdate) {
+            MirnNmiService::saveApplicationMirnNmi($application);
+        } else {
+            MirnNmiService::saveMissingMirnNMI($application);
+        }
+
 
         $application->update(['loading_address_info' => false]);
 
