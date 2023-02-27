@@ -5,6 +5,7 @@ namespace App\Services\ApplicationCafService;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\OriginPlan;
+use App\Services\Utility\StateMapService;
 use Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -102,7 +103,7 @@ class OriginExporter
                 $this->mappedApplicationList[] = [
                     'Broker Name' => 'HOOD',
                     'Origin Receive Date' => '',
-                    'Date of Sale' => date('d/m/Y', strtotime($app->submitted_at??'')),
+                    'Date of Sale' => date('d/m/Y', strtotime($app->moving_date??'')),
                     'Reference ID' => $app->sales_reference_id,
                     'Business Name' => '',
                     'ABN Identification Type' => '',
@@ -146,7 +147,7 @@ class OriginExporter
                     'MSATS Address - Postcode' => '',
                     'Mailing Address - Unit/Flat/Shop Number' => $app->billing_unit_number,
                     'Mailing Address - Street Number' => $app->billing_street_number,
-                    'Mailing Address - Street Name' => $app->billing_street_name,
+                    'Mailing Address - Street Name' => $app->billing_street_name_only,
                     'Mailing Address - Street Type' => $app->billing_street_type,
                     'Mailing Address - PO Box' => '',
                     'Mailing Address - Suburb' => $app->billing_city,
@@ -580,7 +581,7 @@ class OriginExporter
      */
     private function checkEmailBilling($app): ?string
     {
-        return $app->is_email_marketing? 'Yes': 'No';
+        return $app->is_email_marketing ? 'No': 'Yes';
     }
 
 
@@ -617,15 +618,17 @@ class OriginExporter
      */
     private function checkHazard($app): ?string
     {
-        switch ($app->is_any_unrestrained_animal) {
-            case self::HAS_UNRESTING_ANIMAL:
-                return 'dog on property';
-            case self::NO_UNRESTING_ANIMAL:
-                return '';
-            default:
-                Log::error('Unknown Hazard');
-                return  '';
+        $hazards = [];
+        if($app->additional_access_information){
+            $hazards[] = $app->additional_access_information;
         }
+        if($app->inspection_time){
+            $hazards[] = $app->inspection_time;
+        }
+        if($app->is_any_unrestrained_animal && $app->is_any_unrestrained_animal === self::HAS_UNRESTING_ANIMAL) {
+            $hazards[] = 'Dog on property';
+        }
+        return implode(", ", $hazards);
     }
 
     /**
@@ -666,15 +669,18 @@ class OriginExporter
         return $gas->plan_type ?? "";
     }
 
-    private function getCampaignCode(string $state, string $fueltype = '')
+    private function getCampaignCode(string $state, string $fuelType = '')
     {
-        $filteredCode = array_filter($this->campaignInfo, function ($data) use ($state) {
-            return $data['state'] === $state;
-        });
-        if(count($filteredCode)) {
-            return $filteredCode[0]->campaign_code;
+        $fuels = ['gas' => 'Natural Gas', 'power' => 'Electricity'];
+        $fuelType = $fuels[$fuelType];
+        $state = StateMapService::getShortName($state);
+
+        foreach($this->campaignInfo  as $ci) {
+            if( $ci['state'] === $state && $ci['fuel_type'] === $fuelType) {
+                $filteredCode = $ci['campaign_code'];
+            }
         }
-        return  '';
+        return $filteredCode ?? "";
     }
 
     public function getCollection(){
