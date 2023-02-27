@@ -101,13 +101,17 @@ class ValidateCreateLeadRequest extends FormRequest
             'property_address.country' => ['required', Rule::in(['AUS'])],
 
             'billing_address.unit_number' => 'nullable',
-            'billing_address.street_number' => 'required',
-            'billing_address.street_name' => 'required',
-            'billing_address.street_type' => 'required',
-            'billing_address.city' => 'required_without:property_address.suburb',
-            'billing_address.suburb' => 'required_without:property_address.city',
-            'billing_address.postcode' => 'required',
-            'billing_address.state' => ['required', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
+            'billing_address.street_number' => 'required_with:billing_address',
+            'billing_address.street_name' => 'required_with:billing_address',
+            'billing_address.street_type' => 'required_with:billing_address',
+            'billing_address.city' => Rule::requiredIf(function () {
+                return request()->exists('billing_address') && !request()->exists('billing_address.suburb');
+            }),
+            'billing_address.suburb' => Rule::requiredIf(function () {
+                return request()->exists('billing_address') && !request()->exists('billing_address.city');
+            }),
+            'billing_address.postcode' => 'required_with:billing_address',
+            'billing_address.state' => ['required_with:billing_address', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
 
 
             'agency.agent_email' => 'required|email',
