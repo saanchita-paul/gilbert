@@ -51,6 +51,7 @@ import AssignToChatbotSetting from "@scripts/components/crm/AssignToChatbotSetti
 import AuthService from "@scripts/services/AuthService";
 import BulkStatusChangeUploadButton
     from "@scripts/components/crm/modals/application-service-status/BulkStatusChangeUploadButton";
+import {echo} from "@scripts/services/LaravelEchoService";
 
 export default {
     name: "ApplicationPage",
@@ -138,7 +139,7 @@ export default {
             this.totalItem = data.pagination.total;
             this.selected_lead_id = this.leads[0]?.id;
             this.leads.length ? await this.loadLeadSummary() : "";
-            this.listenEmbeddedNetworkEvent();
+            // this.listenEmbeddedNetworkEvent();
             // console.log('lead list', this.leads);
         },
 
@@ -154,7 +155,7 @@ export default {
         openLeadSummary(id) {
             this.selected_lead_id = id;
             this.loadLeadSummary();
-            this.listenEmbeddedNetworkEvent();
+            // this.listenEmbeddedNetworkEvent();
         },
 
         refreshDataTable(meta) {
@@ -182,7 +183,7 @@ export default {
             let duplicatedData = await DuplicateLeadService.getDuplicateLeadData(duplication_group_id);
         },
         listenEmbeddedNetworkEvent() {
-            this.$echo.channel(`fetchEmbeddedNetwork.${this.selected_lead_id}`)
+            echo().channel(`fetchEmbeddedNetwork.${this.selected_lead_id}`)
                 .listen('FetchEmbeddedNetworkEvent', (res) => {
                     this.loadLeadSummary();
                 });

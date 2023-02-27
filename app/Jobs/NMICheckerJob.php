@@ -2,30 +2,28 @@
 
 namespace App\Jobs;
 
-use App\Events\FetchEmbeddedNetworkEvent;
 use App\Models\ConnectionApplication;
 use App\Services\Agency\MirnNmiService;
+use App\Services\FastConnectService;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class FetchEmbeddedNetworkJob implements ShouldQueue
+class NMICheckerJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    private $applicationId;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($applicationId)
+    public function __construct(private int $applicationId)
     {
-        $this->onQueue('fc-address');
-        $this->applicationId = $applicationId;
+        $this->onQueue('speed');
     }
 
     /**
@@ -33,13 +31,12 @@ class FetchEmbeddedNetworkJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
-        $application = ConnectionApplication::find($this->applicationId);
-        MirnNmiService::fetchNmiIsEmbedded($application);
+        $app = ConnectionApplication::findOrFail($this->applicationId);
 
-        $application->update(['loading_address_info' => false]);
+        MirnNmiService::saveApplicationMirnNmi($app);
 
-        event(new FetchEmbeddedNetworkEvent($application->id));
+        MirnNmiService::fetchNmiIsEmbedded($app);
     }
 }

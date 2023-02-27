@@ -172,8 +172,6 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_GET_LEAD_METRICS);
     Route::get('/applications-metrics-count', [ApplicationController::class, 'getApplicationMetricsCount'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_METRICS);
-    Route::get('/applications/{id}/nmi-mern', [ApplicationController::class, 'getNmiMern'])
-        ->middleware('permission:' . RolePermissionService::CAN_GET_NMI_MERN);
     Route::get('/secondary-contact/{id}', [ApplicationController::class, 'getAuthorizedPerson'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_AUTHORIZED_PERSON);
     Route::post('/secondary-contact', [ApplicationController::class, 'updateAuthorizedPerson'])
@@ -410,3 +408,5 @@ Route::get('/test', function() {
 //    ApplicationFromGilbertJob::dispatch(3);
 
 });
+
+Route::get('/generate-nmi-report', [\App\Http\Controllers\SettingsController::class, 'generateAddressReport']);

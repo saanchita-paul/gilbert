@@ -13,17 +13,6 @@ import '@scripts/filters';
 import '@scripts/plugins/DayJs'
 import {EventBusPlugin} from "@scripts/plugins/EventBus";
 import VueMask from "v-mask";
-import Echo from "laravel-echo"
-import Pusher from "pusher-js";
-
-Vue.prototype.$pusher = Pusher;
-
-Vue.prototype.$echo = new Echo({
-    broadcaster: 'pusher',
-    key: process.env.MIX_PUSHER_APP_KEY,
-    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-    encrypted: true,
-});
 
 Vue.use(EventBusPlugin);
 Vue.use(VueMask);

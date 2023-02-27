@@ -45,14 +45,6 @@ class GetAddressInfoAndAutoAssign implements ShouldQueue
             MirnNmiService::dispatchAllService($event->applicationId);
         }
 
-        if (!$application) {
-            Log::warning(
-                'FetchAdditionalInfoAddressListener: Application not found for id - '
-                . $event->applicationId . '!'
-            );
-            return false;
-        }
-
         if (!in_array($application->source, self::ALLOWED_SOURCES)) {
             Log::warning(
                 'AutoAssignG2CBListener: Application source '

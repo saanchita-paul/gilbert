@@ -388,7 +388,6 @@ export default {
 
     async updateAddress(address, leadId) {
         try {
-            console.log(address);
             const response = await axios.put('/api/applications/' + leadId + '/update-address', {address});
             return ApplicationMapper.mapApplication(response.data.data);
         } catch (error) {
@@ -454,16 +453,6 @@ export default {
         await axios.post('/api/applications/' + leadId + '/draft', payload);
     },
 
-
-    async getNmiMern(id) {
-        try {
-            const data = await axios.get('/api/applications/' + id + '/nmi-mern');
-            return data.data.data;
-
-        } catch (error) {
-            return error.data;
-        }
-    },
 
     async loadAuthorizedPerson(id) {
         try {
