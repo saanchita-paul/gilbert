@@ -225,8 +225,8 @@ class ValidateCutOffTime
         return true;
     }
 
-    public static function isValidGasConnect($applicationId){
-
+    public static function isValidGasConnect($applicationId)
+    {
         $existingApplication = ConnectionApplication::find($applicationId);
 
         $state = $existingApplication->state ?? 'National';
@@ -235,26 +235,27 @@ class ValidateCutOffTime
         $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(TimeZoneService::getTimeZoneArea($state));
         $availableDate = Carbon::today(TimeZoneService::getTimeZoneArea($state));
 
-        for($i=0; $i<=self::GAS_BUSINESS_DAYS; $i++){
+        for ($i = 0; $i <= self::GAS_BUSINESS_DAYS; $i++) {
             $availableDate->addDay();
-            while($availableDate->isWeekend()){
+            while ($availableDate->isWeekend()) {
                 $availableDate->addDay();
             }
         }
 
-        if($availableDate->gt($connectionDate)){
+        if ($availableDate->gt($connectionDate)) {
             return false;
         }
 
-        if($connectionDate->isWeekend() || $connectionDate->isHoliday()){
+        if ($connectionDate->isWeekend() || CheckIsHolidayService::validate($state, $connectionDate->format('Y-m-d'))) {
             throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_HOLIDAY', 'Connection date selected is not a business day'), BaseOriginAPI::CODE_REJECT);
         }
 
         return true;
     }
 
-    public static function validateCutOff(int $applicationId) {
-
+    public static function validateCutOff(int $applicationId)
+    {
+        // ORIGIN ONLY
         $elec = self::isValidElecConnect($applicationId); // validate cutoff for elec only
         $gas = self::isValidGasConnect($applicationId); // validate cutoff for gas only
         return [

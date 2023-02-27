@@ -2,10 +2,18 @@
 
 namespace App\Services\Address;
 
+use App\Services\Helpers\Terminal;
 use Illuminate\Support\Facades\Http;
 
+/**
+ *
+ */
 class GBGAddressCleanse
 {
+    /**
+     * @param array $addresses
+     * @return array
+     */
     public function run(array $addresses): array
     {
         $authorization = 'Basic ' . base64_encode(config('gbg.gbgUserId') . ':' . config('gbg.gbgPassword'));
@@ -15,12 +23,18 @@ class GBGAddressCleanse
             'Authorization' => $authorization
         ])
             ->post(config('gbg.cleanse_url'), $this->getPayload($addresses));
-
         return json_decode($response->body(), true)['payload'] ?? [];
     }
 
+    /**
+     * @param array $addresses
+     * @return array
+     */
     private function getPayload(array $addresses): array
     {
+        $count = sizeof($addresses);
+        Terminal::info("GBG:Cleanse:API: $count");
+
         return [
             "payload" => $addresses,
             "sourceOfTruth" => "GNAF"

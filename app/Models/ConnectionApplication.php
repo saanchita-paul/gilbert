@@ -247,7 +247,8 @@ class ConnectionApplication extends Model
         'embedded_nmi',
         'mirn_score',
         'nmi_score',
-        'suggested_nmi'
+        'suggested_nmi',
+        'assigned_at'
     ];
 
 

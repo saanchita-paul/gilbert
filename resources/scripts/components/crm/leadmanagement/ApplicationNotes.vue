@@ -26,6 +26,11 @@
                                     <InvalidNote
                                         v-else-if="['invalid_property_me_note', 'Close Connection'].includes(nt.type)"
                                         :note="nt"></InvalidNote>
+
+                                    <AssignedNote
+                                        v-else-if="nt.type.toLowerCase() === 'assign_user'"
+                                        :note="nt"></AssignedNote>
+
                                     <Note v-else :note="nt"></Note>
                                 </v-timeline-item>
                             </v-timeline>
@@ -80,10 +85,11 @@ import SubmittedNote from "@scripts/components/crm/leadmanagement/notes/Submitte
 import SubmittedOriginNote from "@scripts/components/crm/leadmanagement/notes/SubmittedOriginNote";
 import SubmittedPowershopNote from "@scripts/components/crm/leadmanagement/notes/SubmittedPowershopNote";
 import StatusLog from "@scripts/components/crm/leadmanagement/notes/StatusLog";
+import AssignedNote from "@scripts/components/crm/leadmanagement/notes/AssignedNote.vue";
 
 export default {
   name: "ApplicationNotes",
-    components: {SubmittedNote, Note, InvalidNote, SubmittedOriginNote, SubmittedPowershopNote, StatusLog},
+    components: {AssignedNote, SubmittedNote, Note, InvalidNote, SubmittedOriginNote, SubmittedPowershopNote, StatusLog},
     props: {
       notes: {
           require: true
