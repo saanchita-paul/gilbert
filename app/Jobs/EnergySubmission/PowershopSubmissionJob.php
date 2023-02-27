@@ -68,6 +68,7 @@ class PowershopSubmissionJob implements ShouldQueue
             finally {
                 $application->update([
                     'is_running_submission' => 0,
+                    'status' => ConnectionApplication::STATUS_SUBMITTED
                 ]);
 
                 if (!empty($error)) {
