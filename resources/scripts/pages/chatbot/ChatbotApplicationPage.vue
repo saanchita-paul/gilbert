@@ -1,0 +1,275 @@
+<template>
+    <v-container class="pa-0 ma-0" fluid >
+        <v-row>
+            <v-col cols="8" class="py-0">
+                <v-card class="custom-card-style">
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12">
+                                <ChatbotApplicationFilter
+                                    :selected="selectedCaf"
+                                    v-model="advanceSearch"
+                                    :cafFiles="chatbotApps"
+                                    :isSearchEmpty="advanceSearch.isSearchEmpty()"
+                                    listPage="true"
+                                    @updateDate="updateDate"
+                                    @updateCafTable="fetchCafFiles"
+                                >
+                                </ChatbotApplicationFilter>
+                            </v-col>
+                            <v-col cols="12" >
+                                <ChatbotCafTable
+                                    v-model="selectedCaf"
+                                    :cafFiles="chatbotApps"
+                                    :totalItem="totalItem"
+                                    @refreshDataTable="refreshDataTable"
+                                    @selectRowCafFile="selectRowCafFile"
+                                >
+                                </ChatbotCafTable>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+            <v-col cols="4 py-0">
+                <v-skeleton-loader
+                    v-bind="skeletonAttribute"
+                    :type="skeletonType"
+                    v-if="isLoadSkeleton"
+                ></v-skeleton-loader>
+                <ChatbotApplicationDetails  v-if="shouldShowApplicationDetails" @applicationDetailsUpdated="updateApplication" ></ChatbotApplicationDetails>
+            </v-col>
+
+        </v-row>
+    </v-container>
+</template>
+
+<script>
+import ApplicationCafFileFilter from '@scripts/pages/ApplicationCafFileFilter';
+import GilbertApplicationCafFileFilter from '@scripts/pages/GilbertApplicationCafFileFilter';
+import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileService";
+import ApplicationCafFileTable from "@scripts/pages/ApplicationCafFileTable";
+import GilbertApplicationCafFileTable from "@scripts/pages/GilbertApplicationCafFileTable";
+import {CafFileSearchFilterModel} from "@scripts/models/CafFileSearchFilterModel";
+import {forEach, isEqual, isNull, omit} from "lodash-es";
+import ChatbotApplicationDetails from "@scripts/components/chatbot/ChatbotApplicationDetails";
+import ChatbotApplicationFilter from "@scripts/components/chatbot/ChatbotApplicationFilter";
+import ChatbotCafTable from "@scripts/components/chatbot/ChatbotCafTable";
+import Store from '@scripts/store/index';
+import SkeletonLoaderData from "@scripts/data/SkeletonLoaderData";
+
+export default {
+name: "ChatbotApplicationPage",
+    components: {
+        ChatbotApplicationFilter,
+        ApplicationCafFileTable,
+        ApplicationCafFileFilter,
+        ChatbotApplicationDetails,
+        ChatbotCafTable
+    },
+    data() {
+        return {
+
+            selectedMovingData: [],
+            selectedCaf: [],
+            selectedCafFile: [],
+            tab: null,
+            cafFiles: [],
+
+            sort_search_meta: null,
+            page: 1,
+            pageCount: 0,
+            itemsPerPage: 10,
+            totalItem: null,
+            options: {},
+            advanceSearch: new CafFileSearchFilterModel(),
+            dateRange: null,
+            gilbertApplications: [],
+            sorts_search_meta: null,
+            pages: 1,
+            pageCounts: 0,
+            itemsPerPages: 10,
+            totalItems: null,
+            option: {},
+            advanceSearchModel: new CafFileSearchFilterModel(),
+            selectedApp: null,
+            isLoadSkeleton : false,
+            skeletonAttribute: SkeletonLoaderData.attribute,
+            skeletonType : SkeletonLoaderData.type,
+            chatbotApps: [],
+        }
+    },
+
+    watch: {
+        advanceSearch: {
+            handler(value) {
+                let params = {...this.$route.query, ...value}
+                if (isEqual(this.$route.query, value)) return;
+                this.$router.push({
+                    // name: "chatbot.application",
+                    query: params,
+                });
+                this.resetPage();
+                this.fetchCafFiles();
+            },
+            deep: true
+        },
+        advanceSearchModel: {
+            handler(value) {
+                let params = {...this.$route.query, ...value}
+                if (isEqual(this.$route.query, value)) return;
+                this.$router.push({
+                    // name: "chatbot.application",
+                    query: params,
+                });
+                this.resetPage();
+                this.fetchGilbertApplications();
+            },
+            deep: true
+        },
+    },
+
+    async mounted() {
+        // await this.fetchGilbertApplications();
+    },
+
+
+    methods: {
+
+        updateApplication()
+        {
+          this.fetchCafFiles();
+        },
+
+        selectRowCafFile(item)
+        {
+            const query = {...this.$route.query, app_id: item.id};
+            this.$router.replace({ query: {...query} });
+            let index = this.selectedCaf.findIndex(dt => dt.id === item.id);
+            if(index === -1) {
+                this.selectedCaf.push(item);
+            } else {
+                this.selectedCaf.splice(index, 1);
+            }
+        },
+
+        selectRowCafFiles(item) {
+            let index = this.selectedCafFile.findIndex(dt => dt.id === item.id);
+            if(index === -1) {
+                this.selectedCafFile.push(item);
+            } else {
+                this.selectedCafFile.splice(index, 1);
+            }
+        },
+
+        updateSelectedMovingData(id, service_type)
+        {
+            let index = this.selectedMovingData.findIndex(dt => dt.id === id);
+            if(index !== -1) {
+                this.selectedMovingData.splice(index, 1)
+            } else {
+                this.selectedMovingData({id:id, service_type: service_type});
+            }
+        },
+
+        updateServiceType(service_type, id) {
+            this.selectedApp = this.cafFiles[id];
+            let index = this.cafFiles.findIndex((dt)=> {
+                return dt.id === id;
+            });
+
+            if(index !== -1) {
+                this.cafFiles[index].selected_service = service_type;
+            }
+        },
+
+        async fetchCafFiles() {
+
+            let data = await ApplicationCafFileService.getChatbotApplication({...this.sort_search_meta, ...{page: this.page}}, this.advanceSearch);
+            this.chatbotApps = data.data;
+            this.page = data.pagination.current_page;
+            this.itemsPerPage = data.pagination.per_page;
+            this.totalItem = data.pagination.total;
+            const query = this.$route.query;
+            const p = this.chatbotApps.find(it => {
+               return  it.id == query.app_id
+            });
+
+            if(data.data.length > 0 && !p ) {
+                console.log( query.app_id, p);
+                this.isLoadSkeleton = true;
+                await this.$router.replace({query: {...query, app_id: data.data[0].id}}).catch((error)=>{});
+                this.isLoadSkeleton = false;
+            }
+
+        },
+
+        async fetchGilbertApplications() {
+            let data = await ApplicationCafFileService.getGilbertApplicationData({...this.sorts_search_meta, ...{page: this.pages}}, this.advanceSearchModel);
+            this.gilbertApplications = data.data;
+            this.pages = data.pagination.current_page;
+            this.itemsPerPages = data.pagination.per_page;
+            this.totalItems = data.pagination.total;
+        },
+
+        resetPage() {
+            this.page = 1;
+        },
+        refreshDataTable(meta) {
+            this.page = meta.page
+            this.sort_search_meta = omit({...meta}, 'page');
+            this.fetchCafFiles();
+        },
+
+        reloadDataTable(meta) {
+            this.pages = meta.page;
+            this.sorts_search_meta = omit({...meta}, 'page');
+            this.fetchGilbertApplications();
+        },
+
+        updateDate(dateRange) {
+            if (dateRange) {
+                this.advanceSearch.start_date = dateRange.start
+                this.advanceSearch.end_date = dateRange.end
+            }
+
+        },
+
+        updateDates(dateRange) {
+            if (dateRange) {
+                this.advanceSearchModel.start_date = dateRange.start
+                this.advanceSearchModel.end_date = dateRange.end
+            }
+
+        },
+        updatePageOnFilterChange() {
+            this.pages = 1;
+        },
+
+    },
+    computed: {
+        // chatbotApps() {
+        //    return Store.getters.applications;
+        // },
+        shouldShowApplicationDetails(){
+            return (this.isLoadSkeleton === false) && (this.chatbotApps.length > 0);
+
+        }
+    }
+
+}
+</script>
+
+<style scoped>
+.v-tab {
+    text-transform: capitalize;
+    font-weight: bold;
+}
+.custom-card-style{
+    background-color: white;
+    border-radius: 0 16px 16px 16px;
+}
+.custom-height{
+    max-height: 80vh;
+}
+</style>

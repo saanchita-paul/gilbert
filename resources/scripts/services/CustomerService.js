@@ -83,4 +83,21 @@ export default {
      */
     updateNMIAndMIRN: (id, params) => CustomerAPI.updateNMIAndMIRN(id, params),
 
+    /**
+     * @param id
+     */
+    getMovingData: (id) => CustomerAPI.getMovingUtilityData(id),
+
+    /**
+     * @param connectionServiceId
+     */
+    getRejection: (connectionServiceId) => CustomerAPI.getRejectionReasonData(connectionServiceId),
+
+    /**
+     * @param id
+     */
+    getApplicationNote: (id) => CustomerAPI.getApplicationNote(id),
+
+
+
 }

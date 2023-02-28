@@ -47,7 +47,7 @@ class NotifyAgentAboutLeadCreation extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject("New Lead Submitted")
+            ->subject("HOOD has received an application from you. ")
             ->view('email.notify_agent', [
                 'lead_info' =>  $this->data,
             ]);

@@ -1,0 +1,55 @@
+export default class {
+    constructor({
+                    street_address = null,
+                    city = null,
+                    postcode = null,
+                    state = null,
+                    state_short = null,
+                    street_number = null,
+                    unit_number = null,
+                    street_name = null,
+                    street_name_only = null,
+                    street_type =null,
+                    mannual_address = true,
+                    billing_street_address = null,
+                    billing_city = null,
+                    billing_postcode = null,
+                    billing_state = null,
+                    billing_street_number = null,
+                    billing_unit_number = null,
+                    billing_street_name = null,
+                    billing_street_name_only = null,
+                    billing_street_type = null,
+                    billing_mannual_address = true,
+                    is_billing_same= false,
+                }) {
+
+            this.street_address = street_address,
+            this.city = city,
+            this.postcode = postcode,
+            this.postcode = postcode,
+            this.state = state,
+            this.state_short = state_short,
+            this.street_number = street_number,
+            this.unit_number = unit_number,
+            this.street_name = street_name,
+            this.street_name_only = street_name_only,
+            this.street_type = street_type,
+            this.mannual_address = mannual_address,
+
+            this.billing_street_address = billing_street_address,
+            this.billing_city = billing_city,
+            this.billing_postcode = billing_postcode,
+            this.billing_state = billing_state,
+            this.state_short = state_short,
+            this.billing_street_number = billing_street_number,
+            this.billing_unit_number = billing_unit_number,
+            this.billing_street_name = billing_street_name,
+            this.billing_street_name_only = billing_street_name_only,
+            this.billing_street_type = billing_street_type,
+            this.billing_mannual_address = billing_mannual_address,
+            this.is_billing_same = is_billing_same
+
+
+    }
+}

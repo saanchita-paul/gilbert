@@ -39,7 +39,7 @@
       <p class="font-weight-bold my-2 pt-1">Tariff types</p>
       <ul class="px-0 my-1">
          <div v-if=" utility === 'Electricity' || utility === 'Electricity & Gas' ">
-            <p class="my-1 pt-1">Electricity</p>   
+            <p class="my-1 pt-1">Electricity</p>
             <div v-if="!electricityLinks.length" class="error-message">
                 <v-icon color="orange">mdi-alert-octagon</v-icon>
                 There are no plans available for the search criteria you have entered. Please refine your search.
@@ -50,8 +50,8 @@
                     {{ item.name }}
                     <v-icon color="black">mdi-launch</v-icon>
                 </a>
-                </li>       
-            </div>     
+                </li>
+            </div>
          </div>
          <div v-if=" utility === 'Gas' || utility === 'Electricity & Gas' ">
             <p class="my-1 pt-1">Gas</p>
@@ -66,7 +66,7 @@
                     <v-icon color="black">mdi-launch</v-icon>
                 </a>
                 </li>
-            </div>    
+            </div>
          </div>
       </ul>
    </div>
@@ -74,7 +74,7 @@
 
 
 <script>
-import CustomerService from "@src/services/CustomerService";
+import CustomerService from "@src/Services/CustomerService";
 
 export default {
     name: "TariffSearch",
