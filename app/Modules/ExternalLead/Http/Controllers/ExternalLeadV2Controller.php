@@ -41,7 +41,7 @@ class ExternalLeadV2Controller extends Controller
 
     public function createLead(ValidateCreateLeadRequest $request)
     {
-//        return $request->toArray();
+    //    return $request->toArray();
         try {
             Log::info('** Create External Leads Request Body', [$request->toArray()]);
             $externalSource = ExternalSource::where('email', $request->username ?? '')->firstOrFail();

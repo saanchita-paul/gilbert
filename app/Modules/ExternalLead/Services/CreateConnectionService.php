@@ -18,6 +18,12 @@ class CreateConnectionService
         $createdServices = [];
         $requestedServices = $data['utility_services'] ?? [];
 
+        foreach (self::MUST_SERVICES as $serviceType) {
+            if (!in_array($serviceType, $requestedServices)) {
+                $requestedServices[] = $serviceType;
+            }
+        }
+
         foreach ($requestedServices as $service) {
             $connectionService = new ConnectionService();
             $connectionService->service_type = strtolower($service);
@@ -26,18 +32,6 @@ class CreateConnectionService
             $connectionService->save();
 
             $createdServices[$connectionService->service_type] = $connectionService;
-        }
-
-        foreach (self::MUST_SERVICES as $serviceType) {
-            if (!array_key_exists($serviceType, $createdServices)) {
-                $connectionService = new ConnectionService();
-                $connectionService->service_type = $serviceType;
-                $connectionService->status = ConnectionService::STATUS_EA_PROCESSINF;
-                $connectionService->connection_application_id = $app->id;
-                $connectionService->save();
-
-                $createdServices[$serviceType] = $connectionService;
-            }
         }
 
         return $createdServices;
