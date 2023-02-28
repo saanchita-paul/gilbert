@@ -66,8 +66,8 @@ class ValidateCreateLeadRequest extends FormRequest
             'primary_account.identification.number' => 'required',
             'primary_account.identification.state' => 'required_if:tenancy_identification.type,driver_license',
             'primary_account.identification.country' => 'required_if:identification.type,passport',
-            'primary_account.medicare_card_color' => 'required_if:identification.type,medicare',
-            'primary_account.medicare_reference_number' => 'required_if:identification.type,medicare',
+            'primary_account.identification.medicare_card_color' => 'required_if:identification.type,medicare',
+            'primary_account.identification.medicare_reference_number' => 'required_if:identification.type,medicare',
             'primary_account.identification.expire_date' => 'required|date_format:Y-m-d',
 
             'secondary_account.title' => ['required_with:secondary_account', Rule::in(['mr', 'ms', 'mrs', 'miss', 'dr'])],
@@ -82,8 +82,8 @@ class ValidateCreateLeadRequest extends FormRequest
             'secondary_account.identification.number' => 'required_with:secondary_account.identification',
             'secondary_account.identification.state' => 'required_if:secondary_account.identification.type,driver_license',
             'secondary_account.identification.country' => 'required_if:secondary_account.identification.type,passport',
-            'secondary_account.medicare_card_color' => 'required_if:secondary_account.identification.type,medicare',
-            'secondary_account.medicare_reference_number' => 'required_if:secondary_account.identification.type,medicare',
+            'secondary_account.identification.medicare_card_color' => 'required_if:secondary_account.identification.type,medicare',
+            'secondary_account.identification.medicare_reference_number' => 'required_if:secondary_account.identification.type,medicare',
             'secondary_account.identification.expire_date' => 'required_with:secondary_account.identification|date_format:Y-m-d',
 
             'connection_details.tenancy_type' => ['required', Rule::in(['renter', 'home_owner'])],
