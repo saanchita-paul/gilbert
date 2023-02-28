@@ -58,7 +58,7 @@ class ValidateCreateLeadRequest extends FormRequest
             'primary_account.dob' => 'required|date_format:Y-m-d',
             'primary_account.phone_type' => ['required', Rule::in(['mobile', 'homephone', 'international_mobile'])],
             'primary_account.phone_number' => 'required_if:primary_account.phone_type,mobile,international_mobile', // TODO: handle homephone
-            'primary_account.homephone' => 'required_if:primary_account.homephone,homephone',
+            // 'primary_account.homephone' => 'required_if:primary_account.homephone,homephone',
 
             'utility_services' => 'required|array',
             'utility_services.*' =>  Rule::in("gas", 'power'),
