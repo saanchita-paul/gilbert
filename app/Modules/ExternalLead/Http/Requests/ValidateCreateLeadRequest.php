@@ -58,7 +58,6 @@ class ValidateCreateLeadRequest extends FormRequest
             'primary_account.dob' => 'required|date_format:Y-m-d',
             'primary_account.phone_type' => ['required', Rule::in(['mobile', 'homephone', 'international_mobile'])],
             'primary_account.phone_number' => 'required_if:primary_account.phone_type,mobile,international_mobile', // TODO: handle homephone
-            // 'primary_account.homephone' => 'required_if:primary_account.homephone,homephone',
 
             'utility_services' => 'required|array',
             'utility_services.*' =>  Rule::in("gas", 'power'),
@@ -79,7 +78,13 @@ class ValidateCreateLeadRequest extends FormRequest
             'secondary_account.phone_number' => 'required_with:secondary_account',
             'secondary_account.permission_type' => ['required_with:secondary_account', Rule::in(array_keys(AuthorizedPerson::ROLE_TYPE_MAPPER))],
 
-            //TODO: secondary account identification
+            'secondary_account.identification.type' => ['required_with:secondary_account.identification', Rule::in(['medicare', 'passport', 'driver_license'])],
+            'secondary_account.identification.number' => 'required_with:secondary_account.identification',
+            'secondary_account.identification.state' => 'required_if:secondary_account.identification.type,driver_license',
+            'secondary_account.identification.country' => 'required_if:secondary_account.identification.type,passport',
+            'secondary_account.medicare_card_color' => 'required_if:secondary_account.identification.type,medicare',
+            'secondary_account.medicare_reference_number' => 'required_if:secondary_account.identification.type,medicare',
+            'secondary_account.identification.expire_date' => 'required_with:secondary_account.identification|date_format:Y-m-d',
 
             'connection_details.tenancy_type' => ['required', Rule::in(['renter', 'home_owner'])],
             'connection_details.property_type' => Rule::in(array_keys(ConnectionApplication::PROPERTY_TYPE_MAPPING)),
