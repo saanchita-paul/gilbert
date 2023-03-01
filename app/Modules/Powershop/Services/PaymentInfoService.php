@@ -86,12 +86,23 @@ class PaymentInfoService
         $url = config('app.url') . '/powershop/payment/accept-invite/' . $this->paymentInfo->px_txn_id;
 
         $this->paymentInfo->notify(new PxPaymentInviteNotification(
-            $this->paymentInfo->customer_full_name,
+            $this->getFirstName(),
             $url,
             strtolower($channel)
         ));
 
 
         return $this->paymentInfo;
+    }
+
+    /**
+     *  get customer first name
+     *
+     */
+    private function getFirstName()
+    {
+        return (ConnectionApplication::query()
+            ->select(['id', 'first_name'])
+            ->findOrFail($this->paymentInfo->connection_application_id))->first_name;
     }
 }

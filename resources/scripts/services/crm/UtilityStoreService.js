@@ -47,7 +47,7 @@ export default {
         //     powerService?.plan_type !== null &&
         //     powerService?.provider_name === gasService?.provider_name &&
         //     powerService?.plan_type === gasService?.plan_type &&
-        //     LeadApplicationService.canSubmitAnyEnergy(services)
+        //     LeadApplicationService.canSubmitAnyEnergy(Services)
         // ) {
         //     UtilityStoreService.setIsBothEnergySelected(true);
         // }

@@ -25,6 +25,7 @@ import SalesWaterPage from "@scripts/modules/sales/pages/SalesWaterPage";
 import ApplicationSearchList from '@scripts/pages/ApplicationSearchList'
 import agent_routes from "@scripts/routes/agent_routes";
 import EnergyPlans from "@scripts/components/plans/EnergyPlans";
+import ChatbotApplicationPage from "@scripts/pages/chatbot/ChatbotApplicationPage";
 
 
 Vue.use(VueRouter);
@@ -66,6 +67,16 @@ const router = new VueRouter({
 
                     }
                 },
+                // {
+                //     path: '/chatbot-application',
+                //     component: ChatbotApplicationPage,
+                //     name: 'chatbot.application',
+                //     meta: {
+                //         isProtected: true,
+                //         roles: ['hood_admin'],
+                //
+                //     }
+                // },
                 {
                     path: '/customers',
                     component: CustomerListPage,

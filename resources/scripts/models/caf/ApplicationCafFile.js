@@ -1,3 +1,6 @@
+import dayJs from "dayjs";
+
+
 export default class ApplicationCafFile {
     constructor({
                     id,
@@ -19,7 +22,9 @@ export default class ApplicationCafFile {
                     to_address,
                     connection_date,
                     service,
-                    additional_instruction
+                    additional_instruction,
+                    connection_type,
+                    caf_generation_status
                 } = {}) {
         this.id = id;
         this.title = title;
@@ -28,7 +33,7 @@ export default class ApplicationCafFile {
         this.last_name = last_name;
         this.full_name = full_name;
         this.dob = dob;
-        this.created_date = created_at;
+        this.created_date = dayJs(created_at).format("DD/MM/YYYY");
         this.connection_date = connection_date;
         this.occupancy_type = occupancy_type;
         this.phone = phone;
@@ -41,5 +46,24 @@ export default class ApplicationCafFile {
         this.to_address = to_address;
         this.service = service;
         this.additional_instruction = additional_instruction;
+        this.connection_type = this.generateConnectionType(abn, business_name);
+        this.service_provider = this.getServiceProvider(service);
+        this.caf_generation_status = caf_generation_status
+
+    }
+    generateConnectionType(abn, business_name){
+        if(abn || business_name) return "Temporary";
+        return "Default"
+    }
+
+    getServiceProvider(services) {
+        let filteredService = services.filter(item => ["electricity", "gas"].includes(item.service_type));
+        return filteredService[0]?.provider_name;
+
+    }
+
+    generateCafFileStatus(status){
+        if(status === 'Caf Generated') return 'Caf Generated';
+        return '--'
     }
 }

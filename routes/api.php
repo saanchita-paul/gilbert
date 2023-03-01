@@ -3,6 +3,7 @@
 use App\Http\Controllers\Agency\AgencyController;
 use App\Http\Controllers\Agency\AgentProfileController;
 use App\Http\Controllers\Agency\AppCloseReasonController;
+use App\Http\Controllers\Agency\ApplicationCafController;
 use App\Http\Controllers\Agency\ApplicationController;
 use App\Http\Controllers\Agency\DuplicationApplicationController;
 use App\Http\Controllers\Agency\HoodUserController;
@@ -27,6 +28,8 @@ use App\Http\Controllers\GilbertLeadAPIController;
 use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
 use App\Http\Controllers\ApplicationEventController;
 use App\Http\Controllers\SourceFilterController;
+use App\Http\Controllers\Agency\MriOfficeController;
+use MRI\Controllers\TestMriController;
 
 /*
 |--------------------------------------------------------------------------
@@ -280,9 +283,12 @@ Route::post('/our-property/lead', [OurPropertyController::class, 'createOurPrope
  * Powershop
  */
 
-Route::get('/powershop/applications', [PowerShopController::class, 'getPowerShop'])
-    ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
-Route::get('/powershop/generate-caf', [PowerShopController::class, 'generatePowerShopCaf']);
+//Route::get('/powershop/applications', [PowerShopController::class, 'getPowerShop'])
+//    ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
+//Route::get('/powershop/generate-caf', [PowerShopController::class, 'generatePowerShopCaf']);
+
+Route::get('/gilbert/applications', [ApplicationCafController::class, "getGilbertApplications"]);
+Route::get('/gilbert/generate-caf', [ApplicationCafController::class, "generateGilbertCaf"]);
 
 
 Route::post('/powershop/payment/invite', [PaymentInfoController::class, 'inviteCustomer']);
@@ -304,6 +310,12 @@ Route::post('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syn
  */
 Route::post('/application-events', [ApplicationEventController::class, 'saveEvent']);
 
+/**
+ * MRI
+ */
+Route::get('/mri-offices', [MriOfficeController::class, 'getMriOffices']);
+Route::get('/test/mri/agents', [TestMriController::class, 'fetchAgents']);
+Route::get('/test/mri/tenancies', [TestMriController::class, 'fetchTenancies']);
 
 /**
  * Bellow API are only for testing purpose

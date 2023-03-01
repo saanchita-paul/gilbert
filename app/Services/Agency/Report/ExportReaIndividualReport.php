@@ -122,7 +122,7 @@ class ExportReaIndividualReport
                 "is_gas_submitted" => $this->checkIfUtilitySubmitted($datum['connection_services'], ConnectionService::TYPE_GAS),
                 "is_water_submitted" => $this->checkIfUtilitySubmitted($datum['connection_services'], ConnectionService::TYPE_WATER),
             ];
-            
+
             $detailedCount[] = $count;
         }
 
@@ -198,9 +198,9 @@ class ExportReaIndividualReport
         })? 1 : 0;
     }
 
-    // private function getUtilityStatus(?array $services, string $type): string
+    // private function getUtilityStatus(?array $Services, string $type): string
     // {
-    //     $utility = array_filter($services, function ($service) use ($type) {
+    //     $utility = array_filter($Services, function ($service) use ($type) {
     //         return $service['utility_type'] === $type;
     //     });
     //     return 'Not selected';

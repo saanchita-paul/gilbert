@@ -1,8 +1,9 @@
 <template>
-    <div v-show="false">
+    <div>
         <v-checkbox
             v-model="isMriOffice"
-            :label="`MRI Office`">
+            :label="`MRI Office`"
+        >
         </v-checkbox>
 
         <ValidationProvider name="MRI Office" rules="required" v-slot="{ errors }" v-if="isMriOffice">
@@ -53,8 +54,15 @@ export default {
         updateMriData() {
             this.isMriOffice = this.mriOfficeData ? this.mriOfficeData?.isMriOffice : false;
             this.mriOffice = this.mriOfficeData ? this.mriOfficeData?.selectedMriDropdownItem : null;
-        }
-    }
+        },
+    },
+    watch: {
+        isMriOffice(isChecked) {
+            if (!isChecked) {
+                this.$emit('saveMriOffice', null);
+            }
+        },
+    },
 };
 </script>
 

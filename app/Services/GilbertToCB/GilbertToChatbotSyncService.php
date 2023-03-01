@@ -7,6 +7,7 @@ use App\Models\ConnectionService;
 use App\Models\RejectionReason;
 use App\Services\Address\AddressModel;
 use App\Services\ChatBot\SendApplicationToChatbotAPI;
+use App\Services\Address\StreetTypeMapper;
 
 class GilbertToChatbotSyncService
 {
@@ -99,7 +100,7 @@ class GilbertToChatbotSyncService
             "dob" => $this->application->dob,
             "which_utility" => $this->mapServiceType($this->application->connectionServices),
             "moved_at" => $this->application->moving_date,
-            "flat_or_unit_number" => $this->application->address_unit,
+            "flat_or_unit_number" => $this->application->address_unit ?? ($this->application->unit_number ?? null),
             "street_address" => $this->application->street_address,
             "street_number" => $this->application->street_number,
             "street_name" => $this->application->street_name,
@@ -112,12 +113,12 @@ class GilbertToChatbotSyncService
             "reason" => $this->application->reason,
             "billing_preference" => $this->mapBillingType($this->application->is_email_billing), // is_email_billing also exists in chatbot moving utility table
             "account_type" => $this->mapPropertyType($this->application->property_type),
-            "is_property_on_life_support" => $this->application->has_life_support,
+            "is_property_on_life_support" => $this->application->is_power_life_support,
             "solar_panel" => $this->mapSolarPanel($this->application->has_solar),
             "nmi" => $this->application->nmi,
             "mirn" => $this->application->mirn,
             "supplier" => $this->application->supplier,
-            "unit_number" => $this->application->unit_number,
+            "unit_number" => $this->application->unit_number ?? ($this->application->address_unit ?? null),
             "status" => $this->application->status,
             "hubspot_contact_id" => $this->application->hubspot_contact_id,
             "billing_unit_number" => $this->application->billing_unit_number,
@@ -133,7 +134,7 @@ class GilbertToChatbotSyncService
             "has_electricity" => $this->application->has_electricity,
             "is_renovation_on" => $this->application->is_renovation_on,
             "homephone" => $this->application->homephone,
-            "qld_vis_inspection_time" => $this->mapInspectionTime($this->application->inspection_time),
+            "qld_vis_inspection_time" => $this->application->inspection_time ? $this->mapInspectionTime($this->application->inspection_time) : null,
             "family_violance" => $this->application->family_violance,
             "source" => $this->application->source,
             "is_contacted" => $this->application->is_contacted,
@@ -141,8 +142,8 @@ class GilbertToChatbotSyncService
             "connection_end_date" => $this->application->connection_end_date,
             "after_hour_payee" => $this->application->after_hour_payee,
             "after_hour_flag" => $this->application->after_hour_flag,
-            "street_type" => $this->application->street_type,
-            "billing_street_type" => $this->application->billing_street_type,
+            "street_type" => StreetTypeMapper::getShortForm($this->application->street_type),
+            "billing_street_type" => StreetTypeMapper::getShortForm($this->application->billing_street_type),
             "mannual_address" => $this->application->mannual_address,
             "billing_mannual_address" => $this->application->billing_mannual_address,
             "billing_state_short" => $this->application->billing_state_short,
@@ -257,6 +258,7 @@ class GilbertToChatbotSyncService
      */
     private function mapHasConcessionCard($concessionCardType): int
     {
+        $hasConcession = null;
         return $concessionCardType ? self::CONCESSION_CARD_YES : self::CONCESSION_CARD_NO;
     }
 
