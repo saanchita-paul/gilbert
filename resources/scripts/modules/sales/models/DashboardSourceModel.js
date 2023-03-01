@@ -7,6 +7,7 @@ class DashboardSourceModel{
         our_property, 
         property_me, 
         t_app,
+        mri,
         total }={}){
             this.foxie = foxie
             this.hood = hood
@@ -15,6 +16,7 @@ class DashboardSourceModel{
             this.our_property = our_property
             this.property_me = property_me
             this.t_app = t_app
+            this.mri = mri
             this.total = total
     }
 }

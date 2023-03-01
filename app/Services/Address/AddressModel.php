@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Services\Address;
 
 use App\Models\ConnectionApplication;
@@ -244,13 +243,21 @@ class AddressModel
 
     public static function mapStateToShort(?string $state): ?string
     {
-        $state = AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($state)] ?? null;
+        $state = strtolower($state);
+        if (in_array($state, AddressModel::MAP_STATES_LONG_TO_SHORT)) {
+            return strtoupper($state);
+        }
+        $state = AddressModel::MAP_STATES_LONG_TO_SHORT[$state] ?? null;
         return $state ? strtoupper($state) : null;
     }
 
     public static function mapStateToLong(?string $state): ?string
     {
-        $state = self::MAP_STATES_SHORT_TO_LONG[strtolower($state)] ?? null;
+        $state = strtolower($state);
+        if (in_array($state, AddressModel::MAP_STATES_SHORT_TO_LONG)) {
+            return ucwords($state);
+        }
+        $state = self::MAP_STATES_SHORT_TO_LONG[$state] ?? null;
 
         return $state ? ucwords($state) : null;
     }

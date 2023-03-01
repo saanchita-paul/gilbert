@@ -32,7 +32,7 @@ class SubmitToPowershopService
         ->get();
 
         if (count($this->conServices) == 0) {
-            throw new Exception('Unable to find connection services to submit');
+            throw new Exception('Unable to find connection Services to submit');
         }
     }
 

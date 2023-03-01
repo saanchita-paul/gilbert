@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 class GetNotesService
 {
     public const CATEGORY_ID = '3db9598a-bafc-ec11-997e-0050f21d26e6';
+    public const DEFAULT_GET_NOTES_COUNT = 2;
 
     /**
      * @var string|null
@@ -103,69 +104,17 @@ class GetNotesService
     public function run()
     {
         try {
-            $query = MriApplication::with('mriOffice:id,key')->where('has_process_note', false);
+            $query = MriApplication::with('mriOffice:id,key')->where('has_process_note', false)->where('fetch_notes_count', '<', self::getMaxFetchCount());
             if (isset($this->officeId) && !empty($this->officeId)) {
                 $query->where('mri_office_id', $this->officeId);
             }
             $mriApplications = $query->get();
-            if (isset($this->officeId) && !empty($this->officeId)) {
-                $query->where('mri_office_id', $this->officeId);
-            }
-            $mriApplications = $query->get();
+
             foreach ($mriApplications as $mriApp) {
                 $token = $mriApp->mriOffice->key;
                 $profileName = $mriApp->name;
                 $notesData = $this->getAPIData($token, $profileName);
                 $this->saveNotes($mriApp, $notesData);
-            }
-        } catch (RequestException $e) {
-            $this->exceptionHandler->addException($e);
-        } catch (\Exception $e) {
-            $this->exceptionHandler->addException($e);
-        }
-
-        if ($this->exceptionHandler->hasExceptions()) {
-            $this->exceptionHandler->run();
-        }
-    }
-
-    public function runOld()
-    {
-        try {
-            $query = MriApplication::with('mriOffice:id,key')->where('has_process_note', false);
-            if (isset($this->officeId) && !empty($this->officeId)) {
-                $query->where('mri_office_id', $this->officeId);
-            }
-            $mriApplications = $query->get();
-            foreach ($mriApplications as $mriApp) {
-                $mriOffice = $mriApp->mriOffice;
-                $token = $mriOffice->key;
-                $this->setToken($token);
-
-                $client = new Client([
-                    'headers' => [
-                        'content-type' => 'application/json',
-                        'accept' => 'application/json',
-                        'authorization' => 'Bearer ' . $this->accessToken
-                    ],
-                ]);
-
-                $query = [
-                    'profile' => $mriApp->name,
-                ];
-
-                if (isset($this->afterDate) && !empty($this->afterDate)) {
-                    $query['lastModifiedOnOrAfter'] = $this->afterDate;
-                }
-
-                $options = [
-                    'query' => $query
-                ];
-
-                $response = $client->request('GET', $this->url, $options);
-
-                $data = json_decode($response->getBody()->getContents(), true);
-                $this->saveNotes($mriApp, $data);
             }
         } catch (RequestException $e) {
             $this->exceptionHandler->addException($e);
@@ -211,10 +160,14 @@ class GetNotesService
 
         if (!empty($savedNoteIds)) {
             $message = sprintf('Created %s mri notes for mri application id %s', count($savedNoteIds), $mriApp->id);
-            // dump($message);
             info($message, ['mri_note_ids' => $savedNoteIds]);
         }
 
         return $savedNoteIds;
+    }
+
+    public static function getMaxFetchCount()
+    {
+        return !empty(config('mri.max_get_notes_count')) ? config('mri.max_get_notes_count') : self::DEFAULT_GET_NOTES_COUNT;
     }
 }

@@ -22,6 +22,7 @@ class CalculateEnergyApplicationSummary
         "hood" => 0,
         "hood_ai" => 0,
         "t_app" => 0,
+        "mri" => 0,
     ];
 
     private array $sourceMap;
@@ -115,7 +116,6 @@ class CalculateEnergyApplicationSummary
             $this->applicationSummary["all"][$sourceAsString] += $item['total'];
         }
     }
-
 
     /**
      * Calculation conversion rate breakdown

@@ -103,26 +103,10 @@ class GetTenanciesService
         return $data;
     }
 
-    private function getMriOffices()
-    {
-        $updateOfficesService = new GetOfficeService();
-        $updateOfficesService->run();
-        if (isset($this->officeId) && !empty($this->officeId)) {
-            $mriOffices = MriOffice::where('office_id', $this->officeId)->get();
-            if (count($mriOffices) == 0) {
-                throw new \Exception('Unable to find MRI office with Gilbert office id = ' . $this->officeId);
-            }
-        } else {
-            $mriOffices = MriOffice::get();
-        }
-
-        return $mriOffices;
-    }
-
     public function run()
     {
         try {
-            $mriOffices = $this->getMriOffices();
+            $mriOffices = (new GetOfficeService())->getMriOffices(true, $this->officeId ?? null);
             foreach ($mriOffices as $office) {
                 $token = $office->key;
                 $apiData = $this->runAPI($token);

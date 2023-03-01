@@ -61,8 +61,9 @@ const mapStatus = (status, is_generated_caf=false) => {
     return getApplicationStatusText(status);
 }
 
-const mapSupplier = provider => {
-    return 'PowerShop';
+const mapSupplier = services => {
+    let service = services.find(svc => ((svc.service_type === 'power' || svc.service_type === 'gas') &&  !!svc.provider_name ));
+    return service ? service.provider_name.charAt(0).toUpperCase() +  service.provider_name.slice(1) : "";
 }
 
 const mapPlan = (services , serviceType)=> {
@@ -77,6 +78,10 @@ const activeService = services?.find(svc => svc.service_type === serviceType);
             return 'Power Shop 100% Carbon Neutral';
         case 'switch_saver':
             return 'Switch Saver';
+        case 'origin_basic':
+            return 'Origin Basic';
+        case 'origin_home_support':
+            return 'Origin Home Support';
         default:
             return '';
     }
@@ -86,7 +91,7 @@ const mapService = service => {
     let service_types = [];
 
      service.map(svc => {
-        if (svc.provider_name === 'powershop' &&
+        if ((svc.provider_name === 'powershop' || svc.provider_name === 'origin') &&
             (svc.service_type === 'power' || svc.service_type === 'gas')){
             service_types.push(svc.service_type);
         }

@@ -654,7 +654,9 @@ class ConnectionApplication extends Model
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agent_name,
             ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agent_name,
             ConnectionApplication::SOURCE_T_APP => $this->createdBy?->first_name . ' ' . $this->createdBy?->last_name,
-            ConnectionApplication::SOURCE_MRI => $this->createdBy?->first_name . ' ' . $this->createdBy?->last_name,
+            ConnectionApplication::SOURCE_MRI =>
+                $this->createdBy ? $this->createdBy->first_name . ' ' . $this->createdBy->last_name :
+                $this->mriApplication?->mriProperty?->mriAgents()?->first()?->agent_name,
             default => ''
         };
     }
@@ -742,5 +744,18 @@ class ConnectionApplication extends Model
         }
 
         return self::SOURCE_NAME_MAPPING[$this->source];
+    }
+
+    public function getSalesReferenceIdAttribute()
+    {
+        $ref = ConnectionService::where('connection_application_id', $this->id)
+                ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
+                ->pluck('lead_reference');
+
+        if (!empty($ref)) {
+            return implode(',', $ref->toArray());
+        }
+
+        return '';
     }
 }
