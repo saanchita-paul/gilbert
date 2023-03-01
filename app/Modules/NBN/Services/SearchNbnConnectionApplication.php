@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Services\Application;
+namespace App\Modules\NBN\Services;
 
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\User;
 use App\Modules\Reporting\Services\SetDateRage;
+use App\Services\Application\ApplicationStatusFilterMapper;
 use App\Services\FullTextSearch\FullTextQueryInterface;
 use App\Services\FullTextSearch\FullTextSearchInterface;
 use App\Traits\Agency\Sortable;
@@ -19,7 +20,7 @@ use function resolve;
 /**
  *
  */
-class SearchConnectionApplication
+class SearchNbnConnectionApplication
 {
 
     use Sortable;
@@ -135,7 +136,6 @@ class SearchConnectionApplication
             ->applyFilterMovingDate()
             ->applyFilterAgentId()
             ->applyFilterTenantEmail()
-            ->applyFilterByProvider()
             ->applyDuplicateFilter()
             ->applyDateRangeFilter()
             ->applyFilterByService()
@@ -355,19 +355,6 @@ class SearchConnectionApplication
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    private function applyFilterByProvider(): static
-    {
-        if ($this->provider) {
-            $this->builder = $this->builder->whereHas('connectionServices', function (Builder $query) {
-                $query->where('provider_name', $this->provider);
-            });
-        }
-        return $this;
-    }
-
     private function applyDuplicateFilter(): static
     {
         if ($this->isDuplicate) {
@@ -399,11 +386,14 @@ class SearchConnectionApplication
         return $this;
     }
 
-    private function applyFilterByService(): static {
+    private function applyFilterByService(): static
+    {
         if ($this->application_service_type) {
-            $this->builder = $this->builder->whereHas('connectionServices', function (Builder $query){
-                $query->whereIn('service_type', ['power', 'gas']);
+            $this->builder = $this->builder->where('status', ConnectionApplication::STATUS_SUBMITTED)->whereHas('connectionServices', function (Builder $query) {
+                $query->where('service_type', 'internet')
+                    ->where('status', ConnectionService::AC_MANUAL_PROCESSING);
             });
+
         }
         return $this;
 

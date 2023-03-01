@@ -26,6 +26,7 @@ use PropertyMe\services\FetchContacts;
 use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\GilbertLeadAPIController;
 use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
+use App\Modules\NBN\Http\Controllers\NBNController as NBNController2;
 
 /*
 |--------------------------------------------------------------------------
@@ -292,6 +293,12 @@ Route::get('/powershop/generate-caf', [PowerShopController::class, 'generatePowe
 Route::post('/powershop/payment/invite', [PaymentInfoController::class, 'inviteCustomer']);
 
 
+/*
+ * NBN
+ */
+Route::get('/nbn/applications', [NBNController2::class, 'getNBNApplications']);
+Route::get('/nbn/generate-caf', [NBNController2::class, 'generateNbnCaf']);
+
 /**
  * api's for email validation
  */
@@ -404,3 +411,4 @@ Route::get('/test', function () {
 //    ApplicationFromGilbertJob::dispatch(3);
 
 });
+

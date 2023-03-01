@@ -75,6 +75,39 @@
                 </v-card>
             </v-tab-item>
             <!--  Gilbert Application end-->
+
+            <!--  Utility Application start-->
+            <v-tab href="#utilityGilbertApplication">
+                <v-icon >mdi-flash</v-icon>
+                <v-icon left>mdi-fire</v-icon>
+                Utility Applications
+            </v-tab>
+            <v-tab-item value="utilityGilbertApplication">
+                <v-card>
+                    <v-card-text>
+                        <GilbertFilterWrapper
+                            filterFor="utility"
+                        />
+                    </v-card-text>
+                </v-card>
+            </v-tab-item>
+            <!--  utility Application end-->
+
+            <!--  NBN  Application start-->
+            <v-tab href="#nbnGilbertApplication">
+                <v-icon left>mdi-wifi</v-icon>
+                NBN Applications
+            </v-tab>
+            <v-tab-item value="nbnGilbertApplication">
+                <v-card>
+                    <v-card-text>
+                        <GilbertFilterWrapper
+                            filterFor="nbn"
+                        />
+                    </v-card-text>
+                </v-card>
+            </v-tab-item>
+            <!--  NBN  Application end-->
         </v-tabs>
 
     </v-container>
@@ -88,10 +121,12 @@ import ApplicationCafFileTable from "@scripts/pages/ApplicationCafFileTable";
 import GilbertApplicationCafFileTable from "@scripts/pages/GilbertApplicationCafFileTable";
 import {CafFileSearchFilterModel} from "@scripts/models/CafFileSearchFilterModel";
 import {forEach, isEqual, isNull, omit} from "lodash-es";
+import GilbertFilterWrapper from "@scripts/pages/GilbertFilterWrapper.vue";
 
 export default {
     name: "ApplicationCafFilePage",
     components: {
+        GilbertFilterWrapper,
         ApplicationCafFileTable,
         ApplicationCafFileFilter,
         GilbertApplicationCafFileTable,
@@ -260,6 +295,7 @@ export default {
             this.pages = data.pagination.current_page;
             this.itemsPerPages = data.pagination.per_page;
             this.totalItems = data.pagination.total;
+
         },
 
         resetPage() {
