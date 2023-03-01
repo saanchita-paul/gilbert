@@ -57,7 +57,8 @@ class GilbertToChatbotSyncService
             'connectionServices',
             'authorizedPerson',
             'office',
-            'agency'
+            'agency',
+            'powershopPaymentInfo'
         ])->firstOrFail();
     }
 
@@ -175,7 +176,8 @@ class GilbertToChatbotSyncService
             "connection_services" => $this->application->connectionServices ? $this->application->connectionServices->toArray() : [],
             "identification" => $this->application->identification ? $this->application->identification->toArray() : null,
             "authorized_person" => $this->application->authorizedPerson ? $this->application->authorizedPerson->toArray() : null,
-            "rejection_reasons" => $this->mapRejectionReasons()
+            "rejection_reasons" => $this->mapRejectionReasons(),
+            "payment_sync_data" => $this->mapPaymentData(),
         ];
     }
 
@@ -356,6 +358,14 @@ class GilbertToChatbotSyncService
             $this->application->property_type = ConnectionApplication::PROPERTY_TYPE_RESIDENTIAL;
             $this->application->save();
         }
+    }
+
+    public function mapPaymentData(): array
+    {
+        return $this->application->powershopPaymentInfo ? [
+            'estimated_elec_billing_cost' => $this->application->powershopPaymentInfo->estimated_elec_billing_cost,
+            'estimated_gas_billing_cost' => $this->application->powershopPaymentInfo->estimated_gas_billing_cost,
+        ] : [];
     }
 }
 

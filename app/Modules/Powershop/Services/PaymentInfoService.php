@@ -2,6 +2,7 @@
 
 namespace Powershop\Services;
 
+use App\Jobs\GilbertToChatbotSyncJob;
 use App\Models\ConnectionApplication;
 use App\Models\PowershopPaymentInfo;
 use Illuminate\Support\Str;
@@ -36,6 +37,7 @@ class PaymentInfoService
             $this->paymentInfo->save();
         }
 
+        GilbertToChatbotSyncJob::dispatch($this->appId);
         return $this->paymentInfo;
     }
 
