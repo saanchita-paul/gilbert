@@ -33,6 +33,10 @@ class GilbertToChatbotService
         '1:00pm - 5:00pm' => '1PM - 5PM',
     ];
 
+    /** PROPERTY TYPE CONSTANTS */
+    const PROPERTY_TYPE_RESIDENTIAL = 'residential';
+    const PROPERTY_TYPE_BUSINESS    = 'business';
+
 
     public function __construct($id)
     {
@@ -43,6 +47,9 @@ class GilbertToChatbotService
             'office',
             'agency'
         ])->firstOrFail();
+
+        // Set property type
+        $this->setPropertyType();
     }
 
 
@@ -51,7 +58,7 @@ class GilbertToChatbotService
      */
     public function create()
     {
-        $url = config('bot.root_url') . '/api/gilbert-application';
+        $url      = config('bot.root_url') . '/api/gilbert-application';
         $response = Http::post($url, $this->getProperties());
         if ($response->status() === 201) {
             $this->application->update(['chatbot_id' => $response->json()['moving_utility_id'], 'is_locked' => true]);
@@ -206,6 +213,33 @@ class GilbertToChatbotService
         };
     }
 
+    /**
+     * map property type
+     *
+     * @param $propertyType
+     * @return string|null
+     */
+    private function mapPropertyType($propertyType): ?string
+    {
+        return match ((int)$propertyType) {
+            2 => self::PROPERTY_TYPE_BUSINESS,
+            default => self::PROPERTY_TYPE_RESIDENTIAL
+        };
+    }
+
+
+    /**
+     * Set property type
+     *
+     * @return void
+     */
+    public function setPropertyType(): void
+    {
+        if (!$this->application->property_type) {
+            $this->application->property_type = ConnectionApplication::PROPERTY_TYPE_RESIDENTIAL;
+            $this->application->save();
+        }
+    }
 
 }
 

@@ -22,31 +22,31 @@ class GilbertToChatbotSyncService
 
     /** UTILITY TYPE CONSTANTS */
     const PLAN_UTILITY_TYPE_ELECTRICITY = 'electricity';
-    const PLAN_UTILITY_TYPE_GAS = 'gas';
-    const PLAN_UTILITY_TYPE_BOTH = 'electricity_and_gas';
+    const PLAN_UTILITY_TYPE_GAS         = 'gas';
+    const PLAN_UTILITY_TYPE_BOTH        = 'electricity_and_gas';
 
     /** CONCESSION CARD TYPE */
     const CONCESSION_CARD_YES = 1;
-    const CONCESSION_CARD_NO = 0;
+    const CONCESSION_CARD_NO  = 0;
 
     /** SOLAR PANEL CONSTANTS */
-    const SOLAR_PANEL_YES = 'solar';
-    const SOLAR_PANEL_NO = 'no_solar';
+    const SOLAR_PANEL_YES      = 'solar';
+    const SOLAR_PANEL_NO       = 'no_solar';
     const SOLAR_PANEL_NOT_SURE = 'solar_not_sure';
 
     /** PROPERTY TYPE CONSTANTS */
     const PROPERTY_TYPE_RESIDENTIAL = 'residential';
-    const PROPERTY_TYPE_BUSINESS = 'business';
+    const PROPERTY_TYPE_BUSINESS    = 'business';
 
     const INSPECTION_TIME_MAPPER = [
         '8:00am - 12:00pm' => '8AM - 12PM',
-        '1:00pm - 5:00pm' => '1PM - 5PM',
-        '8:00am - 1:00pm' => '8AM - 1PM',
-        '9:00am - 2:00pm' => '9AM - 2PM',
+        '1:00pm - 5:00pm'  => '1PM - 5PM',
+        '8:00am - 1:00pm'  => '8AM - 1PM',
+        '9:00am - 2:00pm'  => '9AM - 2PM',
         '10:00am - 3:00pm' => '10AM - 3PM',
         '11:00am - 4:00pm' => '11AM - 4PM',
         '12:00pm - 5:00pm' => '12PM - 5PM',
-        '1:00pm - 6:00pm' => '1PM - 6PM',
+        '1:00pm - 6:00pm'  => '1PM - 6PM',
     ];
 
 
@@ -67,12 +67,15 @@ class GilbertToChatbotSyncService
      */
     public function sync()
     {
-        $this->application->update(['is_locked' => true]);
+        // $this->application->update(['is_locked' => true]);
         return (new SendApplicationToChatbotAPI())->postApi($this->getMappedData());
     }
 
     public function lockApp()
     {
+        // Set property type to residential if it is null
+        $this->setPropertyType();
+
         return $this->application->update(['is_locked' => true]);
     }
 
@@ -309,9 +312,8 @@ class GilbertToChatbotSyncService
     private function mapPropertyType($propertyType): ?string
     {
         return match ((int)$propertyType) {
-            1 => self::PROPERTY_TYPE_RESIDENTIAL,
             2 => self::PROPERTY_TYPE_BUSINESS,
-            default => null
+            default =>  self::PROPERTY_TYPE_RESIDENTIAL
         };
     }
 
@@ -341,6 +343,19 @@ class GilbertToChatbotSyncService
             ? RejectionReason::query()->whereIn('connection_service_id', $servicesId)->get()->toArray()
             : [];
 
+    }
+
+    /**
+     * Set property type
+     *
+     * @return void
+     */
+    public function setPropertyType(): void
+    {
+        if (!$this->application->property_type) {
+            $this->application->property_type = ConnectionApplication::PROPERTY_TYPE_RESIDENTIAL;
+            $this->application->save();
+        }
     }
 }
 
