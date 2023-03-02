@@ -71,7 +71,8 @@
                                 </v-checkbox>
                             </div>
 
-                            <div v-if="internetServiceInfo.is_need_home_phone && internetServiceInfo.is_existing_landline">
+                            <div
+                                v-if="internetServiceInfo.is_need_home_phone && internetServiceInfo.is_existing_landline">
                                 <div class="crm-text-field">
                                     <div class="field-label">
                                         <span>Homephone no.*</span>
@@ -267,29 +268,53 @@
                             </div>
 
                             <div class="crm-text-field">
-                                <v-btn outlined color="primary">
+                                <v-btn outlined class="outlined-btn" @click="sendGoodtelPaymentLink">
                                     Send payment link
                                     <v-icon class="ml-4">mdi-email</v-icon>
                                 </v-btn>
+                                <div>
+                                    <transition name="fade">
+                                        <small
+                                            class="snackbarDesign ml-2 mt-n4"
+                                            v-if="showPaymentLinkSnackbar"
+                                            transition="slide-y-transition">
+                                            <v-icon color="green" class="pt-0" size="15">mdi-check</v-icon>
+                                            Payment link sent!
+                                        </small>
+                                    </transition>
+                                </div>
                             </div>
 
                             <div class="crm-text-field">
                                 <div class="field-label">
-                                    <span>Payment Status</span>
+                                    <v-btn outlined class="mr-2 outlined-btn"
+                                           @click="copyToClipBoardGoodtelPaymentLink">
+                                        Copy Link
+                                        <v-icon class="ml-4">mdi-content-copy</v-icon>
+                                    </v-btn>
+                                    <div>
+                                        <transition name="fade">
+                                            <small
+                                                class="snackbarDesign mt-2"
+                                                v-if="showCopyBtnSnackbar"
+                                                transition="slide-x-transition">
+                                                <v-icon color="green" class="pt-0" size="15">mdi-check</v-icon>
+                                                Payment link copied!
+                                            </small>
+                                        </transition>
+                                    </div>
                                 </div>
                                 <div class="text-field">
-                                    <span>Pending/Valid/Invalid</span>
+                                    <v-text-field ref="goodtelPaymentLink"
+                                                  @focus="$event.target.select()"
+                                                  outlined
+                                                  dense
+                                                  readonly
+                                                  value="Text to be copied"
+                                    ></v-text-field>
                                 </div>
                             </div>
 
-                            <div class="crm-text-field">
-                                <div class="field-label">
-                                    <span>Payment Code</span>
-                                </div>
-                                <div class="text-field">
-                                    <span>0000</span>
-                                </div>
-                            </div>
                         </v-col>
                     </v-row>
                 </div>
@@ -354,6 +379,8 @@ export default {
             modemTypesItems: InternetService.getModemTypes(),
             charityItems: InternetService.getCharityItems(),
             activePlan: {},
+            showPaymentLinkSnackbar: false,
+            showCopyBtnSnackbar: false,
         }
     },
     computed: {
@@ -462,6 +489,20 @@ export default {
             }
             this.updateInternetServiceInfo();
         },
+        sendGoodtelPaymentLink() {
+            this.showPaymentLinkSnackbar = true;
+            setTimeout(() => {
+                this.showPaymentLinkSnackbar = false;
+            }, 2000);
+        },
+        copyToClipBoardGoodtelPaymentLink() {
+            this.$refs.goodtelPaymentLink.focus();
+            document.execCommand('copy');
+            this.showCopyBtnSnackbar = true;
+            setTimeout(() => {
+                this.showCopyBtnSnackbar = false;
+            }, 2000);
+        }
     }
 }
 </script>
@@ -503,5 +544,40 @@ export default {
 
 .flex-basis-20 {
     flex-basis: 20% !important;
+}
+
+.outlined-btn:hover {
+    border: 2px solid #542E89;
+    color: #ffffff;
+    background-color: #542E89;
+}
+</style>
+
+<style lang="scss" scoped>
+.snackbarDesign {
+    color: green;
+    font-weight: normal;
+    font-size: 14px;
+    padding: 5px 10px;
+    position: absolute;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0px 9px 24px 6px rgba(0, 0, 0, 0.22);
+    -webkit-box-shadow: 0px 9px 24px 6px rgba(0, 0, 0, 0.22);
+    -moz-box-shadow: 0px 9px 24px 6px rgba(0, 0, 0, 0.22);
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s;
+}
+
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
+{
+    opacity: 0;
 }
 </style>
