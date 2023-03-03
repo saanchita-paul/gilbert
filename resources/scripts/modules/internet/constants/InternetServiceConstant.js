@@ -1,22 +1,22 @@
 // Modem types
 export const MODEM_TYPES = [
-    {text: "BYO Modem", value: "BYO Modem"},
-    {text: "Standard Modem $225 once off", value: "Standard Modem $225 once off"},
-    {text: "Upgraded Modem $325 once off", value: "Upgraded Modem $325 once off"}
+    {text: "BYO Modem", value: "byo"},
+    {text: "Standard Modem $225 once off", value: "standard"},
+    {text: "Upgraded Modem $325 once off", value: "upgraded"},
 ];
 
 // Charity
 export const CHARITY = [
-    {text: "OzHarvest", value: "OzHarvest"},
-    {text: "Indigenous Literacy Foundation", value: "Indigenous Literacy Foundation"},
-    {text: "HeartKids", value: "HeartKids"},
-    {text: "National Breast Cancer Foundation", value: "National Breast Cancer Foundation"},
-    {text: "Asylum Seeker Resource Centre", value: "Asylum Seeker Resource Centre"},
-    {text: "ChildFund Australia", value: "ChildFund Australia"},
-    {text: "Rainforest Rescue", value: "Rainforest Rescue"},
-    {text: "Sleepbus", value: "Sleepbus"},
-    {text: "Burn Bright", value: "Burn Bright"},
-    {text: "Save-A-Dog Scheme", value: "Save-A-Dog Scheme"},
+    {text: "OzHarvest", value: "oz_harvest"},
+    {text: "Indigenous Literacy Foundation", value: "indigenous_literacy_foundation"},
+    {text: "HeartKids", value: "heart_kids"},
+    {text: "National Breast Cancer Foundation", value: "national_breast_cancer_foundation"},
+    {text: "Asylum Seeker Resource Centre", value: "asylum_seeker_resource_centre"},
+    {text: "ChildFund Australia", value: "child_fund_australia"},
+    {text: "Rainforest Rescue", value: "rainforest_rescue"},
+    {text: "Sleepbus", value: "sleepbus"},
+    {text: "Burn Bright", value: "burn_bright"},
+    {text: "Save-A-Dog Scheme", value: "save_a_dog-scheme"},
 ];
 
 export default {

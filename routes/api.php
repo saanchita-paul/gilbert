@@ -12,6 +12,7 @@ use App\Http\Controllers\Agency\NoteController;
 use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ReaExtractsReportController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\GoodtelController;
 use App\Http\Controllers\UserInvitationController;
 use App\Models\ConnectionApplication;
 use Powershop\Http\Controllers\PowerShopController;
@@ -223,7 +224,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     // Lock/unlock application routes
     Route::post('/applications/{id}/lock-or-unlock', [ApplicationController::class, 'lockUnlockApp']);
 
-     /***
+    /***
      * Application closing reasons route
      */
     Route::get('/app-close-reasons', [AppCloseReasonController::class, 'index']);
@@ -327,6 +328,10 @@ Route::post('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syn
  */
 Route::post('/application-events', [ApplicationEventController::class, 'saveEvent']);
 
+// GoodTel routes
+Route::get('goodtel/plans', [GoodtelController::class, 'getPlans']);
+Route::post('goodtel/plans', [GoodtelController::class, 'create']);
+
 /**
  * MRI
  */
@@ -376,7 +381,7 @@ Route::get('/applications/{applicationId}/{submitType}/same-day-connection', [Po
 
 Route::get('/kaka', function () {
     $m = new \App\Services\Address\AddressModel(connection_application_id: 2);
-    $s= new \App\Services\Address\GBGServices($m);
+    $s = new \App\Services\Address\GBGServices($m);
     dd($s->findAddressByText());
 
 });
