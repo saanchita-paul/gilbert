@@ -4,11 +4,9 @@ namespace Origin\Services;
 
 use Exception;
 use Carbon\Carbon;
-
 use Illuminate\Support\Facades\Log;
 use App\Models\ConnectionApplication;
 use App\Services\Address\AddressModel;
-
 use App\Models\ConnectionService;
 use App\Models\OriginPlan;
 use App\Models\RejectionReason;
@@ -44,7 +42,7 @@ class OriginService
 
     private function initiate($type){
         try {
-            if(!in_array($type, array_keys(self::MAP_SERVICE_TYPE))){
+            if (!in_array($type, array_keys(self::MAP_SERVICE_TYPE))) {
                 throw new \Exception(sprintf('%s:FAILED (Invalid type for lead submission)', self::class));
             }
 
@@ -57,22 +55,12 @@ class OriginService
                 ['provider_name', 'origin']
             ])->firstOrFail();
 
-            $connection_date = $application->moving_date;
+            if (empty($service->lead_reference)) {
+                $service->lead_reference = SubmitOrderAPI::getPartnerReferenceNumber($service->id);
+                $service->save();
+            }
 
-            // if(config('app.env') !== 'production'){
-            //     // local/dev fetch origin plan
-            //     $plan = $type == 'gas' ? GetPlans::getDummyGasPlan() : GetPlans::getDummyElecPlan();
-            //     $plan_customer_type_id = $plan->customer_type_id;
-            //     $plan_division_id = $plan->division_id;
-            //     $plan_product_id = $plan->product_id;
-            // }
-            // else {
-            //     // production fetch origin plan
-            //     $plan = GetPlans::getActivePlanByStateFuel(strtoupper(AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($application->state)]), $type == 'power' ? 'electricity': $type);
-            //     $plan_customer_type_id = $plan->customer_type_id;
-            //     $plan_division_id = $plan->division_id;
-            //     $plan_product_id = $plan->product_id;
-            // }
+            $connection_date = $application->moving_date;
 
             $plan = GetPlans::getActivePlanByStateFuel(strtoupper(AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($application->state)]), $type == 'power' ? 'electricity': $type);
             $plan_customer_type_id = $plan->customer_type_id;
@@ -115,6 +103,7 @@ class OriginService
 
             // 3. submit order
             $data = [
+                "partnerReferenceNumber" => $service->lead_reference,
                 "connection" => 'move',
                 "connectionDate" => $connection_date,
                 "isExistingCustomer" => false,
@@ -149,7 +138,7 @@ class OriginService
                 ],
             ];
 
-            if($application->is_billing_same != 1){
+            if($application->is_billing_same == 0){
                 $data['correspondenceAddress'] = [
                     'roomNo' => $application->billing_unit_number ?? '',
                     'roomType' => $application->billing_unit_number ? 'U' : '', // todo: create new column for unit/room type
@@ -214,7 +203,7 @@ class OriginService
             ]);
 
             $message = $exception->getMessage();
-            if($exception->getCode() == BaseOriginAPI::CODE_REJECT){
+            if ($exception->getCode() == BaseOriginAPI::CODE_REJECT) {
                 preg_match('/\[([^\)]*)\]/', $message, $codeMatch);
                 preg_match('/\(([^\)]*)\)/', $message, $messageMatch);
                 $this->saveRejectedStatus($this->applicationId, $service->id, $codeMatch[1], $messageMatch[1]);
@@ -244,7 +233,7 @@ class OriginService
 
         $service->save();
 
-        if(!empty($errorCode) && !empty($errorMessage)){
+        if (!empty($errorCode) && !empty($errorMessage)) {
 
             $newRejectReason = new RejectionReason();
             $newRejectReason->connection_service_id = $service->id;

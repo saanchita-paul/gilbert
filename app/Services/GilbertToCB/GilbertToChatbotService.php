@@ -1,21 +1,36 @@
 <?php
 
 namespace App\Services\GilbertToCB;
+
 use App\Models\ConnectionApplication;
 use App\Services\Address\AddressModel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
+use App\Services\Address\StreetTypeMapper;
 
 class GilbertToChatbotService
 {
-
     private array|Collection|ConnectionApplication|Model $application;
     const CONCESSION_MAPPER = [
         'DVA' => 1,
         'HCC' => 2,
         'PCC' => 3,
         'QSC' => 4
+    ];
+
+    // Inspection time mapper
+    const inspectionTimes = [
+        '8:00am - 1:00pm' => '8AM - 1PM',
+        '9:00am - 2:00pm' => '9AM - 2PM',
+        '10:00am - 3:00pm' => '10AM - 3PM',
+        '11:00am - 4:00pm' => '11AM - 4PM',
+        '12:00pm - 5:00pm' => '12AM - 5PM',
+        '1:00pm - 6:00pm' => '1PM - 6PM',
+
+        //Nsw
+        '8:00am - 12:00pm' => '8AM - 12PM',
+        '1:00pm - 5:00pm' => '1PM - 5PM',
     ];
 
 
@@ -36,17 +51,15 @@ class GilbertToChatbotService
      */
     public function create()
     {
-        $url = config('bot.root_url') .'/api/gilbert-application';
+        $url = config('bot.root_url') . '/api/gilbert-application';
         $response = Http::post($url, $this->getProperties());
-        if($response->status() === 201){
-            $this->application->update(['chatbot_id' => $response->json()['moving_utility_id']]);
+        if ($response->status() === 201) {
+            $this->application->update(['chatbot_id' => $response->json()['moving_utility_id'], 'is_locked' => true]);
         } else {
             \Log::error(json_encode($response->body()));
             throw new \Exception('Send to Chatbot is not successful');
         }
     }
-
-
 
 
     private function getProperties(): array
@@ -67,7 +80,7 @@ class GilbertToChatbotService
             "rent" => $this->mapTenancyType($this->application->tenancy_type),
             "dob" => $this->application->dob,
             "moved_at" => $this->application->moving_date,
-            "flat_or_unit_number" => $this->application->address_unit,
+            "flat_or_unit_number" => $this->application->address_unit ?? ($this->application->unit_number ?? null),
             "street_address" => $this->application->street_address,
             "street_number" => $this->application->street_number,
             "street_name" => $this->application->street_name,
@@ -80,12 +93,12 @@ class GilbertToChatbotService
             "reason" => $this->application->reason,
             "billing_preference" => $this->mapbillingType($this->application->is_email_billing),
             "account_type" => $this->application->property_type,
-            "is_property_on_life_support" => $this->application->has_life_support,
+            "is_property_on_life_support" => $this->application->is_power_life_support,
             "solar_panel" => $this->application->has_solar,
             "nmi" => $this->application->nmi,
             "mirn" => $this->application->mirn,
             "supplier" => $this->application->supplier,
-            "unit_number" => $this->application->unit_number,
+            "unit_number" => $this->application->unit_number ?? ($this->application->address_unit ?? null),
             "plan_type" => $this->application->plan_type,
             "status" => $this->application->status,
             "hubspot_contact_id" => $this->application->hubspot_contact_id,
@@ -104,7 +117,7 @@ class GilbertToChatbotService
             "is_renovation_on" => $this->application->is_renovation_on,
             "vendor_id" => $this->application->vendor_id,
             "homephone" => $this->application->homephone,
-            "qld_vis_inspection_time" => $this->application->inspection_time,
+            "qld_vis_inspection_time" => $this->application->inspection_time ? self::inspectionTimes[$this->application->inspection_time] : null,
             "family_violance" => $this->application->family_violance,
             "source" => $this->application->source,
             "is_contacted" => $this->application->is_contacted,
@@ -121,8 +134,8 @@ class GilbertToChatbotService
             "international_phone" => $this->application->international_phone,
             "after_hour_payee" => $this->application->after_hour_payee,
             "after_hour_flag" => $this->application->after_hour_flag,
-            "street_type" => $this->application->street_type,
-            "billing_street_type" => $this->application->billing_street_type,
+            "street_type" => StreetTypeMapper::getShortForm($this->application->street_type),
+            "billing_street_type" => StreetTypeMapper::getShortForm($this->application->billing_street_type),
             "mannual_address" => $this->application->mannual_address,
             "billing_mannual_address" => $this->application->billing_mannual_address,
             "is_address_complete" => $this->application->is_address_complete,
@@ -164,10 +177,10 @@ class GilbertToChatbotService
             "promotion_code" => $this->application->promotion_code,
             "promotion_terms_and_conditions_accepted_at" => $this->application->promotion_terms_and_conditions_accepted_at,
             "is_generated_caf" => $this->application->is_generated_caf,
-            "connection_services" =>$this->application->connectionServices ?  $this->application->connectionServices->toArray() : [],
-            "identification" =>$this->application->identification ?  $this->application->identification->toArray() : null,
-            "authorized_person" =>$this->application->authorizedPerson ?  $this->application->authorizedPerson->toArray() : null
-          ];
+            "connection_services" => $this->application->connectionServices ? $this->application->connectionServices->toArray() : [],
+            "identification" => $this->application->identification ? $this->application->identification->toArray() : null,
+            "authorized_person" => $this->application->authorizedPerson ? $this->application->authorizedPerson->toArray() : null
+        ];
     }
 
     public function mapConcessionCardType($data)
@@ -177,7 +190,7 @@ class GilbertToChatbotService
 
     private function mapTenancyType($tenancyType)
     {
-        return match((int) $tenancyType) {
+        return match ((int)$tenancyType) {
             1 => 1,
             2 => 0,
             default => null
@@ -186,13 +199,12 @@ class GilbertToChatbotService
 
     private function mapbillingType($billingType)
     {
-        return match((int) $billingType) {
+        return match ((int)$billingType) {
             1 => 'email',
             0 => 'connection_address',
             default => null
         };
     }
-
 
 
 }

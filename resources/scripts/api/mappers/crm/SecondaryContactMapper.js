@@ -17,7 +17,7 @@ export default {
     mapServerData(contact) {
         return {
             ...contact,
-            dob: dayjs(contact.dob).format(DATE_FORMAT.DB_DATE),
+            dob: contact.dob ? dayjs(contact.dob).format(DATE_FORMAT.DB_DATE) : null,
             role:
                 contact.role === 1
                     ? "Enquiry Only"

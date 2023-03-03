@@ -27,8 +27,8 @@ class FoxieController extends Controller
                 "message" => "Hood lead has been added successfully"
             ];
 
-            // hubspot api call for creation
             CreateApplicationEvent::dispatch($connectionApplication->id);
+
             return response($response, 200);
         } catch (\Exception $ex) {
             //throw $th;

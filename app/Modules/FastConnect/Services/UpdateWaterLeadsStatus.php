@@ -240,6 +240,4 @@ class UpdateWaterLeadsStatus
 
         return $this;
     }
-
-
 }

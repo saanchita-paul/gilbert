@@ -68,6 +68,24 @@ function mapServiceStatus(service) {
 
 }
 
+function mapModelColor(service, caf_generation_status, connection_type) {
+
+    // if(caf_generation_status === 'CAF Submitted')
+    // {
+    //     return false;
+    // }
+
+    if(connection_type === 'Temporary')
+    {
+        return true;
+    }
+    return service.find(sv  => {
+        return (['electricity', 'gas'].includes(sv.service_type) && (
+            ['rejected', 'not submitted'].includes(sv.status?.toLowerCase()) || (sv.status == null)));
+    });
+
+}
+
 const mapApplicationCafFile = data => {
     let model = new ApplicationCafFile({...data});
     model.service_type = mapService(model.service);
@@ -80,6 +98,7 @@ const mapApplicationCafFile = data => {
     model.status = mapServiceStatus(model.service)
     model.is_selected = false;
     model.services = model.service;
+    model.color = !!mapModelColor(model.service, model.caf_generation_status, model.connection_type);
     return model;
 }
 
@@ -151,5 +170,9 @@ export default {
             return null;
 
         }
+    },
+
+    mapChatbotSingleApplication(app) {
+        return mapApplicationCafFile(app);
     }
 }

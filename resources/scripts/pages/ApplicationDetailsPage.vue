@@ -7,15 +7,18 @@
                 :services="services"
                 @closeApplicationWithReason="closeApplicationWithReason"
                 @closeApplication="closeApplication"
+                @sendToChatBotConfirmModal="sendToChatBotConfirmModal"
                 @sendToChatBot="sendToChatBot"
                 @eacalate="eacalate"
                 @updateLead="updateLead"
                 @readMore="readMore"
                 :leadSummary="leadSummary"
                 @updateAddress="updateAddress"
+                @loadPlanNoteAndLead="loadPlanNoteAndLead"
                 @updateDraft="updateDraft"
                 @duplicateLead="duplicatedLead"
-                @loadPlanNoteAndLead="loadPlanNoteAndLead"
+                :isLocked="isLocked"
+                :isInvalidEmail="isInvalidEmail"
             ></LeadUserDetails>
         </ValidationObserver>
 
@@ -44,11 +47,6 @@
         <SendToChatBotModal v-if="closeSentConfirm" :dialog="closeSentConfirm" :title="fullName"
                             @done="done"></SendToChatBotModal>
 
-        <ChatbotInChargeModal v-if="isChatbotInCharge" :dialog="isChatbotInCharge"
-                              :title="fullName"></ChatbotInChargeModal>
-
-        <!-- <CloseApplicationModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></CloseApplicationModal> -->
-
         <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag"
                            :readmore="additionalInstruction"
                            @close="closeReadMore"></LeadReadMoreModal>
@@ -69,6 +67,17 @@
 
         <DuplicateLeadModal v-if="duplicateLead" :dialog="duplicateLead" @cancelDuplicateLead="cancelDuplicateLead"
                             :duplicateGroupId="leadSummary.duplication_group_id"></DuplicateLeadModal>
+
+        <ApplicationUnlockModal v-if="isChatBotApplication" :dialog="isChatBotApplication"
+                                @openUnlockConfirmModal="openUnlockConfirmModal"
+                                @escalate="eacalate" @closeApp="closeApplicationWithReason"></ApplicationUnlockModal>
+        <ApplicationUnlockConfirmModal v-if="showUnlockConfirmModal" :dialog="showUnlockConfirmModal"
+                                       @closeUnlockConfirmModal="closeUnlockConfirmModal"
+                                       @confirmUnlock="unlockApp"></ApplicationUnlockConfirmModal>
+        <SendToChatbotConfirmModal v-if="sentToChabotConfirmModal"
+                                   :dialog="sentToChabotConfirmModal"
+                                   @continueSendToChatBot="lockApp"
+                                   @cancelSendToChatBotConfirmModal="cancelSendToChatBotConfirmModal"></SendToChatbotConfirmModal>
     </v-container>
 </template>
 
@@ -93,15 +102,15 @@ import ChatbotService from "@scripts/services/crm/ChatbotService";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import Store from '@scripts/store/index';
 import SendToChatBotModal from "@scripts/components/crm/modals/SendToChatBotModal";
-import ChatbotInChargeModal from "@scripts/components/crm/modals/ChatbotInChargeModal";
 import DuplicateLeadModal from "@scripts/components/crm/modals/DuplicateLeadModal";
-
-
+import ApplicationUnlockModal from "@scripts/components/crm/modals/ApplicationUnlockModal";
+import ApplicationUnlockConfirmModal from "@scripts/components/crm/modals/ApplicationUnlockConfirmModal";
+import SendToChatbotConfirmModal from "@scripts/components/crm/modals/SendToChatbotConfirmModal";
+import GBGService from "@scripts/services/GBGService";
 export default {
     //todo shift afterHourFlag, nextBusinessDay, getElectricityDistributor to powerService
     name: "ApplicationDetailsPage",
     components: {
-        ChatbotInChargeModal,
         SendToChatBotModal,
         LeadReadMoreModal,
         EscalationConfirmModal,
@@ -115,13 +124,15 @@ export default {
         AssignedToUserEmptyModal,
         PreventSubmissionModal,
         GasOnlyCanNotSubmitModal,
-        DuplicateLeadModal
+        DuplicateLeadModal,
+        ApplicationUnlockModal,
+        ApplicationUnlockConfirmModal,
+        SendToChatbotConfirmModal
     },
-
     data() {
         return {
             afterHourEffectedField: ['moving_date', 'plan_type'],
-            nmiMernFlag: true,
+            nmiMernFlag: false,
             leadId: null,
             leadSummary: null,
             notes: null,
@@ -156,8 +167,16 @@ export default {
             gasOnlyNotSubmitDialog: false,
             serviceSubmitType: null,
             closeSentConfirm: false,
-            isChatbotInCharge: false,
-            duplicateLead: false
+            duplicateLead: false,
+            isChatBotApplication: false,
+            showUnlockConfirmModal: false,
+            sentToChabotConfirmModal: false,
+            chatbotData: {
+                is_sent_to_chatbot: false,
+                chatbot_id: null,
+                is_locked: false,
+            },
+            isInvalidEmail: false
         }
     },
     computed: {
@@ -180,23 +199,24 @@ export default {
         gasPlan() {
             return UtilityStoreService.getGasPlan();
         },
-
+        isLocked() {
+            return this.chatbotData.chatbot_id !== null && !this.chatbotData.is_locked;
+        },
     },
     methods: {
-        async getElectricityDistributor()
-        {
-            if(!isNull(this.powerPlan) && this.powerProvider === 'ea') {
+        async getElectricityDistributor() {
+            if (!isNull(this.powerPlan) && this.powerProvider === 'ea') {
                 this.eaElectricityDistributor = await EAAfterHourService.getElectricityDistributor(this.leadSummary.service_interests,
                     this.powerPlan, this.leadSummary?.postcode, this.leadSummary?.state);
             }
         },
-        async loadPlanNoteAndLead()
-        {
+        async loadPlanNoteAndLead() {
             this.notes = await LeadApplicationService.loadNote(this.leadId);
             this.leadSummary = await LeadApplicationService.loadUserLead(this.leadId);
             this.lead = this.leadSummary;
             this.services = this.leadSummary?.service_interests;
             this.planNoteFlag = true;
+            this.nmiMernFlag = this.leadSummary.loading_address_info;
             UtilityStoreService.setUtilityDetails(this.leadSummary.connection_services);
         },
         updateNote() {
@@ -211,7 +231,6 @@ export default {
         cancelClose() {
             this.closeLead = false;
         },
-
         async sucessSaveClose(closeReason) {
             try {
                 await LeadApplicationService.closeApplicationWithReason(this.leadId, closeReason);
@@ -235,6 +254,9 @@ export default {
             } catch (error) {
                 // console.log('closeApplication error' , erro);
             }
+        },
+        async sendToChatBotConfirmModal() {
+            this.sentToChabotConfirmModal = true;
         },
         async sendToChatBot() {
             try {
@@ -263,17 +285,21 @@ export default {
             this.readMoreFlag = false;
         },
         updateLead(lead) {
+            this.isInvalidEmail = false;
             this.fullName = lead.person_details.first_name + ' ' + lead.person_details.last_name;
             this.lead = lead;
         },
         async submitConnection(submitType) {
             let v = await this.validateLead();
             let isProperAddress = await this.isProperAddress();
-
             if (!isProperAddress) Store.commit('setInvalidAddress', true);
-
             if (!v || !isProperAddress) return;
-
+            if (!this.lead.person_details.email_manually_verified_by) {
+                await this.gbgEmailValidate();
+            }
+            if (this.isInvalidEmail) {
+                return;
+            }
             let assignedHoodUser = await this.getAssignedHoodUser();
             if (!assignedHoodUser) {
                 this.assignedToDialog = true;
@@ -305,9 +331,7 @@ export default {
             return await LeadApplicationService.getAssignedHoodUser(this.leadId);
         },
         isWaterUnavailable($submitType, $state, $tenantType) {
-
             const rightState = ['vic', 'victoria'].includes($state?.toLowerCase());
-
             if ($submitType === 'water' && !rightState) {
                 this.preventSubmissionMessage = 'Water is not available outside Victoria';
                 return true;
@@ -318,8 +342,16 @@ export default {
             }
             return false;
         },
-
-
+        async gbgEmailValidate() {
+            this.isInvalidEmail = false;
+            try {
+                const res = await GBGService.validateEmail(this.leadSummary.email);
+                this.isInvalidEmail = !res;
+            } catch (error) {
+                this.isInvalidEmail = true;
+            }
+            return this.isInvalidEmail;
+        },
         closePreventSubmissionModal() {
             this.preventSubmissionFlag = false;
         },
@@ -334,12 +366,10 @@ export default {
             let payload = null;
             if (this.lead.property_details === undefined) {
                 payload = {...this.lead};
-
             } else {
                 if (this.lead?.indentification?.medicare_expire_date) {
                     delete this.lead.indentification.medicare_expire_date;
                 }
-
                 payload = {
                     ...this.lead.property_details,
                     ...this.lead.person_details,
@@ -360,10 +390,8 @@ export default {
             this.leadSummary.street_address = address.street_address
             this.leadSummary.city = address.city
             this.leadSummary.is_billing_same = address.is_billing_same
-
             this.leadSummary.billing_address_text = address.billing_address_text
             this.leadSummary.billing_street_address = address.billing_street_address
-
             this.leadSummary.postcode = address.postcode
             this.leadSummary.state = address.state
             this.leadSummary.street_number = address.street_number
@@ -375,36 +403,33 @@ export default {
             this.leadSummary.billing_street_name = address.billing_street_name_only
             this.leadSummary.billing_street_name_only = address.billing_street_name_only
             this.leadSummary.billing_unit_number = address.billing_unit_number
-            this.nmiMernFlag = true;
-            this.leadSummary.nmi = '';
-            this.leadSummary.mirn = '';
             let response = await LeadApplicationService.updateAddress(address, this.leadId);
+            console.log('updateAddress response', response);
             this.leadSummary.nmi = response.nmi;
+            this.leadSummary.embedded_nmi = response.embedded_nmi;
             this.leadSummary.mirn = response.mirn;
-            this.nmiMernFlag = false;
-
+            this.nmiMernFlag = response.loading_address_info;
             await this.getElectricityDistributor();
             await this.loadNextBusinessDay();
         },
-
         async updateDraft(field, value, isDate, identification, isManualChangeFlag) {
             if (isNull(value)) return;
-
+            this.isInvalidEmail = false;
             if (isDate) {
                 if (field == 'dob' && dayjs(value, 'DD/MM/YYYY').isSame(this.leadSummary.dob)) {
                     return;
                 }
-
                 if (field == 'moving_date' && dayjs(value, 'DD/MM/YYYY').isSame(this.leadSummary.moving_date)) {
                     return;
                 }
-
                 if (field == 'expire_date' && dayjs(value, 'DD/MM/YYYY').isSame(this.leadSummary.identification.expire_date)) {
                     return;
                 }
             }
-            await LeadApplicationService.saveSoleField(field, value, this.leadId, isDate, identification, false);
-
+            const res = await LeadApplicationService.saveSoleField(field, value, this.leadId, isDate, identification, false);
+            // Is embedded change
+            this.leadSummary.embedded_nmi = res.data.data.embedded_nmi;
+            this.leadSummary.loading_address_info = res.data.data.loading_address_info;
             let [day, month, year] = [];
             if (isDate) {
                 [day, month, year] = value.split('/');
@@ -420,7 +445,6 @@ export default {
                     this.leadSummary.identification.state = '';
                     this.leadSummary.identification.country = '';
                 }
-
                 this.leadSummary.identification[field] = value;
                 return;
             }
@@ -437,6 +461,7 @@ export default {
                 const nmiMern = await LeadApplicationService.getNmiMern(this.leadId);
                 this.leadSummary.nmi = nmiMern.nmi;
                 this.leadSummary.mirn = nmiMern.mirn;
+                this.leadSummary.embedded_nmi = nmiMern.embedded_nmi;
             }
         },
         closeAssignedToEmptyModal() {
@@ -468,11 +493,55 @@ export default {
         cancelDuplicateLead() {
             this.duplicateLead = false;
         },
-
-
         // async updateEmail(field, value) {
         //     await LeadApplicationService.saveEmailField(field, value, this.leadId);
         // },
+        closeUnlockConfirmModal() {
+            this.showUnlockConfirmModal = false;
+            this.isChatBotApplication = true;
+        },
+        async openUnlockConfirmModal() {
+            this.isChatBotApplication = false;
+            this.showUnlockConfirmModal = true;
+        },
+        async unlockApp() {
+            const res = await LeadApplicationService.lockOrUnlockApp(this.leadId, {is_locked: false});
+            console.log(res);
+            if (res.success) {
+                this.showUnlockConfirmModal = false;
+                await this.getIsLocked();
+            }
+        },
+        async lockApp() {
+            const res = await LeadApplicationService.sendToChatBot(this.leadId);
+            if (res.success) {
+                this.sentToChabotConfirmModal = false;
+                await this.getIsLocked();
+            }
+        },
+        async getIsLocked() {
+            const res = await LeadApplicationService.isSentToChatbot(this.leadId);
+            this.chatbotData = res;
+            this.isChatBotApplication = res.chatbot_id && res.is_locked;
+        },
+        cancelSendToChatBotConfirmModal() {
+            this.sentToChabotConfirmModal = false;
+        },
+        listenMirnNmiEvent() {
+            this.$echo.channel(`fetchMirnNmi.${this.leadSummary.id}`)
+                .listen('FetchMirnNmiEvent', async (res) => {
+                    this.nmiMernFlag = res.loading_address_info;
+                    await this.loadPlanNoteAndLead();
+                });
+        },
+        listenEmbeddedNetworkEvent() {
+            this.$echo.channel(`fetchEmbeddedNetwork.${this.leadSummary.id}`)
+                .listen('FetchEmbeddedNetworkEvent', async (res) => {
+                    console.log('FetchEmbeddedNetworkEvent', res);
+                    this.nmiMernFlag = res.loading_address_info;
+                    await this.loadPlanNoteAndLead();
+                });
+        }
     },
     watch: {
         powerPlan: {
@@ -483,6 +552,8 @@ export default {
         },
     },
     async mounted() {
+        this.leadId = this.$route.params.id;
+        await this.getIsLocked();
         const validateEvent = async (callback) => {
             let v = await this.validateLead();
             if (!v) return;
@@ -493,26 +564,21 @@ export default {
         }
         this.$eventBus.$on("validate", validateEvent);
         this.$eventBus.$on("busUtilitySubmit", busUtilitySubmitEvent);
-
         this.$once("hook:beforeDestroy", () => {
             this.$eventBus.$off("validate", validateEvent);
         });
-
         this.$once("hook:beforeDestroy", () => {
             this.$eventBus.$off("busUtilitySubmit", busUtilitySubmitEvent);
         });
-
-        this.leadId = this.$route.params.id;
         await this.loadPlanNoteAndLead();
         await this.loadNextBusinessDay();
-        await this.updateMernNmi();
-        this.nmiMernFlag = false;
-
-
-        let isSentToChatBot = await LeadApplicationService.isSentToChatbot(this.leadId);
-        if (isSentToChatBot) {
-            this.isChatbotInCharge = isSentToChatBot;
-        }
+        // await this.updateMernNmi();
+        // this.nmiMernFlag = false;
+        this.$eventBus.$on("lock_app_auto_assign", async () => {
+            await this.lockApp();
+        });
+        this.listenMirnNmiEvent();
+        this.listenEmbeddedNetworkEvent();
 
         this.$eventBus.$on("nbn_submit_validate", async () => {
             return await this.validateLead();
@@ -520,7 +586,4 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-</style>
 

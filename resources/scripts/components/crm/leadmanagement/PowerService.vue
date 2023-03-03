@@ -27,13 +27,17 @@
                 Which supplier would you like to connect with?
             </p>
             <div class="d-flex align-content-lg-space-around mt-2">
-                <ServiceProvider
-                    @onSelectProvider="onSelectProvider(provider.name)"
-                    v-for="provider in providers"
-                    :key="provider.name"
-                    :selectedProvider="selectedProvider"
-                    :provider="provider"
-                ></ServiceProvider>
+                <v-sheet class="max-width">
+                    <v-slide-group center-active show-arrows>
+                        <v-slide-item v-for="provider in providers" :key="provider.name">
+                            <ServiceProvider
+                                @onSelectProvider="onSelectProvider(provider.name)"
+                                :selectedProvider="selectedProvider"
+                                :provider="provider"
+                            ></ServiceProvider>
+                        </v-slide-item>
+                    </v-slide-group>
+                </v-sheet>
             </div>
         </v-col>
         <v-col cols="12">
@@ -117,6 +121,17 @@
                     @change="changeGoNeutral">
                 </v-checkbox>
                 <p class="neutral-checkbox-text">Customer opts in for <span class="font-weight-bold">Go Neutral</span>.</p>
+            </div>
+
+            <div class="d-flex" v-if="selectedProvider === 'first_energy'">
+                <FirstEnergyPlan
+                    :class="{'not-editable': !isServiceEditable }"
+                    v-for="plan in firstEnergyPlans"
+                    :key="plan.name"
+                    :plan="plan"
+                    :isActive="selectedPlan"
+                    @click.native="selectPlan(plan)"
+                ></FirstEnergyPlan>
             </div>
         </v-col>
         <v-col cols="12" v-if="selectedProvider === 'powershop'">
@@ -221,6 +236,7 @@ import PowershopService from "@scripts/modules/powershop/services/PowershopServi
 import OriginService from "@scripts/modules/origin/services/OriginService";
 import OriginMapper from "@scripts/modules/origin/api/mappers/OriginMapper";
 import ProviderPlan from "@scripts/models/crm/ProviderPlan";
+import FirstEnergyPlan from "@scripts/components/crm/leadmanagement/FirstEnergyPlan";
 
 export default {
     //todo reduce emit functions
@@ -239,6 +255,7 @@ export default {
         OriginPlanDetails,
         SumoPlanDetails,
         PaymentDetails,
+        FirstEnergyPlan
     },
     props: {
         leadSummary: {
@@ -378,6 +395,9 @@ export default {
         getPowerShopPlans() {
             return this.powerShopData?.plans?.electricity?.vdo || [];
         },
+        firstEnergyPlans() {
+            return this.providers.find((item) => item.name === 'first_energy').plans || [];
+        }
     },
     mounted() {
         this.loadSelectedProviderAndPlan();
@@ -413,7 +433,7 @@ export default {
                 this.getOriginData();
             if (loadAll || this.selectedProvider == 'powershop')
                 this.getPowershopData();
-            if (loadAll || this.selectedProvider == 'sumo') 
+            if (loadAll || this.selectedProvider == 'sumo')
                 setTimeout(() => this.$eventBus.$emit("validate", this.fetchSumoPlans), 600);
         },
         async fetchEaPlans() {
@@ -456,7 +476,7 @@ export default {
         onSelectProvider(provider) {
             this.resetSelectedPlan();
             this.selectedProvider = provider;
-            
+
             this.loadSelectedProviderAndPlan();
         },
         selectEAPlan(plan, isManual = false) {

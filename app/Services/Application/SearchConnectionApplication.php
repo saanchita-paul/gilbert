@@ -4,7 +4,6 @@ namespace App\Services\Application;
 
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
-use App\Models\ConnectionService;
 use App\Models\User;
 use App\Modules\Reporting\Services\SetDateRage;
 use App\Services\FullTextSearch\FullTextQueryInterface;
@@ -49,6 +48,7 @@ class SearchConnectionApplication
     private Builder $builder;
     private ?int $tenancyType;
     private ?int $triage;
+    private ?int $assignee;
     private $officeId;
 
     private $appId;
@@ -87,9 +87,10 @@ class SearchConnectionApplication
         $this->appId = !empty($request['app_id']) ? $request['app_id'] : null;
         $this->agentId = !empty($request['agent_id']) ? $request['agent_id'] : null;
         $this->tenantEmail = !empty($request['tenant_email']) ? $request['tenant_email'] : null;
-        $this->provider = !empty($request['provider_name']) ? $request['provider_name'] : null;
+        $this->provider = !empty($request['provider_name']) ?  $request['provider_name'] : null;
         $this->isDuplicate = !empty($request['is_duplicate']) ? (bool)$request['is_duplicate'] : false;
         $this->duplication_group_id = !empty($request['duplication_group_id']) ? $request['duplication_group_id'] : null;
+        $this->assignee = !empty($request['assignee']) ? $request['assignee'] : null;
 
         !empty($request['moving_date']) && $this->setDateRangeNoTz($request['moving_date'], $request['moving_date']);
 
@@ -137,6 +138,7 @@ class SearchConnectionApplication
             ->applyFilterTenantEmail()
             ->applyFilterByProvider()
             ->applyDuplicateFilter()
+            ->applyAssigneeFilter()
             ->applyDateRangeFilter()
             ->applyFilterByService()
             ->applySearch();
@@ -361,11 +363,16 @@ class SearchConnectionApplication
     private function applyFilterByProvider(): static
     {
         if ($this->provider) {
-            $this->builder = $this->builder->whereHas('connectionServices', function (Builder $query) {
-                $query->where('provider_name', $this->provider);
+            $providerList = $this->mapProviderList($this->provider);
+            $this->builder = $this->builder->whereHas('connectionServices', function (Builder $query) use ($providerList) {
+                $query->whereIn('provider_name', $providerList);
             });
         }
         return $this;
+    }
+
+    private function mapProviderList($providers){
+        return explode(",", $providers);
     }
 
     private function applyDuplicateFilter(): static
@@ -395,6 +402,19 @@ class SearchConnectionApplication
             $this->builder = $this->builder
                 ->where('created_at', '>=', $this->dateStart)
                 ->where('created_at', '<=', $this->dateEnd);
+        }
+        return $this;
+    }
+
+    /**
+     * Apply assignee filter
+     *
+     * @return $this
+     */
+    private function applyAssigneeFilter(): static
+    {
+        if ($this->assignee) {
+            $this->builder = $this->builder->where('assigned_to', $this->assignee);
         }
         return $this;
     }

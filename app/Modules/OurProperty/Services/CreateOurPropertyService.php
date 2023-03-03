@@ -126,7 +126,9 @@ class CreateOurPropertyService
             $this->createService($requestData->tenancy_service_type, $this->connectionApplicaton->id);
             $this->createAuthorizedPerson($this->connectionApplicaton->id);
             NotifyAgentAfterLeadCreation::dispatch($this->connectionApplicaton->id);
+
             CreateApplicationEvent::dispatch($this->connectionApplicaton->id);
+
         } catch (Exception $ex) {
             \Log::error("Lead create successful, Identification or Service or Authorization creation fail");
             \Log::error($ex->getMessage());

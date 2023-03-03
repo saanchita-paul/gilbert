@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\ConnectionApplicationStatusChangeEvent;
 use ExternalLead\Models\TApp;
 use Foxie\Models\SugerLead;
 use Ignite\Models\IgniteLead;
@@ -10,8 +11,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Notifications\Notifiable;
 use OurProperty\Models\OurProperty;
-use phpDocumentor\Reflection\Utils;
 use PropertyMe\PropertyMeLead;
 use Carbon\Carbon;
 
@@ -67,6 +68,7 @@ use Carbon\Carbon;
  * @property int|null $supplier
  * @property int|null $plan_type
  * @property int|null $status
+ * @property int|null $is_embedded
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Agency $agency
@@ -118,7 +120,7 @@ use Carbon\Carbon;
  */
 class ConnectionApplication extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -234,7 +236,16 @@ class ConnectionApplication extends Model
         'gas_life_support_accepted_at',
         'app_close_reason_id',
         'chatbot_id',
+        'is_locked',
+        'mri_application_id',
         'status_log_id',
+        'is_embedded',
+        'loading_address_info',
+        'embedded_nmi',
+        'mirn_score',
+        'nmi_score',
+        'suggested_nmi',
+        'assigned_at'
     ];
 
 
@@ -312,6 +323,7 @@ class ConnectionApplication extends Model
     public const SOURCE_PROPERTY_ME = 5;
     public const SOURCE_HOOD_LEAD = 10;
     public const SOURCE_T_APP = 11;
+    public const SOURCE_MRI = 12;
 
     public const EMAIL_BILLING_EMAIL = 1;
     public const EMAIL_BILLING_PAPER = 2;
@@ -334,8 +346,8 @@ class ConnectionApplication extends Model
     public const LEAD_SUBMIT_TYPE_WATER = 'water';
 
     public const PROPERTY_TYPE_MAPPING = [
-        'residential' => self::TENANCY_TYPE_RENTER,
-        'business' => self::TENANCY_TYPE_HOME_OWNER
+        'residential' => self::PROPERTY_TYPE_RESIDENTIAL,
+        'business' => self::PROPERTY_TYPE_BUSINESS
     ];
 
     public const TENANCY_MAPPING = [
@@ -361,6 +373,7 @@ class ConnectionApplication extends Model
         'property_me' => self::SOURCE_PROPERTY_ME,
         'hood_ai' => self::SOURCE_HOOD_LEAD,
         't_app' => self::SOURCE_T_APP,
+        'mri' => self::SOURCE_MRI,
     ];
 
     public const PLAN_TYPE_MAPPER = [
@@ -385,6 +398,7 @@ class ConnectionApplication extends Model
         self::SOURCE_PROPERTY_ME => 'Propertyme',
         self::SOURCE_HOOD_LEAD => "Hood.ai",
         self::SOURCE_T_APP => "tApp",
+        self::SOURCE_MRI => "MRI",
     ];
 
     public const PLAN_TYPE_REVERSE_MAPPER = [
@@ -420,6 +434,18 @@ class ConnectionApplication extends Model
         self::ACCESS_KEYS_LETTER,
         self::ACCESS_CUSTOMER_CONSULTATION
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($model) {
+            if ($model->chatbot_id && $model->isDirty('status')) {
+                \Log::info('Lead status changed!');
+                event(new ConnectionApplicationStatusChangeEvent($model->id));
+            }
+        });
+    }
 
     /**
      * @return BelongsTo
@@ -559,6 +585,13 @@ class ConnectionApplication extends Model
         return $this->hasOne(AppCloseReason::class, 'app_close_reason_id');
     }
 
+    /**
+     * @return BelongsTo
+     */
+    public function mriApplication()
+    {
+        return $this->belongsTo(MriApplication::class);
+    }
 
     /**
      * saving fast connect customer ref
@@ -582,6 +615,7 @@ class ConnectionApplication extends Model
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agency_name,
             ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agency_name,
             ConnectionApplication::SOURCE_T_APP => $this->tApp?->agency_name,
+            ConnectionApplication::SOURCE_MRI => $this->office?->name,
             default => ''
         };
     }
@@ -595,6 +629,9 @@ class ConnectionApplication extends Model
             ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agent_name,
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agent_name,
             ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agent_name,
+            ConnectionApplication::SOURCE_MRI =>
+                $this->createdBy ? $this->createdBy->first_name . ' ' . $this->createdBy->last_name :
+                $this->mriApplication?->mriProperty?->mriAgents()?->first()?->agent_name,
             default => ''
         };
     }
@@ -632,6 +669,7 @@ class ConnectionApplication extends Model
 
             for ($i = count($arr) - 1; $i >= 0; $i--) {
                 $asciiVal = intval(ord($arr[$i]));
+
                 if ($isDouble) {
                     $asciiVal *= 2;
                 }
@@ -672,6 +710,19 @@ class ConnectionApplication extends Model
                 return $gas;
             }
         }
+    }
+
+    public function getSalesReferenceIdAttribute()
+    {
+        $ref = ConnectionService::where('connection_application_id', $this->id)
+                ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
+                ->pluck('lead_reference');
+
+        if (!empty($ref)) {
+            return implode(',', $ref->toArray());
+        }
+
+        return '';
     }
 
     public function internetServiceInfo(): HasOne

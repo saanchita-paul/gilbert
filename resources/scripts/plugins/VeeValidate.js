@@ -157,7 +157,6 @@ extend('adult', {
 extend('valid-date', {
     message: field => `DD/MM/YYYY is valid format - ${field}`,
     validate(value) {
-        console.log("dayJs(value, 'DD/MM/YYYY').isValid()", dayJs(value, 'DD/MM/YYYY').isValid())
         return dayJs(value, 'DD/MM/YYYY').isValid();
     }
 });

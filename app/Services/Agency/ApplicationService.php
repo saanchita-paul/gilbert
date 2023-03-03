@@ -2,9 +2,9 @@
 
 namespace App\Services\Agency;
 
+use App\Jobs\FetchEmbeddedNetworkJob;
 use App\Jobs\GilbertToChatbotJob;
 use App\Jobs\UpdateHubspotContactJob;
-use App\Models\AgentProfile;
 use App\Models\AppCloseReason;
 use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
@@ -12,12 +12,9 @@ use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use App\Models\HoodProfile;
 use App\Models\Identification;
-use App\Models\InternetServiceInfo;
 use App\Models\Office;
-use App\Models\PowershopPaymentInfo;
 use App\Models\User;
 use App\Services\RolePermission;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use TSA\Services\TsaSendAppliationService;
@@ -39,6 +36,8 @@ class ApplicationService
         $application['agency_id'] = $agentProfile->agency_id;
         $application['created_by'] = $agentProfile->id;
         $application['status'] = ConnectionApplication::STATUS_UNASSIGNED;
+        $application['loading_address_info'] = true;
+        $application['embedded_nmi'] = 2;
         $authizedPerson = $application['authorized_person'];
 
         if ($application['is_billing_same'] == 0 || $application['is_billing_same'] == null) {
@@ -137,8 +136,10 @@ class ApplicationService
         $existingApplication->postcode = $address['postcode'];
         $existingApplication->state = $address['state'];
         $existingApplication->country = $address['country'];
-        $existingApplication->mirn = $address['mirn'];
-        $existingApplication->nmi = $address['nmi'];
+        $existingApplication->mirn = null;
+        $existingApplication->nmi = null;
+        $existingApplication->embedded_nmi = 2;
+        $existingApplication->loading_address_info = true;
         $existingApplication->is_billing_same = $address['is_billing_same'];
 
 
@@ -165,7 +166,7 @@ class ApplicationService
             $existingApplication->billing_street_number = empty($address['street_address']) ? null : $address['street_number'];
             $existingApplication->billing_city = empty($address['city']) ? null : $address['city'];
             $existingApplication->billing_postcode = empty($address['postcode']) ? null : $address['postcode'];
-            $existingApplication->billing_address_unit = $address['unit_number'] ? $address['unit_number'] : null;
+            $existingApplication->billing_address_unit = $address['unit_number'] ?: null;
 
         };
         $existingApplication->save();
@@ -175,33 +176,55 @@ class ApplicationService
 
     public function assignUser(string $agentId, int $applicationId)
     {
-        ConnectionApplication::query()
-            ->where('id', $applicationId)
-            ->update(['assigned_to' => $agentId, 'status' => ConnectionApplication::STATUS_ASSIGNED]);
+        $connectionApplication = $this->findApplications($applicationId);
 
-        if (in_array(HoodProfile::find($agentId)->user->roles->first()?->name,
+        if (!$connectionApplication) {
+            throw new \Exception('assignUser: Application not found!');
+        }
+
+        $connectionApplication->update([
+            'assigned_to' => $agentId,
+            'assigned_at' => now(),
+            'status' => ConnectionApplication::STATUS_ASSIGNED
+        ]);
+
+        $hoodProfile = HoodProfile::find($agentId);
+        if (in_array($hoodProfile->user->roles->first()?->name,
             [RolePermission::ROLE_EXTERNAL_HOOD_TEAM_LEAD])) {
             $tsaService = new TsaSendAppliationService($applicationId);
             $tsaService->sendApplication();
             $tsa_lead_id = $tsaService->getTsaLeadId();
-            $existingApplication = ConnectionApplication::find($applicationId);
-            $existingApplication->tsa_lead_id = $tsa_lead_id;
-            $existingApplication->save();
+            $connectionApplication->tsa_lead_id = $tsa_lead_id;
+            $connectionApplication->save();
         }
 
-        $this->sendToChatbot($applicationId, $agentId);
-        return $this->findApplications($applicationId);
+        if ($hoodProfile->user->hasAnyRole(RolePermission::ROLE_HOOD_CHATBOT_USER)) {
+            $this->sendToChatbot($connectionApplication, $hoodProfile);
+        }
+
+        return $connectionApplication->refresh();
     }
 
-    public function sendToChatbot($appId, $hoodUserId)
+    private function checkAllowableForAssign($connectionApplication)
     {
-        $checkProfile = User::where('profile_type', USER::PROFILE_TYPE_HOOD)
-            ->where('profile_id', $hoodUserId)
-            ->firstOrFail();
+        return $connectionApplication->phone && $connectionApplication->city;
+    }
 
-        if ($checkProfile->hasAnyRole(RolePermission::ROLE_HOOD_CHATBOT_USER)) {
-            GilbertToChatbotJob::dispatch($appId);
-        };
+    public function sendToChatbot($app, $hoodProfile)
+    {
+        if (!$this->checkAllowableForAssign($app)) {
+            $app->update([
+                'assigned_to' => null,
+                'assigned_at' => null,
+                'status' => ConnectionApplication::STATUS_UNASSIGNED
+            ]);
+            throw new \Exception('assignUser:SendToChatbot: Application has no phone number or suburb/city!');
+        }
+
+        // Create application note
+        $this->createAppNoteForAssignUser($app, $hoodProfile);
+
+        GilbertToChatbotJob::dispatch($app->id);
     }
 
 
@@ -431,6 +454,12 @@ class ApplicationService
         $isIdentification = $application['identification'];
         $isService = $application['isService'];
 
+        if (array_key_exists('nmi', $application)) {
+            $application['embedded_nmi'] = 2;
+            FetchEmbeddedNetworkJob::dispatch($id);
+        }
+
+
         unset($application['identification']);
         unset($application['isService']);
 
@@ -500,13 +529,6 @@ class ApplicationService
         return $office->getVendorCode() . '_CRM' . str_pad($lead->id, 10, "0", STR_PAD_LEFT);
     }
 
-    public function closeApplication($id)
-    {
-        $connectionApplication = ConnectionApplication::find($id);
-        $connectionApplication->update(['status' => 8]);
-        return $connectionApplication->refresh();
-    }
-
     public function createApplicationSerive($id, $services): void
     {
         foreach ($services as $service) {
@@ -573,7 +595,7 @@ class ApplicationService
 
     public function getNotSubmittedServices($id, $submitType): array
     {
-        $providers = [ConnectionService::PROVIDER_EA, ConnectionService::PROVIDER_ORIGIN, ConnectionService::PROVIDER_POWER_SHOP];
+        $providers = [ConnectionService::PROVIDER_EA, ConnectionService::PROVIDER_ORIGIN, ConnectionService::PROVIDER_POWER_SHOP, ConnectionService::PROVIDER_FIRST_ENERGY];
 
         $services = match ($submitType) {
             'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
@@ -593,22 +615,6 @@ class ApplicationService
         }
 
         return $notSubmitted;
-    }
-
-    public function getNotSubmittedEaService($id, $submitType): array
-    {
-        $services = match ($submitType) {
-            'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
-            'power' => [ConnectionService::TYPE_ELECTRICITY],
-            'gas' => [ConnectionService::TYPE_GAS],
-            default => []
-        };
-
-        return ConnectionService::query()->where('connection_application_id', $id)
-            ->where('provider_name', ConnectionService::PROVIDER_EA)
-            ->whereNull('lead_reference')
-            ->whereIn('service_type', $services)
-            ->pluck('id')->toArray();
     }
 
     public function getAssignedHoodUser($id)
@@ -652,7 +658,11 @@ class ApplicationService
     {
         $existingApplication = ConnectionApplication::where('id', $applicationId)->firstOrFail();
 
-        return $existingApplication?->is_sent_to_chatbot;
+        return [
+            'is_sent_to_chatbot' => (bool)$existingApplication->is_sent_to_chatbot,
+            'chatbot_id' => $existingApplication->chatbot_id,
+            'is_locked' => (bool)$existingApplication->is_locked
+        ];
     }
 
 
@@ -672,6 +682,18 @@ class ApplicationService
         $email_manually_verified_by = $existingApplication->email_manually_verified_by;
 
         return $email_manually_verified_by;
+    }
+
+    public function createAppNoteForAssignUser(ConnectionApplication $connectionApplication, HoodProfile $hoodProfile)
+    {
+        $note['connection_application_id'] = $connectionApplication->id;
+        $note['created_by'] = 1;
+        $note['user_role'] = 'hood_admin';
+        $note['type'] = 'assign_user';
+        $note['title'] = 'Assigned to ' . $hoodProfile->first_name . ' ' . $hoodProfile->last_name;
+        $note['text'] = Carbon::parse($connectionApplication->assigned_at)->toDateTimeLocalString() . '.000000Z';
+        Log::info('CreateAppNoteForAssignUser: ', $note);
+        return ApplicationNote::create($note);
     }
 
 }

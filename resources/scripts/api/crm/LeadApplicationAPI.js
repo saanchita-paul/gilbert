@@ -147,28 +147,28 @@ const notes = [
     {
         id: 1,
         title: 'Note by John',
-        created_at:  '00/00/2021_00:00:00',
+        created_at: '00/00/2021_00:00:00',
         text: 'Called Cx. No Answer. Please Callback on 12/20 at 1pm.',
         active: true,
     },
     {
         id: 2,
         title: 'Note by John',
-        created_at:  '00/00/2021_00:00:00',
+        created_at: '00/00/2021_00:00:00',
         text: 'Called Cx. No Answer. Please Callback on 12/20 at 1pm.',
         active: false,
     },
     {
         id: 3,
         title: 'Note by John',
-        created_at:  '00/00/2021_00:00:00',
+        created_at: '00/00/2021_00:00:00',
         text: 'Called Cx. No Answer. Please Callback on 12/20 at 1pm.',
         active: false,
     },
     {
         id: 4,
         title: 'Note by John',
-        created_at:  '00/00/2021_00:00:00',
+        created_at: '00/00/2021_00:00:00',
         text: 'Called Cx. No Answer. Please Callback on 12/20 at 1pm.',
         active: false,
     },
@@ -178,7 +178,7 @@ const notes = [
 const newNote = {
     id: 7,
     title: 'Note by John',
-    created_at:  '00/00/2021_00:00:00',
+    created_at: '00/00/2021_00:00:00',
     text: 'Called Cx. No Answer. Please Callback on 12/20 at 1pm.',
     active: false,
 };
@@ -201,27 +201,26 @@ const serviceProvider = [
     // }
 
 
-
 ];
 
 export default {
 
-   async getMetrics(arg) {
+    async getMetrics(arg) {
         try {
             let agency_id = '';
-            if(arg.agency_id) {
+            if (arg.agency_id) {
                 agency_id = arg.agency_id;
             }
-             const leads = await axios.get('/api/applications-metrics-count?agency_id='+agency_id);
+            const leads = await axios.get('/api/applications-metrics-count?agency_id=' + agency_id);
             return AppMetricsMapper.mapAppMetricList(data, leads.data.data);
 
         } catch (error) {
         }
     },
 
-    async closeApplicationWithReason(id, closeReason){
+    async closeApplicationWithReason(id, closeReason) {
         try {
-            const data = await axios.post('/api/applications/'+id+'/closeApplication' , {
+            const data = await axios.post('/api/applications/' + id + '/closeApplication', {
                 app_close_reason_id: closeReason.reason_id,
                 closing_reason: closeReason.reason_text
             });
@@ -232,7 +231,7 @@ export default {
         }
     },
 
-   async getUserLeadMetrics() {
+    async getUserLeadMetrics() {
         try {
             const data = await axios.get('/api/applications-metrics');
             return AppMetricsMapper.mapUserMetLeads(data.data.data);
@@ -245,7 +244,13 @@ export default {
     async getUserLeads(sort_search_meta, active_lead_type, src, params) {
         try {
             // console.log('finel parameter', params);
-            const data = await axios.get('/api/applications',{params:{...sort_search_meta, source: src , ...params, active_lead_type:active_lead_type}});
+            const data = await axios.get('/api/applications', {
+                params: {
+                    ...sort_search_meta,
+                    source: src, ...params,
+                    active_lead_type: active_lead_type
+                }
+            });
             return ApplicationMapper.mapApplicationList(data.data);
 
         } catch (error) {
@@ -256,7 +261,13 @@ export default {
 
     async loadUserLeadsForAgents(sort_search_meta, active_lead_type, src, params) {
         try {
-            const data = await axios.get('/api/applications/agents',{params:{...sort_search_meta, active_lead_type, source: src , ...params}});
+            const data = await axios.get('/api/applications/agents', {
+                params: {
+                    ...sort_search_meta,
+                    active_lead_type,
+                    source: src, ...params
+                }
+            });
             return ApplicationMapper.mapApplicationList(data.data);
 
         } catch (error) {
@@ -265,7 +276,7 @@ export default {
         }
     },
 
-  async getUserLead (id) {
+    async getUserLead(id) {
         try {
             const data = (await axios.get('/api/applications/' + id)).data.data;
             return new ApplicationSummary(data);
@@ -274,7 +285,7 @@ export default {
         }
     },
 
-  async closeApplication (id) {
+    async closeApplication(id) {
         try {
             const data = await axios.put(`/api/applications/${id}/close`);
             return data;
@@ -285,8 +296,7 @@ export default {
 
     async sendToChatBot(id) {
         try {
-            const data = await axios.get(`/api/applications/${id}/send-to-chatbot`);
-            return data;
+            return (await axios.get(`/api/applications/${id}/send-to-chatbot`)).data;
         } catch (error) {
             return error.data;
         }
@@ -295,6 +305,15 @@ export default {
     async getIsSentToChatbot(id) {
         try {
             const data = await axios.get(`/api/applications/${id}/is-sent-to-chatbot`);
+            return data.data;
+        } catch (error) {
+            return error.data.data;
+        }
+    },
+
+    async lockOrUnlockApp(id, formData) {
+        try {
+            const data = await axios.post(`/api/applications/${id}/lock-or-unlock`, formData);
             return data.data;
         } catch (error) {
             return error.data.data;
@@ -311,9 +330,9 @@ export default {
         }
     },
 
-   async getNote(id) {
+    async getNote(id) {
         try {
-            const data = await axios.get('/api/applications/'+id+'/notes');
+            const data = await axios.get('/api/applications/' + id + '/notes');
             return ApplicationMapper.mapNotes(data.data.data);
         } catch (error) {
 
@@ -331,9 +350,9 @@ export default {
         }
     },
 
-   async saveNote(newNote, leadId) {
+    async saveNote(newNote, leadId) {
         try {
-            const data = await axios.post('/api/applications/'+leadId+'/notes',{...newNote});
+            const data = await axios.post('/api/applications/' + leadId + '/notes', {...newNote});
             return ApplicationMapper.mapNote(data);
 
         } catch (error) {
@@ -342,7 +361,7 @@ export default {
     },
     eacalate(leadId) {
         try {
-          //call
+            //call
             return true;
 
         } catch (error) {
@@ -350,7 +369,7 @@ export default {
         }
     },
 
-   async confirmSubmitLead(lead, leadId) {
+    async confirmSubmitLead(lead, leadId) {
         try {
             lead.moving_date = ApplicationMapper.mapDateToServer(lead.moving_date);
             lead.dob = ApplicationMapper.mapDateToServer(lead.dob);
@@ -358,7 +377,7 @@ export default {
             lead.concession_end_date = ApplicationMapper.mapDateToServer(lead.concession_end_date);
             lead.identification.expire_date = ApplicationMapper.mapDateToServer(lead.identification.expire_date);
             lead.email_manually_verified_by = ApplicationMapper.mapEmailManuallyFlagToServer(lead.email_manually_verified_by);
-            const data = await axios.post('/api/applications/'+leadId+'/submit', {lead});
+            const data = await axios.post('/api/applications/' + leadId + '/submit', {lead});
             return data;
         } catch (error) {
             console.log('Submit error', error);
@@ -369,7 +388,7 @@ export default {
     async updateAddress(address, leadId) {
         try {
             console.log(address);
-            const response = await axios.put('/api/applications/'+leadId+'/update-address',{address});
+            const response = await axios.put('/api/applications/' + leadId + '/update-address', {address});
             return ApplicationMapper.mapApplication(response.data.data);
         } catch (error) {
             return error.data;
@@ -378,7 +397,7 @@ export default {
 
     async saveEscalateReason(reason, leadId) {
         try {
-            const data = await axios.post('/api/applications/'+leadId+'/escalate',{reason:reason});
+            const data = await axios.post('/api/applications/' + leadId + '/escalate', {reason: reason});
 
         } catch (error) {
             return error.data;
@@ -386,7 +405,7 @@ export default {
     },
     async assignUser(leadId, id) {
         try {
-            const data = await axios.post('/api/applications/'+leadId+'/assign',{hood_user_id: id});
+            const data = await axios.post('/api/applications/' + leadId + '/assign', {hood_user_id: id});
             return ApplicationMapper.mapNote(data);
 
         } catch (error) {
@@ -394,52 +413,50 @@ export default {
         }
     },
 
-    async updateApplicationProviders( payload , application_id){
+    async updateApplicationProviders(payload, application_id) {
         try {
-            const data = await axios.patch('/api/applications/'+application_id+'/providers', payload);
+            const data = await axios.patch('/api/applications/' + application_id + '/providers', payload);
             return data.data.data;
         } catch (error) {
             return error.data;
         }
     },
 
-    async saveSoleField(field, value, leadId, isDate, identification, isService)
-    {
+    async saveSoleField(field, value, leadId, isDate, identification, isService) {
         // console.log("Din the day");
 
         let day = '';
         let month = '';
         let year = '';
-        if(isDate)
-        {
+        if (isDate) {
             let fullDate = value.split('/');
-             day = fullDate[0];
-             month = fullDate[1];
-             year = fullDate[2];
+            day = fullDate[0];
+            month = fullDate[1];
+            year = fullDate[2];
 
-            value = year + '-'+ month + '-'+ day;
+            value = year + '-' + month + '-' + day;
         }
 
-        const payload ={
+        const payload = {
             [field]: value,
             identification: identification,
             isService: isService
         }
-        const response = await axios.post('/api/applications/'+leadId+'/draft', payload);
+        return await axios.post('/api/applications/' + leadId + '/draft', payload);
     },
-    async updateConnecitionEndNullDate(leadId){
+    async updateConnecitionEndNullDate(leadId) {
         let payload = {
             identification: false,
             isService: false,
             connection_end_date: null
         }
-        await axios.post('/api/applications/'+leadId+'/draft',payload);
+        await axios.post('/api/applications/' + leadId + '/draft', payload);
     },
 
 
     async getNmiMern(id) {
         try {
-            const data = await axios.get('/api/applications/'+id+'/nmi-mern');
+            const data = await axios.get('/api/applications/' + id + '/nmi-mern');
             return data.data.data;
 
         } catch (error) {
@@ -449,7 +466,7 @@ export default {
 
     async loadAuthorizedPerson(id) {
         try {
-            const data = await axios.get('/api/secondary-contact/'+id);
+            const data = await axios.get('/api/secondary-contact/' + id);
             return data.data.data;
         } catch (error) {
             return error.data;
@@ -459,7 +476,7 @@ export default {
     async saveAuthorizedPerson(secondaryAuthority) {
         try {
             let mappedDate = SecondaryContactMapper.mapContactToServer(secondaryAuthority);
-            const data = await axios.post('/api/secondary-contact',{...mappedDate});
+            const data = await axios.post('/api/secondary-contact', {...mappedDate});
             return data.data.data;
 
         } catch (error) {
@@ -488,7 +505,7 @@ export default {
 
     async loadAgencies(search) {
         try {
-            const data = await axios.get('/api/agencies', { params: { search } });
+            const data = await axios.get('/api/agencies', {params: {search}});
             return data?.data?.data;
 
         } catch (error) {
@@ -498,10 +515,10 @@ export default {
     async loadOffices(agencyId, search = null) {
         try {
             let data = "";
-            if(agencyId){
+            if (agencyId) {
                 data = await axios.get('/api/agencies/' + agencyId + '/offices');
-            }else{
-                data = await axios.get('/api/alloffices' , { params: { search } });
+            } else {
+                data = await axios.get('/api/alloffices', {params: {search}});
             }
 
             return data?.data?.data;
@@ -511,9 +528,9 @@ export default {
         }
     },
 
-  async loadAgencyMetrics(query) {
+    async loadAgencyMetrics(query) {
         try {
-            const data = await axios.get('/api/agencies/get-agency-metrics',{params: query});
+            const data = await axios.get('/api/agencies/get-agency-metrics', {params: query});
             return data?.data?.data;
 
         } catch (error) {
@@ -521,9 +538,9 @@ export default {
         }
     },
 
-  async loadAgencyMetricsByApplication(query) {
+    async loadAgencyMetricsByApplication(query) {
         try {
-            const data = await axios.get('/api/agencies/get-agency-application-metrics',{params: query});
+            const data = await axios.get('/api/agencies/get-agency-application-metrics', {params: query});
             return data?.data?.data;
 
         } catch (error) {
@@ -532,17 +549,16 @@ export default {
     },
 
     async clearConcessionDetails(id) {
-        await axios.post('/api/applications/'+id+'/clear-concession-details');
+        await axios.post('/api/applications/' + id + '/clear-concession-details');
     },
 
 
-    async saveEmailField(field, value, leadId)
-    {
+    async saveEmailField(field, value, leadId) {
         try {
-            const payload ={
+            const payload = {
                 [field]: value,
             }
-            return await axios.post('/api/applications/'+leadId+'/save-email', payload);
+            return await axios.post('/api/applications/' + leadId + '/save-email', payload);
         } catch (error) {
             return error.data;
         }
@@ -558,8 +574,7 @@ export default {
         }
     },
 
-    async sendPowershopPaymentLink(leadId, linkType)
-    {
+    async sendPowershopPaymentLink(leadId, linkType) {
         const payload = {
             "link_type": linkType,
             'app_id': leadId
@@ -573,7 +588,7 @@ export default {
     },
     async isEmailManuallyVerified(id) {
         try {
-            const data = await axios.get('/api/applications/'+id+'/email-manually-verified');
+            const data = await axios.get('/api/applications/' + id + '/email-manually-verified');
 
             return ApplicationMapper.mapIsEmailManuallyVerified(data.data.data);
         } catch (error) {

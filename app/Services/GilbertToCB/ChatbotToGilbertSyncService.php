@@ -7,6 +7,7 @@ use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use App\Models\Identification;
 use App\Models\RejectionReason;
+use App\Services\Address\AddressModel;
 use App\Services\AddressMapperService;
 use App\Services\GilbertToChatbotStatusMapping;
 use App\Services\Utility\PlanTypeSyncWithChatbotService;
@@ -116,7 +117,7 @@ class ChatbotToGilbertSyncService
             $this->applicationData['street_name_only'] = $this->requestData['connection_details']['street_name_only'];
             $this->applicationData['street_type'] = $this->requestData['connection_details']['street_type'];
             $this->applicationData['city'] = $this->requestData['connection_details']['suburb'];
-            $this->applicationData['state'] = $this->requestData['connection_details']['state'];
+            $this->applicationData['state'] = AddressModel::mapStateToLong($this->requestData['connection_details']['state']);
             $this->applicationData['postcode'] = $this->requestData['connection_details']['to_postcode'];
             $this->applicationData['billing_unit_number'] = $this->requestData['connection_details']['billing_unit_number'];
             $this->applicationData['billing_street_name'] = $this->requestData['connection_details']['billing_street_name'];
@@ -144,9 +145,10 @@ class ChatbotToGilbertSyncService
             $this->applicationData['is_power_life_support'] = $this->requestData['other_details']['is_property_on_life_support'];
             $this->applicationData['additional_access_information'] = $this->requestData['other_details']['additional_access_information'];
             $this->applicationData['is_access_require'] = $this->requestData['other_details']['is_access_require'];
-//            $this->applicationData['electricity_already_on'] = $this->requestData['other_details']['electricity_already_on'];
+            $this->applicationData['has_electricity'] = $this->requestData['other_details']['electricity_already_on'];
             $this->applicationData['inspection_time'] = $this->requestData['other_details']['qld_vis_inspection_time'];
 //            $this->applicationData['i_am_home'] = $this->requestData['other_details']['meter_box_text'];
+            $this->applicationData['is_email_marketing'] = $this->requestData['other_details']['is_email_marketing'];
         }
         if (isset($this->requestData['others'])) {
 //            $this->applicationData['created_by'] = $this->requestData['others']['created_by'];
@@ -158,7 +160,7 @@ class ChatbotToGilbertSyncService
 //            $this->applicationData['street_name'] = $this->requestData['others']['street_name'];
             $this->applicationData['additional_instruction'] = $this->requestData['others']['additional_instruction'];
             $this->applicationData['reason'] = $this->requestData['others']['reason'];
-            $this->applicationData['has_life_support'] = $this->requestData['others']['is_property_on_life_support'];
+            $this->applicationData['is_power_life_support'] = $this->requestData['others']['is_property_on_life_support'];
             $this->applicationData['nmi'] = $this->requestData['others']['nmi'];
             $this->applicationData['mirn'] = $this->requestData['others']['mirn'];
             $this->applicationData['supplier'] = $this->requestData['others']['supplier'];
@@ -236,7 +238,10 @@ class ChatbotToGilbertSyncService
         if (isset($this->requestData['rejection_reasons'])) {
             $this->rejectionReasonData = $this->mapRejectionRejection($this->requestData['rejection_reasons']);
         }
-
+        if (isset($this->requestData['escalated_status'])) {
+            $this->applicationData['status'] = $this->requestData['escalated_status']['status'];
+            $this->setApplicationNotesForEscalated($this->requestData['escalated_status']['text']);
+        }
     }
 
 
@@ -405,7 +410,7 @@ class ChatbotToGilbertSyncService
                 $mappedIdentificationData['card_number'] = $identificationData['medicare_card_number'];
                 $mappedIdentificationData['special_number'] = $identificationData['individual_reference_number'];
                 $mappedIdentificationData['card_color'] = $this->mapCardColorType($identificationData['medicare_card_color']);
-                $mappedIdentificationData['expire_date'] = $identificationData['identification_expire_date'];
+                $mappedIdentificationData['expire_date'] = Carbon::parse($identificationData['identification_expire_date'])->endOfMonth()->format('Y-m-d');
                 break;
             default:
                 break;
@@ -435,22 +440,22 @@ class ChatbotToGilbertSyncService
                 $app->save();
             }
 
-            if($service['service_type']) {
+            if ($service['service_type']) {
                 ConnectionService::query()->where('connection_application_id', $app->id)->with('reasons')
                     ->updateOrCreate(['service_type' => $serviceType], [
                         'connection_application_id' => $app->id,
-                        'service_type'   => $serviceType,
-                        'plan_type'   => (new PlanTypeSyncWithChatbotService())
+                        'service_type' => $serviceType,
+                        'plan_type' => (new PlanTypeSyncWithChatbotService())
                             ->chatbotToGilbertplanTypeMapping($service['plan_type']),
-                        'provider_name'   => $service['provider_name'],
-                        'status'   => $status,
-                        'connection_date'   => $service['connection_date'],
-                        'submitted_at'   => $service['submitted_at'],
-                        'lead_reference'   => $service['lead_reference'],
-                        'quote_reference'   => $service['quote_reference'],
-                        'accepted_at'   => $service['accepted_at'],
-                        'rejected_at'   => $service['rejected_at'],
-                        'distributor'   => $service['distributor'],
+                        'provider_name' => $service['provider_name'],
+                        'status' => $status,
+                        'connection_date' => $service['connection_date'],
+                        'submitted_at' => $service['submitted_at'],
+                        'lead_reference' => $service['lead_reference'],
+                        'quote_reference' => $service['quote_reference'],
+                        'accepted_at' => $service['accepted_at'],
+                        'rejected_at' => $service['rejected_at'],
+                        'distributor' => $service['distributor'],
                     ]);
             }
         }
@@ -498,5 +503,18 @@ class ChatbotToGilbertSyncService
         RejectionReason::query()->insert($rejectionReasons);
     }
 
+
+    private function setApplicationNotesForEscalated($message)
+    {
+        $app = ConnectionApplication::where('chatbot_id', $this->chatbotId)->firstOrFail();
+        $data = [
+            'created_by' => 1,
+            'user_role' => 'hood_admin',
+            'text' => $message,
+            'title' => 'Escalated',
+            'type' => 'escalated'
+        ];
+        $app->applicationNotes()->create($data);
+    }
 
 }

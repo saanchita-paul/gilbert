@@ -35,6 +35,8 @@ class MapEnergyReport
         'powershop_power_carbon_neutral' => 0,
         'powershop_gas_carbon_neutral' => 0,
         'powershop_power_switch_saver' => 0,
+        'first_energy_power_super_saver' => 0,
+        'first_energy_gas_super_saver' => 0,
 
     ];
 
@@ -105,6 +107,7 @@ class MapEnergyReport
             ConnectionService::PLAN_ORIGIN_HOME_SUPPORT => $this->reportData[ConnectionService::PLAN_ORIGIN_HOME_SUPPORT] += $data['total'],
             ConnectionService::POWER_SHOP_100_PERCENT_CARBON_NEUTRAL => $this->reportData['powershop_power_carbon_neutral'] += $data['total'],
             ConnectionService::POWER_SHOP_SWITCH_SAVER => $this->reportData['powershop_power_switch_saver'] += $data['total'],
+            ConnectionService::FIRST_SUPER_SAVER => $this->reportData['first_energy_power_super_saver'] += $data['total'],
 
 //            'origin_home_assist' => $this->reportData["origin_power_home_assist"] += $data['total'],
             default => null
@@ -128,6 +131,7 @@ class MapEnergyReport
             ConnectionService::PLAN_ORIGIN_ADVANTAGE_VARIABLE => $this->reportData[ConnectionService::PLAN_ORIGIN_ADVANTAGE_VARIABLE] += $data['total'],
             ConnectionService::PLAN_ORIGIN_BASIC => $this->reportData[ConnectionService::PLAN_ORIGIN_BASIC] += $data['total'],
             ConnectionService::POWER_SHOP_100_PERCENT_CARBON_NEUTRAL => $this->reportData['powershop_gas_carbon_neutral'] += $data['total'],
+            ConnectionService::FIRST_SUPER_SAVER => $this->reportData['first_energy_gas_super_saver'] += $data['total'],
 //            ConnectionService::POWER_SHOP_SWITCH_SAVER => $this->reportData[ConnectionService::POWER_SHOP_SWITCH_SAVER] += $data['total'],
 //            'origin_advantage_variable' => $this->reportData["origin_gas_home_assist"] += $data['total'],
             default => null

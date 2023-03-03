@@ -106,7 +106,7 @@
                     >
                         <template v-slot:activator="{ on, attrs }">
                             <ValidationProvider
-                                name="Date Of Birth"
+                                name="Bate Of Birth"
                                 :rules="`${isTenancyHomeOwner?'':'required|'}valid-date|adult`"
                                 v-slot="{ errors }"
                             >
@@ -235,19 +235,22 @@
                 <div class="text-field">
                     <ValidationProvider
                         name="Email"
-                        :rules="`${isManuallyVerified?'':'gbg-email-validate|'}required|email`"
+                        rules="required|email"
                         v-slot="{ errors }"
                     >
-                        <v-text-field
-                            v-model="person_details.email"
-                            @input="updateLeads"
-                            outlined
-                            dense
-                            hide-details="auto"
-                            :error-messages="errors[0]"
-                            @blur="saveDraft('email', person_details.email)"
+                        <v-text-field :class="isInvalidEmail ? 'v-input--has-state error--text' : ''"
+                                      v-model="person_details.email"
+                                      @input="updateLeads"
+                                      outlined
+                                      dense
+                                      hide-details="auto"
+                                      :error-messages="errors[0]"
+                                      @blur="saveDraft('email', person_details.email)"
                         ></v-text-field>
                     </ValidationProvider>
+                    <span class="error--text d-block line-height-initial" v-if="isInvalidEmail">
+                  <span class="font-12">Email could not be verified. Please confirm it’s valid email.</span>
+            </span>
                     <div class="text-field">
                         <v-checkbox
                             v-model="person_details.email_manually_verified_by"
@@ -432,21 +435,20 @@
                         rules="required"
                         v-slot="{ errors }"
                     >
-                        <v-textarea
-                            @click="openServiceAddress"
-                            v-model="property_details.address_text"
-                            style="min-height: 56px !important;"
-                            outlined
-                            auto-grow
-                            rows="5"
-                            hide-details="auto"
-                            :error-messages="errors[0]"
-                            placeholder="This is an extra long address, 398 Bourke Road, Camberwell 3124 VIC"
+                        <v-textarea class="mb-2"
+                                    @click="openServiceAddress"
+                                    v-model="property_details.address_text"
+                                    style="min-height: 56px !important;"
+                                    outlined
+                                    auto-grow
+                                    rows="5"
+                                    hide-details="auto"
+                                    :error-messages="errors[0]"
+                                    placeholder="This is an extra long address, 398 Bourke Road, Camberwell 3124 VIC"
                         ></v-textarea>
                     </ValidationProvider>
                 </div>
             </div>
-
             <div class="crm-text-field">
                 <div class="field-label">
                     <span>Billing Address</span>
@@ -459,7 +461,7 @@
                                     outlined
                                     dense
                                     readonly
-                                    hide-details="auto" :error-messages=" errors[0]"
+                                    hide-details="auto" :error-messages="errors[0]"
                         ></v-textarea>
                     </ValidationProvider>
                 </div>
@@ -584,6 +586,20 @@
                             </template>
                         </v-text-field>
                     </ValidationProvider>
+                    <!--            <span class="mt-2" v-if="isEmbeddedNMI == 2">-->
+                    <!--                <span><small>Checking Embedded..</small></span>-->
+                    <!--                <v-progress-linear-->
+                    <!--                    class="primary-color"-->
+                    <!--                    indeterminate-->
+                    <!--                    height="6"-->
+                    <!--                ></v-progress-linear>-->
+                    <!--            </span>-->
+                    <!--            <span class="error&#45;&#45;text" v-if="isEmbeddedNMI == 1">-->
+                    <!--                  <v-icon color="error" class="mt-4">-->
+                    <!--                      info-->
+                    <!--                  </v-icon>-->
+                    <!--                  <small v-html="embeddedText"></small>-->
+                    <!--            </span>-->
                 </div>
             </div>
 
@@ -613,6 +629,20 @@
                             </template>
                         </v-text-field>
                     </ValidationProvider>
+                    <!--                <span class="mt-2" v-if="isEmbeddedNMI == 2">-->
+                    <!--                    <span><small>Checking Embedded..</small></span>-->
+                    <!--                    <v-progress-linear-->
+                    <!--                        class="primary-color"-->
+                    <!--                        indeterminate-->
+                    <!--                        height="6"-->
+                    <!--                    ></v-progress-linear>-->
+                    <!--                </span>-->
+                    <!--                <span class="error&#45;&#45;text" v-if="isEmbeddedNMI == 1">-->
+                    <!--                      <v-icon color="error" class="mt-4">-->
+                    <!--                          info-->
+                    <!--                      </v-icon>-->
+                    <!--                      <small v-html="embeddedText"></small>-->
+                    <!--                </span>-->
                 </div>
             </div>
 
@@ -642,6 +672,21 @@
                             </template>
                         </v-text-field>
                     </ValidationProvider>
+                    <span class="mt-2" v-if="isEmbeddedMIRN == 2">
+                <span><small>Checking Embedded..</small></span>
+                <v-progress-linear
+                    class="primary-color"
+                    indeterminate
+                    height="6"
+                ></v-progress-linear>
+            </span>
+
+                    <span class="error--text" v-if="isEmbeddedMIRN == 1">
+                  <v-icon color="error" class="mt-4">
+                      info
+                  </v-icon>
+                  <small v-html="embeddedText"></small>
+            </span>
                 </div>
             </div>
 
@@ -670,6 +715,21 @@
                             </template>
                         </v-text-field>
                     </ValidationProvider>
+                    <span class="mt-2" v-if="isEmbeddedMIRN == 2">
+                    <span><small>Checking Embedded..</small></span>
+                    <v-progress-linear
+                        class="primary-color"
+                        indeterminate
+                        height="6"
+                    ></v-progress-linear>
+                </span>
+
+                    <span class="error--text" v-if="isEmbeddedMIRN == 1">
+                      <v-icon color="error" class="mt-4">
+                          info
+                      </v-icon>
+                      <small v-html="embeddedText"></small>
+                </span>
                 </div>
             </div>
 
@@ -1038,6 +1098,7 @@
                     </v-menu>
                 </div>
                 <div class="text-field" v-if="identification.type === 3">
+
                     <v-menu
                         v-model="showMovingDate"
                         :close-on-content-click="false"
@@ -1079,7 +1140,7 @@
 
 
             </div>
-            <div class="crm-text-field" v-if="identification.type === 3">
+            <div class="crm-text-field" v-if="identification.type == 3">
                 <div class="field-label">
                     <span>Card Colour {{ isTenancyHomeOwner ? '' : '*' }}</span>
                 </div>
@@ -1335,12 +1396,12 @@ import {medicareRules, mediExpireDate} from '@scripts/plugins/VeeValidate';
 import {tenancyTypeMapper} from '@scripts/data/ConnectionApplicationMapper';
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import AuthService from "@scripts/services/AuthService";
-import PropertyDetails from "@scripts/models/crm/PropertyDetails";
+import ShippingAddress from "@scripts/components/crm/ShippingAddress.vue";
 import ApplicationSummaryConstantService from "@scripts/services/ApplicationSummaryConstantService";
 import Identification from "@scripts/models/crm/Identification";
+import PropertyDetails from "@scripts/models/crm/PropertyDetails";
 import PersonDetails from "@scripts/models/crm/PersonDetails";
 import InternetServiceInfo from "@scripts/models/crm/InternetServiceInfo";
-import ShippingAddress from "@scripts/components/crm/ShippingAddress";
 import InternetService from "@scripts/modules/internet/services/InternetService";
 
 export default {
@@ -1354,6 +1415,9 @@ export default {
         },
         services: {
             require: false,
+        },
+        isInvalidEmail: {
+            required: true,
         },
     },
     components: {
@@ -1410,6 +1474,7 @@ export default {
             shippingAddressFlag: false,
             currentUser: null,
             manuallyVerified: false,
+            embeddedText: `The electricity at this address is in an <strong>Embedded network.</strong>`,
         };
     },
     methods: {
@@ -1644,11 +1709,11 @@ export default {
     computed: {
         isNMIRequired() {
             return !this.isWaterTabFocused && (this.isPowerTabFocused || this.isBothEnergySubmit);
-            // return !this.isWaterTabFocused && !!(Array.isArray(this.services) && this.services.some(n => n === 'power'));
+            // return !this.isWaterTabFocused && !!(Array.isArray(this.Services) && this.Services.some(n => n === 'power'));
         },
         isMERNRequired() {
             return !this.isWaterTabFocused && (this.isGasTabFocused || this.isBothEnergySubmit);
-            // return !this.isWaterTabFocused && !!(Array.isArray(this.services) && this.services.some(n => n === 'gas'));
+            // return !this.isWaterTabFocused && !!(Array.isArray(this.Services) && this.Services.some(n => n === 'gas'));
         },
         billingAddressMsg() {
             return this.property_details.is_billing_same ? "Same as service address" : this.property_details.billing_address_text;
@@ -1718,6 +1783,15 @@ export default {
 
         isManuallyVerified() {
             return this.person_details.email_manually_verified_by;
+        },
+        isEmbeddedNMI() {
+            return this.lead.embedded_nmi;
+        },
+        isEmbeddedMIRN() {
+            return this.lead.embedded_mirn;
+        },
+        loadAddressLoader() {
+            return this.lead.loading_address_info;
         },
         loadInternetServiceInfo() {
             return InternetService.loadInternetServiceInfo();
@@ -1896,5 +1970,21 @@ export default {
 
 .message-text {
     font-style: italic;
+}
+
+.primary-color {
+    color: #5c229a;
+}
+
+.mt-4 {
+    margin-top: 4px !important;
+}
+
+.line-height-initial {
+    line-height: initial;
+}
+
+.font-12 {
+    font-size: 12px;
 }
 </style>

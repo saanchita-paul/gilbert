@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
-use App\Services\Application\ServiceStatusFilterMapper;
 use Powershop\Http\Controllers\PxPayController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,7 +14,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/hello', [\App\Http\Controllers\TestControler::class, 'index']);
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
@@ -31,11 +29,6 @@ Route::get('/email', function () {
     return response('hello world');
 });
 
-
-Route::get('mi-test', function () {
-    \App\Events\Agency\CreateApplicationEvent::dispatch(5097);
-    return 'done';
-});
 
 Route::get('/{vue_capture?}', fn() => view('app'))
     ->where('vue_capture', '[\/\w\.-]*');

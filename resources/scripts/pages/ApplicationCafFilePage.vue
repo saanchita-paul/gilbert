@@ -1,46 +1,20 @@
 <template>
     <v-container fluid>
 
-        <v-tabs v-model="activeTab">
+        <v-tabs v-model="activeTab" background-color="transparent">
             <!--  Chatbot Application start-->
-            <v-tab href="#chatbotApplication">
+            <v-tab href="#chatbotApplication" class="custom-gray-color ">
                 <v-icon left>mdi-facebook-messenger</v-icon>
                 Chatbot Applications
             </v-tab>
-            <v-tab-item value="chatbotApplication">
-                <v-card>
-                    <v-card-text>
-                        <v-row>
-                            <v-col cols="12">
-                                <h3>Filters</h3>
-                                <ApplicationCafFileFilter :selected="selectedCaf"
-                                                          v-model="advanceSearch"
-                                                          :cafFiles="cafFiles"
-                                                          :isSearchEmpty="advanceSearch.isSearchEmpty()"
-                                                          @updateDate="updateDate"></ApplicationCafFileFilter>
-                            </v-col>
-                            <v-col cols="12">
-                                <ApplicationCafFileTable
-                                    v-model="selectedCaf"
-                                    :cafFiles="cafFiles"
-                                    :totalItem="totalItem"
-                                    @updateDataTable="updateDataTable"
-                                    @refreshDataTable="refreshDataTable"
-                                    @updateServiceType="updateServiceType"
-                                    @updateSelectedMovingData="updateSelectedMovingData"
-                                    @selectRowCafFile="selectRowCafFile"
-                                >
-
-                                </ApplicationCafFileTable>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
+            <v-tab-item value="chatbotApplication" class="chatbot-app-tab">
+              <ChatbotApplicationPage></ChatbotApplicationPage>
             </v-tab-item>
             <!--  Chatbot Application end-->
 
+
             <!--  Gilbert Application start-->
-            <v-tab href="#gilbertApplication">
+            <v-tab href="#gilbertApplication" class="custom-gray-color">
                 <v-icon left>mdi-message-text</v-icon>
                 Gilbert Applications
             </v-tab>
@@ -120,6 +94,7 @@ import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileS
 import ApplicationCafFileTable from "@scripts/pages/ApplicationCafFileTable";
 import GilbertApplicationCafFileTable from "@scripts/pages/GilbertApplicationCafFileTable";
 import {CafFileSearchFilterModel} from "@scripts/models/CafFileSearchFilterModel";
+import ChatbotApplicationPage from "@scripts/pages/chatbot/ChatbotApplicationPage";
 import {forEach, isEqual, isNull, omit} from "lodash-es";
 import GilbertFilterWrapper from "@scripts/pages/GilbertFilterWrapper.vue";
 
@@ -130,7 +105,8 @@ export default {
         ApplicationCafFileTable,
         ApplicationCafFileFilter,
         GilbertApplicationCafFileTable,
-        GilbertApplicationCafFileFilter
+        GilbertApplicationCafFileFilter,
+        ChatbotApplicationPage
     },
 
     data() {
@@ -290,7 +266,7 @@ export default {
         },
 
         async fetchGilbertApplications() {
-            let data = await ApplicationCafFileService.getGilbertApplicationData({...this.sorts_search_meta, ...{page: this.pages}}, this.advanceSearchModel);
+            let data = await ApplicationCafFileService.getGilbertApplicationData({...this.sorts_search_meta, ...{page: this.pages}, ...{provider_name:'powershop,origin'}}, this.advanceSearchModel);
             this.gilbertApplications = data.data;
             this.pages = data.pagination.current_page;
             this.itemsPerPages = data.pagination.per_page;
@@ -338,8 +314,26 @@ export default {
 
 <style scoped>
 .v-tab {
+    background-color: #e6e5e5 !important;
+    border-radius: 16px 16px 0px 0px;
     text-transform: capitalize;
     font-weight: bold;
+}
+.v-tab--active{
+    margin-top: -17px;
+    padding-top: 8px;
+    border-radius: 50% 50% 0 0 !important;
+    background-color: #FFFFFF !important;
+}
+.custom-gray-color{
+   /*border-radius: 50% 50% 0 0;*/
+}
+.chatbot-app-tab{
+    background-color: #F2F3F4 !important;
+}
+
+.theme--light.v-tabs .v-tab--active:hover::before, .theme--light.v-tabs .v-tab--active::before{
+    border-radius: 50% 50% 0px 0px ;
 }
 </style>
 

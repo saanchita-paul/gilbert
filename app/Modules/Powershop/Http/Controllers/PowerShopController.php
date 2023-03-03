@@ -63,4 +63,6 @@ class PowerShopController extends Controller
             return $this->sendErrorResponse($exception);
         }
     }
+
+
 }

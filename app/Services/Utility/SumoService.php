@@ -114,7 +114,7 @@ class SumoService
             'customerLastName' => $this->application->last_name,
             'customerPhone' => $this->getMappedPhone($this->application->state, $this->application->phone_type, $this->application->phone),
             'customerTitle' => $this->application->title,
-            //todo Why are we sending all services, do we need to check only what is submitted?
+            //todo Why are we sending all Services, do we need to check only what is submitted?
             'interestedIn' => $this->getMappedService($this->application->connectionServices?->pluck('service_type')->toArray()),
              'lifeSupport' => $this->getLifeSupport($this->submitType),
             // 'lifeSupportFuel' => "string",

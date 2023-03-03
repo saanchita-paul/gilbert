@@ -40,7 +40,8 @@ export default class Note {
 
     mapType(type)
     {
-        switch (type)
+        let noteType = type.toLowerCase();
+        switch (noteType)
         {
             case 'escalated':
                 return 'Escalated';
@@ -62,16 +63,23 @@ export default class Note {
 
             case 'submitted_powershop':
                 return 'submitted_powershop';
-            
+
             case 'submitted_origin':
                 return 'submitted_origin';
-                break;  
+                break;
 
             case 'invalid_property_me_note':
                 return 'invalid_property_me_note';
                 break;
 
+            case 'assign_user':
+                return 'assign_user';
+                break;
+            case 'mri_identification':
+                return 'mri_identification';
+
             default:
+                return '';
                 break;
         }
     }
@@ -91,6 +99,10 @@ export default class Note {
         } else if (type.toLowerCase() == 'invalid_property_me_note')
         {
              return "Inserting ID details, didn't exactly match.";
+        } else if(type.toLowerCase() == 'escalated') {
+            return title + ' by ' + '[' + role + ']';
+        } else if(type.toLowerCase() == 'assign_user') {
+            return title;
         }
     }
 }

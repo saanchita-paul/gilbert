@@ -5,6 +5,7 @@ import breadcrumbStore from "@scripts/store/modules/breadcrumbStore";
 import applicationStore from "@scripts/store/modules/ApplicationStore";
 import UtilityServiceStore from "@scripts/store/modules/UtilityServiceStore";
 import addressValidationStore from "@scripts/store/modules/addressValidationStore";
+import chatbotApplicationStore from "@scripts/store/modules/chatbotApplicationStore";
 import leadSummaryStore from "@scripts/store/modules/LeadSummaryStore";
 import internetServiceInfoStore from "@scripts/modules/internet/store/InternetServiceInfoStore";
 
@@ -17,6 +18,7 @@ export default new Vuex.Store({
         application: applicationStore,
         UtilityServiceStore,
         addressValidationStore,
+        chatbotApplicationStore,
         leadSummaryStore,
         internetServiceInfoStore
     }

@@ -583,7 +583,7 @@
                         return $instance->shouldSkipMiddleware();
         }
                     /**
-         * Get the path to the cached services.php file.
+         * Get the path to the cached Services.php file.
          *
          * @return string
          * @static
@@ -756,7 +756,7 @@
                         return $instance->providerIsLoaded($provider);
         }
                     /**
-         * Get the application's deferred services.
+         * Get the application's deferred Services.
          *
          * @return array
          * @static
@@ -767,7 +767,7 @@
                         return $instance->getDeferredServices();
         }
                     /**
-         * Set the application's deferred services.
+         * Set the application's deferred Services.
          *
          * @param array $services
          * @return void
@@ -779,7 +779,7 @@
                         $instance->setDeferredServices($services);
         }
                     /**
-         * Add an array of services to the application's deferred services.
+         * Add an array of Services to the application's deferred Services.
          *
          * @param array $services
          * @return void
