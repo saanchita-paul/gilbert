@@ -10,6 +10,7 @@ use App\Models\PowershopPaymentInfo;
 use App\Models\RejectionReason;
 use App\Services\Address\AddressModel;
 use App\Services\AddressMapperService;
+use App\Services\ChatBot\ChatbotEncryter;
 use App\Services\GilbertToChatbotStatusMapping;
 use App\Services\Utility\PlanTypeSyncWithChatbotService;
 use Carbon\Carbon;
@@ -245,7 +246,7 @@ class ChatbotToGilbertSyncService
         }
 
         // Payment data sync
-        if (isset($this->requestData['payment_sync_data'])) {
+        if (isset($this->requestData['payment_sync_data']) && count($this->requestData['payment_sync_data']) > 0) {
             $this->setPaymentData($this->requestData['payment_sync_data']);
         }
     }
@@ -527,10 +528,42 @@ class ChatbotToGilbertSyncService
     {
         $app = ConnectionApplication::where('chatbot_id', $this->chatbotId)
             ->firstOrFail();
-        PowershopPaymentInfo::query()
-            ->updateOrCreate(['connection_application_id' => $app->id], [
+
+        $paymentInfo = PowershopPaymentInfo::where('connection_application_id', $app->id)->firstOrNew();
+
+        $paymentInfo
+            ->fill([
+                'connection_application_id' => $app->id,
+                "status" => $paymentData['status'] ?? null,
                 'estimated_elec_billing_cost' => $paymentData['estimated_elec_billing_cost'] ?? null,
                 'estimated_gas_billing_cost' => $paymentData['estimated_gas_billing_cost'] ?? null,
+                "invited_at" => $paymentData['invited_at'] ?? null,
+                "verified_at" => $paymentData['verified_at'] ?? null,
+                "rejected_at" => $paymentData['rejected_at'] ?? null,
+                "customer_full_name" => $paymentData['customer_full_name'] ?? null,
+                "customer_email" => $paymentData['customer_email'] ?? null,
+                "customer_phone" => $paymentData['customer_phone'] ?? null,
+                "px_transaction_type" => $paymentData['px_transaction_type'] ?? null,
+                "px_amount" => $paymentData['px_amount'] ?? null,
+                "px_currency_type" => $paymentData['px_currency_type'] ?? null,
+                "px_txn_id" => $paymentData['px_txn_id'] ?? null,
+                "px_is_enable_billing" => $paymentData['px_is_enable_billing'] ?? null,
+                "px_recurring_mode" => $paymentData['px_recurring_mode'] ?? null,
+                "px_response_text" => $paymentData['px_response_text'] ?? null,
+                "px_response_text_desc" => $paymentData['px_response_text_desc'] ?? null,
             ]);
+
+        // Save encrypted payment data
+        $this->setEncryptedPaymentData($paymentInfo, $paymentData)->save();
+    }
+
+    private function setEncryptedPaymentData(PowershopPaymentInfo $powershopPaymentInfo, $paymentData): PowershopPaymentInfo
+    {
+        $powershopPaymentInfo->px_card_type = ChatbotEncryter::decryptString($paymentData['px_card_type'] ?? null);
+        $powershopPaymentInfo->px_card_number = ChatbotEncryter::decryptString($paymentData['px_card_number'] ?? null);
+        $powershopPaymentInfo->px_card_expire_date = ChatbotEncryter::decryptString($paymentData['px_card_expire_date'] ?? null);
+        $powershopPaymentInfo->px_card_holder_name = ChatbotEncryter::decryptString($paymentData['px_card_holder_name'] ?? null);
+        $powershopPaymentInfo->px_dps_billing_id = ChatbotEncryter::decryptString($paymentData['px_dps_billing_id'] ?? null);
+        return $powershopPaymentInfo;
     }
 }

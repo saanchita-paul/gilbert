@@ -37,7 +37,11 @@ class PaymentInfoService
             $this->paymentInfo->save();
         }
 
-        GilbertToChatbotSyncJob::dispatch($this->appId);
+        // Send to chatbot if chatbot id is available
+        if ($this->paymentInfo->connecttion_application->chatbot_id) {
+            GilbertToChatbotSyncJob::dispatch($this->appId);
+        }
+
         return $this->paymentInfo;
     }
 

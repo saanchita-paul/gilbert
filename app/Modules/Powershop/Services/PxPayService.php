@@ -2,6 +2,7 @@
 
 namespace Powershop\Services;
 
+use App\Jobs\GilbertToChatbotSyncJob;
 use App\Models\PowershopPaymentInfo;
 use Exception;
 use GuzzleHttp\Client;
@@ -185,6 +186,11 @@ class PxPayService
         }
         $paymentInfo->save();
 
+        $this->syncIfTwiddleLead(
+            $paymentInfo->connecttion_application->chatbot_id,
+            $paymentInfo->connecttion_application->id
+        );
+
         return $paymentInfo;
     }
 
@@ -197,6 +203,7 @@ class PxPayService
         $paymentInfo =  $this->getPaymentInfo(data_get($response, 'txn_id'));
         $paymentInfo->rejected_at = now();
         $paymentInfo->save();
+
         return $paymentInfo;
     }
 
@@ -210,8 +217,21 @@ class PxPayService
         $paymentInfo =  $this->getPaymentInfo(data_get($response, 'txn_id'));
         $paymentInfo->verified_at = now();
         $paymentInfo->save();
+
         return $paymentInfo->customer_full_name;
     }
 
+    /**
+     * @param int|null $chatbotId
+     * @param int $appId
+     * @return void
+     */
+    private function syncIfTwiddleLead(?int $chatbotId, int $appId): void
+    {
+        // Send to chatbot if chatbot id is available
+        if ($chatbotId) {
+            GilbertToChatbotSyncJob::dispatch($appId);
+        }
+    }
 }
 
