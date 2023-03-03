@@ -362,10 +362,33 @@ class GilbertToChatbotSyncService
 
     public function mapPaymentData(): array
     {
-        return $this->application->powershopPaymentInfo ? [
-            'estimated_elec_billing_cost' => $this->application->powershopPaymentInfo->estimated_elec_billing_cost,
-            'estimated_gas_billing_cost' => $this->application->powershopPaymentInfo->estimated_gas_billing_cost,
-        ] : [];
+        $paymentData = $this->application->powershopPaymentInfo ?
+            collect($this->application->powershopPaymentInfo->getAttributes()) : collect([]);
+
+        return $paymentData->only([
+            "status",
+            "estimated_elec_billing_cost",
+            "estimated_gas_billing_cost",
+            "invited_at",
+            "verified_at",
+            "rejected_at",
+            "customer_full_name",
+            "customer_email",
+            "customer_phone",
+            "px_transaction_type",
+            "px_amount",
+            "px_currency_type",
+            "px_txn_id",
+            "px_is_enable_billing",
+            "px_recurring_mode",
+            "px_response_text",
+            "px_card_type",
+            "px_card_number",
+            "px_card_expire_date",
+            "px_card_holder_name",
+            "px_dps_billing_id",
+            "px_response_text_desc"
+        ])->toArray();
     }
 }
 
