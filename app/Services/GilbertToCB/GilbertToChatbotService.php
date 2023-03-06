@@ -122,7 +122,7 @@ class GilbertToChatbotService
             "billing_postcode" => $this->application->billing_postcode,
             "is_billing_same" => $this->application->is_billing_same,
             "has_electricity" => $this->application->has_electricity,
-            "is_renovation_on" => $this->application->is_renovation_on,
+//            "is_renovation_on" => $this->application->is_renovation_on,
             "vendor_id" => $this->application->vendor_id,
             "homephone" => $this->application->homephone,
             "qld_vis_inspection_time" => $this->application->inspection_time ? self::inspectionTimes[$this->application->inspection_time] : null,
@@ -160,7 +160,7 @@ class GilbertToChatbotService
             "enabled_marketing_offer" => $this->application->is_email_marketing,
             "is_access_require" => $this->application->is_access_require,
             "has_gas_life_support" => $this->application->is_gas_life_support,
-            "is_any_unrestrained_animal" => $this->application->is_any_unrestrained_animal,
+//            "is_any_unrestrained_animal" => $this->application->is_any_unrestrained_animal,
             "concession_card_type" => $this->mapConcessionCardType($this->application->concession_card_type),
             "concession_card_value" => $this->application->concession_card_number,
             "concession_card_start_date" => $this->application->concession_start_date,
@@ -189,6 +189,7 @@ class GilbertToChatbotService
             "identification" => $this->application->identification ? $this->application->identification->toArray() : null,
             "authorized_person" => $this->application->authorizedPerson ? $this->application->authorizedPerson->toArray() : null,
             "payment_sync_data" => $this->mapPaymentData(),
+            "hazards" => $this->application->hazards ? $this->application->hazards->toArray() : [],
         ];
     }
 
