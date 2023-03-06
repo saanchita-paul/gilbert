@@ -35,7 +35,7 @@ class GilbertToChatbotService
 
     /** PROPERTY TYPE CONSTANTS */
     const PROPERTY_TYPE_RESIDENTIAL = 'residential';
-    const PROPERTY_TYPE_BUSINESS    = 'business';
+    const PROPERTY_TYPE_BUSINESS = 'business';
 
 
     public function __construct($id)
@@ -59,7 +59,7 @@ class GilbertToChatbotService
      */
     public function create()
     {
-        $url      = config('bot.root_url') . '/api/gilbert-application';
+        $url = config('bot.root_url') . '/api/gilbert-application';
         $response = Http::post($url, $this->getProperties());
         if ($response->status() === 201) {
             $this->application->update(['chatbot_id' => $response->json()['moving_utility_id'], 'is_locked' => true]);
@@ -100,7 +100,7 @@ class GilbertToChatbotService
             "to_address" => $this->application->address_text,
             "reason" => $this->application->reason,
             "billing_preference" => $this->mapbillingType($this->application->is_email_billing),
-            "account_type" => $this->application->property_type,
+            "account_type" => $this->mapPropertyType($this->application->property_type),
             "is_property_on_life_support" => $this->application->is_power_life_support,
             "solar_panel" => $this->application->has_solar,
             "nmi" => $this->application->nmi,
