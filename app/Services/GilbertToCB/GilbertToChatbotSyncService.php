@@ -157,7 +157,7 @@ class GilbertToChatbotSyncService
             "enabled_marketing_offer" => $this->application->is_email_marketing,
             "is_access_require" => $this->application->is_access_require,
             "has_gas_life_support" => $this->application->is_gas_life_support,
-            "is_any_unrestrained_animal" => $this->application->is_any_unrestrained_animal,
+//            "is_any_unrestrained_animal" => $this->application->is_any_unrestrained_animal,
             "has_concession_card" => $this->mapHasConcessionCard($this->application->concession_card_type),
             "concession_card_type" => $this->mapConcessionCardType($this->application->concession_card_type),
             "concession_card_value" => $this->application->concession_card_number,
@@ -178,6 +178,7 @@ class GilbertToChatbotSyncService
             "authorized_person" => $this->application->authorizedPerson ? $this->application->authorizedPerson->toArray() : null,
             "rejection_reasons" => $this->mapRejectionReasons(),
             "payment_sync_data" => $this->mapPaymentData(),
+            "hazards" => $this->application->hazards->toArray(),
         ];
     }
 
