@@ -123,7 +123,7 @@ class GilbertToChatbotSyncService
             "hubspot_contact_id" => $this->application->hubspot_contact_id,
             "billing_unit_number" => $this->application->billing_unit_number,
             "billing_street_number" => $this->application->billing_street_number,
-            "billing_street_name" => $this->application->billing_street_name,
+            "billing_street_name" => $this->application->billing_street_name_only,
             "billing_address_text" => $this->application->billing_address_text,
             "billing_address_unit" => $this->application->billing_address_unit,
             "billing_street_address" => $this->application->billing_street_address,
