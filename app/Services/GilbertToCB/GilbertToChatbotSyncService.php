@@ -128,7 +128,7 @@ class GilbertToChatbotSyncService
             "billing_address_unit" => $this->application->billing_address_unit,
             "billing_street_address" => $this->application->billing_street_address,
             "billing_city" => $this->application->billing_city,
-            "billing_state" => $this->application->billing_state,
+            "billing_state" => AddressModel::mapStateToShort($this->application->billing_state),
             "billing_postcode" => $this->application->billing_postcode,
             "is_billing_same" => $this->application->is_billing_same,
             "has_electricity" => $this->application->has_electricity,
