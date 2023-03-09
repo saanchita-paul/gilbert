@@ -37,9 +37,19 @@ const NBNSubmit = async (data, leadId) => {
     }
 }
 
+const goodtelPlans = async () => {
+    try {
+        const response = (await axios.get('/api/goodtel/plans')).data;
+        return response.data;
+    } catch (error) {
+        return error.data;
+    }
+}
+
 export default {
     getProviderAndPlan,
     updateInternetServiceInfo,
     updateNbnProviderInfo,
-    NBNSubmit
+    NBNSubmit,
+    goodtelPlans
 };

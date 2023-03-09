@@ -42,6 +42,7 @@ class GoodtelService
                         'type' => $plan['type'],
                         'price' => $plan['price'],
                         'details_url' => $plan['details_url'],
+                        'mbps' => $plan['mbps'],
                         'is_active' => true
                     ]
                 );

@@ -31,9 +31,9 @@ const submitNBN = async (data, leadId) => {
 
 const loadProviderData = async (leadId) => {
     const leadData = await LeadApplicationService.loadUserLead(leadId);
-    setInternetProvider(leadData.internet_service_info.connection_service.provider_name);
-    setInternetPlan(leadData.internet_service_info.connection_service.plan_type);
-    setInternetStatus(leadData.internet_service_info.connection_service.status);
+    setInternetProvider(leadData.internet_service_info ? leadData.internet_service_info.connection_service.provider_name : null);
+    setInternetPlan(leadData.internet_service_info ? leadData.internet_service_info.connection_service.plan_type : null);
+    setInternetStatus(leadData.internet_service_info ? leadData.internet_service_info.connection_service.status : null);
     return leadData;
 }
 
@@ -53,6 +53,8 @@ const getInternetStatus = () => Store.getters['internetServiceInfoStore/internet
 
 const setInternetStatus = provider => Store.commit("internetServiceInfoStore/setInternetStatus", provider);
 
+const getGoodtelPlans = async () => await InternetAPI.goodtelPlans();
+
 export default {
     getModemTypes,
     getCharityItems,
@@ -67,5 +69,6 @@ export default {
     setInternetStatus,
     updateNbnProvider,
     loadProviderData,
-    submitNBN
+    submitNBN,
+    getGoodtelPlans
 };

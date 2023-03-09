@@ -19,9 +19,10 @@ class GoodtelPlanSeeder extends Seeder
     {
         $plans = [
             [
-                'display_name' => 'Casual- nbn 25/10Mbps',
+                'display_name' => 'Casual- nbn',
                 'name' => 'casual_nbn25',
                 'type' => 'casual',
+                'mbps' => '25/10Mbps',
                 'price' => 68,
                 'details_url' => 'https://www.goodtel.com.au/assets/downloads/nbn%E2%84%A22510-mobile-bundle-Critical-Information-Summary-4_2022-11-30-045642_fdha.pdf',
                 'payment_links' => [
@@ -40,9 +41,10 @@ class GoodtelPlanSeeder extends Seeder
                 ]
             ],
             [
-                'display_name' => 'Family-nbn 50/20 Mbps',
+                'display_name' => 'Family-nbn',
                 'name' => 'family_nbn50',
                 'type' => 'family',
+                'mbps' => '50/20Mbps',
                 'price' => 78,
                 'details_url' => 'https://www.goodtel.com.au/assets/downloads/nbn%E2%84%A25020-nbn%E2%84%A2-Critical-Information-Summary-7.pdf',
                 'payment_links' => [
@@ -61,9 +63,10 @@ class GoodtelPlanSeeder extends Seeder
                 ]
             ],
             [
-                'display_name' => 'Superfast- nbn 100/25 Mbps',
+                'display_name' => 'Superfast- nbn',
                 'name' => 'superfast_nbn100',
                 'type' => 'superfast',
+                'mbps' => '100/25Mbps',
                 'price' => 98,
                 'details_url' => 'https://www.goodtel.com.au/assets/downloads/nbn%E2%84%A210020-Critical-Information-Summary-5.pdf',
                 'payment_links' => [
@@ -82,9 +85,10 @@ class GoodtelPlanSeeder extends Seeder
                 ]
             ],
             [
-                'display_name' => 'Blazing- nbn 250/25 Mbps',
+                'display_name' => 'Blazing- nbn',
                 'name' => 'blazing_nbn250',
                 'type' => 'blazing',
+                'mbps' => '250/25Mbps',
                 'price' => 128,
                 'details_url' => 'https://www.goodtel.com.au/assets/downloads/nbn%E2%84%A225025-Critical-Information-Summary-4.pdf',
                 'payment_links' => [

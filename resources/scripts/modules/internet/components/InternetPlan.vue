@@ -1,5 +1,5 @@
 <template>
-    <div class="internet-plan" style="cursor: pointer" :class="{'selected' : plan.value === selectedPlan}">
+    <div class="internet-plan" style="cursor: pointer" :class="{'selected' : plan.name === selectedPlan}">
 
         <div class="plan-title-header">
             <div class="d-flex align-center">
@@ -8,18 +8,19 @@
                     max-width="30"
                     src="/assets/images/logo/providers/goodtel_logo.png"
                 ></v-img>
-                <h3>{{ plan.title }}</h3>
+                <h3>{{ plan.provider }}</h3>
             </div>
         </div>
 
         <div class="pa-4">
-            <p class="mb-0 text-internet">{{ plan.name }}</p>
+            <p class="mb-0 text-internet">{{ plan.display_name }}</p>
             <p class="text-internet">{{ plan.mbps }}</p>
-            <p class="black--text font-weight-bold">{{ plan.amount }}</p>
+            <p class="black--text font-weight-bold">{{ '$' + plan.price + '/month' }}</p>
         </div>
 
         <div class="view-plan">
-            <v-btn block outlined rounded @click="reviewPlan" style="border: 1px solid #85639A !important;">
+            <v-btn block outlined rounded :href="plan.details_url" target="_blank"
+                   style="border: 1px solid #85639A !important;">
                 View Plan Details
             </v-btn>
         </div>

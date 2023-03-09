@@ -21,6 +21,7 @@ class CreateGoodtelPlansTable extends Migration
             $table->string('type');
             $table->double('price');
             $table->string('details_url');
+            $table->string('mbps')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

@@ -4,6 +4,7 @@ namespace App\Services\Agency;
 
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use App\Models\GoodtelPlan;
 use App\Models\InternetServiceInfo;
 
 class NbnService
@@ -67,10 +68,12 @@ class NbnService
         }
 
         $internetServiceInfo = $connectionApplication->internetServiceInfo;
+        $plan = GoodtelPlan::where('name', $data['plan_type'])->first();
 
         if ($internetServiceInfo) {
             $internetServiceInfo->update([
                 'connection_service_id' => $connectionService->id,
+                'goodtel_plan_id' => $plan->id,
             ]);
         } else {
             InternetServiceInfo::create([

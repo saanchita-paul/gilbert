@@ -19,8 +19,10 @@ class GoodtelPlanResource extends JsonResource
             'display_name' => $this->display_name,
             'name' => $this->name,
             'type' => $this->type,
+            'mbps' => $this->mbps,
             'price' => $this->price,
             'details_url' => $this->details_url,
+            'provider' => 'Goodtel',
             'payment_links' => GoodtelPlanPaymentLinkResource::collection($this->whenLoaded('paymentLinks'))
         ];
     }

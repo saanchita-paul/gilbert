@@ -381,6 +381,7 @@ export default {
             activePlan: {},
             showPaymentLinkSnackbar: false,
             showCopyBtnSnackbar: false,
+            paymentLink: null,
         }
     },
     computed: {
@@ -421,8 +422,9 @@ export default {
     async mounted() {
         this.leadSummary = await this.loadApplicationSummary;
         await InternetService.loadProviderData(this.leadSummary.id);
-        this.onSelectProvider(this.selectedProvider);
-        this.setActivePlan(this.selectedPlan);
+        this.onSelectProvider(this.selectedProvider ?? null);
+        this.setActivePlan(this.selectedPlan ?? null);
+        this.initPaymentLink();
         this.$eventBus.$on("nbn_submitted", async () => {
             console.log("nbn_submitted");
             await this.confirmSubmit();
@@ -433,17 +435,44 @@ export default {
         reviewPlan() {
             this.viewPlanDetails = !this.viewPlanDetails;
         },
-        onSelectProvider(provider) {
+        async onSelectProvider(provider) {
             this.selectedProvider = provider;
 
             const selectedProvider = this.providers.find(dt => {
                 return dt.name === this.selectedProvider;
             })
 
-            this.plans = selectedProvider.plans;
+
+            if (selectedProvider && selectedProvider.name === 'goodtel') {
+                await this.getGoodtelPlans();
+            }
+        },
+        async getGoodtelPlans() {
+            const res = await InternetService.getGoodtelPlans();
+            this.plans = res;
+            console.log(res);
+        },
+        initPaymentLink() {
+            if (this.selectedPlan && this.plans.length) {
+                const plan = this.plans.find(dt => {
+                    return dt.name === this.selectedPlan;
+                });
+                console.log('initPaymentLink', plan);
+                if (plan && (this.internetServiceInfo.modem_type === 'standard' || this.internetServiceInfo.modem_type === 'upgraded')) {
+                    this.paymentLink = plan.payment_links.find(dt => {
+                        return dt.modem_type === this.internetServiceInfo.modem_type;
+                    }).payment_link;
+                }
+
+                if (plan && (this.internetServiceInfo.modem_type !== 'standard' || this.internetServiceInfo.modem_type !== 'upgraded')) {
+                    this.paymentLink = plan.payment_links.find(dt => {
+                        return dt.modem_type === 'none';
+                    }).payment_link;
+                }
+            }
         },
         selectPlan(plan) {
-            this.selectedPlan = plan.value;
+            this.selectedPlan = plan.name;
             const formData = {
                 provider_name: this.selectedProvider,
                 plan_type: this.selectedPlan,
@@ -452,9 +481,11 @@ export default {
             InternetService.updateNbnProvider(formData, this.leadSummary.id);
         },
         setActivePlan(plan) {
-            this.activePlan = this.plans.find(dt => {
-                return dt.value === plan;
-            });
+            if (this.plans && this.plans.length > 0) {
+                this.activePlan = this.plans.find(dt => {
+                    return dt.name === plan;
+                });
+            }
         },
         selectPhonePlan(plan = 'standard') {
             this.internetServiceInfo.home_phone_provider = this.selectedProvider;
