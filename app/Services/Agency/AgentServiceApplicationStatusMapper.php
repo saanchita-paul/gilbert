@@ -85,6 +85,7 @@ class AgentServiceApplicationStatusMapper
         $value = match ($status) {
             ConnectionService::STATUS_SUBMITTED,
             ConnectionService::STATUS_ACCEPTED,
+            ConnectionService::STATUS_ENERGY_SUBMIT,
                 # ConnectionService::STATUS_FAILED = Water manual processing
             ConnectionService::STATUS_FAILED => ['status_name' => 'Confirmed', 'description' => 'The connection has been processed and accepted by the provider.'],
             ConnectionService::STATUS_REJECTED,
