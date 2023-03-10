@@ -250,6 +250,12 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::post('/powershop/payment', [PaymentInfoController::class, 'updateCost']);
 
+
+    /**
+     * api for goodtel payment
+     */
+    Route::post('/goodtel/{id}/payment', [GoodtelController::class, 'sendPaymentLink']);
+
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);

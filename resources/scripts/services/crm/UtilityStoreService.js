@@ -14,6 +14,9 @@ export default {
     getPowerPlan: () => Store.getters.powerPlan,
     setPowerPlan: plan => Store.commit("setPowerPlan", plan),
 
+    getInternetStatus: () => Store.getters.internetStatus,
+    setInternetStatus: status => Store.commit("setInternetStatus", status),
+
     getGasStatus: () => Store.getters.gasStatus,
     setGasStatus: status => Store.commit("setGasStatus", status),
     getGasProvider: () => Store.getters.gasProvider,
@@ -23,7 +26,7 @@ export default {
 
     setBothProvider: provider => Store.commit("setBothProvider", provider),
     setBothPlan: (plan, provider = null, payload) => {
-        if((provider === 'origin' || provider === 'powershop') && plan !== null) {
+        if ((provider === 'origin' || provider === 'powershop') && plan !== null) {
             Store.commit("setPowerPlan", payload.power_plan_type);
             Store.commit("setGasPlan", payload.gas_plan_type);
         } else {
@@ -34,6 +37,7 @@ export default {
     setUtilityDetails: services => {
         let powerService = services.find(data => data.service_type === "power");
         let gasService = services.find(data => data.service_type === "gas");
+        let internetService = services.find(data => data.service_type === "internet");
 
         UtilityStoreService.setPowerStatus(powerService?.status);
         UtilityStoreService.setPowerProvider(powerService?.provider_name);
@@ -41,6 +45,7 @@ export default {
         UtilityStoreService.setGasStatus(gasService?.status);
         UtilityStoreService.setGasProvider(gasService?.provider_name);
         UtilityStoreService.setGasPlan(gasService?.plan_type);
+        UtilityStoreService.setInternetStatus(internetService?.status);
 
         // if (
         //     powerService !== null &&

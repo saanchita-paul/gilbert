@@ -7,18 +7,20 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class InternetPaymentLinkMail extends Mailable
+class InternetPaymentLinkMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
+
+    public array $data;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(array $data)
     {
-        //
+        $this->data = $data;
     }
 
     /**
@@ -28,10 +30,10 @@ class InternetPaymentLinkMail extends Mailable
      */
     public function build()
     {
-        $name = 'John Doe';
-        $paymentUrl = '#';
+        $name       = $this->data['customer_name'] ?? 'Customer';
+        $paymentUrl = $this->data['payment_url'] ?? '#';
         return $this->view('email.internet-payment-link-mail', [
-            'name' => $name,
+            'name'       => $name,
             'paymentUrl' => $paymentUrl,
         ]);
     }

@@ -122,7 +122,7 @@
                                             <span>Modem Type</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>{{ internetServiceInfo.modem_type }}</span>
+                                            <span>{{ modemMapper[internetServiceInfo.modem_type] }}</span>
                                         </div>
                                     </div>
 
@@ -131,7 +131,7 @@
                                             <span>Charity</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>{{ internetServiceInfo.charity }}</span>
+                                            <span>{{ charityMapper[internetServiceInfo.charity] }}</span>
                                         </div>
                                     </div>
 
@@ -144,14 +144,14 @@
                                         </div>
                                     </div>
 
-                                    <div class="crm-text-field">
-                                        <div class="field-label">
-                                            <span>Payment Status</span>
-                                        </div>
-                                        <div class="text-field">
-                                            <span>Valid</span>
-                                        </div>
-                                    </div>
+                                    <!--                                    <div class="crm-text-field">
+                                                                            <div class="field-label">
+                                                                                <span>Payment Status</span>
+                                                                            </div>
+                                                                            <div class="text-field">
+                                                                                <span>Valid</span>
+                                                                            </div>
+                                                                        </div>-->
                                 </v-col>
                             </v-row>
                         </div>
@@ -171,14 +171,16 @@
                                                     max-width="30"
                                                     :src="activePlan.logo"
                                                 ></v-img>
-                                                <h3>{{ activePlan.title }}</h3>
+                                                <h3>{{ activePlan.provider }}</h3>
                                             </div>
                                         </div>
 
                                         <div class="pa-4">
-                                            <p class="mb-0 text-internet">{{ activePlan.name }}</p>
+                                            <p class="mb-0 text-internet">{{ activePlan.display_name }}</p>
                                             <p class="text-internet">{{ activePlan.mbps }}</p>
-                                            <p class="black--text font-weight-bold">{{ activePlan.amount }}</p>
+                                            <p class="black--text font-weight-bold">
+                                                {{ '$' + activePlan.price + '/month' }}
+                                            </p>
                                         </div>
 
                                         <div class="view-plan">
@@ -207,7 +209,7 @@
                                             <span>Selected Phone Plan</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>{{ internetServiceInfo.home_phone_plan }}</span>
+                                            <span>{{ internetServiceInfo.home_phone_plan.toUpperCase() }}</span>
                                         </div>
                                     </div>
 
@@ -262,8 +264,6 @@
                                         </div>
                                     </div>
                                 </v-col>
-
-
                             </v-row>
                         </div>
                     </div>
@@ -297,6 +297,7 @@ import ApplicationSummary from "@scripts/models/crm/ApplicationSummary";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import InternetService from "@scripts/modules/internet/services/InternetService";
 import InternetServiceInfo from "@scripts/models/crm/InternetServiceInfo";
+import InternetServiceConstant from "@scripts/modules/internet/constants/InternetServiceConstant";
 
 export default {
     name: "InternetSubmitConfirmationModal",
@@ -311,6 +312,8 @@ export default {
     data() {
         return {
             leadSummary: new ApplicationSummary(),
+            modemMapper: InternetServiceConstant.MODEM_TYPE_MAP,
+            charityMapper: InternetServiceConstant.CHARITY_MAP,
         };
     },
     computed: {

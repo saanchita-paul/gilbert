@@ -23,6 +23,7 @@ class GoodtelPlanResource extends JsonResource
             'price' => $this->price,
             'details_url' => $this->details_url,
             'provider' => 'Goodtel',
+            'logo' => '/assets/images/logo/providers/goodtel_logo.png',
             'payment_links' => GoodtelPlanPaymentLinkResource::collection($this->whenLoaded('paymentLinks'))
         ];
     }

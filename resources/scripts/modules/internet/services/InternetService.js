@@ -55,6 +55,8 @@ const setInternetStatus = provider => Store.commit("internetServiceInfoStore/set
 
 const getGoodtelPlans = async () => await InternetAPI.goodtelPlans();
 
+const sendGoodtelPaymentLink = async (appId) => await InternetAPI.goodtelPaymentLinkSend(appId);
+
 export default {
     getModemTypes,
     getCharityItems,
@@ -70,5 +72,6 @@ export default {
     updateNbnProvider,
     loadProviderData,
     submitNBN,
-    getGoodtelPlans
+    getGoodtelPlans,
+    sendGoodtelPaymentLink
 };

@@ -195,6 +195,7 @@
                                                 v-model="internetServiceInfo.modem_type"
                                                 :error-messages="errors[0]"
                                                 @blur="updateInternetServiceInfo"
+                                                @change="paymentLinkChangeHandler($event)"
                                             >
                                             </v-select>
                                         </ValidationProvider>
@@ -268,7 +269,8 @@
                             </div>
 
                             <div class="crm-text-field">
-                                <v-btn outlined class="outlined-btn" @click="sendGoodtelPaymentLink">
+                                <v-btn outlined class="outlined-btn" @click="sendGoodtelPaymentLink"
+                                       :loading="paymentBtnLoading" :disabled="paymentLinkSent">
                                     Send payment link
                                     <v-icon class="ml-4">mdi-email</v-icon>
                                 </v-btn>
@@ -310,7 +312,7 @@
                                                   outlined
                                                   dense
                                                   readonly
-                                                  value="Text to be copied"
+                                                  :value="paymentLink"
                                     ></v-text-field>
                                 </div>
                             </div>
@@ -363,7 +365,7 @@ import ApplicationSummary from "@scripts/models/crm/ApplicationSummary";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 
 export default {
-    name: "InternetService.",
+    name: "InternetService",
     components: {
         InternetPlan,
         InternetServiceProvider,
@@ -382,6 +384,8 @@ export default {
             showPaymentLinkSnackbar: false,
             showCopyBtnSnackbar: false,
             paymentLink: null,
+            paymentBtnLoading: false,
+            paymentLinkSent: false
         }
     },
     computed: {
@@ -389,7 +393,11 @@ export default {
             return InternetService.getProviderAndPlan();
         },
         isDisable() {
-            return false;
+            return (
+                !LeadApplicationService.canSubmitInternet('internet') ||
+                !this.selectedProvider ||
+                !this.selectedPlan
+            );
         },
         selectedProvider: {
             get() {
@@ -422,9 +430,8 @@ export default {
     async mounted() {
         this.leadSummary = await this.loadApplicationSummary;
         await InternetService.loadProviderData(this.leadSummary.id);
-        this.onSelectProvider(this.selectedProvider ?? null);
+        await this.onSelectProvider(this.selectedProvider ?? null);
         this.setActivePlan(this.selectedPlan ?? null);
-        this.initPaymentLink();
         this.$eventBus.$on("nbn_submitted", async () => {
             console.log("nbn_submitted");
             await this.confirmSubmit();
@@ -448,28 +455,30 @@ export default {
             }
         },
         async getGoodtelPlans() {
-            const res = await InternetService.getGoodtelPlans();
-            this.plans = res;
-            console.log(res);
+            this.plans = await InternetService.getGoodtelPlans();
+            this.initPaymentLink(this.internetServiceInfo.modem_type);
         },
-        initPaymentLink() {
+        initPaymentLink(modem_type) {
             if (this.selectedPlan && this.plans.length) {
                 const plan = this.plans.find(dt => {
                     return dt.name === this.selectedPlan;
                 });
                 console.log('initPaymentLink', plan);
-                if (plan && (this.internetServiceInfo.modem_type === 'standard' || this.internetServiceInfo.modem_type === 'upgraded')) {
+                if (modem_type === 'standard' || modem_type === 'upgraded') {
+                    console.log('p1', modem_type)
                     this.paymentLink = plan.payment_links.find(dt => {
-                        return dt.modem_type === this.internetServiceInfo.modem_type;
+                        return dt.modem_type === modem_type;
                     }).payment_link;
-                }
-
-                if (plan && (this.internetServiceInfo.modem_type !== 'standard' || this.internetServiceInfo.modem_type !== 'upgraded')) {
+                } else {
+                    console.log('p2', modem_type)
                     this.paymentLink = plan.payment_links.find(dt => {
                         return dt.modem_type === 'none';
                     }).payment_link;
                 }
             }
+        },
+        paymentLinkChangeHandler(modem_type) {
+            this.initPaymentLink(modem_type);
         },
         selectPlan(plan) {
             this.selectedPlan = plan.name;
@@ -520,11 +529,17 @@ export default {
             }
             this.updateInternetServiceInfo();
         },
-        sendGoodtelPaymentLink() {
-            this.showPaymentLinkSnackbar = true;
-            setTimeout(() => {
-                this.showPaymentLinkSnackbar = false;
-            }, 2000);
+        async sendGoodtelPaymentLink() {
+            this.paymentBtnLoading = true;
+            const res = await InternetService.sendGoodtelPaymentLink(this.leadSummary.id);
+            if (res.data.success) {
+                this.paymentLinkSent = true;
+                this.paymentBtnLoading = false;
+                this.showPaymentLinkSnackbar = true;
+                setTimeout(() => {
+                    this.showPaymentLinkSnackbar = false;
+                }, 2000);
+            }
         },
         copyToClipBoardGoodtelPaymentLink() {
             this.$refs.goodtelPaymentLink.focus();

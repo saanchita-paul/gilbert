@@ -26,6 +26,25 @@ class InternetServiceInfo extends Model
     const BURN_BRIGHT = "burn_bright";
     const SAVE_A_DOG_SCHEME = "save_a_dog_scheme";
 
+    const MODEM_MAPPER = [
+        self::BYO => 'BYO Modem',
+        self::STANDARD => 'Standard Modem $225 once off',
+        self::UPGRADED => 'Upgraded Modem $325 once off',
+    ];
+
+    const CHARITY_MAPPER = [
+        self::OZHARVEST => 'OzHarvest',
+        self::INDIGENOUS_LITERACY_FOUNDATION => 'Indigenous Literacy Foundation',
+        self::HEART_KIDS => 'HeartKids',
+        self::NATIONAL_BREAST_CANCER_FOUNDATION => 'National Breast Cancer Foundation',
+        self::ASYLUM_SEEKER_RESOURCE_CENTRE => 'Asylum Seeker Resource Centre',
+        self::CHILD_FUND_AUSTRALIA => 'ChildFund Australia',
+        self::RAINFOREST_RESCUE => 'Rainforest Rescue',
+        self::SLEEPBUS => 'Sleepbus',
+        self::BURN_BRIGHT => 'Burn Bright',
+        self::SAVE_A_DOG_SCHEME => 'Save-A-Dog Scheme',
+    ];
+
 
     public function connectionApplication(): BelongsTo
     {
@@ -35,5 +54,10 @@ class InternetServiceInfo extends Model
     public function connectionService(): BelongsTo
     {
         return $this->belongsTo(ConnectionService::class);
+    }
+
+    public function goodtelPlan(): BelongsTo
+    {
+        return $this->belongsTo(GoodtelPlan::class);
     }
 }

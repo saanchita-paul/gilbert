@@ -66,8 +66,10 @@ export default {
     getNBNApplicationCafFileData: async (sort_search_meta, params) => {
         const data = await axios.get('/api/nbn/applications',{params:{...sort_search_meta, ...params}});
 
+        console.log(data.data)
+
         return {
-            data: GilbertApplicationCafFileMapper.mapGilbertApplicationList(data.data),
+            data: GilbertApplicationCafFileMapper.mapNbnApplicationList(data.data),
 
             pagination: new Pagination({
                 current_page: data.data.meta ? data.data.meta.current_page : 1,

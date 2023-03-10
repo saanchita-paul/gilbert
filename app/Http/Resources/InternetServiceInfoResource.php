@@ -43,6 +43,7 @@ class InternetServiceInfoResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'connection_service' => $this->connectionService,
+            'is_caf_generated' => $this->is_caf_generated
         ];
     }
 }

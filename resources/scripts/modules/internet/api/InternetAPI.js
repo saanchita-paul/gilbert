@@ -46,10 +46,19 @@ const goodtelPlans = async () => {
     }
 }
 
+const goodtelPaymentLinkSend = async (appId) => {
+    try {
+        return await axios.post(`/api/goodtel/${appId}/payment`);
+    } catch (error) {
+        return error.data;
+    }
+};
+
 export default {
     getProviderAndPlan,
     updateInternetServiceInfo,
     updateNbnProviderInfo,
     NBNSubmit,
-    goodtelPlans
+    goodtelPlans,
+    goodtelPaymentLinkSend
 };

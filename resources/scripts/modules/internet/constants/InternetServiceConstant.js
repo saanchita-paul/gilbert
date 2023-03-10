@@ -16,10 +16,31 @@ export const CHARITY = [
     {text: "Rainforest Rescue", value: "rainforest_rescue"},
     {text: "Sleepbus", value: "sleepbus"},
     {text: "Burn Bright", value: "burn_bright"},
-    {text: "Save-A-Dog Scheme", value: "save_a_dog-scheme"},
+    {text: "Save-A-Dog Scheme", value: "save_a_dog_scheme"},
 ];
+
+export const CHARITY_MAP = {
+    "oz_harvest": "OzHarvest",
+    "indigenous_literacy_foundation": "Indigenous Literacy Foundation",
+    "heart_kids": "HeartKids",
+    "national_breast_cancer_foundation": "National Breast Cancer Foundation",
+    "asylum_seeker_resource_centre": "Asylum Seeker Resource Centre",
+    "child_fund_australia": "ChildFund Australia",
+    "rainforest_rescue": "Rainforest Rescue",
+    "sleepbus": "Sleepbus",
+    "burn_bright": "Burn Bright",
+    "save_a_dog_scheme": "Save-A-Dog Scheme"
+};
+
+export const MODEM_TYPE_MAP = {
+    "byo": "BYO Modem",
+    "standard": "Standard Modem $225 once off",
+    "upgraded": "Upgraded Modem $325 once off"
+};
 
 export default {
     MODEM_TYPES,
-    CHARITY
+    CHARITY,
+    CHARITY_MAP,
+    MODEM_TYPE_MAP
 };

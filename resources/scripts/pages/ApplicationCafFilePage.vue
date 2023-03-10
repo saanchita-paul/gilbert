@@ -75,7 +75,7 @@
             <v-tab-item value="nbnGilbertApplication">
                 <v-card>
                     <v-card-text>
-                        <GilbertFilterWrapper
+                        <GilbertNbnFilterWrapper
                             filterFor="nbn"
                         />
                     </v-card-text>
@@ -97,10 +97,12 @@ import {CafFileSearchFilterModel} from "@scripts/models/CafFileSearchFilterModel
 import ChatbotApplicationPage from "@scripts/pages/chatbot/ChatbotApplicationPage";
 import {forEach, isEqual, isNull, omit} from "lodash-es";
 import GilbertFilterWrapper from "@scripts/pages/GilbertFilterWrapper.vue";
+import GilbertNbnFilterWrapper from "@scripts/pages/GilbertNbnFilterWrapper.vue";
 
 export default {
     name: "ApplicationCafFilePage",
     components: {
+        GilbertNbnFilterWrapper,
         GilbertFilterWrapper,
         ApplicationCafFileTable,
         ApplicationCafFileFilter,

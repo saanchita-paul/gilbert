@@ -2,11 +2,14 @@
 
 namespace App\Services;
 
+use App\Mail\InternetPaymentLinkMail;
 use App\Models\GoodtelPlan;
 use App\Models\GoodtelPlanPaymentLink;
+use App\Models\InternetServiceInfo;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class GoodtelService
 {
@@ -70,6 +73,36 @@ class GoodtelService
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * @param int $appId
+     * @return void
+     * @throws \Exception
+     */
+    public function paymentLinkSend(int $appId): void
+    {
+        try {
+            $internetServiceInfo = InternetServiceInfo::where('connection_application_id', $appId)->first();
+            if ($internetServiceInfo->modem_type === 'standard' || $internetServiceInfo->modem_type === 'upgraded') {
+                $paymentLink = GoodtelPlanPaymentLink::where([
+                    ['goodtel_plan_id', $internetServiceInfo->goodtel_plan_id],
+                    ['modem_type', $internetServiceInfo->modem_type]
+                ])->first();
+            } else {
+                $paymentLink = GoodtelPlanPaymentLink::where([
+                    ['goodtel_plan_id', $internetServiceInfo->goodtel_plan_id],
+                    ['modem_type', 'none']
+                ])->first();
+            }
+
+            Mail::to($internetServiceInfo->connectionApplication->email)->send(new InternetPaymentLinkMail([
+                'customer_name' => $internetServiceInfo->connectionApplication->first_name . ' ' . $internetServiceInfo->connectionApplication->last_name,
+                'payment_url'   => $paymentLink->payment_link
+            ]));
+        } catch (\Exception $e) {
             throw $e;
         }
     }

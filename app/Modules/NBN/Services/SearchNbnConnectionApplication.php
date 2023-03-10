@@ -124,19 +124,20 @@ class SearchNbnConnectionApplication
             ->with('submittedByUser');
 
 
-        $this->applyFilterLeadType($user)
+        $this
+            ->applyFilterLeadType($user)
             ->applyFilterUserOffice($user)
             // ->applyFilterCreatedBy($user)
             ->applyFilterSource()
-            ->applyFilterOfficeId()
-            ->applyFilterForFoxie()
-            ->applyFilterTenancyType()
-            ->applyFilterTriage()
+//            ->applyFilterOfficeId()
+//            ->applyFilterForFoxie()
+//            ->applyFilterTenancyType()
+//            ->applyFilterTriage()
             ->applyFilterAppId()
-            ->applyFilterMovingDate()
-            ->applyFilterAgentId()
-            ->applyFilterTenantEmail()
-            ->applyDuplicateFilter()
+//            ->applyFilterMovingDate()
+//            ->applyFilterAgentId()
+//            ->applyFilterTenantEmail()
+//            ->applyDuplicateFilter()
             ->applyDateRangeFilter()
             ->applyFilterByService()
             ->applySearch();
@@ -216,10 +217,10 @@ class SearchNbnConnectionApplication
 
     private function applyFilterMovingDate(): static
     {
-        if ($this->startDate && $this->endDate) {
+        if ($this->dateStart && $this->dateEnd) {
             $this->builder = $this->builder
-                ->where('moving_date', '>=', $this->startDate)
-                ->where('moving_date', '<=', $this->endDate);
+                ->where('moving_date', '>=', $this->dateStart)
+                ->where('moving_date', '<=', $this->dateEnd);
         }
         return $this;
     }
@@ -389,9 +390,11 @@ class SearchNbnConnectionApplication
     private function applyFilterByService(): static
     {
         if ($this->application_service_type) {
-            $this->builder = $this->builder->where('status', ConnectionApplication::STATUS_SUBMITTED)->whereHas('connectionServices', function (Builder $query) {
+            $this->builder = $this->builder
+//                ->where('status', ConnectionApplication::STATUS_SUBMITTED)
+                ->whereHas('connectionServices', function (Builder $query) {
                 $query->where('service_type', 'internet')
-                    ->where('status', ConnectionService::AC_MANUAL_PROCESSING);
+                    ->where('status', ConnectionService::STATUS_SUBMITTED);
             });
 
         }

@@ -6,7 +6,7 @@
                 <v-img
                     class="mr-2"
                     max-width="30"
-                    src="/assets/images/logo/providers/goodtel_logo.png"
+                    :src="plan.logo"
                 ></v-img>
                 <h3>{{ plan.provider }}</h3>
             </div>

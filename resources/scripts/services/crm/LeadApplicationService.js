@@ -135,6 +135,11 @@ export default {
         return STATUSES_FOR_ENERGY_SUBMIT.includes(status);
     },
 
+    canSubmitInternet: type => {
+        let status = UtilityStoreService.getInternetStatus();
+        return STATUSES_FOR_ENERGY_SUBMIT.includes(status);
+    },
+
     /**
      * checking if we can submit energy
      *
