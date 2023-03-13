@@ -97,4 +97,31 @@ class NbnService
         ]);
         return $connectionApplication;
     }
+
+    public function initInternetServiceInfo(ConnectionApplication $application)
+    {
+        if (!$application->internetServiceInfo) {
+            $connectionService = $application->connectionServices()->where('service_type', 'internet')->first();
+            $plan = GoodtelPlan::where('is_active', true)
+                ->where('name', $application->plan_type)->first();
+
+            $application->internetServiceInfo()->create([
+                'connection_application_id' => $application->id,
+                'connection_service_id' => $connectionService->id ?? null,
+                'goodtel_plan_id' => $plan->id ?? null,
+                'is_shipping_same' => true,
+                'unit_number' => $application->unit_number,
+                'street_number' => $application->street_number,
+                'street_name_only' => $application->street_name_only,
+                'address_text' => $application->address_text,
+                'street_address' => $application->street_address,
+                'street_type' => $application->street_type,
+                'city' => $application->city,
+                'postcode' => $application->postcode,
+                'state' => $application->state,
+            ]);
+        }
+
+        return $application->refresh();
+    }
 }

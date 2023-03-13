@@ -20,6 +20,7 @@ use App\Models\User;
 use App\Services\Address\EmbeddedNetworkService;
 use App\Services\Agency\ApplicationService;
 use App\Services\Agency\MirnNmiService;
+use App\Services\Agency\NbnService;
 use App\Services\Agency\WaterAutoSubmitService;
 use App\Services\Application\ApplicationLockUnlockService;
 use App\Services\Application\ApplicationsMetricsService;
@@ -120,7 +121,11 @@ class ApplicationController extends Controller
                 return $this->sendUnauthorizedResponse();
             }
 
-            $application->load(['connectionServices.reasons']);
+            $application->load(['connectionServices.reasons', 'internetServiceInfo']);
+
+            // Update or create internet service info
+            $nbnService = new NbnService();
+            $nbnService->initInternetServiceInfo($application);
 
             return new ApplicationResource($application, TSACallHistory::getByAppID($application->id));
 
