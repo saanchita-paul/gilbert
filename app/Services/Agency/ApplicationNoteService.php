@@ -67,7 +67,7 @@ class ApplicationNoteService
             $roleText = ucwords(array_reduce(explode('_', $role), fn($carry, $part) => $carry ? "$carry $part" : $part));
             $name = "{$hoodUser->first_name} $hoodUser->last_name";
 
-            $data = array_merge($data, ['name' => $name, 'role_formatted' => $role]);
+            $data = array_merge($data, ['name' => $name, 'role_formatted' => $roleText]);
         }
 
 
