@@ -21,7 +21,9 @@ export default {
     computed: {
         by() {
             if(this.note.additional_data?.name) {
-                return `by [${this.note.additional_data?.name}] [${this.note.additional_data?.role_formatted || ''}]`
+                return this.note.additional_data?.role_formatted ?
+                    `by [${this.note.additional_data?.name}] [${this.note.additional_data?.role_formatted}]`
+                    : `by [${this.note.additional_data?.name}]`
             }
             return null
         }
