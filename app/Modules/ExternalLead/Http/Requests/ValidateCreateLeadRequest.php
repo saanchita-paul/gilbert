@@ -38,13 +38,29 @@ class ValidateCreateLeadRequest extends FormRequest
 
     public function messages()
     {
-        $dobDateFormatMessage = 'The tenancy dob does not match the format yyyy-mm-dd.';
-        $expireDateFormatMessage = 'The identification expiry date format does not match the format yyyy-mm-dd.';
-        $movingDateFormatMessage = 'The connection details moving date does not match the format yyyy-mm-dd.';
+        $dobDateFormatMessage = 'The :attribute does not match the format yyyy-mm-dd.';
         return [
             'primary_account.dob.date_format' => $dobDateFormatMessage,
-            'primary_account.identification.expire_date.date_format' => $expireDateFormatMessage,
-            'connection_details.moving_date.date_format' => $movingDateFormatMessage,
+            'primary_account.identification.expire_date.date_format' => $dobDateFormatMessage,
+            'connection_details.moving_date.date_format' => $dobDateFormatMessage,
+            'secondary_account.dob.date_format' => $dobDateFormatMessage,
+            'secondary_account.identification.expire_date.date_format' => $dobDateFormatMessage,
+        ];
+    }
+
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'primary_account.dob' => 'Date of Birth',
+            'primary_account.identification.expire_date' => 'identification expire date',
+            'connection_details.moving_date' => 'moving date',
+            'secondary_account.dob' => 'secondary account DoB',
+            'secondary_account.identification.expire_date' => 'secondary account identification expire date',
         ];
     }
 
