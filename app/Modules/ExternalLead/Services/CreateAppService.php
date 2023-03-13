@@ -4,6 +4,7 @@ namespace ExternalLead\Services;
 
 use App\Models\ExternalSource;
 use App\Models\ConnectionApplication;
+use App\Models\Hazard;
 use App\Services\Address\StreetTypeMapper;
 use App\Services\AddressMapperService;
 use App\Events\NotifyAgentAfterLeadCreation;
@@ -13,6 +14,8 @@ use App\Services\Utility\StateMapService;
 class CreateAppService
 {
     private AddressMapperService $addressMapperService;
+
+    private $hazardData = [];
 
     public function __construct()
     {
@@ -31,6 +34,10 @@ class CreateAppService
 
         $newApp = $this->mapConnectionApplicationFields($newApp, $data);
         $newApp->save();
+
+        // Create hazards
+        $this->hazardData = $this->mapHazardData($data);
+        $newApp->hazards()->sync($this->hazardData);
 
         $mapAgentService = new MapAgentService();
         $newApp = $mapAgentService->map($source, $newApp, $data ?? []);
@@ -93,7 +100,7 @@ class CreateAppService
         $app->is_power_life_support = $data['connection_details']['has_power_life_support'] ?? false;
         $app->is_gas_life_support = $data['connection_details']['has_gas_life_support'] ?? false;
         $app->has_solar = $data['connection_details']['has_solar'] ?? false;
-        $app->is_renovation_on = $data['connection_details']['is_renovation_on'] ?? false;
+        // $app->is_renovation_on = $data['connection_details']['is_renovation_on'] ?? false;
         $app->nmi = $data['connection_details']['nmi'] ?? null;
         $app->mirn = $data['connection_details']['mirn'] ?? null;
 
@@ -133,5 +140,25 @@ class CreateAppService
     {
         NotifyAgentAfterLeadCreation::dispatch($app->id);
         CreateApplicationEvent::dispatch($app->id);
+    }
+
+    /**
+     * Map hazard data
+     * @param $data
+     * @return array
+     */
+    private function mapHazardData($data): array
+    {
+        $hazardData = [];
+
+        if (isset($data['connection_details']['is_renovation_on']) && $data['connection_details']['is_renovation_on']) {
+            $haz = Hazard::where('is_active', 1)
+                ->where('powershop_value', "electrical_safety_issue")->first();
+            if ($haz) {
+                $hazardData[] = $haz->id;
+            }
+        }
+
+        return $hazardData;
     }
 }
