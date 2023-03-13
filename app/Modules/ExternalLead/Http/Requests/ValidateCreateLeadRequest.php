@@ -38,11 +38,13 @@ class ValidateCreateLeadRequest extends FormRequest
 
     public function messages()
     {
-        $dateFormatMessage = 'The tenancy dob does not match the format yyyy-mm-dd';
+        $dobDateFormatMessage = 'The tenancy dob does not match the format yyyy-mm-dd.';
+        $expireDateFormatMessage = 'The identification expiry date format does not match the format yyyy-mm-dd.';
+        $movingDateFormatMessage = 'The connection details moving date does not match the format yyyy-mm-dd.';
         return [
-            'primary_account.dob.date_format' => $dateFormatMessage,
-            'primary_account.identification.expire_date.date_format' => $dateFormatMessage,
-            'connection_details.moving_date.date_format' => $dateFormatMessage,
+            'primary_account.dob.date_format' => $dobDateFormatMessage,
+            'primary_account.identification.expire_date.date_format' => $expireDateFormatMessage,
+            'connection_details.moving_date.date_format' => $movingDateFormatMessage,
         ];
     }
 
