@@ -22,31 +22,31 @@ class GilbertToChatbotSyncService
 
     /** UTILITY TYPE CONSTANTS */
     const PLAN_UTILITY_TYPE_ELECTRICITY = 'electricity';
-    const PLAN_UTILITY_TYPE_GAS = 'gas';
-    const PLAN_UTILITY_TYPE_BOTH = 'electricity_and_gas';
+    const PLAN_UTILITY_TYPE_GAS         = 'gas';
+    const PLAN_UTILITY_TYPE_BOTH        = 'electricity_and_gas';
 
     /** CONCESSION CARD TYPE */
     const CONCESSION_CARD_YES = 1;
-    const CONCESSION_CARD_NO = 0;
+    const CONCESSION_CARD_NO  = 0;
 
     /** SOLAR PANEL CONSTANTS */
-    const SOLAR_PANEL_YES = 'solar';
-    const SOLAR_PANEL_NO = 'no_solar';
+    const SOLAR_PANEL_YES      = 'solar';
+    const SOLAR_PANEL_NO       = 'no_solar';
     const SOLAR_PANEL_NOT_SURE = 'solar_not_sure';
 
     /** PROPERTY TYPE CONSTANTS */
     const PROPERTY_TYPE_RESIDENTIAL = 'residential';
-    const PROPERTY_TYPE_BUSINESS = 'business';
+    const PROPERTY_TYPE_BUSINESS    = 'business';
 
     const INSPECTION_TIME_MAPPER = [
         '8:00am - 12:00pm' => '8AM - 12PM',
-        '1:00pm - 5:00pm' => '1PM - 5PM',
-        '8:00am - 1:00pm' => '8AM - 1PM',
-        '9:00am - 2:00pm' => '9AM - 2PM',
+        '1:00pm - 5:00pm'  => '1PM - 5PM',
+        '8:00am - 1:00pm'  => '8AM - 1PM',
+        '9:00am - 2:00pm'  => '9AM - 2PM',
         '10:00am - 3:00pm' => '10AM - 3PM',
         '11:00am - 4:00pm' => '11AM - 4PM',
         '12:00pm - 5:00pm' => '12PM - 5PM',
-        '1:00pm - 6:00pm' => '1PM - 6PM',
+        '1:00pm - 6:00pm'  => '1PM - 6PM',
     ];
 
 
@@ -57,7 +57,8 @@ class GilbertToChatbotSyncService
             'connectionServices',
             'authorizedPerson',
             'office',
-            'agency'
+            'agency',
+            'powershopPaymentInfo'
         ])->firstOrFail();
     }
 
@@ -67,12 +68,15 @@ class GilbertToChatbotSyncService
      */
     public function sync()
     {
-        $this->application->update(['is_locked' => true]);
+        // $this->application->update(['is_locked' => true]);
         return (new SendApplicationToChatbotAPI())->postApi($this->getMappedData());
     }
 
     public function lockApp()
     {
+        // Set property type to residential if it is null
+        $this->setPropertyType();
+
         return $this->application->update(['is_locked' => true]);
     }
 
@@ -123,12 +127,12 @@ class GilbertToChatbotSyncService
             "hubspot_contact_id" => $this->application->hubspot_contact_id,
             "billing_unit_number" => $this->application->billing_unit_number,
             "billing_street_number" => $this->application->billing_street_number,
-            "billing_street_name" => $this->application->billing_street_name,
+            "billing_street_name" => $this->application->billing_street_name_only,
             "billing_address_text" => $this->application->billing_address_text,
             "billing_address_unit" => $this->application->billing_address_unit,
             "billing_street_address" => $this->application->billing_street_address,
             "billing_city" => $this->application->billing_city,
-            "billing_state" => $this->application->billing_state,
+            "billing_state" => AddressModel::mapStateToShort($this->application->billing_state),
             "billing_postcode" => $this->application->billing_postcode,
             "is_billing_same" => $this->application->is_billing_same,
             "has_electricity" => $this->application->has_electricity,
@@ -153,7 +157,7 @@ class GilbertToChatbotSyncService
             "enabled_marketing_offer" => $this->application->is_email_marketing,
             "is_access_require" => $this->application->is_access_require,
             "has_gas_life_support" => $this->application->is_gas_life_support,
-            "is_any_unrestrained_animal" => $this->application->is_any_unrestrained_animal,
+//            "is_any_unrestrained_animal" => $this->application->is_any_unrestrained_animal,
             "has_concession_card" => $this->mapHasConcessionCard($this->application->concession_card_type),
             "concession_card_type" => $this->mapConcessionCardType($this->application->concession_card_type),
             "concession_card_value" => $this->application->concession_card_number,
@@ -172,7 +176,9 @@ class GilbertToChatbotSyncService
             "connection_services" => $this->application->connectionServices ? $this->application->connectionServices->toArray() : [],
             "identification" => $this->application->identification ? $this->application->identification->toArray() : null,
             "authorized_person" => $this->application->authorizedPerson ? $this->application->authorizedPerson->toArray() : null,
-            "rejection_reasons" => $this->mapRejectionReasons()
+            "rejection_reasons" => $this->mapRejectionReasons(),
+            "payment_sync_data" => $this->mapPaymentData(),
+            "hazards" => $this->application->hazards->toArray(),
         ];
     }
 
@@ -309,9 +315,8 @@ class GilbertToChatbotSyncService
     private function mapPropertyType($propertyType): ?string
     {
         return match ((int)$propertyType) {
-            1 => self::PROPERTY_TYPE_RESIDENTIAL,
             2 => self::PROPERTY_TYPE_BUSINESS,
-            default => null
+            default =>  self::PROPERTY_TYPE_RESIDENTIAL
         };
     }
 
@@ -341,6 +346,50 @@ class GilbertToChatbotSyncService
             ? RejectionReason::query()->whereIn('connection_service_id', $servicesId)->get()->toArray()
             : [];
 
+    }
+
+    /**
+     * Set property type
+     *
+     * @return void
+     */
+    public function setPropertyType(): void
+    {
+        if (!$this->application->property_type) {
+            $this->application->property_type = ConnectionApplication::PROPERTY_TYPE_RESIDENTIAL;
+            $this->application->save();
+        }
+    }
+
+    public function mapPaymentData(): array
+    {
+        $paymentData = $this->application->powershopPaymentInfo ?
+            collect($this->application->powershopPaymentInfo->getAttributes()) : collect([]);
+
+        return $paymentData->only([
+            "status",
+            "estimated_elec_billing_cost",
+            "estimated_gas_billing_cost",
+            "invited_at",
+            "verified_at",
+            "rejected_at",
+            "customer_full_name",
+            "customer_email",
+            "customer_phone",
+            "px_transaction_type",
+            "px_amount",
+            "px_currency_type",
+            "px_txn_id",
+            "px_is_enable_billing",
+            "px_recurring_mode",
+            "px_response_text",
+            "px_card_type",
+            "px_card_number",
+            "px_card_expire_date",
+            "px_card_holder_name",
+            "px_dps_billing_id",
+            "px_response_text_desc"
+        ])->toArray();
     }
 }
 

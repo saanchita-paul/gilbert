@@ -9,6 +9,7 @@ use Ignite\Models\IgniteLead;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
@@ -245,7 +246,9 @@ class ConnectionApplication extends Model
         'mirn_score',
         'nmi_score',
         'suggested_nmi',
-        'assigned_at'
+        'assigned_at',
+        'life_support_equipment_id',
+        'medical_reason'
     ];
 
 
@@ -715,8 +718,8 @@ class ConnectionApplication extends Model
     public function getSalesReferenceIdAttribute()
     {
         $ref = ConnectionService::where('connection_application_id', $this->id)
-                ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
-                ->pluck('lead_reference');
+            ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
+            ->pluck('lead_reference');
 
         if (!empty($ref)) {
             return implode(',', $ref->toArray());
@@ -729,4 +732,23 @@ class ConnectionApplication extends Model
     {
         return $this->hasOne(InternetServiceInfo::class);
     }
+
+    /**
+     * @return BelongsTo
+     */
+    public function lifeSupportEquipment(): BelongsTo
+    {
+        return $this->belongsTo(LifeSupportEquipment::class);
+    }
+
+    public function hazards(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Hazard::class,
+            'hazard_connection_applications',
+            'connection_application_id',
+            'hazard_id'
+        )->withTimestamps();
+    }
+
 }

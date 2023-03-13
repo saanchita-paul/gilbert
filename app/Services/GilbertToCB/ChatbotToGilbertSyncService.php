@@ -5,14 +5,17 @@ namespace App\Services\GilbertToCB;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
+use App\Models\Hazard;
 use App\Models\Identification;
+use App\Models\PowershopPaymentInfo;
 use App\Models\RejectionReason;
 use App\Services\Address\AddressModel;
 use App\Services\AddressMapperService;
+use App\Services\ChatBot\ChatbotEncryter;
 use App\Services\GilbertToChatbotStatusMapping;
 use App\Services\Utility\PlanTypeSyncWithChatbotService;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use App\Models\LifeSupportEquipment;
 
 /**
  *
@@ -76,6 +79,8 @@ class ChatbotToGilbertSyncService
     private $authorizedPersonData = [];
 
     private $rejectionReasonData = [];
+
+    private $hazardData = [];
 
     /**
      * @param $chatbotId
@@ -149,7 +154,13 @@ class ChatbotToGilbertSyncService
             $this->applicationData['inspection_time'] = $this->requestData['other_details']['qld_vis_inspection_time'];
 //            $this->applicationData['i_am_home'] = $this->requestData['other_details']['meter_box_text'];
             $this->applicationData['is_email_marketing'] = $this->requestData['other_details']['is_email_marketing'];
+
+            if (isset($this->requestData['other_details']['life_support_equipment'])) {
+                $this->applicationData['life_support_equipment_id'] = $this->mapLifeSupportEquipmentId($this->requestData['other_details']['life_support_equipment']);
+            }
+            $this->applicationData['medical_reason'] = $this->requestData['other_details']['medical_reason'] ?? null;
         }
+
         if (isset($this->requestData['others'])) {
 //            $this->applicationData['created_by'] = $this->requestData['others']['created_by'];
 //            $this->applicationData['assigned_to'] = $this->requestData['others']['assigned_to'];
@@ -242,6 +253,16 @@ class ChatbotToGilbertSyncService
             $this->applicationData['status'] = $this->requestData['escalated_status']['status'];
             $this->setApplicationNotesForEscalated($this->requestData['escalated_status']['text']);
         }
+
+        // Payment data sync
+        if (isset($this->requestData['payment_sync_data']) && count($this->requestData['payment_sync_data']) > 0) {
+            $this->setPaymentData($this->requestData['payment_sync_data']);
+        }
+
+        // Map hazard data
+        if (isset($this->requestData['hazards'])) {
+            $this->hazardData = $this->mapHazardData($this->requestData['hazards']);
+        }
     }
 
 
@@ -255,6 +276,11 @@ class ChatbotToGilbertSyncService
         Identification::where('connection_application_id', $app->id)
             ->update($this->identificationData);
         ConnectionApplicationSecondaryACC::where('connection_application_id', $app->id);
+
+        // Sync hazard data
+        if (isset($this->requestData['hazards'])) {
+            $app->hazards()->sync($this->hazardData);
+        }
     }
 
     /**
@@ -515,6 +541,76 @@ class ChatbotToGilbertSyncService
             'type' => 'escalated'
         ];
         $app->applicationNotes()->create($data);
+    }
+
+    public function setPaymentData($paymentData)
+    {
+        $app = ConnectionApplication::where('chatbot_id', $this->chatbotId)
+            ->firstOrFail();
+
+        $paymentInfo = PowershopPaymentInfo::where('connection_application_id', $app->id)->firstOrNew();
+
+        $paymentInfo
+            ->fill([
+                'connection_application_id' => $app->id,
+                "status" => $paymentData['status'] ?? null,
+                'estimated_elec_billing_cost' => $paymentData['estimated_elec_billing_cost'] ?? null,
+                'estimated_gas_billing_cost' => $paymentData['estimated_gas_billing_cost'] ?? null,
+                "invited_at" => $paymentData['invited_at'] ?? null,
+                "verified_at" => $paymentData['verified_at'] ?? null,
+                "rejected_at" => $paymentData['rejected_at'] ?? null,
+                "customer_full_name" => $paymentData['customer_full_name'] ?? null,
+                "customer_email" => $paymentData['customer_email'] ?? null,
+                "customer_phone" => $paymentData['customer_phone'] ?? null,
+                "px_transaction_type" => $paymentData['px_transaction_type'] ?? null,
+                "px_amount" => $paymentData['px_amount'] ?? null,
+                "px_currency_type" => $paymentData['px_currency_type'] ?? null,
+                "px_txn_id" => $paymentData['px_txn_id'] ?? null,
+                "px_is_enable_billing" => $paymentData['px_is_enable_billing'] ?? null,
+                "px_recurring_mode" => $paymentData['px_recurring_mode'] ?? null,
+                "px_response_text" => $paymentData['px_response_text'] ?? null,
+                "px_response_text_desc" => $paymentData['px_response_text_desc'] ?? null,
+            ]);
+
+        // Save encrypted payment data
+        $this->setEncryptedPaymentData($paymentInfo, $paymentData)->save();
+    }
+
+    private function setEncryptedPaymentData(PowershopPaymentInfo $powershopPaymentInfo, $paymentData): PowershopPaymentInfo
+    {
+        $powershopPaymentInfo->px_card_type = ChatbotEncryter::decryptString($paymentData['px_card_type'] ?? null);
+        $powershopPaymentInfo->px_card_number = ChatbotEncryter::decryptString($paymentData['px_card_number'] ?? null);
+        $powershopPaymentInfo->px_card_expire_date = ChatbotEncryter::decryptString($paymentData['px_card_expire_date'] ?? null);
+        $powershopPaymentInfo->px_card_holder_name = ChatbotEncryter::decryptString($paymentData['px_card_holder_name'] ?? null);
+        $powershopPaymentInfo->px_dps_billing_id = ChatbotEncryter::decryptString($paymentData['px_dps_billing_id'] ?? null);
+        return $powershopPaymentInfo;
+    }
+
+    private function mapLifeSupportEquipmentId($lifeSupport)
+    {
+        $lifeSupportEquipment = LifeSupportEquipment::query()->where('powershop_value', $lifeSupport['powershop_value'])->first();
+        return $lifeSupportEquipment ? $lifeSupportEquipment->id : null;
+    }
+
+    /**
+     * Map the hazard data to an array of hazard ids
+     *
+     * @param $hazards
+     * @return array
+     */
+    private function mapHazardData($hazards): array
+    {
+        $hazardData = [];
+
+        foreach ($hazards as $hazard) {
+            $haz = Hazard::where('is_active', 1)
+                ->where('powershop_value', $hazard['powershop_value'])->first();
+            if ($haz) {
+                $hazardData[] = $haz->id;
+            }
+        }
+
+        return $hazardData;
     }
 
 }

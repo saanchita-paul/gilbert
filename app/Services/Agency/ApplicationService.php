@@ -10,6 +10,7 @@ use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
+use App\Models\Hazard;
 use App\Models\HoodProfile;
 use App\Models\Identification;
 use App\Models\Office;
@@ -130,7 +131,7 @@ class ApplicationService
         // $existingApplication->street_number = empty($address['street_address']) ? null : $address['street_number'];
         // $existingApplication->unit_number = empty($address['street_address']) ? null : $address['unit_number'];
         $existingApplication->city = $address['city'];
-        $existingApplication->is_renovation_on = $address['is_renovation_on'];
+//        $existingApplication->is_renovation_on = $address['is_renovation_on'];
         $existingApplication->has_electricity = $address['has_electricity'];
         $existingApplication->inspection_time = $address['inspection_time'];
         $existingApplication->postcode = $address['postcode'];
@@ -169,6 +170,7 @@ class ApplicationService
             $existingApplication->billing_address_unit = $address['unit_number'] ?: null;
 
         };
+
         $existingApplication->save();
 
         return $existingApplication;
@@ -459,6 +461,22 @@ class ApplicationService
             FetchEmbeddedNetworkJob::dispatch($id);
         }
 
+        // Hazard data
+        $isUnrestrained = false;
+        $hazards = [];
+        if (isset($application['is_any_unrestrained_animal'])) {
+            $isUnrestrained = $application['is_any_unrestrained_animal'];
+            $hazards[] = Hazard::where('powershop_value', 'dog')->first()->id;
+            unset($application['is_any_unrestrained_animal']);
+        }
+
+        // Renovation data
+        $isRenovation = false;
+        if (isset($application['is_renovation_on'])) {
+            $isRenovation = $application['is_renovation_on'];
+            $hazards[] = Hazard::where('powershop_value', 'electrical_safety_issue')->first()->id;
+            unset($application['is_renovation_on']);
+        }
 
         unset($application['identification']);
         unset($application['isService']);
@@ -496,6 +514,13 @@ class ApplicationService
             }
 
             $existLead->update($application);
+        }
+
+        // update hazards
+        if ($isUnrestrained || $isRenovation) {
+            $existLead->hazards()->attach($hazards);
+        } else {
+            $existLead->hazards()->detach($hazards);
         }
 
         return $existLead->refresh();
