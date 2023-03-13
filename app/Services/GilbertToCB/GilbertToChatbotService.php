@@ -33,6 +33,10 @@ class GilbertToChatbotService
         '1:00pm - 5:00pm' => '1PM - 5PM',
     ];
 
+    /** PROPERTY TYPE CONSTANTS */
+    const PROPERTY_TYPE_RESIDENTIAL = 'residential';
+    const PROPERTY_TYPE_BUSINESS = 'business';
+
 
     public function __construct($id)
     {
@@ -41,8 +45,12 @@ class GilbertToChatbotService
             'connectionServices',
             'authorizedPerson',
             'office',
-            'agency'
+            'agency',
+            'powershopPaymentInfo'
         ])->firstOrFail();
+
+        // Set property type
+        $this->setPropertyType();
     }
 
 
@@ -92,7 +100,7 @@ class GilbertToChatbotService
             "to_address" => $this->application->address_text,
             "reason" => $this->application->reason,
             "billing_preference" => $this->mapbillingType($this->application->is_email_billing),
-            "account_type" => $this->application->property_type,
+            "account_type" => $this->mapPropertyType($this->application->property_type),
             "is_property_on_life_support" => $this->application->is_power_life_support,
             "solar_panel" => $this->application->has_solar,
             "nmi" => $this->application->nmi,
@@ -105,16 +113,16 @@ class GilbertToChatbotService
             "ea_sales_id" => $this->application->ea_sales_id,
             "billing_unit_number" => $this->application->billing_unit_number,
             "billing_street_number" => $this->application->billing_street_number,
-            "billing_street_name" => $this->application->billing_street_name,
+            "billing_street_name" => $this->application->billing_street_name_only,
             "billing_address_text" => $this->application->billing_address_text,
             "billing_address_unit" => $this->application->billing_address_unit,
             "billing_street_address" => $this->application->billing_street_address,
             "billing_city" => $this->application->billing_city,
-            "billing_state" => $this->application->billing_state,
+            "billing_state" => AddressModel::mapStateToShort($this->application->billing_state),
             "billing_postcode" => $this->application->billing_postcode,
             "is_billing_same" => $this->application->is_billing_same,
             "has_electricity" => $this->application->has_electricity,
-            "is_renovation_on" => $this->application->is_renovation_on,
+//            "is_renovation_on" => $this->application->is_renovation_on,
             "vendor_id" => $this->application->vendor_id,
             "homephone" => $this->application->homephone,
             "qld_vis_inspection_time" => $this->application->inspection_time ? self::inspectionTimes[$this->application->inspection_time] : null,
@@ -152,7 +160,7 @@ class GilbertToChatbotService
             "enabled_marketing_offer" => $this->application->is_email_marketing,
             "is_access_require" => $this->application->is_access_require,
             "has_gas_life_support" => $this->application->is_gas_life_support,
-            "is_any_unrestrained_animal" => $this->application->is_any_unrestrained_animal,
+//            "is_any_unrestrained_animal" => $this->application->is_any_unrestrained_animal,
             "concession_card_type" => $this->mapConcessionCardType($this->application->concession_card_type),
             "concession_card_value" => $this->application->concession_card_number,
             "concession_card_start_date" => $this->application->concession_start_date,
@@ -179,7 +187,9 @@ class GilbertToChatbotService
             "is_generated_caf" => $this->application->is_generated_caf,
             "connection_services" => $this->application->connectionServices ? $this->application->connectionServices->toArray() : [],
             "identification" => $this->application->identification ? $this->application->identification->toArray() : null,
-            "authorized_person" => $this->application->authorizedPerson ? $this->application->authorizedPerson->toArray() : null
+            "authorized_person" => $this->application->authorizedPerson ? $this->application->authorizedPerson->toArray() : null,
+            "payment_sync_data" => $this->mapPaymentData(),
+            "hazards" => $this->application->hazards ? $this->application->hazards->toArray() : [],
         ];
     }
 
@@ -206,6 +216,64 @@ class GilbertToChatbotService
         };
     }
 
+    /**
+     * map property type
+     *
+     * @param $propertyType
+     * @return string|null
+     */
+    private function mapPropertyType($propertyType): ?string
+    {
+        return match ((int)$propertyType) {
+            2 => self::PROPERTY_TYPE_BUSINESS,
+            default => self::PROPERTY_TYPE_RESIDENTIAL
+        };
+    }
+
+
+    /**
+     * Set property type
+     *
+     * @return void
+     */
+    public function setPropertyType(): void
+    {
+        if (!$this->application->property_type) {
+            $this->application->property_type = ConnectionApplication::PROPERTY_TYPE_RESIDENTIAL;
+            $this->application->save();
+        }
+    }
+
+    public function mapPaymentData(): array
+    {
+        $paymentData = $this->application->powershopPaymentInfo ?
+            collect($this->application->powershopPaymentInfo->getAttributes()) : collect([]);
+
+        return $paymentData->only([
+            "status",
+            "estimated_elec_billing_cost",
+            "estimated_gas_billing_cost",
+            "invited_at",
+            "verified_at",
+            "rejected_at",
+            "customer_full_name",
+            "customer_email",
+            "customer_phone",
+            "px_transaction_type",
+            "px_amount",
+            "px_currency_type",
+            "px_txn_id",
+            "px_is_enable_billing",
+            "px_recurring_mode",
+            "px_response_text",
+            "px_card_type",
+            "px_card_number",
+            "px_card_expire_date",
+            "px_card_holder_name",
+            "px_dps_billing_id",
+            "px_response_text_desc"
+        ])->toArray();
+    }
 
 }
 

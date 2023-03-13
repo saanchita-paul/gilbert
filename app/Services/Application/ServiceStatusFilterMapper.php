@@ -210,28 +210,28 @@ class ServiceStatusFilterMapper
                 self::STATUS_EA_PROCESSING
             ],
             self::STATUS_ASSIGNED => [
-                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_SUBMITTED,
                 self::STATUS_ACCEPTED,
                 self::STATUS_CANT_CONNECT,
                 self::AC_MANUAL_PROCESSING,
                 self::STATUS_EA_PROCESSING
             ],
             self::STATUS_ESCALATED => [
-                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_SUBMITTED,
                 self::STATUS_ACCEPTED,
                 self::STATUS_CANT_CONNECT,
                 self::AC_MANUAL_PROCESSING,
                 self::STATUS_EA_PROCESSING
             ],
             self::STATUS_SUBMITTED => [
-                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_SUBMITTED,
                 self::STATUS_ACCEPTED,
                 self::STATUS_CANT_CONNECT,
                 self::AC_MANUAL_PROCESSING,
                 self::STATUS_EA_PROCESSING
             ],
             self::STATUS_CLOSED => [
-                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_SUBMITTED,
                 self::STATUS_ACCEPTED,
                 self::STATUS_CANT_CONNECT,
                 self::AC_MANUAL_PROCESSING,
@@ -246,21 +246,21 @@ class ServiceStatusFilterMapper
                 self::STATUS_EA_PROCESSING
             ],
             self::STATUS_ESCALATED => [
-                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_SUBMITTED,
                 self::STATUS_ACCEPTED,
                 self::STATUS_CANT_CONNECT,
                 self::AC_MANUAL_PROCESSING,
                 self::STATUS_EA_PROCESSING
             ],
             self::STATUS_SUBMITTED => [
-                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_SUBMITTED,
                 self::STATUS_ACCEPTED,
                 self::STATUS_CANT_CONNECT,
                 self::AC_MANUAL_PROCESSING,
                 self::STATUS_EA_PROCESSING
             ],
             self::STATUS_CLOSED => [
-                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_SUBMITTED,
                 self::STATUS_ACCEPTED,
                 self::STATUS_CANT_CONNECT,
                 self::AC_MANUAL_PROCESSING,
@@ -272,28 +272,28 @@ class ServiceStatusFilterMapper
                 self::STATUS_EA_PROCESSING
             ],
             self::STATUS_ASSIGNED => [
-                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_SUBMITTED,
                 self::STATUS_ACCEPTED,
                 self::STATUS_CANT_CONNECT,
                 self::AC_MANUAL_PROCESSING,
                 self::STATUS_EA_PROCESSING
             ],
             self::STATUS_ESCALATED => [
-                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_SUBMITTED,
                 self::STATUS_ACCEPTED,
                 self::STATUS_CANT_CONNECT,
                 self::AC_MANUAL_PROCESSING,
                 self::STATUS_EA_PROCESSING
             ],
             self::STATUS_SUBMITTED => [
-                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_SUBMITTED,
                 self::STATUS_ACCEPTED,
                 self::STATUS_CANT_CONNECT,
                 self::AC_MANUAL_PROCESSING,
                 self::STATUS_EA_PROCESSING
             ],
             self::STATUS_CLOSED => [
-                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_SUBMITTED,
                 self::STATUS_ACCEPTED,
                 self::STATUS_CANT_CONNECT,
                 self::AC_MANUAL_PROCESSING,
@@ -308,21 +308,21 @@ class ServiceStatusFilterMapper
                 self::STATUS_EA_PROCESSING
             ],
             self::STATUS_ESCALATED => [
-                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_SUBMITTED,
                 self::STATUS_ACCEPTED,
                 self::STATUS_CANT_CONNECT,
                 self::AC_MANUAL_PROCESSING,
                 self::STATUS_EA_PROCESSING
             ],
             self::STATUS_SUBMITTED => [
-                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_SUBMITTED,
                 self::STATUS_ACCEPTED,
                 self::STATUS_CANT_CONNECT,
                 self::AC_MANUAL_PROCESSING,
                 self::STATUS_EA_PROCESSING
             ],
             self::STATUS_CLOSED => [
-                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_SUBMITTED,
                 self::STATUS_ACCEPTED,
                 self::STATUS_CANT_CONNECT,
                 self::AC_MANUAL_PROCESSING,
