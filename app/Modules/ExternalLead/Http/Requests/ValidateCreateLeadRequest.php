@@ -66,10 +66,10 @@ class ValidateCreateLeadRequest extends FormRequest
 
             'primary_account.identification.type' => ['required', Rule::in(['medicare', 'passport', 'driver_license'])],
             'primary_account.identification.number' => 'required',
-            'primary_account.identification.state' => 'required_if:tenancy_identification.type,driver_license',
-            'primary_account.identification.country' => 'required_if:identification.type,passport',
-            'primary_account.identification.medicare_card_color' => 'required_if:identification.type,medicare',
-            'primary_account.identification.medicare_reference_number' => 'required_if:identification.type,medicare',
+            'primary_account.identification.state' => 'required_if:primary_account.identification.type,driver_license',
+            'primary_account.identification.country' => 'required_if:primary_account.identification.type,passport',
+            'primary_account.identification.medicare_card_color' => 'required_if:primary_account.identification.type,medicare',
+            'primary_account.identification.medicare_reference_number' => 'required_if:primary_account.identification.type,medicare',
             'primary_account.identification.expire_date' => 'required|date_format:Y-m-d',
 
             'secondary_account.title' => ['required_with:secondary_account', Rule::in(['mr', 'ms', 'mrs', 'miss', 'dr'])],
