@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 class GetAddressInfoAndAutoAssign implements ShouldQueue
 {
     public string $queue = 'fc-address';
+
     /**
      * Create the event listener.
      *
@@ -34,7 +35,7 @@ class GetAddressInfoAndAutoAssign implements ShouldQueue
         $application = ConnectionApplication::findOrFail($event->applicationId);
 
         if (!$application->mirn || !$application->nmi) {
-            MirnNmiService::dispatchAllService($event->applicationId);
+            $application = MirnNmiService::dispatchAllService($event->applicationId);
         }
 
         if (!$application) {
