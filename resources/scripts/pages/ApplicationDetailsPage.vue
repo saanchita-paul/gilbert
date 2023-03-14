@@ -359,7 +359,7 @@ export default {
             this.showSubmitModal = false;
         },
         async validateLead() {
-            return (await this.$refs.submit_lead.validate()) && (await this.$refs.service_form.validate())
+            return this.$refs.submit_lead.validate() && this.$refs.service_form.validate()
         },
         async confirmSubmitLead() {
             this.showSubmitModal = false;

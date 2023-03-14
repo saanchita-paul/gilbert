@@ -1,7 +1,6 @@
 <template>
     <v-card
         class="mx-2"
-        style="cursor: pointer;"
         @click="$emit('onSelectProvider')"
         :class="{'not-selected': provider.name !== selectedProvider}"
     >

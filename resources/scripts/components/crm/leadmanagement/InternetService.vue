@@ -4,25 +4,25 @@
             <p class="mb-0 sub-title">Our Available NBN Suppliers and their plans</p>
             <div class="d-flex align-content-lg-space-around mt-2">
                 <div class="d-flex align-center">Supplier:</div>
-                <InternetServiceProvider
-                    @onSelectProvider="onSelectProvider(provider.name)"
-                    :selectedProvider="selectedProvider"
-                    v-for="provider in providers"
-                    :key="provider.name"
-                    :provider="provider">
+                <InternetServiceProvider :class="isServiceEditable ? 'cursor-pointer' : 'not-editable'"
+                                         @onSelectProvider="onSelectProvider(provider.name)"
+                                         :selectedProvider="selectedProvider"
+                                         v-for="provider in providers"
+                                         :key="provider.name"
+                                         :provider="provider">
                 </InternetServiceProvider>
             </div>
         </v-col>
 
         <v-col cols="12">
             <div class="d-flex w-100 overflow-auto">
-                <InternetPlan
-                    @reviewPlan="reviewPlan"
-                    :selectedPlan="selectedPlan"
-                    v-for="(plan, index) in plans"
-                    :key="index"
-                    :plan="plan"
-                    @click.native="selectPlan(plan)">
+                <InternetPlan :class="{'not-editable': !isServiceEditable }"
+                              @reviewPlan="reviewPlan"
+                              :selectedPlan="selectedPlan"
+                              v-for="(plan, index) in plans"
+                              :key="index"
+                              :plan="plan"
+                              @click.native="selectPlan(plan)">
                 </InternetPlan>
             </div>
         </v-col>
@@ -54,7 +54,8 @@
                                 </div>
                             </div>
 
-                            <div v-if="internetServiceInfo.is_need_home_phone">
+                            <div v-if="internetServiceInfo.is_need_home_phone"
+                                 :class="{'not-editable': !isServiceEditable }">
                                 <p class="mb-0">Home Phone Plans</p>
                                 <div class="home-plan" @click="selectPhonePlan()">
                                     <div class="pa-2">
@@ -363,6 +364,7 @@ import InternetSubmitConfirmationModal from "@scripts/modules/internet/modals/In
 import InternetService from "@scripts/modules/internet/services/InternetService";
 import ApplicationSummary from "@scripts/models/crm/ApplicationSummary";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
 export default {
     name: "InternetService",
@@ -425,7 +427,12 @@ export default {
         },
         loadApplicationSummary() {
             return LeadApplicationService.loadApplicationSummary();
-        }
+        },
+        isServiceEditable() {
+            return LeadApplicationService.canEditService(
+                UtilityStoreService.getInternetStatus()
+            );
+        },
     },
     async mounted() {
         this.leadSummary = await this.loadApplicationSummary;
@@ -514,6 +521,7 @@ export default {
         async confirmSubmit() {
             await InternetService.submitNBN({service_type: 'internet'}, this.leadSummary.id);
             this.showInternetSubmitModal = false;
+            this.$router.push('/applications');
         },
         updateInternetServiceInfo() {
             ({internetServiceInfo: this.internetServiceInfo} = this);
@@ -627,5 +635,14 @@ export default {
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
 {
     opacity: 0;
+}
+
+.not-editable {
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }
 </style>
