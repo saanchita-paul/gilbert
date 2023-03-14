@@ -19,9 +19,14 @@
         </div>
 
         <div class="view-plan">
+            <v-btn block rounded color="primary"
+                   v-if="plan.name === selectedPlan" class="font-weight-bold">
+                Plan Selected!
+            </v-btn>
+
             <v-btn block outlined rounded :href="plan.details_url" target="_blank"
-                   style="border: 1px solid #85639A !important;">
-                View Plan Details
+                   style="border: 1px solid #85639A !important;" v-else>
+                View Plan
             </v-btn>
         </div>
     </div>

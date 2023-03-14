@@ -58,7 +58,7 @@
                                 <p class="mb-0">Home Phone Plans</p>
                                 <div class="home-plan" @click="selectPhonePlan()">
                                     <div class="pa-2">
-                                        <p class="mb-0 text-internet">Phone Calls</p>
+                                        <p class="mb-0 mt-3 text-internet">Phone Calls</p>
                                         <p class="black--text font-weight-bold">$10/month</p>
                                     </div>
                                 </div>
@@ -563,7 +563,7 @@ export default {
 .home-plan {
     display: flex;
     justify-content: center;
-    width: 25%;
+    width: 40%;
     border: 2px solid #85639A;
     border-radius: 20px;
     cursor: pointer;
