@@ -17,14 +17,7 @@
                     <div class="count-label"><p>Application created</p></div>
                 </div>
                 <div class="lead-sources">
-                    <p class="lead-source-value"><span>{{ summaryData.source_all.ignite }}</span> Ignite</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_all.our_property }}</span> Our Property</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_all.property_me }}</span> PropertyMe</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_all.foxie }}</span> Foxie</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_all.hood }}</span> Hood</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_all.hood_ai }}</span> Hood.ai</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_all.t_app }}</span> tApp</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_all.mri }}</span> MRI</p>
+                    <p class="lead-source-value" v-for="(item, index) in summaryData.source_display_name"><span>{{ summaryData.source_all[index] }}</span> {{ item }}</p>
                 </div>
             </div>
             <v-divider vertical class="divider"></v-divider>
@@ -51,14 +44,7 @@
                     <div class="count-label"><p>Submitted to retailer</p></div>
                 </div>
                 <div class="lead-sources">
-                    <p class="lead-source-value"><span>{{ summaryData.source_submitted.ignite }}</span> Ignite</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_submitted.our_property }}</span> Our Property</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_submitted.property_me }}</span> PropertyMe</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_submitted.foxie }}</span> Foxie</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_submitted.hood }}</span> Hood</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_submitted.hood_ai }}</span> Hood.ai</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_submitted.t_app }}</span> tApp</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_submitted.mri }}</span> MRI</p>
+                    <p class="lead-source-value" v-for="(item, index) in summaryData.source_display_name"><span>{{ summaryData.source_submitted[index] }}</span> {{ item }}</p>
                 </div>
             </div>
             <v-divider vertical class="divider"></v-divider>
@@ -71,14 +57,7 @@
                     <div class="count-label"><p>Overall Conversion Rate</p></div>
                 </div>
                 <div class="lead-sources">
-                    <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.ignite }}%</span> Ignite</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.our_property }}%</span> Our Property</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.property_me }}%</span> PropertyMe</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.foxie }}%</span> Foxie</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.hood }}%</span> Hood</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.hood_ai }}%</span> Hood.ai</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.t_app }}%</span> tApp</p>
-                    <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.mri }}%</span> MRI</p>
+                    <p class="lead-source-value" v-for="(item, index) in summaryData.source_display_name"><span>{{ summaryData.source_conversation_rate[index] }}%</span> {{ item }}</p>
                 </div>
             </div>
             <v-divider vertical class="divider"></v-divider>
@@ -125,7 +104,7 @@ export default {
             } else {
                 return `${getFormattedDBDate(this.dateRange.start)} - ${getFormattedDBDate(this.dateRange.end)}`;
             }
-        }
+        },
     },
 }
 </script>

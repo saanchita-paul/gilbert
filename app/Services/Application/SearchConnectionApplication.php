@@ -79,7 +79,7 @@ class SearchConnectionApplication
 
         $this->perPage = empty($request['per_page']) ? null : (int)$request['per_page'];
         $this->leadType = optional($request)['active_lead_type'];
-        $this->source = !empty($request['source']) ? (ConnectionApplication::SOURCE_MAPPING[$request['source']] ?? null) : null;
+        $this->source = isset($request['source']) ? (int)$request['source'] : null;
         $this->tenancyType = !empty($request['tenancy_type']) ? ConnectionApplication::TENANCY_MAPPING[$request['tenancy_type']] ?? null : null;
         $this->triage = !empty($request['triage']) ? ConnectionApplication::TRIAGE_MAPPING[$request['triage']] ?? null : null;
         $this->officeId = !empty($request['office_id']) ? $request['office_id'] : null;

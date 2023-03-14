@@ -146,9 +146,10 @@ class ApplicationResource extends JsonResource
             'email_manually_verified_by' => $this->email_manually_verified_by,
             'is_generated_caf' => $this->is_generated_caf,
             'chatbot_id' => $this->chatbot_id,
+            // embedded network
             'is_embedded' => $this->is_embedded,
             'loading_address_info' => $this->loading_address_info,
-            'embedded_nmi' => $this->embedded_nmi,
+            'embedded_nmi' => $this->embedded_nmi, // embedded network for
         ];
     }
 

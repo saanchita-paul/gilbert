@@ -3,23 +3,68 @@
 namespace App\Services\Address;
 
 use App\Models\ConnectionApplication;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class EmbeddedNetworkService
 {
-    private string $accessToken;
+    private ?string $accessToken;
 
-    public function authenticate(): static
+    public function __construct()
+    {
+        $this->accessToken = $this->authenticate();
+    }
+
+    /**
+     * Getting Access Token
+     *
+     * @return string|null
+     */
+    public function authenticate(): ?string
     {
         $response = Http::withHeaders([
             'content-type' => 'application/json',
             'authorization' => \config('fastconnect.base64_key'),
         ])->post(\config('fastconnect.root_url') . \config('fastconnect.get_token_uri'));
 
-        $this->accessToken = json_decode($response->body(), true)['access_token'];
+        return json_decode($response->body(), true)['access_token'] ?? null;
+    }
 
-        return $this;
+    /**
+     * Check if NMI is in a Embedded Network
+     *
+     * @param string $nmi
+     *
+     * @return bool
+     */
+    public function isNmiEmbeddedNetwork(string $nmi): bool
+    {
+        try {
+
+            if (config('fastconnect.embedded_enabled')) {
+                $payload = self::makeNmiPayload($nmi);
+                Log::info('Embedded Network NMI Payload: ', $payload);
+
+                $response = $this->getClient()
+                    ->withBody(json_encode($payload), 'application/json')
+                    ->post(config('fastconnect.root_url') . config('fastconnect.embedded_uri'));
+
+                $responseData = json_decode($response->body(), true);
+
+                return $this->parseEmbeddedData($responseData);
+            }
+
+            return false;
+        } catch (\Exception $exception) {
+
+            Log::warning('EmbeddedNetworkService:Error', [
+                'mgs' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString()
+            ]);
+
+            return false;
+        }
     }
 
     public static function stateMap($state)
@@ -32,12 +77,12 @@ class EmbeddedNetworkService
             'Northern Territory' => 'NT',
             'TAS' => 'Tasmania',
             'ACT' => 'Australian Capital Territory',
-            'WA' => 'Western Australia'];
+            'WA' => 'Western Australia'
+        ];
         if (array_key_exists($state, $stateList)) {
             return $stateList[$state];
         }
         return $state;
-
     }
 
     public static function makeAddressPayloadWithoutUnit($address = [])
@@ -127,6 +172,20 @@ class EmbeddedNetworkService
         }
     }
 
+    /**
+     * Get Http client
+     *
+     * @return PendingRequest
+     */
+    private function getClient(): PendingRequest
+    {
+        return Http::withHeaders([
+            'content-type' => 'application/json',
+            'accept' => 'application/json',
+            'authorization' => 'Bearer ' . $this->accessToken,
+        ]);
+    }
+
     private static function makeNmiPayload($nmi)
     {
         return [
@@ -147,68 +206,35 @@ class EmbeddedNetworkService
         ];
     }
 
-    public function fetchNmiEmbeddedNetwork($nmi = null, $applicationFlag = false, $applicationId = null)
+
+
+    /**
+     * Parsing Embedded value from response value
+     *
+     * @param array $responseData
+     *
+     * @return bool
+     */
+    private function parseEmbeddedData(array $responseData): bool
     {
-        try {
-            $is_embedded = null;
+        Log::info('Embedded Network NMI Response: ', $responseData);
 
-            if (config('fastconnect.embedded_enabled') && $nmi) {
-                $payload = self::makeNmiPayload($nmi);
-                Log::info('Embedded Network NMI Payload: ', $payload);
-
-                $authorization = 'Bearer ' . $this->accessToken;
-                $response = Http::withHeaders([
-                    'content-type' => 'application/json',
-                    'accept' => 'application/json',
-                    'authorization' => $authorization,
-                ])
-                    ->withBody(json_encode($payload), 'application/json')
-                    ->post(config('fastconnect.root_url') . config('fastconnect.embedded_uri'));
-
-                $responseData = $response->json();
-
-                Log::info('Embedded Network NMI Response: ', $responseData);
-
-                if (!empty($responseData['errors'])) {
-                    Log::warning("EmbeddedNetworkService: " . $responseData['errors']);
-                    $is_embedded = null;
-                    return [
-                        'embedded_nmi' => null
-                    ];
-                }
-
-                if (!empty($responseData['nmi']['result'])) {
-                    $is_embedded = $responseData['nmi']['result']['master_data']['embedded_network'];
-                }
-
-                $error = $responseData['nmi']['error'];
-                $no_result = empty($is_embedded);
-
-                if ($no_result && !empty($error)) {
-                    Log::warning("EmbeddedNetworkService: " . $error);
-                    $is_embedded = null;
-                    return [
-                        'embedded_nmi' => null
-                    ];
-                }
-            }
-
-            return [
-                'embedded_nmi' => $is_embedded,
-            ];
-        } catch (\Exception $exception) {
-            $is_embedded = null;
-
-            Log::warning('Embedded Network NMI Error: ' . $exception->getMessage());
-
-            return [
-                'embedded_nmi' => null
-            ];
-        } finally {
-            if ($applicationFlag) {
-                self::saveEmbeddedNmi($applicationId, $is_embedded);
-            }
+        if (!empty($responseData['errors'])) {
+            Log::error("EmbeddedNetworkService: " . $responseData['errors']);
+            return false;
         }
+
+        if (!empty($responseData['nmi']['error'])) {
+            Log::error("EmbeddedNetworkService:Error", ['error' => $responseData['nmi']['error']]);
+            return false;
+        }
+
+        if (!empty($responseData['nmi']['result'])) {
+            $res = $responseData['nmi']['result']['master_data']['embedded_network'] ?? null;
+            return $res === true;
+        }
+
+        return false;
     }
 
     public function fetchMirnEmbeddedNetwork($mirn = null, $applicationFlag = false, $applicationId = null)
@@ -256,7 +282,6 @@ class EmbeddedNetworkService
                 'embedded_mirn' => $is_embedded,
             ];
         } catch (\Exception $exception) {
-
             Log::info('Embedded Network MIRN Error: ', $exception->getMessage());
 
             return [

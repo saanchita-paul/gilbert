@@ -70,21 +70,23 @@ class JwtAuthService
      * tutorial https://www.sitepoint.com/php-authorization-jwt-json-web-tokens/
      *
      * @param  string $ExistingJwtToken
-     * @return bool $successOrFail
+     * @return string|bool $successOrFail
      */
-    public static function checkAccessToken($jwtToken) : bool
+    public static function checkAccessToken($jwtToken)
     {
         try {
             $now = new DateTimeImmutable();
             $secretKey  = config('app.key');
             $serverName = self::$serverName;
             $token = JWT::decode($jwtToken, $secretKey, [self::$encryptionType]);
-            if ($token->iss !== $serverName ||
-            $token->nbf > $now->getTimestamp() ||
-            $token->exp < $now->getTimestamp()) {
+            if (
+                $token->iss !== $serverName ||
+                $token->nbf > $now->getTimestamp() ||
+                $token->exp < $now->getTimestamp()
+            ) {
                 throw new Exception("Invalid jwt signature");
             }
-            return true;
+            return $token->userName;
         } catch (\Exception $exception) {
             \Log::error("Invalid token or expired");
             \Log::error($exception->getMessage());
