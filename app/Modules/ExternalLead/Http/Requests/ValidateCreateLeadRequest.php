@@ -78,7 +78,7 @@ class ValidateCreateLeadRequest extends FormRequest
             'primary_account.phone_number' => 'required_if:primary_account.phone_type,mobile,international_mobile', // TODO: handle homephone
 
             'utility_services' => 'required|array',
-            'utility_services.*' =>  Rule::in("gas", 'power'),
+            'utility_services.*' =>  Rule::in("gas", 'power', 'water', 'internet'),
 
             'primary_account.identification.type' => ['required', Rule::in(['medicare', 'passport', 'driver_license'])],
             'primary_account.identification.number' => 'required',
