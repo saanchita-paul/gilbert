@@ -78,11 +78,11 @@ class ValidateCreateLeadRequest extends FormRequest
             'primary_account.phone_number' => 'required_if:primary_account.phone_type,mobile,international_mobile', // TODO: handle homephone
 
             'utility_services' => 'required|array',
-            'utility_services.*' =>  Rule::in("gas", 'power'),
+            'utility_services.*' =>  Rule::in("gas", 'power', 'water', 'internet'),
 
             'primary_account.identification.type' => ['required', Rule::in(['medicare', 'passport', 'driver_license'])],
             'primary_account.identification.number' => 'required',
-            'primary_account.identification.state' => 'required_if:primary_account.identification.type,driver_license',
+            'primary_account.identification.state' => ['required_if:primary_account.identification.type,driver_license', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
             'primary_account.identification.country' => 'required_if:primary_account.identification.type,passport',
             'primary_account.identification.medicare_card_color' => 'required_if:primary_account.identification.type,medicare',
             'primary_account.identification.medicare_reference_number' => 'required_if:primary_account.identification.type,medicare',
@@ -98,7 +98,7 @@ class ValidateCreateLeadRequest extends FormRequest
 
             'secondary_account.identification.type' => ['required_with:secondary_account.identification', Rule::in(['medicare', 'passport', 'driver_license'])],
             'secondary_account.identification.number' => 'required_with:secondary_account.identification',
-            'secondary_account.identification.state' => 'required_if:secondary_account.identification.type,driver_license',
+            'secondary_account.identification.state' => ['required_if:secondary_account.identification.type,driver_license', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
             'secondary_account.identification.country' => 'required_if:secondary_account.identification.type,passport',
             'secondary_account.identification.medicare_card_color' => 'required_if:secondary_account.identification.type,medicare',
             'secondary_account.identification.medicare_reference_number' => 'required_if:secondary_account.identification.type,medicare',
