@@ -526,8 +526,10 @@ export default {
                 this.internetServiceInfo.home_phone_number = null;
                 this.internetServiceInfo.current_provider = null;
                 this.internetServiceInfo.account_number = null;
+                this.updateInternetServiceInfo();
+            } else {
+                this.selectPhonePlan();
             }
-            this.updateInternetServiceInfo();
         },
         async sendGoodtelPaymentLink() {
             this.paymentBtnLoading = true;
