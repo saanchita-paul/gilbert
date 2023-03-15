@@ -75,33 +75,33 @@ class ValidateCreateLeadRequest extends FormRequest
             'primary_account.email' => 'required|email',
             'primary_account.dob' => 'required|date_format:Y-m-d',
             'primary_account.phone_type' => ['required', Rule::in(['mobile', 'homephone', 'international_mobile'])],
-            'primary_account.phone_number' => 'required_if:primary_account.phone_type,mobile,international_mobile', // TODO: handle homephone
+            'primary_account.phone_number' => 'required|string',
 
             'utility_services' => 'required|array',
             'utility_services.*' =>  Rule::in("gas", 'power', 'water', 'internet'),
 
             'primary_account.identification.type' => ['required', Rule::in(['medicare', 'passport', 'driver_license'])],
-            'primary_account.identification.number' => 'required',
+            'primary_account.identification.number' => 'required|string',
             'primary_account.identification.state' => ['required_if:primary_account.identification.type,driver_license', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
-            'primary_account.identification.country' => 'required_if:primary_account.identification.type,passport',
-            'primary_account.identification.medicare_card_color' => 'required_if:primary_account.identification.type,medicare',
-            'primary_account.identification.medicare_reference_number' => 'required_if:primary_account.identification.type,medicare',
+            'primary_account.identification.country' => 'required_if:primary_account.identification.type,passport|string',
+            'primary_account.identification.medicare_card_color' => ['required_if:primary_account.identification.type,medicare', Rule::in(['yellow', 'green', 'blue'])],
+            'primary_account.identification.medicare_reference_number' => 'required_if:primary_account.identification.type,medicare|string',
             'primary_account.identification.expire_date' => 'required|date_format:Y-m-d',
 
             'secondary_account.title' => ['required_with:secondary_account', Rule::in(['mr', 'ms', 'mrs', 'miss', 'dr'])],
-            'secondary_account.first_name' => 'required_with:secondary_account',
-            'secondary_account.last_name' => 'required_with:secondary_account',
-            'secondary_account.email' => 'required_with:secondary_account',
+            'secondary_account.first_name' => 'required_with:secondary_account|string',
+            'secondary_account.last_name' => 'required_with:secondary_account|string',
+            'secondary_account.email' => 'required_with:secondary_account|string',
             'secondary_account.dob' => 'required_with:secondary_account|date_format:Y-m-d',
-            'secondary_account.phone_number' => 'required_with:secondary_account',
+            'secondary_account.phone_number' => 'required_with:secondary_account|string',
             'secondary_account.permission_type' => ['required_with:secondary_account', Rule::in(array_keys(AuthorizedPerson::ROLE_TYPE_MAPPER))],
 
             'secondary_account.identification.type' => ['required_with:secondary_account.identification', Rule::in(['medicare', 'passport', 'driver_license'])],
-            'secondary_account.identification.number' => 'required_with:secondary_account.identification',
+            'secondary_account.identification.number' => 'required_with:secondary_account.identification|string',
             'secondary_account.identification.state' => ['required_if:secondary_account.identification.type,driver_license', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
-            'secondary_account.identification.country' => 'required_if:secondary_account.identification.type,passport',
-            'secondary_account.identification.medicare_card_color' => 'required_if:secondary_account.identification.type,medicare',
-            'secondary_account.identification.medicare_reference_number' => 'required_if:secondary_account.identification.type,medicare',
+            'secondary_account.identification.country' => 'required_if:secondary_account.identification.type,passport|string',
+            'secondary_account.identification.medicare_card_color' => ['required_if:secondary_account.identification.type,medicare', Rule::in(['yellow', 'green', 'blue'])],
+            'secondary_account.identification.medicare_reference_number' => 'required_if:secondary_account.identification.type,medicare|string',
             'secondary_account.identification.expire_date' => 'required_with:secondary_account.identification|date_format:Y-m-d',
 
             'connection_details.tenancy_type' => ['required', Rule::in(['renter', 'home_owner'])],
@@ -115,33 +115,33 @@ class ValidateCreateLeadRequest extends FormRequest
             "connection_details.nmi" => "nullable|string",
             "connection_details.mirn" => "nullable|string",
 
-            'property_address.unit_number' => 'nullable',
-            'property_address.street_number' => 'required',
-            'property_address.street_name' => 'required',
-            'property_address.street_type' => 'required',
-            'property_address.city' => 'required_without:property_address.suburb',
-            'property_address.suburb' => 'required_without:property_address.city',
-            'property_address.postcode' => 'required',
+            'property_address.unit_number' => 'nullable|string',
+            'property_address.street_number' => 'required|string',
+            'property_address.street_name' => 'required|string',
+            'property_address.street_type' => 'required|string',
+            'property_address.city' => 'required_without:property_address.suburb|string',
+            'property_address.suburb' => 'required_without:property_address.city|string',
+            'property_address.postcode' => 'required|string',
             'property_address.state' => ['required', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
             'property_address.country' => ['required', Rule::in(['AUS'])],
 
-            'billing_address.unit_number' => 'nullable',
-            'billing_address.street_number' => 'required_with:billing_address',
-            'billing_address.street_name' => 'required_with:billing_address',
-            'billing_address.street_type' => 'required_with:billing_address',
-            'billing_address.city' => Rule::requiredIf(function () {
+            'billing_address.unit_number' => 'nullable|string',
+            'billing_address.street_number' => 'required_with:billing_address|string',
+            'billing_address.street_name' => 'required_with:billing_address|string',
+            'billing_address.street_type' => 'required_with:billing_address|string',
+            'billing_address.city' => [Rule::requiredIf(function () {
                 return request()->exists('billing_address') && !request()->exists('billing_address.suburb');
-            }),
-            'billing_address.suburb' => Rule::requiredIf(function () {
+            }), 'string'],
+            'billing_address.suburb' => [Rule::requiredIf(function () {
                 return request()->exists('billing_address') && !request()->exists('billing_address.city');
-            }),
-            'billing_address.postcode' => 'required_with:billing_address',
+            }), 'string'],
+            'billing_address.postcode' => 'required_with:billing_address|string',
             'billing_address.state' => ['required_with:billing_address', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
             // billing address country?
 
             'agency.agent_email' => 'required|email',
-            'agency.name' => 'nullable|string',
-            'agency.office_name' => 'nullable|string',
+            'agency.agency_name' => 'required|string',
+            'agency.office_name' => 'required|string',
         ];
     }
 }
