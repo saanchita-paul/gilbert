@@ -99,7 +99,8 @@ class CreateAppService
         $app->property_type = ConnectionApplication::PROPERTY_TYPE_MAPPING[($data['connection_details']['property_type'] ?? null)] ?? null;
         $app->is_power_life_support = $data['connection_details']['has_power_life_support'] ?? false;
         $app->is_gas_life_support = $data['connection_details']['has_gas_life_support'] ?? false;
-        $app->has_solar = $data['connection_details']['has_solar'] ?? false;
+        $app->has_solar = !empty($data['connection_details']['has_solar']) && $data['connection_details']['has_solar'] === true ?
+            ConnectionApplication::HAS_SOLAR : ConnectionApplication::NO_SOLAR;
         // $app->is_renovation_on = $data['connection_details']['is_renovation_on'] ?? false;
         $app->nmi = $data['connection_details']['nmi'] ?? null;
         $app->mirn = $data['connection_details']['mirn'] ?? null;
