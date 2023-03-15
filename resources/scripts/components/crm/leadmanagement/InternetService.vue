@@ -187,16 +187,16 @@
                                             rules="required"
                                             v-slot="{ errors }"
                                         >
-                                            <v-select
-                                                outlined
-                                                dense
-                                                hide-details="auto"
-                                                :items="modemTypesItems"
-                                                placeholder="Choose Modem Type"
-                                                v-model="internetServiceInfo.modem_type"
-                                                :error-messages="errors[0]"
-                                                @blur="updateInternetServiceInfo"
-                                                @change="paymentLinkChangeHandler"
+                                            <v-select class="select-width-214"
+                                                      outlined
+                                                      dense
+                                                      hide-details="auto"
+                                                      :items="modemTypesItems"
+                                                      placeholder="Choose Modem Type"
+                                                      v-model="internetServiceInfo.modem_type"
+                                                      :error-messages="errors[0]"
+                                                      @blur="updateInternetServiceInfo"
+                                                      @change="paymentLinkChangeHandler"
                                             >
                                             </v-select>
                                         </ValidationProvider>
@@ -213,15 +213,15 @@
                                             rules="required"
                                             v-slot="{ errors }"
                                         >
-                                            <v-select
-                                                outlined
-                                                dense
-                                                hide-details="auto"
-                                                :items="charityItems"
-                                                placeholder="Please select"
-                                                v-model="internetServiceInfo.charity"
-                                                :error-messages="errors[0]"
-                                                @blur="updateInternetServiceInfo"
+                                            <v-select class="select-width-214"
+                                                      outlined
+                                                      dense
+                                                      hide-details="auto"
+                                                      :items="charityItems"
+                                                      placeholder="Please select"
+                                                      v-model="internetServiceInfo.charity"
+                                                      :error-messages="errors[0]"
+                                                      @blur="updateInternetServiceInfo"
                                             >
                                             </v-select>
                                         </ValidationProvider>
@@ -660,5 +660,9 @@ export default {
 
 .cursor-pointer {
     cursor: pointer;
+}
+
+.select-width-214 {
+    width: 214px;
 }
 </style>
