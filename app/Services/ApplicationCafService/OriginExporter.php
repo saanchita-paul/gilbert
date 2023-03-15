@@ -408,10 +408,10 @@ class OriginExporter
 
         foreach ($app->connectionServices as $svc) {
             if($svc->service_type === ConnectionService::TYPE_ELECTRICITY && !empty($svc->submitted_at)) {
-                $electricySubmittedDate = date('d/m/Y', strtotime($svc->submitted_at));
+                $electricySubmittedDate = 'Elec-'. date('d/m/Y', strtotime($svc->submitted_at));
             }
             if($svc->service_type === ConnectionService::TYPE_GAS && !empty($svc->submitted_at)) {
-                $GasSubmittedDate = date('d/m/Y', strtotime($svc->submitted_at));
+                $GasSubmittedDate = 'Gas-'.date('d/m/Y', strtotime($svc->submitted_at));
             }
         }
 
