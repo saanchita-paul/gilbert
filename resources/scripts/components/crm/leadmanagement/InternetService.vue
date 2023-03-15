@@ -529,7 +529,7 @@ export default {
                 if (v) {
                     this.showInternetSubmitModal = true;
                 }
-            }, 300);
+            }, 500);
         },
         backToEdit() {
             this.showInternetSubmitModal = false;
