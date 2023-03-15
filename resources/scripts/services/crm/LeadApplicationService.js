@@ -13,6 +13,7 @@ import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import {isNull} from "lodash-es";
 import DuplicateLeadService from "@scripts/services/crm/DuplicateLeadService";
 import InternetServiceInfoMapper from "@scripts/data/InternetServiceInfoMapper";
+import InternetService from "@scripts/modules/internet/services/InternetService";
 
 export default {
     loadMetrics: data => LeadApplicationAPI.getMetrics(data),
@@ -135,9 +136,9 @@ export default {
         return STATUSES_FOR_ENERGY_SUBMIT.includes(status);
     },
 
-    canSubmitInternet: type => {
-        let status = UtilityStoreService.getInternetStatus();
-        return STATUSES_FOR_ENERGY_SUBMIT.includes(status);
+    canSubmitInternet: () => {
+        let status = InternetService.getInternetStatus();
+        return status && STATUSES_FOR_ENERGY_SUBMIT.includes(status);
     },
 
     /**

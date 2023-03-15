@@ -31,9 +31,9 @@ const submitNBN = async (data, leadId) => {
 
 const loadProviderData = async (leadId) => {
     const leadData = await LeadApplicationService.loadUserLead(leadId);
-    setInternetProvider(leadData.internet_service_info ? leadData.internet_service_info.connection_service.provider_name : null);
-    setInternetPlan(leadData.internet_service_info ? leadData.internet_service_info.connection_service.plan_type : null);
-    setInternetStatus(leadData.internet_service_info ? leadData.internet_service_info.connection_service.status : null);
+    setInternetProvider(leadData.internet_service_info ? leadData.internet_service_info?.connection_service?.provider_name : null);
+    setInternetPlan(leadData.internet_service_info ? leadData.internet_service_info?.connection_service?.plan_type : null);
+    setInternetStatus(leadData.internet_service_info ? leadData.internet_service_info?.connection_service?.status : null);
     return leadData;
 }
 
@@ -52,6 +52,10 @@ const setInternetPlan = provider => Store.commit("internetServiceInfoStore/setIn
 const getInternetStatus = () => Store.getters['internetServiceInfoStore/internetStatus'];
 
 const setInternetStatus = provider => Store.commit("internetServiceInfoStore/setInternetStatus", provider);
+
+const setIsValidForm = status => Store.commit("internetServiceInfoStore/setIsValidForm", status);
+
+const getIsValidForm = () => Store.getters['internetServiceInfoStore/isValidForm'];
 
 const getGoodtelPlans = async () => await InternetAPI.goodtelPlans();
 
@@ -73,5 +77,7 @@ export default {
     loadProviderData,
     submitNBN,
     getGoodtelPlans,
-    sendGoodtelPaymentLink
+    sendGoodtelPaymentLink,
+    setIsValidForm,
+    getIsValidForm,
 };

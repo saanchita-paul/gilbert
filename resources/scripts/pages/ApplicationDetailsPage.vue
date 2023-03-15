@@ -107,6 +107,8 @@ import ApplicationUnlockModal from "@scripts/components/crm/modals/ApplicationUn
 import ApplicationUnlockConfirmModal from "@scripts/components/crm/modals/ApplicationUnlockConfirmModal";
 import SendToChatbotConfirmModal from "@scripts/components/crm/modals/SendToChatbotConfirmModal";
 import GBGService from "@scripts/services/GBGService";
+import InternetService from "@scripts/modules/internet/services/InternetService";
+
 export default {
     //todo shift afterHourFlag, nextBusinessDay, getElectricityDistributor to powerService
     name: "ApplicationDetailsPage",
@@ -359,7 +361,9 @@ export default {
             this.showSubmitModal = false;
         },
         async validateLead() {
-            return this.$refs.submit_lead.validate() && this.$refs.service_form.validate()
+            let v1 = await this.$refs.submit_lead.validate();
+            let v2 = await this.$refs.service_form.validate();
+            return v1 && v2
         },
         async confirmSubmitLead() {
             this.showSubmitModal = false;
@@ -580,8 +584,10 @@ export default {
         this.listenMirnNmiEvent();
         this.listenEmbeddedNetworkEvent();
 
+        // return validate value
         this.$eventBus.$on("nbn_submit_validate", async () => {
-            return await this.validateLead();
+            let v = await this.validateLead();
+            InternetService.setIsValidForm(v);
         });
     }
 };

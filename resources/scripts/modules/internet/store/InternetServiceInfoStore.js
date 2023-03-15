@@ -8,6 +8,7 @@ export default {
         internetStatus: null,
         internetProvider: null,
         internetPlan: null,
+        isValidForm: true
     },
 
     getters: {
@@ -15,6 +16,7 @@ export default {
         internetStatus: state => state.internetStatus ?? state.internetServiceInfo.connection_service.status,
         internetProvider: state => state.internetProvider ?? state.internetServiceInfo.connection_service.provider_name,
         internetPlan: state => state.internetPlan ?? state.internetServiceInfo.connection_service.plan_type,
+        isValidForm: state => state.isValidForm
     },
 
     mutations: {
@@ -34,6 +36,9 @@ export default {
         },
         setInternetStatus(state, status) {
             state.internetStatus = status;
+        },
+        setIsValidForm(state, status) {
+            state.isValidForm = status;
         },
     }
 }

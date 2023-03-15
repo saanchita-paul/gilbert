@@ -27,15 +27,15 @@
             </div>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" v-if="isShowForm">
             <v-divider></v-divider>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" v-if="isShowForm">
             <p class="mb-0 sub-title">You have chosen Goodtel NBN!</p>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" v-if="isShowForm">
             <div class="d-flex justify-space-between">
                 <div class="flex-basis-50">
                     <v-row>
@@ -196,7 +196,7 @@
                                                 v-model="internetServiceInfo.modem_type"
                                                 :error-messages="errors[0]"
                                                 @blur="updateInternetServiceInfo"
-                                                @change="paymentLinkChangeHandler($event)"
+                                                @change="paymentLinkChangeHandler"
                                             >
                                             </v-select>
                                         </ValidationProvider>
@@ -324,11 +324,11 @@
             </div>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" v-if="isShowForm">
             <v-divider></v-divider>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" v-if="isShowForm">
             <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
                 <v-btn
                     :disabled="isDisable"
@@ -341,12 +341,12 @@
             </div>
         </v-col>
 
-        <v-dialog v-model="viewPlanDetails" max-width="650">
+        <v-dialog v-model="viewPlanDetails" max-width="650" v-if="isShowForm">
             <InternetPlanDetails/>
         </v-dialog>
 
         <InternetSubmitConfirmationModal
-            v-if="showInternetSubmitModal"
+            v-if="showInternetSubmitModal && isShowForm"
             :dialog="showInternetSubmitModal"
             @confirmSubmit="confirmSubmit"
             @backToEdit="backToEdit"
@@ -401,6 +401,9 @@ export default {
                 !this.selectedPlan
             );
         },
+        isValidForm() {
+            return InternetService.getIsValidForm();
+        },
         selectedProvider: {
             get() {
                 return InternetService.getInternetProvider();
@@ -415,6 +418,11 @@ export default {
             },
             set(value) {
                 InternetService.setInternetPlan(value);
+                this.setActivePlan(value);
+                console.log(this.internetServiceInfo.modem_type)
+                if (this.internetServiceInfo.modem_type) {
+                    this.initPaymentLink();
+                }
             }
         },
         internetServiceInfo: {
@@ -433,6 +441,9 @@ export default {
                 UtilityStoreService.getInternetStatus()
             );
         },
+        isShowForm() {
+            return this.plans && this.plans.length > 0 && this.selectedProvider && this.selectedPlan;
+        }
     },
     async mounted() {
         this.leadSummary = await this.loadApplicationSummary;
@@ -465,36 +476,39 @@ export default {
             this.plans = await InternetService.getGoodtelPlans();
             this.initPaymentLink(this.internetServiceInfo.modem_type);
         },
-        initPaymentLink(modem_type) {
+        initPaymentLink() {
             if (this.selectedPlan && this.plans.length) {
                 const plan = this.plans.find(dt => {
                     return dt.name === this.selectedPlan;
                 });
                 console.log('initPaymentLink', plan);
-                if (modem_type === 'standard' || modem_type === 'upgraded') {
-                    console.log('p1', modem_type)
+                if (this.internetServiceInfo.modem_type === 'standard' || this.internetServiceInfo.modem_type === 'upgraded') {
+                    console.log('p1', this.internetServiceInfo.modem_type)
                     this.paymentLink = plan.payment_links.find(dt => {
-                        return dt.modem_type === modem_type;
+                        return dt.modem_type === this.internetServiceInfo.modem_type;
                     }).payment_link;
                 } else {
-                    console.log('p2', modem_type)
+                    console.log('p2', this.internetServiceInfo.modem_type)
                     this.paymentLink = plan.payment_links.find(dt => {
                         return dt.modem_type === 'none';
                     }).payment_link;
                 }
             }
+
+            console.log(this.paymentLink)
         },
-        paymentLinkChangeHandler(modem_type) {
-            this.initPaymentLink(modem_type);
+        paymentLinkChangeHandler() {
+            this.initPaymentLink();
         },
-        selectPlan(plan) {
+        async selectPlan(plan) {
             this.selectedPlan = plan.name;
             const formData = {
                 provider_name: this.selectedProvider,
                 plan_type: this.selectedPlan,
                 service_type: 'internet'
             };
-            InternetService.updateNbnProvider(formData, this.leadSummary.id);
+            await InternetService.updateNbnProvider(formData, this.leadSummary.id);
+            await InternetService.loadProviderData(this.leadSummary.id);
         },
         setActivePlan(plan) {
             if (this.plans && this.plans.length > 0) {
@@ -508,12 +522,14 @@ export default {
             this.internetServiceInfo.home_phone_plan = plan;
             this.updateInternetServiceInfo();
         },
-        submit() {
-            let v = this.$eventBus.$emit('nbn_submit_validate');
-            if (!v) {
-                return;
-            }
-            this.showInternetSubmitModal = true;
+        async submit() {
+            await this.$eventBus.$emit('nbn_submit_validate');
+            setTimeout(() => {
+                let v = this.isValidForm;
+                if (v) {
+                    this.showInternetSubmitModal = true;
+                }
+            }, 300);
         },
         backToEdit() {
             this.showInternetSubmitModal = false;

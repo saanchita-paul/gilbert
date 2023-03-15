@@ -204,7 +204,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="crm-text-field">
+                                    <div class="crm-text-field" v-if="internetServiceInfo.is_need_home_phone && internetServiceInfo.home_phone_plan">
                                         <div class="field-label">
                                             <span>Selected Phone Plan</span>
                                         </div>
@@ -213,7 +213,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="crm-text-field">
+                                    <div class="crm-text-field" v-if="internetServiceInfo.is_need_home_phone && internetServiceInfo.home_phone_number">
                                         <div class="field-label">
                                             <span>Homephone #</span>
                                         </div>
@@ -222,7 +222,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="crm-text-field">
+                                    <div class="crm-text-field" v-if="internetServiceInfo.is_need_home_phone && internetServiceInfo.current_provider">
                                         <div class="field-label">
                                             <span>Current Provider</span>
                                         </div>
