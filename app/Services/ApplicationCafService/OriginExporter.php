@@ -403,27 +403,14 @@ class OriginExporter
      */
     private function setDateOfSales(mixed $app):string
     {
-        $electricySubmittedDate = '';
-        $GasSubmittedDate = '';
 
-        foreach ($app->connectionServices as $svc) {
-            if($svc->service_type === ConnectionService::TYPE_ELECTRICITY && !empty($svc->submitted_at)) {
-                $electricySubmittedDate = 'Elec-'. date('d/m/Y', strtotime($svc->submitted_at));
-            }
-            if($svc->service_type === ConnectionService::TYPE_GAS && !empty($svc->submitted_at)) {
-                $GasSubmittedDate = 'Gas-'.date('d/m/Y', strtotime($svc->submitted_at));
-            }
-        }
+        $salesDate = $app->connectionServices->filter(function ($svc) {
+            return in_array($svc->service_type, [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
+                && !empty($svc->submitted_at);
+        })?->sortByDesc('submitted_at')
+            ->pluck('submitted_at');
 
-        $multipleSubmissionDate = [];
-        if(!empty($electricySubmittedDate)) {
-            $multipleSubmissionDate[] = $electricySubmittedDate;
-        }
-        if(!empty($GasSubmittedDate)) {
-            $multipleSubmissionDate[] = $GasSubmittedDate;
-        }
-        return join(',', $multipleSubmissionDate);
-
+        return !empty($salesDate)? date('d/m/Y', strtotime($salesDate)) : '';
     }
 
 
