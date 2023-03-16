@@ -92,7 +92,7 @@ class OriginService
             }
 
             // 1. Get Product ID/Origin Kraken Code from Chatbot
-            $plan = GetPlans::getActivePlans($type, $application->tenancy_type, $findPlanData);
+            $plan = GetPlans::getActivePlans($type, $application->property_type, $findPlanData);
             $plan_customer_type_id = $plan['customer_type_id'];
             $plan_division_id = $plan['division_id'];
             $plan_product_id = $plan['origin_kraken_code'];
