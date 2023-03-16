@@ -408,7 +408,7 @@ class OriginExporter
             return in_array($svc->service_type, [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
                 && !empty($svc->submitted_at);
         })?->sortByDesc('submitted_at')
-            ->pluck('submitted_at');
+            ->pluck('submitted_at')->first();
 
         return !empty($salesDate)? date('d/m/Y', strtotime($salesDate)) : '';
     }
