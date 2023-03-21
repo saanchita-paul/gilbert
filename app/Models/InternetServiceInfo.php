@@ -60,4 +60,24 @@ class InternetServiceInfo extends Model
     {
         return $this->belongsTo(GoodtelPlan::class);
     }
+
+    public function getModemType()
+    {
+        return $this->modem_type == 'byo' ? 'None' : ucfirst($this->modem_type);
+    }
+
+    public function getPhoneCall()
+    {
+        return $this->is_need_home_phone ? 'Yes' : 'No';
+    }
+
+    public function getMedicalAlarm()
+    {
+        return $this->is_security_alarm ? 'Yes' : 'No';
+    }
+
+    public function getBackToBase()
+    {
+        return $this->is_back_to_base ? 'Yes' : 'No';
+    }
 }

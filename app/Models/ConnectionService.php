@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -136,6 +137,11 @@ class ConnectionService extends Model
     public function connectionApplication()
     {
         return $this->belongsTo(ConnectionApplication::class);
+    }
+
+    public function internetServiceInfo(): HasOne
+    {
+        return $this->hasOne(InternetServiceInfo::class);
     }
 
     public function reasons()

@@ -23,8 +23,8 @@ const updateNbnProvider = async (data, leadId) => {
     return response;
 }
 
-const submitNBN = async (data, leadId) => {
-    const response = await InternetAPI.NBNSubmit(data, leadId);
+const submitNBN = async (leadId) => {
+    const response = await InternetAPI.NBNSubmit(leadId);
     await loadProviderData(leadId);
     return response;
 }

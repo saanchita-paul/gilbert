@@ -2,10 +2,12 @@
 
 namespace App\Services\Agency;
 
+use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\GoodtelPlan;
 use App\Models\InternetServiceInfo;
+use Carbon\Carbon;
 
 class NbnService
 {
@@ -85,7 +87,7 @@ class NbnService
         return $connectionApplication;
     }
 
-    public function submitNBN(array $data, $applicationId)
+    public function submitNBN(int $applicationId)
     {
         $connectionApplication = ConnectionApplication::find($applicationId);
         $connectionService = $connectionApplication->connectionServices()
@@ -95,6 +97,10 @@ class NbnService
             'status' => ConnectionService::STATUS_SUBMITTED,
             'submitted_at' => now(),
         ]);
+
+        // Create note for submission
+        $this->createSubmitNote($connectionService);
+
         return $connectionApplication;
     }
 
@@ -123,5 +129,39 @@ class NbnService
         }
 
         return $application->refresh();
+    }
+
+    public function createSubmitNote(ConnectionService $connectionService)
+    {
+        $data = [
+            'connection_application_id' => $connectionService->connection_application_id,
+            'created_by' => auth()->id(),
+            'type' => 'goodtel_submit',
+            'title' => 'Internet Service Submitted By [' . auth()->user()->profile->first_name . ']',
+            'user_role' => auth()->user()->roles[0]?->name,
+            'connection_details' => json_encode([
+                "utility_type" => "Internet",
+                "applicant_name" => $connectionService->connectionApplication->first_name . ' ' . $connectionService->connectionApplication->last_name,
+                "connection_address" => $connectionService->internetServiceInfo->address_text,
+                "connection_date" => Carbon::parse($connectionService->connectionApplication->moving_date)
+                        ->toDateTimeLocalString() . '.000000Z',
+                "lead_source" => "Hood",
+                "agency" => $connectionService->connectionApplication->getAgencyName(),
+                "agent_name" => $connectionService->connectionApplication->getAgentName(),
+                "supplier_name" => "Goodtel",
+                "plan_name" => $connectionService->internetServiceInfo->goodtelPlan->getPlanName(),
+                "initial_payment_amount" => $connectionService->internetServiceInfo->goodtelPlan->price,
+                "modem_type" => $connectionService->internetServiceInfo->getModemType(),
+                "phone_calls" => $connectionService->internetServiceInfo->getPhoneCall(),
+                "medical_security" => $connectionService->internetServiceInfo->getMedicalAlarm(),
+                "back_to_base" => $connectionService->internetServiceInfo->getBackToBase(),
+                "home_phone_number" => $connectionService->internetServiceInfo->home_phone_number,
+                "current_provider" => $connectionService->internetServiceInfo->current_provider,
+                "account_number" => $connectionService->internetServiceInfo->account_number,
+                "plan_link" => $connectionService->internetServiceInfo->goodtelPlan->details_url
+            ])
+        ];
+
+        return ApplicationNote::create($data);
     }
 }

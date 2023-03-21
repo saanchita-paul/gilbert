@@ -75,6 +75,11 @@ export default class Note {
             case 'assign_user':
                 return 'assign_user';
                 break;
+
+            case 'goodtel_submit':
+                return 'goodtel_submit';
+                break;
+
             case 'mri_identification':
                 return 'mri_identification';
 
@@ -104,5 +109,7 @@ export default class Note {
         } else if(type.toLowerCase() == 'assign_user') {
             return title;
         }
+
+        return title;
     }
 }

@@ -31,6 +31,9 @@
                                         v-else-if="nt.type.toLowerCase() === 'assign_user'"
                                         :note="nt"></AssignedNote>
 
+                                    <SubmittedGoodtelNote v-else-if="nt.type.toLowerCase() === 'goodtel_submit'"
+                                                          :note="nt"></SubmittedGoodtelNote>
+
                                     <Note v-else :note="nt"></Note>
                                 </v-timeline-item>
                             </v-timeline>
@@ -86,10 +89,13 @@ import SubmittedOriginNote from "@scripts/components/crm/leadmanagement/notes/Su
 import SubmittedPowershopNote from "@scripts/components/crm/leadmanagement/notes/SubmittedPowershopNote";
 import StatusLog from "@scripts/components/crm/leadmanagement/notes/StatusLog";
 import AssignedNote from "@scripts/components/crm/leadmanagement/notes/AssignedNote.vue";
+import SubmittedGoodtelNote from "@scripts/components/crm/leadmanagement/notes/SubmittedGoodtelNote.vue";
 
 export default {
   name: "ApplicationNotes",
-    components: {AssignedNote, SubmittedNote, Note, InvalidNote, SubmittedOriginNote, SubmittedPowershopNote, StatusLog},
+    components: {
+        SubmittedGoodtelNote,
+        AssignedNote, SubmittedNote, Note, InvalidNote, SubmittedOriginNote, SubmittedPowershopNote, StatusLog},
     props: {
       notes: {
           require: true

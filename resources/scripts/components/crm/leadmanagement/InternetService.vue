@@ -331,7 +331,6 @@
         <v-col cols="12" v-if="isShowForm">
             <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
                 <v-btn
-                    :disabled="isDisable"
                     color="#542E89"
                     @click="submit"
                     class="white--text"
@@ -535,7 +534,7 @@ export default {
             this.showInternetSubmitModal = false;
         },
         async confirmSubmit() {
-            await InternetService.submitNBN({service_type: 'internet'}, this.leadSummary.id);
+            await InternetService.submitNBN(this.leadSummary.id);
             this.showInternetSubmitModal = false;
             this.$router.push('/applications');
         },

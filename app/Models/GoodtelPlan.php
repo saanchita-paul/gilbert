@@ -16,4 +16,9 @@ class GoodtelPlan extends Model
     {
         return $this->hasMany(GoodtelPlanPaymentLink::class)->where('is_active', true);
     }
+
+    public function getPlanName()
+    {
+        return $this->display_name . ' ' . $this->mbps;
+    }
 }

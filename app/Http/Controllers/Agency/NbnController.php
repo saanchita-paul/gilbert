@@ -55,9 +55,8 @@ class NbnController extends Controller
     {
         try {
             $service = new NbnService();
-            $inputData = $request->toArray();
 
-            return ApplicationResource::make($service->submitNBN($inputData, $applicationId));
+            return ApplicationResource::make($service->submitNBN($applicationId));
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

@@ -28,9 +28,9 @@ const updateNbnProviderInfo = async (data, leadId) => {
     }
 }
 
-const NBNSubmit = async (data, leadId) => {
+const NBNSubmit = async (leadId) => {
     try {
-        const response = (await axios.post('/api/applications/' + leadId + '/nbn-submit', data)).data;
+        const response = (await axios.post('/api/applications/' + leadId + '/nbn-submit')).data;
         return response.data;
     } catch (error) {
         return error.data;
