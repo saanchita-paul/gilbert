@@ -62,42 +62,49 @@ class OriginService
 
             $connection_date = $application->moving_date;
 
-            $plan = GetPlans::getActivePlanByStateFuel(strtoupper(AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($application->state)]), $type == 'power' ? 'electricity': $type);
-            $plan_customer_type_id = $plan->customer_type_id;
-            $plan_division_id = $plan->division_id;
-            $plan_product_id = $plan->product_id;
+            $findPlanData = [
+                'state' => strtoupper(AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($application->state)]),
+                'postcode' => $application->postcode,
+                'offer' => $service->plan_type ?? '',
+            ];
 
-            if($type == 'power'){
+            if ($type == 'power') {
                 $validateBy = 'nmi';
                 $nmi_mirn = $application->nmi;
 
-                if(empty($nmi_mirn)){
+                if (empty($nmi_mirn)) {
                     throw new \Exception(sprintf('%s:FAILED (Skip due to missing nmi/mirn for service id %u)', self::class, $service->id));
                 }
 
-//                $isValidElecCutOff = ValidateCutOffTime::isValidElecConnect($connection_date, $nmi_mirn, $application->state);
-            }
-            else{
+                $findPlanData['fuel'] = 'electricity';
+                $findPlanData[$validateBy] = $nmi_mirn;
+            } else {
                 $validateBy = 'mirn';
                 $nmi_mirn = $application->mirn_checksum;
 
-                if(empty($nmi_mirn)){
+                if (empty($nmi_mirn)) {
                     throw new \Exception(sprintf('%s:FAILED (Skip due to missing nmi/mirn for service id %u)', self::class, $service->id));
                 }
 
-//              $isValidGasCutOff = ValidateCutOffTime::isValidGasConnect($connection_date, $application->state);
-                
                 $connection_date = ValidateCutOffTime::getNextGasConnectionDate($connection_date, $application->state);
+                $findPlanData['fuel'] = 'gas';
+                $findPlanData[$validateBy] = $nmi_mirn;
             }
 
-            // 1. validate address
+            // 1. Get Product ID/Origin Kraken Code from Chatbot
+            $plan = GetPlans::getActivePlans($type, $application->property_type, $findPlanData);
+            $plan_customer_type_id = $plan['customer_type_id'];
+            $plan_division_id = $plan['division_id'];
+            $plan_product_id = $plan['origin_kraken_code'];
+
+            // 2. validate address
             $validateAddress = new ValidateAddressAPI($validateBy, $nmi_mirn);
             $response = $validateAddress->fetch();
 
             $addressInfo = $response['addressInfo'];
             $addressID = $response['addressID'];
 
-            // 2. validate fuel availability
+            // 3. validate fuel availability
             $checkFuel = new CheckFuelAPI($plan_customer_type_id, $addressID, $plan_division_id);
             $response = $checkFuel->fetch();
 
@@ -138,7 +145,7 @@ class OriginService
                 ],
             ];
 
-            if($application->is_billing_same == 0){
+            if ($application->is_billing_same == 0) {
                 $data['correspondenceAddress'] = [
                     'roomNo' => $application->billing_unit_number ?? '',
                     'roomType' => $application->billing_unit_number ? 'U' : '', // todo: create new column for unit/room type
@@ -151,8 +158,7 @@ class OriginService
                 ];
             }
 
-            if(!empty($authorized->role))
-            {
+            if (!empty($authorized->role)) {
                 $data['contactPersonInfo'] = [
                     'title' => $authorized->title,
                     'firstname' => $authorized->first_name,
@@ -165,7 +171,7 @@ class OriginService
                 ];
             }
 
-            if(!empty($application->concession_card_type)){
+            if (!empty($application->concession_card_type)) {
                 $data['concessionCardInfo'] = [
                     'type' => $application->concession_card_type,
                     'number' => $application->concession_card_number,
@@ -174,30 +180,28 @@ class OriginService
                 ];
             }
 
-            if($type == 'power' && !empty($application->inspection_time)){
+            if ($type == 'power' && !empty($application->inspection_time)) {
                 $data["appointmentTime"] = $application->inspection_time;
             }
 
             $newOrder = new SubmitOrderAPI($data, $service->id);
             $errors = $newOrder->hasError();
-            if($errors){
+            if ($errors) {
                 // skip due to server invalid input
                 Log::error('Invalid inputs to submit order API', $errors);
-                throw new \Exception(sprintf('%s:FAILED (Invalid inputs to submit order for service id %u)', self::class, $service->id));
+                // throw new \Exception(sprintf('%s:FAILED (Invalid inputs to submit order for service id %u)', self::class, $service->id)); // continue attempt submit
             }
 
             $response = $newOrder->submit();
 
-            if(!empty($response['HoodReferenceNumber'])){
+            if (!empty($response['HoodReferenceNumber'])) {
                 $this->saveSubmittedStatus($service->id, $response['HoodReferenceNumber']);
             }
 
             ConnectionApplication::where('id', $application->id)->update([
                 'is_running_submission' => 0,
             ]);
-        }
-        catch (Exception $exception){
-
+        } catch (Exception $exception) {
             ConnectionApplication::where('id', $application->id)->update([
                 'is_running_submission' => 0,
             ]);
