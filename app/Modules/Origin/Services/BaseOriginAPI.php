@@ -78,13 +78,13 @@ class BaseOriginAPI
         } catch (\Illuminate\Http\Client\RequestException $exception) {
             $statusCode = $exception->response->status();
             $responseJson = $exception->response->json();
-            $errorCode = $responseJson['error'] ? $responseJson['error']['code'] : '';
-            $errorMessage = $responseJson['error'] ? $responseJson['error']['message']['value'] : $exception->response->body();
+            $errorCode = $responseJson['error']['code'] ?? 'ORIGIN_ERROR';
+            $errorMessage = $responseJson['error']['message']['value'] ?? $exception->response->body();
 
             if ($statusCode == 400) {
-                throw new \Exception(sprintf('Origin GET:%s - FAILED [%s](%s)', $methodName, $errorCode, $errorMessage), self::CODE_REJECT);
+                throw new \Exception(sprintf('Origin GET:%s - FAILED WITH STATUS CODE %s [%s](%s)', $methodName, $statusCode, $errorCode, $errorMessage), self::CODE_REJECT);
             } else {
-                throw new \Exception(sprintf('Origin GET:%s - FAILED (%s)', $methodName, $errorMessage));
+                throw new \Exception(sprintf('Origin GET:%s - FAILED STATUS CODE %s (%s)', $methodName, $statusCode, $errorMessage));
             }
         } catch (Exception $exception) {
             throw new \Exception(sprintf('Origin GET:%s - FAILED (%s)', $methodName, $exception->getMessage()));
