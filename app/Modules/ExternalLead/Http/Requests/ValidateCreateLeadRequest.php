@@ -77,7 +77,7 @@ class ValidateCreateLeadRequest extends FormRequest
             'primary_account.phone_type' => ['required', Rule::in(['mobile', 'homephone', 'international_mobile'])],
             'primary_account.phone_number' => 'required|string',
 
-            'utility_services' => 'required|array',
+            'utility_services' => 'array',
             'utility_services.*' =>  Rule::in("gas", 'power', 'water', 'internet'),
 
             'primary_account.identification.type' => ['required', Rule::in(['medicare', 'passport', 'driver_license'])],
