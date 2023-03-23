@@ -18,8 +18,8 @@ class SaveRawData
         $newDump->all_fields_dump = json_encode($data);
         $newDump->external_source_id = $externalSourceId;
 //        $newDump->agent_name = !empty($data['agent_firstname']) ? ($data['agent_firstname'] . ($data['agent_lastname'] ? " " . $data['agent_lastname'] : '')) : null;
-//        $newDump->agency_name = $data['agency_name'] ?? null;
-        $newDump->agent_email = $data['agency']['email'] ?? null;
+        $newDump->agency_name = $data['agency']['agency_name'] ?? null;
+        $newDump->agent_email = $data['agency']['agent_email'] ?? null;
         $newDump->save();
 
         return $newDump;
