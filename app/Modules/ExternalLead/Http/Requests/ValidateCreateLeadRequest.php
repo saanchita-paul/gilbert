@@ -195,7 +195,15 @@ class ValidateCreateLeadRequest extends FormRequest
     {
         $this->dump->exception_log = $validator->errors()->toJson();
         $this->dump->save();
-        return parent::failedValidation($validator);
+        $response = response()->json([
+            'status' => 'fail',
+            'message' => 'Validation failed',
+            'errors' => $validator->errors(),
+            'transaction_id' => $this->dump->id
+         ], 422);
+        throw (new ValidationException($validator, $response))
+            ->errorBag($this->errorBag)
+            ->redirectTo($this->getRedirectUrl());
     }
 
     private function changeCase(&$requestData, string $type, array $fields)
