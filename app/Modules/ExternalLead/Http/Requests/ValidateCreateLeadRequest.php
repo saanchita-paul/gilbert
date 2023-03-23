@@ -7,7 +7,12 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Models\ExternalSource;
 use Illuminate\Validation\Rule;
 use App\Services\Utility\StateMapService;
+use ExternalLead\Services\SaveRawData;
 use App\Models\ConnectionApplicationSecondaryACC as AuthorizedPerson;
+use ExternalLead\Models\TApp;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\ValidationException;
 
 class ValidateCreateLeadRequest extends FormRequest
 {
@@ -33,6 +38,8 @@ class ValidateCreateLeadRequest extends FormRequest
         'billing_address.state'
     ];
 
+    private TApp $dump;
+
 
     /**
      * Determine if the user is authorized to make this request.
@@ -52,10 +59,6 @@ class ValidateCreateLeadRequest extends FormRequest
      */
     public function rules()
     {
-        $request = request()->all();
-        $username = $request['username'];
-        $selectedSource = ExternalSource::where('email', $username)->firstOrFail();
-
         return $this->getRules();
     }
 
@@ -90,7 +93,14 @@ class ValidateCreateLeadRequest extends FormRequest
     private function getRules(): array
     {
         return [
-            'lead_reference' => 'required|string|unique:t_app,lead_id',
+            'lead_reference' => [
+                'required',
+                'string',
+                Rule::unique('t_app', 'lead_id')
+                    ->where(static function ($query) {
+                        return $query->whereNotNull('connection_application_id');
+                    }),
+            ],
             'primary_account.title' => ['required', Rule::in(['mr', 'ms', 'mrs', 'miss', 'dr'])],
             'primary_account.first_name' => 'required|string',
             'primary_account.middle_name' => 'nullable|string',
@@ -174,8 +184,18 @@ class ValidateCreateLeadRequest extends FormRequest
         info('External Lead: Raw Request Data', $requestData);
         $this->changeCase($requestData, 'strtolower', self::TOLOWERCASE);
         $this->changeCase($requestData, 'strtoupper', self::TOUPPERCASE);
-
+        $username = $requestData['username'];
+        $selectedSource = ExternalSource::where('email', $username)->firstOrFail();
+        $this->dump = SaveRawData::dump($selectedSource->id, $requestData);
+        $requestData['dump_id'] = $this->dump->id;
         $this->replace($requestData);
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $this->dump->exception_log = $validator->errors()->toJson();
+        $this->dump->save();
+        return parent::failedValidation($validator);
     }
 
     private function changeCase(&$requestData, string $type, array $fields)
