@@ -29,7 +29,7 @@ use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
 use App\Http\Controllers\ApplicationEventController;
 use App\Http\Controllers\Agency\MriOfficeController;
 use MRI\Controllers\TestMriController;
-
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -416,4 +416,10 @@ Route::get('/test', function() {
 //    dd($service);
 //    ApplicationFromGilbertJob::dispatch(3);
 
+});
+
+//upload click by sending gcl_id only
+Route::post('/upload-click', function (Request $request){
+    $clickConversionService = new \App\Services\GoogleAds\UploadClickConversionService();
+    return $clickConversionService->uploadClick($request->gcl_id);
 });

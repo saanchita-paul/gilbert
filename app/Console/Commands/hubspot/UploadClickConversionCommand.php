@@ -2,17 +2,18 @@
 
 namespace App\Console\Commands\hubspot;
 
-use App\Services\hubspot\HubspotService;
+use App\Services\hubspot\FetchGCLService;
+use Google\ApiCore\ApiException;
 use Illuminate\Console\Command;
 
-class SendAnalytics extends Command
+class UploadClickConversionCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'hubspot:fetch-data';
+    protected $signature = 'hubspot:send-analytics';
 
     /**
      * The console command description.
@@ -25,10 +26,14 @@ class SendAnalytics extends Command
      * Execute the console command.
      *
      * @return int
+     * @throws ApiException
      */
     public function handle(): int
     {
-        $hubspotService = new HubspotService();
+        $fetchGCLService = new FetchGCLService();
+        $applications = $fetchGCLService->fetchConnectionApplications();
+        $fetchGCLService->fetchGclId($applications);
+        $fetchGCLService->processAnalytics();
         return 0;
     }
 }
