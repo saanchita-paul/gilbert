@@ -2,6 +2,7 @@
 
 namespace HoodLead\Services;
 
+use App\Models\ClickConversion;
 use App\Models\ConnectionApplication;
 use App\Models\Office;
 use HoodLead\HoodLead;
@@ -136,7 +137,16 @@ class StoreHoodLead
             $connectionService->save();
         }
 
+
+        //saving click conversion per connection application
+        $clickConversion = new ClickConversion([
+            "connection_application_id" => $app->id,
+            "gcl_id" => $this->requestData['properties']["gcl_id"] ?? null
+        ]);
+        $clickConversion->save();
+
         return $app->id;
+
     }
 
     /**

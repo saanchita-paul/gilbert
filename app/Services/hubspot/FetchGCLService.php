@@ -8,6 +8,7 @@ use App\Services\GoogleAds\UploadClickConversionService;
 use Carbon\Carbon;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Database\Eloquent\Collection;
 
 class FetchGCLService {
     private array $mappedApplication = [];
@@ -22,18 +23,16 @@ class FetchGCLService {
         return Http::withHeaders(['Authorization' => config('hub_spot.oauth_token')]);
     }
 
-    public function fetchConnectionApplications(): array
+    public function fetchConnectionApplications(): Collection
     {
         return ConnectionApplication::query()
-            ->select(["hubspot_contact_id", "gcl_id"])
+            ->select(["hubspot_contact_id", "id"])
             ->with(['clickConversion' => function ($query){
-                $query->whereNull('gcl_id')
-                    ->where('is_uploaded_click', ClickConversion::IS_UPLOADED_CLICK_FALSE);
+                $query->where('is_uploaded_click', ClickConversion::IS_UPLOADED_CLICK_FALSE);
             }])
-            ->whereHas('clickConversion')
             ->where('source', ConnectionApplication::SOURCE_HOOD_LEAD)
-            ->get()
-            ->toArray();
+            ->whereNotNull('hubspot_contact_id')
+            ->get();
     }
 
     public function fetchGclId($applications): void
@@ -43,14 +42,16 @@ class FetchGCLService {
             $url = str_replace('${id}', $app->hubspot_contact_id, config('hub_spot.update_contact'));
             $response = $this->getClient()->get($url);
             $body = json_decode($response->body(), true);
-            $gcl_id = $body['parameter']['gcl_id']['value'] ?? null;
+            $gclID = $body['properties']['hs_google_click_id']['value'] ?? null;
 
-            //updating self gcl_id if missing
-            $app->clickConversion->gcl_id = $gcl_id;
+            //insert click conversion record if not created yet
+            if(!$app->clickConversion){
+                $this->createClickConversion($app->id, $gclID);
+            }
 
-            //updating gcl_id to the click conversion table
-            $this->updateGclID($app->id, [
-                "gcl_id" => $gcl_id,
+            //updating gcl_id to the click conversion table along with apps clickConversion
+            $app->clickConversion = $this->updateGclID($app->id, [
+                "gcl_id" => $gclID,
                 "last_checked" => Carbon::now(),
             ]);
 
@@ -58,7 +59,7 @@ class FetchGCLService {
         }
     }
 
-    public function processAnalytics(): void
+    public function uploadClickConversion(): void
     {
         foreach ($this->mappedApplication AS $app){
             $gclId = $app->clickConversion->gcl_id;
@@ -78,14 +79,25 @@ class FetchGCLService {
         }
     }
 
-    public function uploadedClickSuccessful($appID): void {
+    public function uploadedClickSuccessful($appID): void
+    {
         ClickConversion::where('connection_application_id', $appID)->update([
             "is_uploaded_click" => ClickConversion::IS_UPLOADED_CLICK_TRUE
         ]);
     }
 
-    public function updateGclID($appID, $data): void {
-        ClickConversion::where('connection_application_id', $appID)->update($data);
+    public function updateGclID($appID, $data)
+    {
+        return ClickConversion::where('connection_application_id', $appID)->update($data);
+    }
+
+    public function createClickConversion($appID, $gclID): void
+    {
+        ClickConversion::create([
+           "connection_application_id" => $appID,
+            "gcl_id" => $gclID,
+            "last_checked" => Carbon::now()
+        ]);
     }
 
 }

@@ -13,7 +13,7 @@ class UploadClickConversionCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'hubspot:send-analytics';
+    protected $signature = 'hubspot:upload-click';
 
     /**
      * The console command description.
@@ -22,18 +22,13 @@ class UploadClickConversionCommand extends Command
      */
     protected $description = 'This will fetch connection applications and hubspot data to check if there is gclid';
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     * @throws ApiException
-     */
+
     public function handle(): int
     {
         $fetchGCLService = new FetchGCLService();
         $applications = $fetchGCLService->fetchConnectionApplications();
         $fetchGCLService->fetchGclId($applications);
-        $fetchGCLService->processAnalytics();
+        $fetchGCLService->uploadClickConversion();
         return 0;
     }
 }
