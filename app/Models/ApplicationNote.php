@@ -43,6 +43,7 @@ class ApplicationNote extends Model
     public const SUBMITTED_ORIGIN = 'submitted_origin';
     public const SUBMITTED_POWERSHOP = 'submitted_powershop';
     public const MRI_IDENTIFICATION = 'mri_identification';
+    public const ASSIGN_USER = 'assign_user';
 
     public const NOTETYPE = [
         'escalated' => self::ESCALATED,
@@ -53,6 +54,7 @@ class ApplicationNote extends Model
         'submitted_origin' => self::SUBMITTED_ORIGIN,
         'submitted_powershop' => self::SUBMITTED_POWERSHOP,
         'mri_identification' => self::MRI_IDENTIFICATION,
+        'assign_user' => self::ASSIGN_USER,
     ];
 
     public const NOTESUBMIT = [
@@ -75,7 +77,8 @@ class ApplicationNote extends Model
         'type',
         'user_role',
         'connection_details',
-        'plan_details'
+        'plan_details',
+        'additional_data'
     ];
 
     /**
