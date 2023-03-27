@@ -3,6 +3,8 @@
 namespace App\Services\Agency;
 
 use App\Models\ApplicationNote;
+use App\Models\ConnectionApplication;
+use App\Models\HoodProfile;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,5 +44,41 @@ class ApplicationNoteService
             $note['title'] = $note['type'];
         }
         return ApplicationNote::create($note);
+    }
+
+    /**
+     * Creating an assign user note.
+     * If assign happen automatically CreatedBy will be 'system'.
+     *
+     */
+    public static function createChatbotAssingNote(int $appId, string $assignUserName, ?string $text = null, array $data = []): void
+    {
+//        return ApplicationNote::create($note);
+        $createdBy = auth()->id() ?? null;
+        $title = 'Assigned to ' . $assignUserName;
+        $roleText = null;
+        $data['name'] = 'System';
+
+        if ($createdBy) {
+            /** @var HoodProfile $hoodUser */
+            $hoodUser = auth()->user()->profile;
+            $role = auth()->user()->roles[0]['name'] ?? '';
+
+            $roleText = ucwords(array_reduce(explode('_', $role), fn($carry, $part) => $carry ? "$carry $part" : $part));
+            $name = "{$hoodUser->first_name} $hoodUser->last_name";
+
+            $data = array_merge($data, ['name' => $name, 'role_formatted' => $roleText]);
+        }
+
+
+        ApplicationNote::create([
+            'connection_application_id' => $appId,
+            'created_by' => $createdBy,
+            'text' => $text,
+            'title' => $title,
+            'type' => ApplicationNote::ASSIGN_USER,
+            'user_role' => $roleText,
+            'additional_data' => json_encode($data)
+        ]);
     }
 }
