@@ -211,10 +211,15 @@ class ValidateCreateLeadRequest extends FormRequest
         foreach ($fields as $field) {
             $keys = explode('.', $field);
             $ref = &$requestData;
+            $skip = false;
             while ($key = array_shift($keys)) {
+                if (!isset($ref[$key])) {
+                    $skip = true;
+                    break;
+                }
                 $ref = &$ref[$key];
             }
-            if (!empty($ref)) {
+            if (!$skip && !empty($ref)) {
                 $ref = is_array($ref) ? array_map($type, $ref) : $type((string)$ref);
             }
         }
