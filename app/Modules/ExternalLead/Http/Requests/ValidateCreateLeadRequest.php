@@ -114,11 +114,11 @@ class ValidateCreateLeadRequest extends FormRequest
             'utility_services.*' =>  Rule::in("gas", 'power', 'water', 'internet'),
 
             'primary_account.identification.type' => ['required', Rule::in(['medicare', 'passport', 'driver_license'])],
-            'primary_account.identification.number' => 'required|ascii',
+            'primary_account.identification.number' => 'required|string',
             'primary_account.identification.state' => ['required_if:primary_account.identification.type,driver_license', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
             'primary_account.identification.country' => 'required_if:primary_account.identification.type,passport|string',
             'primary_account.identification.medicare_card_color' => ['required_if:primary_account.identification.type,medicare', Rule::in(['yellow', 'green', 'blue'])],
-            'primary_account.identification.medicare_reference_number' => 'required_if:primary_account.identification.type,medicare|ascii',
+            'primary_account.identification.medicare_reference_number' => 'required_if:primary_account.identification.type,medicare|numeric',
             'primary_account.identification.expire_date' => 'required|date_format:Y-m-d',
 
             'secondary_account.title' => ['required_with:secondary_account', Rule::in(['mr', 'ms', 'mrs', 'miss', 'dr'])],
@@ -130,11 +130,11 @@ class ValidateCreateLeadRequest extends FormRequest
             'secondary_account.permission_type' => ['required_with:secondary_account', Rule::in(array_keys(AuthorizedPerson::ROLE_TYPE_MAPPER))],
 
             'secondary_account.identification.type' => ['required_with:secondary_account.identification', Rule::in(['medicare', 'passport', 'driver_license'])],
-            'secondary_account.identification.number' => 'required_with:secondary_account.identification|ascii',
+            'secondary_account.identification.number' => 'required_with:secondary_account.identification|string',
             'secondary_account.identification.state' => ['required_if:secondary_account.identification.type,driver_license', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
             'secondary_account.identification.country' => 'required_if:secondary_account.identification.type,passport|string',
             'secondary_account.identification.medicare_card_color' => ['required_if:secondary_account.identification.type,medicare', Rule::in(['yellow', 'green', 'blue'])],
-            'secondary_account.identification.medicare_reference_number' => 'required_if:secondary_account.identification.type,medicare|ascii',
+            'secondary_account.identification.medicare_reference_number' => 'required_if:secondary_account.identification.type,medicare|numeric',
             'secondary_account.identification.expire_date' => 'required_with:secondary_account.identification|date_format:Y-m-d',
 
             'connection_details.tenancy_type' => ['required', Rule::in(['renter', 'home_owner'])],
