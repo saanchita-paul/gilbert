@@ -28,7 +28,7 @@ class UploadClickConversionCommand extends Command
         $fetchGCLService = new FetchGCLService();
         $applications = $fetchGCLService->fetchConnectionApplications();
         $fetchGCLService->fetchGclId($applications);
-        $fetchGCLService->uploadClickConversion();
+//        $fetchGCLService->uploadClickConversion();
         return 0;
     }
 }

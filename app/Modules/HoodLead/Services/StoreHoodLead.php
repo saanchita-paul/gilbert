@@ -141,7 +141,7 @@ class StoreHoodLead
         //saving click conversion per connection application
         $clickConversion = new ClickConversion([
             "connection_application_id" => $app->id,
-            "gcl_id" => $this->requestData['properties']["gcl_id"] ?? null
+            "gcl_id" => $this->requestData['properties']["hs_google_click_id"]['value'] ?? null
         ]);
         $clickConversion->save();
 
