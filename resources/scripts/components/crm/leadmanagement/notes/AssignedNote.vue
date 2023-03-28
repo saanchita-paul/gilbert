@@ -1,8 +1,8 @@
 <template>
     <v-card class="elevation-2 timeline-card" color="gray" :class="{active:false}">
         <p class="title">{{ note.title }}</p>
-        <p>{{ assigned_at }}</p>
-        <p>by [{{ note.user_role }}]</p>
+        <p>{{ note.created_at }}</p>
+        <p v-if="by">{{ by }}</p>
     </v-card>
 </template>
 
@@ -19,8 +19,13 @@ export default {
         }
     },
     computed: {
-        assigned_at() {
-            return new DayJs(this.note.text).format(DATE_FORMAT.NOTE_TIME);
+        by() {
+            if(this.note.additional_data?.name) {
+                return this.note.additional_data?.role_formatted ?
+                    `by [${this.note.additional_data?.name}] [${this.note.additional_data?.role_formatted}]`
+                    : `by [${this.note.additional_data?.name}]`
+            }
+            return null
         }
     }
 }
