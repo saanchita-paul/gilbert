@@ -239,7 +239,7 @@
                         $ {{ planDetails.connection_fees.gas }} <small>(Incl. GST)</small>
                         <!-- <v-icon small> mdi mdi-alert-circle</v-icon> -->
                     </p>
-                    <p v-if="planDetails.distributor_name.gas === 'Envestra VIC'" class="move-in-text mb-2">
+                    <p v-if="planDetails.distributor_name.gas === 'Envestra VIC'" class="line-height-18t mb-2">
                         The connection fee for your gas is up to $15.07 including GST, which will appear on your first bill.
                     </p>
                     <p v-if="isPlanHasElectricity" class="mb-2"><span class="font-weight-bold">Electricity Connection Fee: </span>
@@ -435,8 +435,7 @@ export default {
     background: #FFFFFF;
 }
 
-.move-in-text {
+.line-height-18 {
     line-height: 18px;
-    color: #03A9F4;
 }
 </style>
