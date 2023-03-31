@@ -436,9 +436,6 @@ export default {
 }
 
 .move-in-text {
-    font-style: normal;
-    font-weight: 400;
-    font-size: 14px;
     line-height: 18px;
     color: #03A9F4;
 }
