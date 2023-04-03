@@ -3,7 +3,7 @@
 namespace ExternalLead\Services;
 
 use App\Models\ExternalSource;
-use ExternalLead\Models\TApp;
+use ExternalLead\Models\ExternalLeadApiLog;
 
 class CreateLeadService
 {
@@ -15,7 +15,7 @@ class CreateLeadService
         $newAppService = new CreateAppService();
         $newApp = $newAppService->create($externalSource, $data);
 
-        $dump = TApp::findOrFail($data['dump_id']);
+        $dump = ExternalLeadApiLog::findOrFail($data['dump_id']);
         $dump->connection_application_id = $newApp->id;
         $dump->agency_name = $newApp->agency->name ?? null;
         $dump->save();

@@ -9,9 +9,8 @@ use Illuminate\Validation\Rule;
 use App\Services\Utility\StateMapService;
 use ExternalLead\Services\SaveRawData;
 use App\Models\ConnectionApplicationSecondaryACC as AuthorizedPerson;
-use ExternalLead\Models\TApp;
+use ExternalLead\Models\ExternalLeadApiLog;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
 
 class ValidateCreateLeadRequest extends FormRequest
@@ -38,7 +37,7 @@ class ValidateCreateLeadRequest extends FormRequest
         'billing_address.state'
     ];
 
-    private TApp $dump;
+    private ExternalLeadApiLog $dump;
 
 
     /**
@@ -92,13 +91,15 @@ class ValidateCreateLeadRequest extends FormRequest
 
     private function getRules(): array
     {
+        $dump = $this->dump;
         return [
             'lead_reference' => [
                 'required',
                 'string',
-                Rule::unique('t_app', 'lead_id')
-                    ->where(static function ($query) {
-                        return $query->whereNotNull('connection_application_id');
+                Rule::unique('external_lead_api_logs', 'lead_id')
+                    ->where(static function ($query) use ($dump) {
+                        return $query->whereNotNull('connection_application_id')
+                                    ->where('external_source_id', $dump->external_source_id);
                     }),
             ],
             'primary_account.title' => ['required', Rule::in(['mr', 'ms', 'mrs', 'miss', 'dr'])],

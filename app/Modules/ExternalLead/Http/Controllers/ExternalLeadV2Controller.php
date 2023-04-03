@@ -14,7 +14,7 @@ use ExternalLead\Services\CreateLeadService;
 use ExternalLead\Services\CreateExternalSourceService;
 use App\Models\Office;
 use Exception;
-use ExternalLead\Models\TApp;
+use ExternalLead\Models\ExternalLeadApiLog;
 
 class ExternalLeadV2Controller extends Controller
 {
@@ -66,7 +66,7 @@ class ExternalLeadV2Controller extends Controller
                 "status" => "fail",
                 "message" => 'An error has occured. Please contact Hood for support'
             ];
-            $dump = TApp::find($request->input('dump_id'));
+            $dump = ExternalLeadApiLog::find($request->input('dump_id'));
             if ($dump) {
                 $dump->exception_log = json_encode($exceptionArray);
                 $dump->save();

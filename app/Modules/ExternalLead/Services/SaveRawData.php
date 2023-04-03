@@ -2,18 +2,18 @@
 
 namespace ExternalLead\Services;
 
-use ExternalLead\Models\TApp;
+use ExternalLead\Models\ExternalLeadApiLog;
 
 class SaveRawData
 {
     /** save all fields to dump
      * @param int externalLeadId
      * @param array data
-     * @return TApp
+     * @return ExternalLeadApiLog
      */
-    public static function dump(int $externalSourceId, array $data): TApp
+    public static function dump(int $externalSourceId, array $data): ExternalLeadApiLog
     {
-        $newDump = new TApp();
+        $newDump = new ExternalLeadApiLog();
         $newDump->lead_id = $data['lead_reference'] ?? null;
         $newDump->all_fields_dump = json_encode($data);
         $newDump->external_source_id = $externalSourceId;
