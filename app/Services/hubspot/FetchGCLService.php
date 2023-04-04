@@ -119,6 +119,7 @@ class FetchGCLService {
                 [
                     "gcl_id" => $gclID,
                     "last_checked" => Carbon::now(),
+                    "generated_from_creation" => ClickConversion::GENERATED_FROM_CREATION_FALSE
                 ]
             );
         }
@@ -169,7 +170,8 @@ class FetchGCLService {
         ClickConversion::create([
            "connection_application_id" => $appID,
             "gcl_id" => $gclID,
-            "last_checked" => Carbon::now()
+            "last_checked" => Carbon::now(),
+            "generated_from_creation" => ClickConversion::GENERATED_FROM_CREATION_FALSE
         ]);
     }
 

@@ -14,6 +14,8 @@ class ClickConversion extends Model
     public const IS_UPLOADED_CLICK_FALSE = 0;
     public const IS_UPLOADED_CLICK_TRUE = 1;
 
+    public const GENERATED_FROM_CREATION_FALSE = 0;
+
     public function connectionApplication(): BelongsTo {
         return $this->belongsTo(ConnectionApplication::class);
     }
