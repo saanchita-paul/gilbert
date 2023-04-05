@@ -552,7 +552,7 @@
             <v-text-field
               @input="updateLeads"
               v-model="property_details.nmi"
-              @blur="saveDraft('nmi', property_details.nmi)"
+              @change="saveDraft('nmi', property_details.nmi)"
               outlined
               dense
               hide-details="auto"
@@ -595,7 +595,7 @@
                     <v-text-field
                         @input="updateLeads"
                         v-model="property_details.nmi"
-                        @blur="saveDraft('nmi', property_details.nmi)"
+                        @change="saveDraft('nmi', property_details.nmi)"
                         outlined
                         dense
                         hide-details="auto"
@@ -681,7 +681,7 @@
                     <v-text-field
                         @input="updateLeads"
                         v-model="property_details.mirn"
-                        @blur="saveDraft('mirn', property_details.mirn)"
+                        @change="saveDraft('mirn', property_details.mirn)"
                         outlined
                         dense
                         hide-details="auto"

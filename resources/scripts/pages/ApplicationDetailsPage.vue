@@ -484,16 +484,21 @@ export default {
             this.leadSummary[field] = value;
             await this.updateAfterHourFlagMovingDate(field, value)
 
-            if (this.laravelEcho) {
-                this.laravelEcho.disconnect();
-                this.laravelEcho = null;
-            }
-            this.laravelEcho = echo();
-            this.listenEmbeddedNetworkEvent();
+            this.onNMIUpdateManually(field);
         },
         async updateAfterHourFlagMovingDate(field, value) {
             if (field === 'moving_date' || field === 'service_interests') {
                 await this.getElectricityDistributor();
+            }
+        },
+        onNMIUpdateManually(field) {
+            if (field === 'nmi') {
+                if (this.laravelEcho) {
+                    this.laravelEcho.disconnect();
+                    this.laravelEcho = null;
+                }
+                this.laravelEcho = echo();
+                this.listenEmbeddedNetworkEvent();
             }
         },
         /*async updateMernNmi() {
@@ -588,7 +593,6 @@ export default {
                 });
         },
         listenEmbeddedNetworkEvent() {
-            console.log('listenEmbeddedNetworkEvent');
             const echo = this.laravelEcho;
             echo.channel(`fetchEmbeddedNetwork.${this.leadSummary.id}`)
                 .listen('FetchEmbeddedNetworkEvent', async (res) => {
