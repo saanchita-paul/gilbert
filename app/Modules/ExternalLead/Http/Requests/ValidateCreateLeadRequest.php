@@ -4,7 +4,6 @@ namespace ExternalLead\Http\Requests;
 
 use App\Models\ConnectionApplication;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\ExternalSource;
 use Illuminate\Validation\Rule;
 use App\Services\Utility\StateMapService;
 use ExternalLead\Services\SaveRawData;
@@ -182,13 +181,11 @@ class ValidateCreateLeadRequest extends FormRequest
     protected function prepareForValidation()
     {
         $requestData = $this->all();
+        $dumpId = $requestData['dump_id'];
+        $this->dump = ExternalLeadApiLog::find($dumpId);
         info('External Lead: Raw Request Data', $requestData);
         $this->changeCase($requestData, 'strtolower', self::TOLOWERCASE);
         $this->changeCase($requestData, 'strtoupper', self::TOUPPERCASE);
-        $username = $requestData['username'];
-        $selectedSource = ExternalSource::where('email', $username)->firstOrFail();
-        $this->dump = SaveRawData::dump($selectedSource->id, $requestData);
-        $requestData['dump_id'] = $this->dump->id;
         $this->replace($requestData);
     }
 
