@@ -44,4 +44,9 @@ class MriAgent extends Model
         return explode(',', $this->roles);
     }
 
+    public function mriLog()
+    {
+        return $this->belongsTo(MriLog::class);
+    }
+
 }

@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use App\Models\MriApplication;
 use Illuminate\Support\Carbon;
+use MRI\Services\LogService;
 
 class GetTaggedTenanciesService
 {
@@ -50,6 +51,11 @@ class GetTaggedTenanciesService
      */
     public HandleExceptionService $exceptionHandler;
 
+    /**
+     * @var LogService
+     */
+    public LogService $logService;
+
     public function __construct()
     {
         $this->setURL();
@@ -57,6 +63,7 @@ class GetTaggedTenanciesService
         $this->pageSize = !empty(config('mri.get_tenancies_page_size')) ? config('mri.get_tenancies_page_size') : self::PAGE_SIZE;
         $this->tagGroupName = !empty(config('mri.hood_tag_group_name')) ? config('mri.hood_tag_group_name') : self::TAG_GROUP_NAME;
         $this->tagName = !empty(config('mri.hood_tag_name')) ? config('mri.hood_tag_name') : self::TAG_NAME;
+        $this->logService = new LogService();
     }
 
     public function setOfficeId(int $officeId)
@@ -81,12 +88,14 @@ class GetTaggedTenanciesService
     private function runAPI($token, $pageNo = 1)
     {
         $this->setToken($token);
+        $headers = [
+            'content-type' => 'application/json',
+            'accept' => 'application/json',
+            'authorization' => 'Bearer ' . $this->accessToken
+        ];
+
         $client = new Client([
-            'headers' => [
-                'content-type' => 'application/json',
-                'accept' => 'application/json',
-                'authorization' => 'Bearer ' . $this->accessToken
-            ],
+            'headers' => $headers,
         ]);
 
         $query = [
@@ -112,7 +121,15 @@ class GetTaggedTenanciesService
             'json' => $body
         ];
 
+        $this->logService->create(get_class($this), $this->url, [
+            'request_header' => json_encode($headers),
+            'request_query' => json_encode($query),
+            'request_body' => json_encode($body)
+        ]);
+
         $response = $client->request('POST', $this->url, $options);
+
+        $this->logService->update($response);
 
         $data = json_decode($response->getBody()->getContents(), true);
 
@@ -139,14 +156,15 @@ class GetTaggedTenanciesService
 
     public function run()
     {
+        $mriOffices = (new GetOfficeService())->getMriOffices(true, $this->officeId ?? null);
         try {
-            $mriOffices = (new GetOfficeService())->getMriOffices(true, $this->officeId ?? null);
             foreach ($mriOffices as $office) {
                 $token = $office->key;
                 $tenancies = $this->getTaggedTenancies($token);
                 $this->saveMriApplications($tenancies, $office);
             }
         } catch (RequestException $e) {
+            $this->logService->update($e->getResponse());
             $this->exceptionHandler->addException($e);
         } catch (\Exception $e) {
             $this->exceptionHandler->addException($e);
@@ -170,6 +188,7 @@ class GetTaggedTenanciesService
             try {
                 $mriApp = MriApplication::firstOrNew(['tenancy_id' => $tenancy['id']]);
 
+                $mriApp->mri_log_id = $this->logService->getLogId();
                 $mriApp->mri_office_id = $mriOffice->id;
                 $mriApp->tenancy_id = $tenancy['id'];
                 $mriApp->name = $tenancy['name'];
