@@ -17,29 +17,6 @@ class GetConversationDetailService
         $this->token = $this->getAccessToken();
     }
 
-    private function getAccessToken()
-    {
-        $url = config('genesys.token_url');
-        $query = [
-            "grant_type" => "client_credentials",
-            "client_id" => config('genesys.client_id'),
-            "client_secret" => config('genesys.client_secret')
-        ];
-        $options = [
-            "query" => $query
-        ];
-
-        $client = new Client();
-
-        $response = $client->request("POST", $url, $options);
-
-        $data = json_decode($response->getBody()->getContents(), true);
-
-        $token = $data["access_token"];
-
-        return $token;
-    }
-
     /**
      * Get Conversation Details filter by customer phone number
      */
@@ -74,9 +51,9 @@ class GetConversationDetailService
     }
 
     /**
-     * Get Conversation Details filter by HOOD number for testing bulk response data
+     * Get Conversation Details filter by call center number for testing bulk response data
      */
-    public function filterByHoodPhone()
+    public function filterByCallCenterPhone()
     {
         $predicates = [];
         foreach (config('genesys.call_center_numbers') as $num) {
@@ -102,6 +79,29 @@ class GetConversationDetailService
         ];
 
         return $this->run($body);
+    }
+
+    private function getAccessToken()
+    {
+        $url = config('genesys.token_url');
+        $query = [
+            "grant_type" => "client_credentials",
+            "client_id" => config('genesys.client_id'),
+            "client_secret" => config('genesys.client_secret')
+        ];
+        $options = [
+            "query" => $query
+        ];
+
+        $client = new Client();
+
+        $response = $client->request("POST", $url, $options);
+
+        $data = json_decode($response->getBody()->getContents(), true);
+
+        $token = $data["access_token"];
+
+        return $token;
     }
 
     private function run(array $body)

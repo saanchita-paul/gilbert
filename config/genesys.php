@@ -9,6 +9,7 @@ return [
         'detail_conversation' => "/api/v2/analytics/conversations/details/query",
     ],
     'call_center_numbers' => [
-        '61398525700'
+        '61398525700',
+        '61398525701',
     ],
 ];
