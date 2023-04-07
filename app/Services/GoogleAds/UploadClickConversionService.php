@@ -27,10 +27,11 @@ class UploadClickConversionService {
     {
         $this->customerID = config('google_ads.customer_id');
         $this->conversionActionID = config('google_ads.conversion_action_id');
-        $this->conversionDateTime = config('google_ads.conversion_date_time');
-        $this->conversionValue = config('google_ads.conversion_value');
-        $this->iniFilePath = config('google_ads.ads_credentials_file');
-//        $this->iniFilePath = "/home/shihab/www/src/gilbert/google_ads_php.ini";
+        $this->conversionDateTime = '2023-04-06 19:32:45-05:00';
+        $this->conversionValue = '200';
+//        $this->iniFilePath = config('google_ads.ads_credentials_file');
+        $this->iniFilePath = "/home/lnn/www/src/gbert/google_ads_php.ini";
+
 
         $this->buildOAuth2Token();
         $this->buildGoogleClient();

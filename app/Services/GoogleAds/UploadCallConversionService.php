@@ -17,7 +17,7 @@ use Illuminate\Http\Client\Request;
 class UploadCallConversionService {
 
     protected  $oAuth2Credential;
-    protected  $googleAdsClient;
+    protected GoogleAdsClient   $googleAdsClient;
     protected string $customerID;
     protected string $conversionActionID;
     protected string $conversionDateTime;
@@ -32,8 +32,8 @@ class UploadCallConversionService {
 //        $this->conversionDateTime = config('google_ads.conversion_date_time');
         $this->conversionDateTime = '2022-01-01 19:32:45-05:00';
         $this->conversionValue = config('google_ads.conversion_value');
-        $this->iniFilePath = config('google_ads.ads_credentials_file');
-//        $this->iniFilePath = "/home/shihab/www/src/gilbert/google_ads_php.ini";
+//        $this->iniFilePath = config('google_ads.ads_credentials_file');
+        $this->iniFilePath = "/home/lnn/www/src/gbert/google_ads_php.ini";
 
         $this->buildOAuth2Token();
         $this->buildGoogleClient();
