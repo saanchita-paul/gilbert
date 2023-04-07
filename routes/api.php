@@ -425,6 +425,12 @@ Route::post('/upload-click', function (Request $request){
 });
 //upload click by sending gcl_id only
 Route::post('/upload-call', function (Request $request){
-    $clickConversionService = new \App\Services\GoogleAds\UploadClickConversionService();
+    $clickConversionService = new \App\Services\GoogleAds\UploadCallConversionService();
     return $clickConversionService->uploadCall();
+});
+
+
+Route::get('/genesys', function (Request $request){
+    $s = new \App\Services\Genesys\GetConversationDetailService();
+    return $s->searchByPhones([['id' => 1, 'phone' => '0409988656']]);
 });

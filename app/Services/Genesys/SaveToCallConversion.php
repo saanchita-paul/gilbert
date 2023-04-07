@@ -1,0 +1,106 @@
+<?php
+
+namespace App\Services\Genesys;
+
+use App\Models\CallConversion;
+use App\Models\ConnectionApplication;
+use Illuminate\Database\Eloquent\Builder;
+
+class SaveToCallConversion
+{
+    private array $phoneMap = [];
+
+    public function start()
+    {
+        $phones = $this->formatPhones($this->getApplications());
+
+        $conversions = (new GetConversationDetailService())->searchByPhones($phones);
+
+        CallConversion::query()->insert($this->mapData($conversions));
+
+        $this->savedFetchFailed();
+    }
+
+    private function formatPhones(array $apps): array
+    {
+        $phones = [];
+        foreach ($apps as $app) {
+            $phone = GetConversationDetailService::formatPhoneNumber($app['phone']);
+            $this->phoneMap[$phone] = $app['id'];
+            $phones[] = $phone;
+        }
+
+        return $phones;
+    }
+
+    /**
+     * @return array
+     */
+    private function getApplications(): array
+    {
+        return ConnectionApplication::query()
+            ->where('office_id', config('genesys.office_id'))
+            ->where(function (Builder $builder) {
+                $builder->whereHas('callConversion', function (Builder $conv) {
+                    $conv->whereNull('call_start_at');
+                })->orWhereDoesntHave('callConversion');
+            })
+            ->select(['id', 'phone'])
+            ->get()
+            ->toArray();
+    }
+
+
+    private function mapData(array $data): array
+    {
+        if (!array_key_exists('conversations', $data)) {
+            return [];
+        }
+
+        $return = [];
+        $conversations = $data['conversations'] ?? [];
+
+        foreach ($conversations as $conv) {
+            try {
+                if (!$session = $conv['participants'][0]['sessions'][0] ?? null) {
+                    throw new \Exception("Session not found: conv ID: {$conv['conversationId']}");
+                }
+                $ani = $session['ani'] ?? null;
+                if (isset($this->phoneMap[$ani])) {
+                    $return[] = [
+                        'caller_id' => $ani,
+                        'call_start_at' => $conv['conversationStart'] ?? null, #todo: parse date
+                        'call_end_at' => $conv['conversationEnd'] ?? null,  #todo: parse date
+                        'connection_application_id' => $this->phoneMap[$ani],
+                        'status' => CallConversion::STATUS_FETCHED,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+
+                    unset($this->phoneMap[$ani]);
+                }
+            } catch (\Exception $e) {
+                \Log::error('GetConversationDetailService.formatResponseData: ' . $e->getMessage());
+                continue;
+            }
+        }
+
+        return $return;
+    }
+
+    private function savedFetchFailed(): void
+    {
+        $failed = [];
+        foreach (array_keys($this->phoneMap) as $callerId) {
+            $failed[] = [
+                'caller_id' => $callerId,
+                'connection_application_id' => $this->phoneMap[$callerId],
+                'status' => CallConversion::STATUS_FETCH_FAILED,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        CallConversion::query()->insert($failed);
+    }
+}
