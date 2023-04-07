@@ -423,3 +423,8 @@ Route::post('/upload-click', function (Request $request){
     $clickConversionService = new \App\Services\GoogleAds\UploadClickConversionService();
     return $clickConversionService->uploadClick($request->gcl_id);
 });
+//upload click by sending gcl_id only
+Route::post('/upload-call', function (Request $request){
+    $clickConversionService = new \App\Services\GoogleAds\UploadClickConversionService();
+    return $clickConversionService->uploadCall();
+});
