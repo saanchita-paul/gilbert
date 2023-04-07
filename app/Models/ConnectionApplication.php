@@ -752,4 +752,9 @@ class ConnectionApplication extends Model
     {
         return $this->hasOne(ClickConversion::class, 'connection_application_id');
     }
+
+    public function callConversion(): HasOne
+    {
+        return $this->hasOne(CallConversion::class, 'connection_application_id');
+    }
 }

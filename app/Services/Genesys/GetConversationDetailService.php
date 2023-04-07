@@ -10,14 +10,15 @@ use Illuminate\Support\Carbon;
 class GetConversationDetailService
 {
     public const DEFAULT_PAGE_SIZE = 25;
+    public int $maxPredicate;
 
     private string $token;
-    private array $output;
-    private array $aniMap;
+
 
     public function __construct()
     {
         $this->token = $this->getAccessToken();
+        $this->maxPredicate = config('genesys.max_predicate');
     }
 
     public static function formatPhoneNumber(?string $phoneNumber): ?string
@@ -28,29 +29,46 @@ class GetConversationDetailService
     /**
      * Get Conversation Details filter by customer phone number
      */
-
-
-    public function searchByPhones(array $apps)
+    public function searchByPhones(array $phones): array
     {
-        $body = $this->buildPayloadWithPhones($apps);
+        $bodies = $this->buildRequestsBody($phones);
+        $results = [];
 
-        return $this->run($body);
+        foreach ($bodies as $body) {
+            $results = array_merge($results, $this->run($body));
+        }
+
+        return $results;
     }
 
-    private function buildPayloadWithPhones(array $apps): array
+    /**
+     * Formatting payload with phone number
+     */
+    private function buildRequestsBody(array $phones): array
     {
-        foreach ($apps as $app) {
-            $phone = $this->formatPhoneNumber($app['phone']);
-            $this->aniMap[$phone] = [
-                'caller_id' => $phone,
-                'connection_application_id' => $app['id']
-            ];
+        $predicates = [];
+        $bodies = [];
+
+        foreach ($phones as $phone) {
             $predicates[] = [
                 "dimension" => "ani",
                 "operator" => "matches",
                 "value" => $phone
             ];
+
+            if (sizeof($predicates) === $this->maxPredicate) {
+                $bodies[] = $this->getBody($predicates);
+                $predicates = [];
+            }
         }
+
+        $bodies[] = $this->getBody($predicates);
+
+        return $bodies;
+    }
+
+    private function getBody(array $predicates): array
+    {
         return [
             "interval" => "2023-03-07T00:00:00/2023-04-06T23:59:59", // startDateEndTime/startEndDateTime
             "paging" => [
@@ -141,42 +159,10 @@ class GetConversationDetailService
 
         try {
             $response = $client->request("POST", $url, $options);
-            $data = json_decode($response->getBody()->getContents(), true);
-            return $this->formatResponseData($data);
+            return json_decode($response->getBody()->getContents(), true);
         } catch (\Exception $e) {
             \Log::error("GetConversationDetailService: api call failed: {$e->getMessage()}");
             return [];
         }
-    }
-
-    private function formatResponseData(array $data): array
-    {
-        if (!array_key_exists('conversations', $data)) {
-            return [];
-        }
-
-        $return = [];
-        $conversations = $data['conversations'];
-
-        foreach ($conversations as $conv) {
-            try {
-                if (!$session = $conv['participants'][0]['sessions'][0] ?? null) {
-                    throw new \Exception("Session not found: conv ID: {$conv['conversationId']}");
-                }
-
-                $ani = $session['ani'] ?? null;
-
-                $return[] = [
-                    'caller_id' => $ani,
-                    'call_start_at' => $conv['conversationStart'] ?? null,
-                    'call_send_at' => $conv['conversationEnd'] ?? null,
-                ];
-            } catch (\Exception $e) {
-                \Log::error('GetConversationDetailService.formatResponseData: ' . $e->getMessage());
-                continue;
-            }
-        }
-
-        return $return;
     }
 }

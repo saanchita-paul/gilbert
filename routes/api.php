@@ -431,6 +431,6 @@ Route::post('/upload-call', function (Request $request){
 
 
 Route::get('/genesys', function (Request $request){
-    $s = new \App\Services\Genesys\GetConversationDetailService();
-    return $s->searchByPhones([['id' => 1, 'phone' => '0409988656']]);
+    $s = new \App\Services\Genesys\SaveCallConversion();
+    $s->start();
 });

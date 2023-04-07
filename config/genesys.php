@@ -2,6 +2,7 @@
 
 return [
     'token_url' => env('GENESYS_TOKEN_URL', 'https://login.mypurecloud.com.au/oauth/token'),
+    'max_predicate' => env('GENESYS_MAX_PREDICATE', 50),
     'base_url' => env('GENESYS_BASE_URL', "https://api.mypurecloud.com.au"),
     'client_id' => env('GENESYS_CLIENT_ID', "f8cee49c-9a4f-4ed3-8afe-8be7173ad45d"),
     'client_secret' => env('GENESYS_CLIENT_SECRET', "SJZfiO5pNVm_rIa7Yp_wcabpNWqgQTdR8tjOXuaz6ZE"),

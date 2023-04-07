@@ -4,9 +4,10 @@ namespace App\Services\Genesys;
 
 use App\Models\CallConversion;
 use App\Models\ConnectionApplication;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
-class SaveToCallConversion
+class SaveCallConversion
 {
     private array $phoneMap = [];
 
@@ -16,9 +17,13 @@ class SaveToCallConversion
 
         $conversions = (new GetConversationDetailService())->searchByPhones($phones);
 
+
         CallConversion::query()->insert($this->mapData($conversions));
 
         $this->savedFetchFailed();
+
+        info("genesys data", ['phones' => $phones, 'response' => $conversions, 'failed' => $this->phoneMap]);
+
     }
 
     private function formatPhones(array $apps): array
@@ -46,6 +51,8 @@ class SaveToCallConversion
                 })->orWhereDoesntHave('callConversion');
             })
             ->select(['id', 'phone'])
+            ->orderBy('id', 'desc')
+//            ->limit(300)
             ->get()
             ->toArray();
     }
@@ -58,6 +65,7 @@ class SaveToCallConversion
         }
 
         $return = [];
+
         $conversations = $data['conversations'] ?? [];
 
         foreach ($conversations as $conv) {
@@ -69,8 +77,8 @@ class SaveToCallConversion
                 if (isset($this->phoneMap[$ani])) {
                     $return[] = [
                         'caller_id' => $ani,
-                        'call_start_at' => $conv['conversationStart'] ?? null, #todo: parse date
-                        'call_end_at' => $conv['conversationEnd'] ?? null,  #todo: parse date
+                        'call_start_at' => $conv['conversationStart'] ? Carbon::parse($conv['conversationStart']) : null,
+                        'call_end_at' => $conv['conversationEnd'] ? Carbon::parse($conv['conversationEnd']) : null,
                         'connection_application_id' => $this->phoneMap[$ani],
                         'status' => CallConversion::STATUS_FETCHED,
                         'created_at' => now(),
