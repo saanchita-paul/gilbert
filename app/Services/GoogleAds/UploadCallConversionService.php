@@ -7,6 +7,8 @@ use Google\Ads\GoogleAds\Lib\V13\GoogleAdsClient;
 use Google\Ads\GoogleAds\Lib\OAuth2TokenBuilder;
 use Google\Ads\GoogleAds\Lib\V13\GoogleAdsClientBuilder;
 use Google\Ads\GoogleAds\Util\V13\ResourceNames;
+use Google\Ads\GoogleAds\V13\Services\CallConversion;
+use Google\Ads\GoogleAds\V13\Services\CallConversionResult;
 use Google\Ads\GoogleAds\V13\Services\ClickConversion AS ClickConversionCore;
 use Google\Ads\GoogleAds\V13\Services\CustomVariable;
 use Google\ApiCore\ApiException;
@@ -52,54 +54,60 @@ class UploadCallConversionService {
             ->build();
     }
 
-    public function uploadClick($gclId): bool {
-        if (empty($gclId)) {
-            throw new \UnexpectedValueException(
-                "GCL_ID is needed but not provided"
-            );
-        }
-
-        $clickConversion = new ClickConversionCore([
-            'conversion_action' => ResourceNames::forConversionAction($this->customerID, $this->conversionActionID),
+    public function uploadCall(): bool
+    {
+        // Creates a call conversion by specifying currency as USD.
+        $callConversion = new CallConversion([
+            'conversion_action' =>
+                ResourceNames::forConversionAction($this->customerID, $this->conversionActionID),
+            'caller_id' => 'tel:+61411858473',
+            'call_start_date_time' => now()->addDays(-5)->toDateTimeString(),
+            'conversion_date_time' => now()->toDateTimeString(),
             'conversion_value' => $this->conversionValue,
-            'conversion_date_time' => $this->conversionDateTime,
             'currency_code' => 'USD'
         ]);
+//        if (!is_null($conversionCustomVariableId) && !is_null($conversionCustomVariableValue)) {
+//            $callConversion->setCustomVariables([new CustomVariable([
+//                'conversion_custom_variable' => ResourceNames::forConversionCustomVariable(
+//                    $customerId,
+//                    $conversionCustomVariableId
+//                ),
+//                'value' => $conversionCustomVariableValue
+//            ])]);
+//        }
 
-        // Sets the single specified ID field.
-        $clickConversion->setGclid($gclId);
-
-        // Issues a request to upload the click conversion.
+        // Issues a request to upload the call conversion.
         $conversionUploadServiceClient = $this->googleAdsClient->getConversionUploadServiceClient();
-        $response = $conversionUploadServiceClient->uploadClickConversions(
+        $response = $conversionUploadServiceClient->uploadCallConversions(
             $this->customerID,
-            [$clickConversion],
+            [$callConversion],
             true
         );
 
         // Prints the status message if any partial failure error is returned.
         // Note: The details of each partial failure error are not printed here, you can refer to
+        // the example HandlePartialFailure.php to learn more.
         if ($response->hasPartialFailureError()) {
             printf(
                 "Partial failures occurred: '%s'.%s",
                 $response->getPartialFailureError()->getMessage(),
                 PHP_EOL
             );
-            return false;
         } else {
             // Prints the result if exists.
-            $uploadedClickConversion = $response->getResults()[0];
+            /** @var CallConversionResult $uploadedCallConversion */
+            $uploadedCallConversion = $response->getResults()[0];
             printf(
-                "Uploaded click conversion that occurred at '%s' from Google Click ID '%s' " .
-                "to '%s'.%s",
-                $uploadedClickConversion->getConversionDateTime(),
-                $uploadedClickConversion->getGclid(),
-                $uploadedClickConversion->getConversionAction(),
+                "Uploaded call conversion that occurred at '%s' for caller ID '%s' to the "
+                . "conversion action with resource name '%s'.%s",
+                $uploadedCallConversion->getCallStartDateTime(),
+                $uploadedCallConversion->getCallerId(),
+                $uploadedCallConversion->getConversionAction(),
                 PHP_EOL
             );
-            return true;
         }
 
+        return true;
 
     }
 
