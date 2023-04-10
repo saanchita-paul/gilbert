@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services\GoogleAds;
+namespace GoogleAds\Services;
 
 use App\Models\CallConversion;
 use Exception;
 
-class UploadCallConversion
+class ManageCallConversion
 {
 
     private array $calls;
@@ -23,7 +23,7 @@ class UploadCallConversion
      */
     public function run(): void
     {
-        $service = new UploadCallConversionService();
+        $service = new UploadCallConversionAPI();
         $res = $service->setCallConversions($this->calls)->uploadCall();
 
         $this->updateUploadedAt($res);

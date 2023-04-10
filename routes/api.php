@@ -7,29 +7,30 @@ use App\Http\Controllers\Agency\ApplicationCafController;
 use App\Http\Controllers\Agency\ApplicationController;
 use App\Http\Controllers\Agency\DuplicationApplicationController;
 use App\Http\Controllers\Agency\HoodUserController;
+use App\Http\Controllers\Agency\MriOfficeController;
 use App\Http\Controllers\Agency\NoteController;
 use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ReaExtractsReportController;
+use App\Http\Controllers\ApplicationEventController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
+use App\Http\Controllers\GilbertLeadAPIController;
 use App\Http\Controllers\UserInvitationController;
 use App\Models\ConnectionApplication;
-use Powershop\Http\Controllers\PowerShopController;
 use App\Services\RolePermission;
 use App\Services\RolePermissionService;
 use App\Services\Utility\PowershopService;
 use Illuminate\Encryption\Encrypter;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
+use MRI\Controllers\TestMriController;
 use OurProperty\Http\Controllers\OurPropertyController;
 use Powershop\Http\Controllers\PaymentInfoController;
+use Powershop\Http\Controllers\PowerShopController;
 use PropertyMe\services\FetchContacts;
 use Reporting\Http\Controllers\ReportController;
-use App\Http\Controllers\GilbertLeadAPIController;
-use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
-use App\Http\Controllers\ApplicationEventController;
-use App\Http\Controllers\Agency\MriOfficeController;
-use MRI\Controllers\TestMriController;
-use Illuminate\Http\Request;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -420,17 +421,17 @@ Route::get('/test', function() {
 
 //upload click by sending gcl_id only
 Route::post('/upload-click', function (Request $request){
-    $clickConversionService = new \App\Services\GoogleAds\UploadClickConversionService();
+    $clickConversionService = new \GoogleAds\Services\UploadClickConversionAPI();
     return $clickConversionService->uploadClick($request->gcl_id);
 });
 //upload click by sending gcl_id only
 Route::post('/upload-call', function (Request $request){
-    $clickConversionService = new \App\Services\GoogleAds\UploadCallConversionService();
+    $clickConversionService = new \GoogleAds\Services\UploadCallConversionAPI();
     return $clickConversionService->uploadCall();
 });
 
 
 Route::get('/genesys', function (Request $request){
-    $s = new \App\Services\Genesys\SaveCallConversion();
+    $s = new \GoogleAds\Services\SaveCallConversion();
     $s->start();
 });

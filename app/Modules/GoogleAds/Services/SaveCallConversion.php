@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Genesys;
+namespace GoogleAds\Services;
 
 use App\Models\CallConversion;
 use App\Models\ConnectionApplication;
@@ -32,7 +32,7 @@ class SaveCallConversion
     {
         $phones = $this->formatPhones($this->getApplications());
 
-        $conversions = (new GetConversationDetailService())->searchByPhones($phones);
+        $conversions = (new GenesysConversionDetailsAPI())->searchByPhones($phones);
 
 
         CallConversion::query()->insert($this->mapData($conversions));
@@ -51,7 +51,7 @@ class SaveCallConversion
     {
         $phones = [];
         foreach ($apps as $app) {
-            $phone = GetConversationDetailService::formatPhoneNumber($app['phone']);
+            $phone = GenesysConversionDetailsAPI::formatPhoneNumber($app['phone']);
             $this->phoneMap[$phone] = $app['id'];
             $phones[] = $phone;
         }

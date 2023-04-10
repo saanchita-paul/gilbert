@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Services\Genesys;
+namespace GoogleAds\Services;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
-use Illuminate\Support\Carbon;
 
-class GetConversationDetailService
+use function App\Services\Genesys\sizeof;
+
+class GenesysConversionDetailsAPI
 {
     public const DEFAULT_PAGE_SIZE = 25;
     public int $maxPredicate;

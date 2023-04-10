@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Console\Commands\GoogleAds;
+namespace GoogleAds\Commands;
 
-use App\Services\GoogleAds\UploadClickConversion;
-use App\Services\hubspot\FetchGCLService;
+use GoogleAds\Services\FetchGCLService;
+use GoogleAds\Services\ManageClickConversion;
 use Exception;
 use Illuminate\Console\Command;
 
@@ -35,7 +35,7 @@ class ClickConversionCommand extends Command
         }
 
         #uploading
-        UploadClickConversion::upload();
+        ManageClickConversion::upload();
     }
 
 }

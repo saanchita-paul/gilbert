@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Services\GoogleAds;
+namespace GoogleAds\Services;
 
 use Exception;
 use Google\Ads\GoogleAds\Util\V13\ResourceNames;
 use Google\Ads\GoogleAds\V13\Services\ClickConversion as ClickConversionCore;
 use Log;
 
-class UploadClickConversionService extends BaseService
+class UploadClickConversionAPI extends BaseGoogleConversionService
 {
 
     private array $clickConversions = [];

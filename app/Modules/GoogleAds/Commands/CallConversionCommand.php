@@ -1,11 +1,9 @@
 <?php
 
-namespace App\Console\Commands\GoogleAds;
+namespace GoogleAds\Commands;
 
-use App\Services\Genesys\SaveCallConversion;
-use App\Services\GoogleAds\UploadCallConversion;
-use App\Services\GoogleAds\UploadClickConversion;
-use App\Services\hubspot\FetchGCLService;
+use GoogleAds\Services\ManageCallConversion;
+use GoogleAds\Services\SaveCallConversion;
 use Exception;
 use Illuminate\Console\Command;
 
@@ -37,7 +35,7 @@ class CallConversionCommand extends Command
         }
 
         #uploading
-        UploadCallConversion::upload();
+        ManageCallConversion::upload();
     }
 
 }

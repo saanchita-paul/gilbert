@@ -77,7 +77,8 @@
             "Reporting\\": "app/Modules/Reporting",
             "Origin\\": "app/Modules/Origin",
             "Powershop\\": "app/Modules/Powershop",
-            "MRI\\": "app/Modules/MRI"
+            "MRI\\": "app/Modules/MRI",
+            "GoogleAds\\": "app/Modules/GoogleAds"
         }
     },
     "autoload-dev": {

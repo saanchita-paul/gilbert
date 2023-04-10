@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\GoogleAds;
+namespace GoogleAds\Services;
 
 use App\Models\ClickConversion;
 use Exception;
@@ -8,7 +8,7 @@ use Exception;
 /**
  *
  */
-class UploadClickConversion
+class ManageClickConversion
 {
 
     /**
@@ -31,7 +31,8 @@ class UploadClickConversion
      */
     public function run(): void
     {
-        $service = new UploadClickConversionService();
+        $this->getClicks();
+        $service = new UploadClickConversionAPI();
         $res = $service->setClickConversions($this->clicks)->uploadClick();
 
         $this->updateUploadedAt($res);

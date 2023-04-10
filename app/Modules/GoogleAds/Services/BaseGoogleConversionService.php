@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services\GoogleAds;
+namespace GoogleAds\Services;
 
 use Google\Ads\GoogleAds\Lib\OAuth2TokenBuilder;
 use Google\Ads\GoogleAds\Lib\V13\GoogleAdsClient;
 use Google\Ads\GoogleAds\Lib\V13\GoogleAdsClientBuilder;
 
-class BaseService {
+class BaseGoogleConversionService {
 
     private string $iniFilePath;
 
@@ -34,7 +34,7 @@ class BaseService {
 
     }
 
-    private function buildOAuth2Token(): BaseService
+    private function buildOAuth2Token(): BaseGoogleConversionService
     {
         $this->oAuth2Credential = (new OAuth2TokenBuilder())
             ->fromFile($this->iniFilePath)

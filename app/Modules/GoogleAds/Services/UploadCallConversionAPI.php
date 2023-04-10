@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\GoogleAds;
+namespace GoogleAds\Services;
 
 
 use Carbon\Carbon;
@@ -10,7 +10,7 @@ use Google\Ads\GoogleAds\V13\Services\CallConversion;
 use Google\Ads\GoogleAds\V13\Services\CallConversionResult;
 use Log;
 
-class UploadCallConversionService extends BaseService {
+class UploadCallConversionAPI extends BaseGoogleConversionService {
 
 
     private array $callConversions = [];
