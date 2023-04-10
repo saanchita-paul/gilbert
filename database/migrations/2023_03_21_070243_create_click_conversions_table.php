@@ -19,11 +19,14 @@ return new class extends Migration
             $table->foreignId('connection_application_id')
                 ->constrained('connection_applications')
                 ->onDelete('cascade');
-            $table->string('gcl_id')->nullable(true);
-            $table->dateTime('last_checked')->nullable(true);
-            $table->tinyInteger('should_skip')->nullable(false)->default(0);
-            $table->tinyInteger('is_uploaded_click')->nullable(false)->default(0);
-            $table->tinyInteger('generated_from_creation')->nullable(false)->default(1);
+            $table->string('gcl_id')->nullable()->index('gcl_index');
+            $table->dateTime('conversion_date')->nullable();
+            $table->dateTime('last_checked')->nullable();
+            $table->tinyInteger('should_skip')->nullable();
+            $table->dateTime('uploaded_at')->nullable();
+            $table->string('status')->nullable();
+            $table->text('reason')->nullable();
+            $table->tinyInteger('generated_from_creation')->nullable();
             $table->timestamps();
         });
     }

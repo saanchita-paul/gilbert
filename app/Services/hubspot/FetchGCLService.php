@@ -12,6 +12,7 @@ use GuzzleHttp\Pool;
 use GuzzleHttp\Promise;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Database\Eloquent\Collection;
@@ -19,31 +20,45 @@ use Illuminate\Database\Eloquent\Collection;
 class FetchGCLService {
     protected array $gclIDList = [];
     protected UploadClickConversionService $clickConversionService;
+    /**
+     * @var ConnectionApplication[]|Builder[]|Collection|\Illuminate\Database\Query\Builder[]|\Illuminate\Support\Collection
+     */
+    private \Illuminate\Support\Collection|array|Collection $apps;
 
     public function __construct() {
-        $this->clickConversionService = new UploadClickConversionService();
+//        $this->clickConversionService = new UploadClickConversionService();
     }
 
+    public static function start(): void
+    {
+        (new static())->fetchConnectionApplications()->fetchGclId();
+
+    }
     private function getClient(): PendingRequest
     {
         return Http::withHeaders(['Authorization' => config('hub_spot.oauth_token')]);
     }
 
-    public function fetchConnectionApplications(): Collection
+    public function fetchConnectionApplications(): static
     {
-        return ConnectionApplication::query()
+        $this->apps = ConnectionApplication::query()
             ->select(["hubspot_contact_id", "id"])
-            ->with(['clickConversion' => function ($query){
-                $query->where('is_uploaded_click', ClickConversion::IS_UPLOADED_CLICK_FALSE);
-            }])
+            ->with(['clickConversion'])
+            ->where(function (Builder $builder) {
+                $builder->whereHas('clickConversion', function (Builder $conv) {
+                    $conv->whereNull('gcl_id');
+                })->orWhereDoesntHave('clickConversion');
+            })
             ->where('source', ConnectionApplication::SOURCE_HOOD_LEAD)
             ->whereNotNull('hubspot_contact_id')
             ->get();
+
+        return $this;
     }
 
-    public function fetchGclId($applications): void
+    public function fetchGclId(): void
     {
-        foreach ($applications AS $app)
+        foreach ($this->apps as $app)
         {
             //call hubspot api and get their gcl_id
             $url = str_replace('${id}', $app->hubspot_contact_id, config('hub_spot.update_contact'));
@@ -130,31 +145,6 @@ class FetchGCLService {
         \Log::error("Guzzle error {$index}", [$e->getMessage()]);
     }
 
-    public function uploadClickConversion(): void
-    {
-        foreach ($this->gclIDList AS $item){
-
-            if(!$item->gcl_id)
-            {
-                continue;
-            }
-
-            $response = $this->clickConversionService->uploadClick($item->gcl_id);
-
-            // if data has been sent to google analytics successfully
-            if($response)
-            {
-                $this->uploadedClickSuccessful($item->app_id);
-            }
-        }
-    }
-
-    public function uploadedClickSuccessful($appID): void
-    {
-        ClickConversion::where('connection_application_id', $appID)->update([
-            "is_uploaded_click" => ClickConversion::IS_UPLOADED_CLICK_TRUE
-        ]);
-    }
 
     public function updateGclID($appID, $data)
     {

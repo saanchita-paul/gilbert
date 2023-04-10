@@ -2,105 +2,90 @@
 
 namespace App\Services\GoogleAds;
 
-use App\Models\ClickConversion;
-use Google\Ads\GoogleAds\Lib\V13\GoogleAdsClient;
-use Google\Ads\GoogleAds\Lib\OAuth2TokenBuilder;
-use Google\Ads\GoogleAds\Lib\V13\GoogleAdsClientBuilder;
+use Exception;
 use Google\Ads\GoogleAds\Util\V13\ResourceNames;
-use Google\Ads\GoogleAds\V13\Services\ClickConversion AS ClickConversionCore;
-use Google\Ads\GoogleAds\V13\Services\CustomVariable;
-use Google\ApiCore\ApiException;
-use Illuminate\Http\Client\Request;
+use Google\Ads\GoogleAds\V13\Services\ClickConversion as ClickConversionCore;
+use Log;
 
-class UploadClickConversionService {
+class UploadClickConversionService extends BaseService
+{
 
-    protected  $oAuth2Credential;
-    protected  $googleAdsClient;
-    protected string $customerID;
-    protected string $conversionActionID;
-    protected string $conversionDateTime;
-    protected string $conversionValue;
-    protected string $iniFilePath;
+    private array $clickConversions = [];
 
 
-    public function __construct()
+    public function setClickConversions(array $clicks): static
     {
-        $this->customerID = config('google_ads.customer_id');
-        $this->conversionActionID = config('google_ads.conversion_action_id');
-        $this->conversionDateTime = '2023-04-06 19:32:45-05:00';
-        $this->conversionValue = '200';
-//        $this->iniFilePath = config('google_ads.ads_credentials_file');
-        $this->iniFilePath = "/home/lnn/www/src/gbert/google_ads_php.ini";
+        $this->clickConversions = $clicks;
 
-
-        $this->buildOAuth2Token();
-        $this->buildGoogleClient();
+        return $this;
     }
 
-    public function buildOAuth2Token(): void
+    /**
+     * @return ClickConversionCore[]
+     */
+    private function buildPayload(): array
     {
-        $this->oAuth2Credential = (new OAuth2TokenBuilder())
-            ->fromFile($this->iniFilePath)
-            ->build();
-    }
+        $payloads = [];
 
-    public function buildGoogleClient(): void
-    {
-        $this->googleAdsClient = (new GoogleAdsClientBuilder())
-            ->fromFile($this->iniFilePath)
-            ->withOAuth2Credential($this->oAuth2Credential)
-            ->build();
-    }
-
-    public function uploadClick($gclId): bool {
-        if (empty($gclId)) {
-            throw new \UnexpectedValueException(
-                "GCL_ID is needed but not provided"
-            );
+        foreach ($this->clickConversions as $click) {
+            $click = new ClickConversionCore([
+                'conversion_action' => ResourceNames::forConversionAction($this->customerID, $this->conversionActionID),
+                'conversion_value' => $this->conversionValue,
+                'conversion_date_time' => $click['conversion_date'],
+                'currency_code' => $this->currency
+            ]);
+            $click->setGclid($click['gcl_id']);
         }
 
-        $clickConversion = new ClickConversionCore([
-            'conversion_action' => ResourceNames::forConversionAction($this->customerID, $this->conversionActionID),
-            'conversion_value' => $this->conversionValue,
-            'conversion_date_time' => $this->conversionDateTime,
-            'currency_code' => 'USD'
-        ]);
+        return $payloads;
+    }
 
-        // Sets the single specified ID field.
-        $clickConversion->setGclid($gclId);
+    /**
+     * @throws Exception
+     */
+    public function uploadClick(): array
+    {
+        try {
+            $clickConversions = $this->buildPayload();
 
-        // Issues a request to upload the click conversion.
-        $conversionUploadServiceClient = $this->googleAdsClient->getConversionUploadServiceClient();
-        $response = $conversionUploadServiceClient->uploadClickConversions(
-            $this->customerID,
-            [$clickConversion],
-            true
-        );
 
-        // Prints the status message if any partial failure error is returned.
-        // Note: The details of each partial failure error are not printed here, you can refer to
-        if ($response->hasPartialFailureError()) {
-            printf(
-                "Partial failures occurred: '%s'.%s",
-                $response->getPartialFailureError()->getMessage(),
-                PHP_EOL
+            // Issues a request to upload the click conversion.
+            $conversionUploadServiceClient = $this->googleAdsClient->getConversionUploadServiceClient();
+            $response = $conversionUploadServiceClient->uploadClickConversions(
+                $this->customerID,
+                $clickConversions,
+                true
             );
-            return false;
-        } else {
-            // Prints the result if exists.
-            $uploadedClickConversion = $response->getResults()[0];
-            printf(
-                "Uploaded click conversion that occurred at '%s' from Google Click ID '%s' " .
-                "to '%s'.%s",
-                $uploadedClickConversion->getConversionDateTime(),
-                $uploadedClickConversion->getGclid(),
-                $uploadedClickConversion->getConversionAction(),
-                PHP_EOL
-            );
-            return true;
+
+            // Prints the status message if any partial failure error is returned.
+            // Note: The details of each partial failure error are not printed here, you can refer to
+            if ($response->hasPartialFailureError()) {
+                $mgs = "Partial failures occurred: {$response->getPartialFailureError()->getMessage()}";
+                Log::error($mgs);
+                throw new Exception($mgs);
+            } else {
+                // Prints the result if exists.
+                return $this->parseResponse($response);
+            }
+        } catch (\Exception $exception) {
+            Log::error($exception->getMessage());
+            Log::error($exception->getTraceAsString());
+            throw new Exception($exception);
+        }
+    }
+
+    /**
+     * @param $response
+     * @return array
+     */
+    private function parseResponse($response): array
+    {
+        $gclIds = [];
+        foreach ($response->getResults() as $result) {
+            $gclIds[] = $result->getGclid();
         }
 
-
+        return $gclIds;
     }
 
 

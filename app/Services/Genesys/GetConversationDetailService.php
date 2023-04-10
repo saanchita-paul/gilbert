@@ -41,6 +41,10 @@ class GetConversationDetailService
         return $results;
     }
 
+    public function isValidCallerId(?string $phone): bool
+    {
+        return preg_match('/^tel:\+614\d{8}$/', $phone) === 1;
+    }
     /**
      * Formatting payload with phone number
      */
@@ -50,6 +54,11 @@ class GetConversationDetailService
         $bodies = [];
 
         foreach ($phones as $phone) {
+
+            if(!$this->isValidCallerId($phone)) {
+                continue;
+            }
+
             $predicates[] = [
                 "dimension" => "ani",
                 "operator" => "matches",

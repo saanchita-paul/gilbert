@@ -7,11 +7,28 @@ use App\Models\ConnectionApplication;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ *
+ */
 class SaveCallConversion
 {
+    /**
+     * @var array
+     */
     private array $phoneMap = [];
 
-    public function start()
+    /**
+     * @return void
+     */
+    public static function save(): void
+    {
+        (new static())->start();
+    }
+
+    /**
+     * @return void
+     */
+    public function start(): void
     {
         $phones = $this->formatPhones($this->getApplications());
 
@@ -26,6 +43,10 @@ class SaveCallConversion
 
     }
 
+    /**
+     * @param array $apps
+     * @return array
+     */
     private function formatPhones(array $apps): array
     {
         $phones = [];
@@ -52,12 +73,16 @@ class SaveCallConversion
             })
             ->select(['id', 'phone'])
             ->orderBy('id', 'desc')
-//            ->limit(300)
+            ->limit(51)
             ->get()
             ->toArray();
     }
 
 
+    /**
+     * @param array $data
+     * @return array
+     */
     private function mapData(array $data): array
     {
         if (!array_key_exists('conversations', $data)) {
@@ -96,6 +121,9 @@ class SaveCallConversion
         return $return;
     }
 
+    /**
+     * @return void
+     */
     private function savedFetchFailed(): void
     {
         $failed = [];

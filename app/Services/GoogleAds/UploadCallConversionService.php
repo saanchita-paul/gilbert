@@ -4,6 +4,7 @@ namespace App\Services\GoogleAds;
 
 
 use Carbon\Carbon;
+use Exception;
 use Google\Ads\GoogleAds\Util\V13\ResourceNames;
 use Google\Ads\GoogleAds\V13\Services\CallConversion;
 use Google\Ads\GoogleAds\V13\Services\CallConversionResult;
@@ -11,32 +12,12 @@ use Log;
 
 class UploadCallConversionService extends BaseService {
 
-    protected string $customerID;
-    protected string $conversionActionID;
-    protected string $conversionValue;
 
     private array $callConversions = [];
-    private $currency;
 
 
-    public function __construct()
-    {
-        parent::__construct();
 
-        $this->customerID = config('google_ads.customer_id');
-        $this->conversionActionID = config('google_ads.conversion_action_id');
-        $this->currency = config('google_ads.currency');
-        $this->conversionValue = config('google_ads.conversion_value');
-    }
-
-
-    public static function upload(array $conversions): bool
-    {
-        return (new UploadCallConversionService())->setCallConversions($conversions)->uploadCall();
-    }
-
-
-    private function setCallConversions(array $calls): static
+    public function setCallConversions(array $calls): static
     {
         $this->callConversions = $calls;
 
@@ -57,7 +38,7 @@ class UploadCallConversionService extends BaseService {
                     ResourceNames::forConversionAction($this->customerID, $this->conversionActionID),
                 'caller_id' => $conversion['caller_id'],
                 'call_start_date_time' => $this->formatDate($conversion['call_start_at']),
-                'conversion_date_time' => $this->formatDate($conversion['conversion_value']),
+                'conversion_date_time' => $this->formatDate($conversion['conversion_date']),
                 'conversion_value' => $this->conversionValue,
                 'currency_code' => $this->currency,
             ]);
@@ -72,8 +53,9 @@ class UploadCallConversionService extends BaseService {
     }
 
     /**
+     * @throws Exception
      */
-    public function uploadCall(): bool
+    public function uploadCall(): array
     {
         try {
             // Creates a call conversion by specifying currency as USD.
@@ -90,7 +72,9 @@ class UploadCallConversionService extends BaseService {
             // Note: The details of each partial failure error are not printed here, you can refer to
             // the example HandlePartialFailure.php to learn more.
             if ($response->hasPartialFailureError()) {
-                Log::error("Partial failures occurred: {$response->getPartialFailureError()->getMessage()}");
+                $mgs = "Partial failures occurred: {$response->getPartialFailureError()->getMessage()}";
+                Log::error($mgs);
+                throw new Exception($mgs);
             } else {
                 // Prints the result if exists.
                 /** @var CallConversionResult $uploadedCallConversion */
@@ -105,13 +89,26 @@ class UploadCallConversionService extends BaseService {
                     $uploadedCallConversion->getConversionAction(),
                     PHP_EOL
                 );
+                return  $this->parseResponse($response);
             }
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             Log::error($exception->getMessage());
             Log::error($exception->getTraceAsString());
-            return false;
+            throw new Exception($exception);
+        }
+    }
+
+    /**
+     * @param $response
+     * @return array
+     */
+    private function parseResponse($response): array
+    {
+        $callerIds = [];
+        foreach ($response->getResults() as $result) {
+            $callerIds[] = $result->getCallerId();
         }
 
-        return true;
+        return $callerIds;
     }
 }

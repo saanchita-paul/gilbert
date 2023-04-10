@@ -8,16 +8,27 @@ use Google\Ads\GoogleAds\Lib\V13\GoogleAdsClientBuilder;
 
 class BaseService {
 
+    private string $iniFilePath;
+
     protected GoogleAdsClient $googleAdsClient;
 
     protected mixed $oAuth2Credential;
 
-    private string $iniFilePath;
+
+    protected string $customerID;
+    protected string $conversionActionID;
+    protected string $conversionValue;
+
+    protected string $currency;
 
 
     public function __construct()
     {
         $this->iniFilePath = config('google_ads.credentials_file');
+        $this->customerID = config('google_ads.customer_id');
+        $this->conversionActionID = config('google_ads.conversion_action_id');
+        $this->currency = config('google_ads.currency');
+        $this->conversionValue = config('google_ads.conversion_value');
 
         $this->buildOAuth2Token()->buildGoogleClient();
 

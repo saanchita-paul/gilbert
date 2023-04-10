@@ -22,10 +22,10 @@ class CreateCallConversionsTable extends Migration
                 ->references('id')
                 ->onDelete('cascade');
 
-            $table->string('caller_id')->nullable();
+            $table->string('caller_id')->nullable()->index();
             $table->dateTime('call_start_at')->nullable();
             $table->dateTime('call_end_at')->nullable();
-            $table->dateTime('conversation_at')->nullable();
+            $table->dateTime('conversion_date')->nullable();
             $table->dateTime('uploaded_at')->nullable();
             $table->string('status')->nullable();
             $table->text('reason')->nullable();
