@@ -23,13 +23,14 @@ class ManageCallConversion
      */
     public function run(): void
     {
+        $this->getCalls();
         $service = new UploadCallConversionAPI();
         $res = $service->setCallConversions($this->calls)->uploadCall();
 
         $this->updateUploadedAt($res);
     }
 
-    private function getClicks(): void
+    private function getCalls(): void
     {
         $this->calls = CallConversion::query()
             ->whereNotNull('conversion_date')

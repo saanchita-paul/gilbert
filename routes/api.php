@@ -432,6 +432,6 @@ Route::post('/upload-call', function (Request $request){
 
 
 Route::get('/genesys', function (Request $request){
-    $s = new \GoogleAds\Services\SaveCallConversion();
+    $s = new GoogleAds\Services\SaveCallConversion();
     $s->start();
 });

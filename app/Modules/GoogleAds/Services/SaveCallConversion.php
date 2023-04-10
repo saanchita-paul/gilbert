@@ -73,7 +73,7 @@ class SaveCallConversion
             })
             ->select(['id', 'phone'])
             ->orderBy('id', 'desc')
-            ->limit(51)
+            ->limit(50) #todo: update here
             ->get()
             ->toArray();
     }

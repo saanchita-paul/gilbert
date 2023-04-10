@@ -35,6 +35,7 @@ class GenesysConversionDetailsAPI
 
         foreach ($bodies as $body) {
             $results = array_merge($results, $this->run($body));
+//            sleep((int) config('genesys.interval'));
         }
 
         return $results;
@@ -64,7 +65,7 @@ class GenesysConversionDetailsAPI
                 "value" => $phone
             ];
 
-            if (sizeof($predicates) === $this->maxPredicate) {
+            if (count($predicates) === $this->maxPredicate) {
                 $bodies[] = $this->getBody($predicates);
                 $predicates = [];
             }
