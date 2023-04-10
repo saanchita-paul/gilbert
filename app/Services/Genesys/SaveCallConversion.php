@@ -66,7 +66,7 @@ class SaveCallConversion
 
         $return = [];
 
-        $conversations = $data['conversations'] ?? [];
+        $conversations = $data['conversations'];
 
         foreach ($conversations as $conv) {
             try {

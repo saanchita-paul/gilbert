@@ -2,114 +2,116 @@
 
 namespace App\Services\GoogleAds;
 
-use App\Models\ClickConversion;
-use Google\Ads\GoogleAds\Lib\V13\GoogleAdsClient;
-use Google\Ads\GoogleAds\Lib\OAuth2TokenBuilder;
-use Google\Ads\GoogleAds\Lib\V13\GoogleAdsClientBuilder;
+
+use Carbon\Carbon;
 use Google\Ads\GoogleAds\Util\V13\ResourceNames;
 use Google\Ads\GoogleAds\V13\Services\CallConversion;
 use Google\Ads\GoogleAds\V13\Services\CallConversionResult;
-use Google\Ads\GoogleAds\V13\Services\ClickConversion AS ClickConversionCore;
-use Google\Ads\GoogleAds\V13\Services\CustomVariable;
-use Google\ApiCore\ApiException;
-use Illuminate\Http\Client\Request;
+use Log;
 
-class UploadCallConversionService {
+class UploadCallConversionService extends BaseService {
 
-    protected  $oAuth2Credential;
-    protected GoogleAdsClient   $googleAdsClient;
     protected string $customerID;
     protected string $conversionActionID;
-    protected string $conversionDateTime;
     protected string $conversionValue;
-    protected string $iniFilePath;
+
+    private array $callConversions = [];
+    private $currency;
 
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->customerID = config('google_ads.customer_id');
         $this->conversionActionID = config('google_ads.conversion_action_id');
-//        $this->conversionDateTime = config('google_ads.conversion_date_time');
-        $this->conversionDateTime = '2022-01-01 19:32:45-05:00';
+        $this->currency = config('google_ads.currency');
         $this->conversionValue = config('google_ads.conversion_value');
-//        $this->iniFilePath = config('google_ads.ads_credentials_file');
-        $this->iniFilePath = "/home/lnn/www/src/gbert/google_ads_php.ini";
-
-        $this->buildOAuth2Token();
-        $this->buildGoogleClient();
     }
 
-    public function buildOAuth2Token(): void
+
+    public static function upload(array $conversions): bool
     {
-        $this->oAuth2Credential = (new OAuth2TokenBuilder())
-            ->fromFile($this->iniFilePath)
-            ->build();
+        return (new UploadCallConversionService())->setCallConversions($conversions)->uploadCall();
     }
 
-    public function buildGoogleClient(): void
+
+    private function setCallConversions(array $calls): static
     {
-        $this->googleAdsClient = (new GoogleAdsClientBuilder())
-            ->fromFile($this->iniFilePath)
-            ->withOAuth2Credential($this->oAuth2Credential)
-            ->build();
+        $this->callConversions = $calls;
+
+        return $this;
     }
 
+
+    /**
+     * @return CallConversion[]
+     */
+    private function buildConversionsPayload(): array
+    {
+        $conversions = [];
+
+        foreach ($this->callConversions as $conversion) {
+            $conversions[] = new CallConversion([
+                'conversion_action' =>
+                    ResourceNames::forConversionAction($this->customerID, $this->conversionActionID),
+                'caller_id' => $conversion['caller_id'],
+                'call_start_date_time' => $this->formatDate($conversion['call_start_at']),
+                'conversion_date_time' => $this->formatDate($conversion['conversion_value']),
+                'conversion_value' => $this->conversionValue,
+                'currency_code' => $this->currency,
+            ]);
+        }
+
+        return $conversions;
+    }
+
+    private function formatDate(string $date): string
+    {
+        return Carbon::parse($date)->format('Y-m-d H:i:sP');
+    }
+
+    /**
+     */
     public function uploadCall(): bool
     {
-        // Creates a call conversion by specifying currency as USD.
-        $callConversion = new CallConversion([
-            'conversion_action' =>
-                ResourceNames::forConversionAction($this->customerID, $this->conversionActionID),
-            'caller_id' => 'tel:+61411858473',
-            'call_start_date_time' => now()->addDays(-5)->toDateTimeString(),
-            'conversion_date_time' => now()->toDateTimeString(),
-            'conversion_value' => $this->conversionValue,
-            'currency_code' => 'USD'
-        ]);
-//        if (!is_null($conversionCustomVariableId) && !is_null($conversionCustomVariableValue)) {
-//            $callConversion->setCustomVariables([new CustomVariable([
-//                'conversion_custom_variable' => ResourceNames::forConversionCustomVariable(
-//                    $customerId,
-//                    $conversionCustomVariableId
-//                ),
-//                'value' => $conversionCustomVariableValue
-//            ])]);
-//        }
+        try {
+            // Creates a call conversion by specifying currency as USD.
+            $callConversions = $this->buildConversionsPayload();
 
-        // Issues a request to upload the call conversion.
-        $conversionUploadServiceClient = $this->googleAdsClient->getConversionUploadServiceClient();
-        $response = $conversionUploadServiceClient->uploadCallConversions(
-            $this->customerID,
-            [$callConversion],
-            true
-        );
+            // Issues a request to upload the call conversion.
+            $conversionUploadServiceClient = $this->googleAdsClient->getConversionUploadServiceClient();
+            $response = $conversionUploadServiceClient->uploadCallConversions(
+                $this->customerID,
+                $callConversions,
+                true
+            );
+            // Prints the status message if any partial failure error is returned.
+            // Note: The details of each partial failure error are not printed here, you can refer to
+            // the example HandlePartialFailure.php to learn more.
+            if ($response->hasPartialFailureError()) {
+                Log::error("Partial failures occurred: {$response->getPartialFailureError()->getMessage()}");
+            } else {
+                // Prints the result if exists.
+                /** @var CallConversionResult $uploadedCallConversion */
 
-        // Prints the status message if any partial failure error is returned.
-        // Note: The details of each partial failure error are not printed here, you can refer to
-        // the example HandlePartialFailure.php to learn more.
-        if ($response->hasPartialFailureError()) {
-            printf(
-                "Partial failures occurred: '%s'.%s",
-                $response->getPartialFailureError()->getMessage(),
-                PHP_EOL
-            );
-        } else {
-            // Prints the result if exists.
-            /** @var CallConversionResult $uploadedCallConversion */
-            $uploadedCallConversion = $response->getResults()[0];
-            printf(
-                "Uploaded call conversion that occurred at '%s' for caller ID '%s' to the "
-                . "conversion action with resource name '%s'.%s",
-                $uploadedCallConversion->getCallStartDateTime(),
-                $uploadedCallConversion->getCallerId(),
-                $uploadedCallConversion->getConversionAction(),
-                PHP_EOL
-            );
+                #todo: handle success properly
+                $uploadedCallConversion = $response->getResults()[0];
+                printf(
+                    "Uploaded call conversion that occurred at '%s' for caller ID '%s' to the "
+                    . "conversion action with resource name '%s'.%s",
+                    $uploadedCallConversion->getCallStartDateTime(),
+                    $uploadedCallConversion->getCallerId(),
+                    $uploadedCallConversion->getConversionAction(),
+                    PHP_EOL
+                );
+            }
+        } catch (\Exception $exception) {
+            Log::error($exception->getMessage());
+            Log::error($exception->getTraceAsString());
+            return false;
         }
 
         return true;
-
     }
-
-
 }
