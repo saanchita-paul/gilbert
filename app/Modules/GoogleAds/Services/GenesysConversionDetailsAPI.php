@@ -130,7 +130,7 @@ class GenesysConversionDetailsAPI
         $body = [
             "interval" => $this->getInterval(),
             "paging" => [
-                "pageSize" => 30,
+                "pageSize" => self::DEFAULT_PAGE_SIZE,
                 "pageNumber" => 1
             ],
             "segmentFilters" => [
@@ -171,6 +171,7 @@ class GenesysConversionDetailsAPI
 
     private function run(array $body)
     {
+        $responses = [];
         $url = config('genesys.base_url') . config('genesys.endpoints.detail_conversation');
         $client = new Client();
 
@@ -185,13 +186,29 @@ class GenesysConversionDetailsAPI
             "json" => $body
         ];
 
-
         try {
-            $response = $client->request("POST", $url, $options);
-            return json_decode($response->getBody()->getContents(), true);
+            $checkNextPage = false;
+            do {
+                $response = $client->request("POST", $url, $options);
+
+                $responseBody = json_decode($response->getBody()->getContents(), true);
+                $responses[] = $responseBody;
+                $checkNextPage = array_key_exists('conversations', $responseBody) &&
+                                    count($responseBody['conversations']) >= $body['paging']['pageSize'];
+                if ($checkNextPage) {
+                    $this->setNextPageBody($body);
+                    $options['json'] = $body;
+                }
+            } while ($checkNextPage);
         } catch (\Exception $e) {
             \Log::error("GetConversationDetailService: api call failed: {$e->getMessage()}");
-            return [];
         }
+        info(count($responses));
+        return $responses;
+    }
+
+    private function setNextPageBody(array &$body)
+    {
+        $body['paging']['pageNumber'] += 1;
     }
 }
