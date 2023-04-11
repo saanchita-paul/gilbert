@@ -3,6 +3,7 @@
 namespace GoogleAds\Services;
 
 use GuzzleHttp\Client;
+use Illuminate\Support\Carbon;
 
 use function App\Services\Genesys\sizeof;
 
@@ -12,7 +13,8 @@ class GenesysConversionDetailsAPI
     public int $maxPredicate;
 
     private string $token;
-
+    private Carbon $startDate;
+    private Carbon $endDate;
 
     public function __construct()
     {
@@ -23,6 +25,16 @@ class GenesysConversionDetailsAPI
     public static function formatPhoneNumber(?string $phoneNumber): ?string
     {
         return preg_replace('/^(?:\+61|0)(4\d{8})$/', 'tel:+61$1', $phoneNumber);
+    }
+
+    public function setStartDate(string $startDate)
+    {
+        $this->startDate = Carbon::parse($startDate);
+    }
+
+    public function setEndDate(string $endDate)
+    {
+        $this->endDate = Carbon::parse($endDate);
     }
 
     /**
@@ -76,10 +88,18 @@ class GenesysConversionDetailsAPI
         return $bodies;
     }
 
+    private function getInterval()
+    {
+        $startInterval = isset($this->startDate) ? $this->startDate->toIso8601String() : Carbon::yesterday()->startOfDay()->toIso8601String();
+        $endInterval = isset($this->endDate) ? $this->endDate->toIso8601String() : Carbon::yesterday()->endOfDay()->toIso8601String();
+
+        return "$startInterval/$endInterval";
+    }
+
     private function getBody(array $predicates): array
     {
         return [
-            "interval" => "2023-03-07T00:00:00/2023-04-06T23:59:59", // startDateEndTime/startEndDateTime
+            "interval" => $this->getInterval(),
             "paging" => [
                 "pageSize" => self::DEFAULT_PAGE_SIZE,
                 "pageNumber" => 1
@@ -108,7 +128,7 @@ class GenesysConversionDetailsAPI
         }
 
         $body = [
-            "interval" => "2023-04-06T00:00:00/2023-04-06T23:59:59",
+            "interval" => $this->getInterval(),
             "paging" => [
                 "pageSize" => 30,
                 "pageNumber" => 1
