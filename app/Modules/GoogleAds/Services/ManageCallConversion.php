@@ -24,6 +24,12 @@ class ManageCallConversion
     public function run(): void
     {
         $this->getCalls();
+
+        if (count($this->calls) === 0) {
+            info("ManageCallConversion: No new call to upload");
+            return;
+        }
+
         $service = new UploadCallConversionAPI();
         $res = $service->setCallConversions($this->calls)->uploadCall();
 
@@ -36,11 +42,11 @@ class ManageCallConversion
             ->whereNotNull('conversion_date')
             ->whereNotNull('caller_id')
             ->where('status', CallConversion::STATUS_FETCHED)
-            ->where('uploaded_at', false)
-            ->where('uploaded_at', false)
+            ->whereNull('uploaded_at')
             ->select(['conversion_date', 'caller_id', 'call_start_at'])
             ->get()
             ->toArray();
+        dump($this->calls);
     }
 
     private function updateUploadedAt(array $gclIds): void

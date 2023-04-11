@@ -80,7 +80,7 @@ class UploadCallConversionAPI extends BaseGoogleConversionService {
                 /** @var CallConversionResult $uploadedCallConversion */
 
                 #todo: handle success properly
-                $uploadedCallConversion = $response->getResults()[0];
+                $uploadedCallConversion = $this->parseResponse($response);
                 printf(
                     "Uploaded call conversion that occurred at '%s' for caller ID '%s' to the "
                     . "conversion action with resource name '%s'.%s",

@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\UpdateWaterStatusCommand;
 use App\Console\Commands\GetTsaLeadIdCommand;
+use GoogleAds\Commands\CallConversionCommand;
 use Ignite\Commands\IgniteFetchCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Console\Commands\GetSellStatusCommand;
@@ -44,6 +45,7 @@ class Kernel extends ConsoleKernel
         MriFetchTenanciesCommand::class,
         MriFetchAgentsCommand::class,
         MriFetchNotesCommand::class,
+        CallConversionCommand::class
     ];
 
     /**
@@ -107,6 +109,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
+//        dd('stop', base_path('app/Modules/GoogleAds/Commands'), __DIR__ . '/Commands');
         $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');

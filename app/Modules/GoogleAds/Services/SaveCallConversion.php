@@ -52,7 +52,7 @@ class SaveCallConversion
         $phones = [];
         foreach ($apps as $app) {
             $phone = GenesysConversionDetailsAPI::formatPhoneNumber($app['phone']);
-            $this->phoneMap[$phone] = $app['id'];
+            $this->phoneMap[$phone] = ['phone' => $app['phone'], 'id' => $app['id']];
             $phones[] = $phone;
         }
 
@@ -73,6 +73,7 @@ class SaveCallConversion
             })
             ->select(['id', 'phone'])
             ->orderBy('id', 'desc')
+//            ->whereIn('id', [43463])
             ->limit(50) #todo: update here
             ->get()
             ->toArray();
@@ -101,10 +102,10 @@ class SaveCallConversion
                 $ani = $session['ani'] ?? null;
                 if (isset($this->phoneMap[$ani])) {
                     $return[] = [
-                        'caller_id' => $ani,
+                        'caller_id' => $this->phoneMap[$ani]['phone'],
                         'call_start_at' => $conv['conversationStart'] ? Carbon::parse($conv['conversationStart']) : null,
                         'call_end_at' => $conv['conversationEnd'] ? Carbon::parse($conv['conversationEnd']) : null,
-                        'connection_application_id' => $this->phoneMap[$ani],
+                        'connection_application_id' => $this->phoneMap[$ani]['id'],
                         'status' => CallConversion::STATUS_FETCHED,
                         'created_at' => now(),
                         'updated_at' => now(),
@@ -129,8 +130,8 @@ class SaveCallConversion
         $failed = [];
         foreach (array_keys($this->phoneMap) as $callerId) {
             $failed[] = [
-                'caller_id' => $callerId,
-                'connection_application_id' => $this->phoneMap[$callerId],
+                'caller_id' => $this->phoneMap[$callerId]['phone'],
+                'connection_application_id' => $this->phoneMap[$callerId]['id'],
                 'status' => CallConversion::STATUS_FETCH_FAILED,
                 'created_at' => now(),
                 'updated_at' => now(),

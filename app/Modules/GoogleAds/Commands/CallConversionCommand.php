@@ -14,7 +14,8 @@ class CallConversionCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'google:adds:call:upload {--nofetch}';
+//    protected $signature = 'google:ads:call:upload {--nofetch}';
+    protected $signature = 'google:ads:call:upload {--nofetch}';
 
     /**
      * The console command description.

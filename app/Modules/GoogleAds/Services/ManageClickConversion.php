@@ -46,7 +46,7 @@ class ManageClickConversion
         $this->clicks = ClickConversion::query()
             ->whereNotNull('gcl_id')
             ->whereNotNull('conversion_date')
-            ->where('uploaded_at', false)
+            ->whereNull('uploaded_at')
             ->select(['conversion_date', 'gcl_id'])
             ->get()
             ->toArray();
