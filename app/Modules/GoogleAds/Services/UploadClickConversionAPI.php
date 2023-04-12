@@ -6,6 +6,7 @@ use Exception;
 use Google\Ads\GoogleAds\Util\V13\ResourceNames;
 use Google\Ads\GoogleAds\V13\Services\ClickConversion as ClickConversionCore;
 use Log;
+use Illuminate\Support\Carbon;
 
 class UploadClickConversionAPI extends BaseGoogleConversionService
 {
@@ -26,17 +27,17 @@ class UploadClickConversionAPI extends BaseGoogleConversionService
     private function buildPayload(): array
     {
         $payloads = [];
-
         foreach ($this->clickConversions as $click) {
+            $gclId = $click['gcl_id'];
             $click = new ClickConversionCore([
                 'conversion_action' => ResourceNames::forConversionAction($this->customerID, $this->conversionActionID),
                 'conversion_value' => $this->conversionValue,
-                'conversion_date_time' => $click['conversion_date'],
+                'conversion_date_time' => $this->formatDate($click['conversion_date']),
                 'currency_code' => $this->currency
             ]);
-            $click->setGclid($click['gcl_id']);
+            $click->setGclid($gclId);
+            $payloads[] = $click;
         }
-
         return $payloads;
     }
 
@@ -86,6 +87,11 @@ class UploadClickConversionAPI extends BaseGoogleConversionService
         }
 
         return $gclIds;
+    }
+
+    private function formatDate(string $date): string
+    {
+        return Carbon::parse($date)->format('Y-m-d H:i:sP');
     }
 
 

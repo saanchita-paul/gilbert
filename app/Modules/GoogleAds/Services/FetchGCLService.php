@@ -18,14 +18,14 @@ use Illuminate\Support\Facades\Http;
 class FetchGCLService
 {
     protected array $gclIDList = [];
-    protected UploadClickConversionAPI $clickConversionService;
+
     /**
      * @var ConnectionApplication[]|Builder[]|Collection|\Illuminate\Database\Query\Builder[]|\Illuminate\Support\Collection
      */
     private \Illuminate\Support\Collection|array|Collection $apps;
 
-    public function __construct() {
-//        $this->clickConversionService = new UploadClickConversionService();
+    public function __construct()
+    {
     }
 
     public static function start(): void
@@ -63,7 +63,7 @@ class FetchGCLService
             $url = str_replace('${id}', $app->hubspot_contact_id, config('hub_spot.update_contact'));
             $response = $this->getClient()->get($url);
             $body = json_decode($response->body(), true);
-            $gclID = $this->parseGclID($body['properties']);
+            $gclID = $this->parseGclID($body);
 
             //insert click conversion record if not created yet
             if(!$app->clickConversion && $gclID)
@@ -117,7 +117,7 @@ class FetchGCLService
     private function handleSuccess(Response $response, $appID, $clickConversion): void
     {
         $data = json_decode($response->getBody()->getContents(), true);
-        $gclID = $this->parseGclID($data['properties']);
+        $gclID = $this->parseGclID($data);
 
         //insert click conversion record if not created yet
         if(!$clickConversion && $gclID)
@@ -166,9 +166,8 @@ class FetchGCLService
 
     public function parseGclID($response)
     {
-        if(array_key_exists('hs_google_click_id', $response))
-        {
-            return $response['hs_google_click_id']['value'];
+        if (!empty($response['properties']) && array_key_exists('hs_google_click_id', $response['properties'])) {
+            return $response['properties']['hs_google_click_id']['value'];
         }
         return null;
     }

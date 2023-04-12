@@ -4,7 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\UpdateWaterStatusCommand;
 use App\Console\Commands\GetTsaLeadIdCommand;
-use App\Models\ClickConversion;
+use GoogleAds\Commands\ClickConversionCommand;
 use GoogleAds\Commands\CallConversionCommand;
 use Ignite\Commands\IgniteFetchCommand;
 use Illuminate\Console\Scheduling\Schedule;
@@ -47,7 +47,7 @@ class Kernel extends ConsoleKernel
         MriFetchAgentsCommand::class,
         MriFetchNotesCommand::class,
         CallConversionCommand::class,
-        ClickConversion::class
+        ClickConversionCommand::class,
     ];
 
     /**
