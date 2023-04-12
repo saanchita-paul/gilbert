@@ -3,6 +3,7 @@ import InternetAPI from "@scripts/modules/internet/api/InternetAPI";
 import Store from "@scripts/store";
 import InternetServiceInfoMapper from "@scripts/data/InternetServiceInfoMapper";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import {connectionServicesMapper, STATUSES_FOR_ENERGY_SUBMIT} from "@scripts/data/ConnectionApplicationMapper";
 
 // get modem types
 const getModemTypes = () => InternetAPI.getModems();
@@ -61,6 +62,16 @@ const getGoodtelPlans = async () => await InternetAPI.goodtelPlans();
 
 const sendGoodtelPaymentLink = async (appId) => await InternetAPI.goodtelPaymentLinkSend(appId);
 
+const STATUSES_FOR_INTERNET_SUBMIT = [
+    connectionServicesMapper.STATUS_ACCEPTED,
+    connectionServicesMapper.STATUS_EA_SUBMIT,
+    connectionServicesMapper.STATUS_SUBMITTED,
+]
+
+const canEditService = status => {
+    return STATUSES_FOR_INTERNET_SUBMIT.includes(status);
+}
+
 export default {
     getModemTypes,
     getCharityItems,
@@ -80,4 +91,5 @@ export default {
     sendGoodtelPaymentLink,
     setIsValidForm,
     getIsValidForm,
+    canEditService
 };

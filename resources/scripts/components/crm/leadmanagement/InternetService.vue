@@ -4,7 +4,7 @@
             <p class="mb-0 sub-title">Our Available NBN Suppliers and their plans</p>
             <div class="d-flex align-content-lg-space-around mt-2">
                 <div class="d-flex align-center">Supplier:</div>
-                <InternetServiceProvider :class="isServiceEditable ? 'cursor-pointer' : 'not-editable'"
+                <InternetServiceProvider :class="!isServiceEditable ? 'cursor-pointer' : 'not-editable'"
                                          @onSelectProvider="onSelectProvider(provider.name)"
                                          :selectedProvider="selectedProvider"
                                          v-for="provider in providers"
@@ -16,7 +16,7 @@
 
         <v-col cols="12">
             <div class="d-flex w-100 overflow-auto">
-                <InternetPlan :class="{'not-editable': !isServiceEditable }"
+                <InternetPlan :class="{'not-editable': isServiceEditable }"
                               @reviewPlan="reviewPlan"
                               :selectedPlan="selectedPlan"
                               v-for="(plan, index) in plans"
@@ -50,12 +50,13 @@
                                               inset
                                               class="mt-0"
                                               @change="isNeedPhonePlanHandler"
+                                              :disabled="isServiceEditable"
                                     ></v-switch>
                                 </div>
                             </div>
 
                             <div v-if="internetServiceInfo.is_need_home_phone"
-                                 :class="{'not-editable': !isServiceEditable }">
+                                 :class="{'not-editable': isServiceEditable }">
                                 <p class="mb-0">Home Phone Plans</p>
                                 <div class="home-plan" @click="selectPhonePlan()">
                                     <div class="pa-2">
@@ -68,7 +69,9 @@
                             <div v-if="internetServiceInfo.is_need_home_phone">
                                 <v-checkbox v-model="internetServiceInfo.is_existing_landline"
                                             @change="updateInternetServiceInfo"
-                                            :label="`Do you have an existing landline phone number you'd like to bring to your new service?`">
+                                            :label="`Do you have an existing landline phone number you'd like to bring to your new service?`"
+                                            :disabled="isServiceEditable"
+                                >
                                 </v-checkbox>
                             </div>
 
@@ -92,6 +95,7 @@
                                                 v-model="internetServiceInfo.home_phone_number"
                                                 :error-messages="errors[0]"
                                                 @blur="updateInternetServiceInfo"
+                                                :disabled="isServiceEditable"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </div>
@@ -115,6 +119,7 @@
                                                 v-model="internetServiceInfo.current_provider"
                                                 @blur="updateInternetServiceInfo"
                                                 :error-messages="errors[0]"
+                                                :disabled="isServiceEditable"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </div>
@@ -138,6 +143,7 @@
                                                 v-model="internetServiceInfo.account_number"
                                                 :error-messages="errors[0]"
                                                 @blur="updateInternetServiceInfo"
+                                                :disabled="isServiceEditable"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </div>
@@ -172,6 +178,7 @@
                                                 v-model="internetServiceInfo.otp"
                                                 @blur="updateInternetServiceInfo"
                                                 :error-messages="errors[0]"
+                                                :disabled="isServiceEditable"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </div>
@@ -197,6 +204,7 @@
                                                       :error-messages="errors[0]"
                                                       @blur="updateInternetServiceInfo"
                                                       @change="paymentLinkChangeHandler"
+                                                      :disabled="isServiceEditable"
                                             >
                                             </v-select>
                                         </ValidationProvider>
@@ -222,6 +230,7 @@
                                                       v-model="internetServiceInfo.charity"
                                                       :error-messages="errors[0]"
                                                       @blur="updateInternetServiceInfo"
+                                                      :disabled="isServiceEditable"
                                             >
                                             </v-select>
                                         </ValidationProvider>
@@ -238,6 +247,7 @@
                                             class="mt-0"
                                             v-model="internetServiceInfo.is_back_to_base"
                                             @change="updateInternetServiceInfo"
+                                            :disabled="isServiceEditable"
                                         ></v-switch>
                                     </div>
                                 </div>
@@ -252,6 +262,7 @@
                                             class="mt-0"
                                             v-model="internetServiceInfo.is_security_alarm"
                                             @change="updateInternetServiceInfo"
+                                            :disabled="isServiceEditable"
                                         ></v-switch>
                                     </div>
                                 </div>
@@ -271,7 +282,7 @@
 
                             <div class="crm-text-field">
                                 <v-btn outlined class="outlined-btn" @click="sendGoodtelPaymentLink"
-                                       :loading="paymentBtnLoading" :disabled="paymentLinkSent">
+                                       :loading="paymentBtnLoading" :disabled="paymentLinkSent || isServiceEditable">
                                     Send payment link
                                     <v-icon class="ml-4">mdi-email</v-icon>
                                 </v-btn>
@@ -334,6 +345,7 @@
                     color="#542E89"
                     @click="submit"
                     class="white--text"
+                    :disabled="isServiceEditable"
                 >
                     Submit for NBN
                 </v-btn>
@@ -352,6 +364,9 @@
             :leadSummary="leadSummary"
             :activePlan="activePlan"
         ></InternetSubmitConfirmationModal>
+
+        <AssignedToUserEmptyModal v-if="assignedToDialog" :dialog="assignedToDialog"
+                                  @closeMessage="closeAssignedToEmptyModal"></AssignedToUserEmptyModal>
     </v-card>
 </template>
 
@@ -364,6 +379,7 @@ import InternetService from "@scripts/modules/internet/services/InternetService"
 import ApplicationSummary from "@scripts/models/crm/ApplicationSummary";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
+import AssignedToUserEmptyModal from "@scripts/components/crm/modals/AssignedToUserEmptyModal";
 
 export default {
     name: "InternetService",
@@ -371,7 +387,8 @@ export default {
         InternetPlan,
         InternetServiceProvider,
         InternetPlanDetails,
-        InternetSubmitConfirmationModal
+        InternetSubmitConfirmationModal,
+        AssignedToUserEmptyModal
     },
     data() {
         return {
@@ -386,7 +403,8 @@ export default {
             showCopyBtnSnackbar: false,
             paymentLink: null,
             paymentBtnLoading: false,
-            paymentLinkSent: false
+            paymentLinkSent: false,
+            assignedToDialog: false,
         }
     },
     computed: {
@@ -436,7 +454,7 @@ export default {
             return LeadApplicationService.loadApplicationSummary();
         },
         isServiceEditable() {
-            return LeadApplicationService.canEditService(
+            return InternetService.canEditService(
                 UtilityStoreService.getInternetStatus()
             );
         },
@@ -524,6 +542,14 @@ export default {
         },
         async submit() {
             await this.$eventBus.$emit('nbn_submit_validate');
+
+            // check if application is assigned or not
+            let assignedHoodUser = await this.getAssignedHoodUser();
+            if (!assignedHoodUser) {
+                this.assignedToDialog = true;
+                return true;
+            }
+
             setTimeout(() => {
                 let v = this.isValidForm;
                 if (v) {
@@ -574,7 +600,13 @@ export default {
             setTimeout(() => {
                 this.showCopyBtnSnackbar = false;
             }, 2000);
-        }
+        },
+        async getAssignedHoodUser() {
+            return await LeadApplicationService.getAssignedHoodUser(this.leadSummary.id);
+        },
+        closeAssignedToEmptyModal() {
+            this.assignedToDialog = false;
+        },
     }
 }
 </script>

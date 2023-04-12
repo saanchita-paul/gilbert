@@ -25,7 +25,7 @@
 
                                 <v-col cols="12">
                                     <div class="crm-text-field">
-                                        <div class="field-label">
+                                        <div class="field-label font-size-16">
                                             <span>Personal Details</span>
                                         </div>
                                     </div>
@@ -56,15 +56,6 @@
                                             <span>{{ leadSummary.email }}</span>
                                         </div>
                                     </div>
-
-                                    <div class="crm-text-field">
-                                        <div class="field-label">
-                                            <span>Email Billing</span>
-                                        </div>
-                                        <div class="text-field">
-                                            <span>{{ leadSummary.email_billing }}</span>
-                                        </div>
-                                    </div>
                                 </v-col>
 
                                 <v-col cols="12">
@@ -73,7 +64,7 @@
 
                                 <v-col cols="12">
                                     <div class="crm-text-field">
-                                        <div class="field-label">
+                                        <div class="field-label font-size-16">
                                             <span>Connection Details</span>
                                         </div>
                                     </div>
@@ -112,7 +103,7 @@
 
                                 <v-col cols="12">
                                     <div class="crm-text-field">
-                                        <div class="field-label">
+                                        <div class="field-label font-size-16">
                                             <span>Additional Information</span>
                                         </div>
                                     </div>
@@ -233,7 +224,7 @@
 
                                     <div class="crm-text-field">
                                         <div class="field-label">
-                                            <span>Name on Account</span>
+                                            <span>Account Number</span>
                                         </div>
                                         <div class="text-field">
                                             <span>{{ leadSummary.applicant_name }}</span>
@@ -404,5 +395,13 @@ export default {
 .text-internet {
     color: #85639A;
     font-weight: 700;
+}
+
+.font-size-16 {
+    font-size: 16px;
+}
+
+.v-card__text {
+    color: #000000DE !important;
 }
 </style>
