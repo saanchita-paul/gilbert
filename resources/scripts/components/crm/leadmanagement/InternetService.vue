@@ -68,7 +68,7 @@
                             <div v-if="internetServiceInfo.is_need_home_phone">
                                 <v-checkbox v-model="internetServiceInfo.is_existing_landline"
                                             @change="updateInternetServiceInfo"
-                                            :label="`Do you have an existing landline phone number you'd like to bring to your new service? *`">
+                                            :label="`Do you have an existing landline phone number you'd like to bring to your new service?`">
                                 </v-checkbox>
                             </div>
 
