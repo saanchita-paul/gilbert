@@ -13,6 +13,8 @@ class InternetPaymentLinkMail extends Mailable implements ShouldQueue
 
     public array $data;
 
+    public $subject = "Thanks for choosing Goodtel!";
+
     /**
      * Create a new message instance.
      *
@@ -23,6 +25,7 @@ class InternetPaymentLinkMail extends Mailable implements ShouldQueue
         $this->data = $data;
     }
 
+
     /**
      * Build the message.
      *
@@ -30,11 +33,12 @@ class InternetPaymentLinkMail extends Mailable implements ShouldQueue
      */
     public function build()
     {
-        $name       = $this->data['customer_name'] ?? 'Customer';
+        $name = $this->data['customer_name'] ?? 'Customer';
         $paymentUrl = $this->data['payment_url'] ?? '#';
         return $this->view('email.internet-payment-link-mail', [
-            'name'       => $name,
+            'name' => $name,
             'paymentUrl' => $paymentUrl,
+            'charity' => $this->data['charity']
         ]);
     }
 }
