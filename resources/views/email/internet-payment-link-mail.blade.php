@@ -60,12 +60,7 @@
                                     </p>
 
                                     <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu', Arial, sans-serif;font-weight:400;">
-                                        By switching to Goodtel and selecting [Rainforest Rescue] you will help reduce
-                                        your carbon footprint.
-                                    </p>
-
-                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu', Arial, sans-serif;font-weight:400;">
-                                        We can’t thank you enough for making the switch to Goodtel and we look forward
+                                        We can’t thank you enough for making the switch to Goodtel and and selecting {{$charity}}. We look forward
                                         to doing some good with you soon.
                                     </p>
                                 </td>
@@ -80,8 +75,8 @@
                                             </v:roundrect>
                                         <![endif]-->
                                     <a href="{{ $paymentUrl }}"
-                                       style="background-color:#542E89;border:1px solid #542E89;border-radius:10px;color:#ffffff;display:inline-block;font-family:'Ubuntu', Arial, sans-serif;font-size:14px;line-height:44px;text-align:center;text-decoration:none;width:160px;-webkit-text-size-adjust:none;mso-hide:all;font-weight:700;">Secure
-                                        Payment Link</a>
+                                       style="background-color:#542E89;border:1px solid #542E89;border-radius:10px;color:#ffffff;display:inline-block;font-family:'Ubuntu', Arial, sans-serif;font-size:14px;line-height:44px;text-align:center;text-decoration:none;width:160px;-webkit-text-size-adjust:none;mso-hide:all;font-weight:700;">
+                                        Secure Payment Link</a>
                                 </td>
                             </tr>
 

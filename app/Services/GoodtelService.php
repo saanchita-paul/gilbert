@@ -68,7 +68,10 @@ class GoodtelService
 
             // set all plans that are not in the array to inactive and their payment links to inactive
             GoodtelPlan::whereNotIn('name', array_column($plans, 'name'))->update(['is_active' => false]);
-            GoodtelPlanPaymentLink::whereNotIn('goodtel_plan_id', GoodtelPlan::whereIn('name', array_column($plans, 'name'))->pluck('id'))->update(['is_active' => false]);
+            GoodtelPlanPaymentLink::whereNotIn(
+                'goodtel_plan_id',
+                GoodtelPlan::whereIn('name', array_column($plans, 'name'))->pluck('id')
+            )->update(['is_active' => false]);
 
             DB::commit();
         } catch (\Exception $e) {
@@ -98,10 +101,13 @@ class GoodtelService
                 ])->first();
             }
 
-            Mail::to($internetServiceInfo->connectionApplication->email)->send(new InternetPaymentLinkMail([
-                'customer_name' => $internetServiceInfo->connectionApplication->first_name . ' ' . $internetServiceInfo->connectionApplication->last_name,
-                'payment_url'   => $paymentLink->payment_link
-            ]));
+            Mail::to($internetServiceInfo->connectionApplication->email)->send(
+                new InternetPaymentLinkMail([
+                    'customer_name' => $internetServiceInfo->connectionApplication->first_name,
+                    'payment_url' => $paymentLink->payment_link,
+                    'charity' => InternetServiceInfo::CHARITY_MAPPER[$internetServiceInfo->charity] ?? null
+                ])
+            );
         } catch (\Exception $e) {
             throw $e;
         }
