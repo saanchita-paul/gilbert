@@ -5,7 +5,7 @@ import InternetServiceInfoMapper from "@scripts/data/InternetServiceInfoMapper";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 
 // get modem types
-const getModemTypes = () => InternetServiceConstant.MODEM_TYPES;
+const getModemTypes = () => InternetAPI.getModems();
 // get charity items
 const getCharityItems = () => InternetServiceConstant.CHARITY;
 // get provider and plan

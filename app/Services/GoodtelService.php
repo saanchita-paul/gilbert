@@ -23,6 +23,14 @@ class GoodtelService
         return GoodtelPlan::where('is_active', true)->with(['paymentLinks'])->get();
     }
 
+    public static function getModems(): array
+    {
+        return GoodtelPlanPaymentLink::query()
+            ->selectRaw("distinct(modem_type) as value, modem_text as text")
+            ->get()
+            ->toArray();
+    }
+
     /**
      * Update or create plans and payment links
      *
@@ -58,6 +66,7 @@ class GoodtelService
                             'modem_type' => $paymentLink['modem_type']
                         ],
                         [
+                            'modem_text' => $paymentLink['modem_text'],
                             'payment_link' => $paymentLink['payment_link'],
                             'is_active' => true
                         ]

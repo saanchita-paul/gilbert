@@ -336,6 +336,7 @@ Route::post('/application-events', [ApplicationEventController::class, 'saveEven
 
 // GoodTel routes
 Route::get('goodtel/plans', [GoodtelController::class, 'getPlans']);
+Route::get('goodtel/modems', [GoodtelController::class, 'getModems']);
 Route::post('goodtel/plans', [GoodtelController::class, 'create']);
 
 /**

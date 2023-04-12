@@ -47,4 +47,18 @@ class GoodtelController extends Controller
             return $this->sendErrorResponse($e);
         }
     }
+
+    /**
+     * Get all modems
+     *
+     * @return JsonResponse
+     */
+    public function getModems(): JsonResponse
+    {
+        try {
+            return response()->json(['data' => GoodtelService::getModems()]);
+        } catch (\Exception $e) {
+            return $this->sendErrorResponse($e);
+        }
+    }
 }

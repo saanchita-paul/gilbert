@@ -22,6 +22,7 @@ class GoodtelPlanSeeder extends Seeder
                 'display_name' => 'Casual- nbn',
                 'name' => 'casual_nbn25',
                 'type' => 'casual',
+                'is_active' => 2,
                 'mbps' => '25/10Mbps',
                 'price' => 68,
                 'details_url' => 'https://www.goodtel.com.au/assets/downloads/nbn%E2%84%A22510-mobile-bundle-Critical-Information-Summary-4_2022-11-30-045642_fdha.pdf',
@@ -44,6 +45,7 @@ class GoodtelPlanSeeder extends Seeder
                 'display_name' => 'Family-nbn',
                 'name' => 'family_nbn50',
                 'type' => 'family',
+                'is_active' => 1,
                 'mbps' => '50/20Mbps',
                 'price' => 78,
                 'details_url' => 'https://www.goodtel.com.au/assets/downloads/nbn%E2%84%A25020-nbn%E2%84%A2-Critical-Information-Summary-7.pdf',
@@ -66,6 +68,7 @@ class GoodtelPlanSeeder extends Seeder
                 'display_name' => 'Superfast- nbn',
                 'name' => 'superfast_nbn100',
                 'type' => 'superfast',
+                'is_active' => 1,
                 'mbps' => '100/25Mbps',
                 'price' => 98,
                 'details_url' => 'https://www.goodtel.com.au/assets/downloads/nbn%E2%84%A210020-Critical-Information-Summary-5.pdf',
@@ -88,6 +91,7 @@ class GoodtelPlanSeeder extends Seeder
                 'display_name' => 'Blazing- nbn',
                 'name' => 'blazing_nbn250',
                 'type' => 'blazing',
+                'is_active' => 1,
                 'mbps' => '250/25Mbps',
                 'price' => 128,
                 'details_url' => 'https://www.goodtel.com.au/assets/downloads/nbn%E2%84%A225025-Critical-Information-Summary-4.pdf',
@@ -108,8 +112,15 @@ class GoodtelPlanSeeder extends Seeder
             ]
         ];
 
+//        $k = \Storage::put('goodtel/plans.json', json_encode($plans));
+//        dd('done', $k);
+//        dump(config('goodtel.plans_json_path'));
+
+        $plans =  \File::get(config('goodtel.plans_json_path'));
+
+//        dd(json_decode($plans, true));
         $service = new GoodtelService();
-        $service->updateOrCreatePlans($plans);
+        $service->updateOrCreatePlans(json_decode($plans, true));
 
         $this->command->info('GoodTel plans seeded!');
     }

@@ -54,11 +54,20 @@ const goodtelPaymentLinkSend = async (appId) => {
     }
 };
 
+const getModems = async () => {
+    try {
+        return (await axios.get(`/api/goodtel/modems`)).data.data;
+    } catch (error) {
+        return error.data;
+    }
+};
+
 export default {
     getProviderAndPlan,
     updateInternetServiceInfo,
     updateNbnProviderInfo,
     NBNSubmit,
     goodtelPlans,
-    goodtelPaymentLinkSend
+    goodtelPaymentLinkSend,
+    getModems
 };

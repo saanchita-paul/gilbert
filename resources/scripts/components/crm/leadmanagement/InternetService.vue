@@ -379,7 +379,7 @@ export default {
             viewPlanDetails: false,
             plans: null,
             showInternetSubmitModal: false,
-            modemTypesItems: InternetService.getModemTypes(),
+            modemTypesItems: [],
             charityItems: InternetService.getCharityItems(),
             activePlan: {},
             showPaymentLinkSnackbar: false,
@@ -446,6 +446,7 @@ export default {
     },
     async mounted() {
         this.leadSummary = await this.loadApplicationSummary;
+        this.modemTypesItems = await InternetService.getModemTypes()
         await InternetService.loadProviderData(this.leadSummary.id);
         await this.onSelectProvider(this.selectedProvider ?? null);
         this.setActivePlan(this.selectedPlan ?? null);
