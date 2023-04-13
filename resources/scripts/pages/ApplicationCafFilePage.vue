@@ -3,7 +3,7 @@
 
         <v-tabs v-model="activeTab" background-color="transparent">
             <!--  Chatbot Application start-->
-            <v-tab href="#chatbotApplication" class="custom-gray-color ">
+            <v-tab href="#chatbotApplication" class="custom-gray-color custom-outer-tab">
                 <v-icon left>mdi-facebook-messenger</v-icon>
                 Chatbot Applications
             </v-tab>
@@ -14,74 +14,69 @@
 
 
             <!--  Gilbert Application start-->
-            <v-tab href="#gilbertApplication" class="custom-gray-color">
+            <v-tab href="#gilbertApplication" class="custom-gray-color custom-outer-tab">
                 <v-icon left>mdi-message-text</v-icon>
                 Gilbert Applications
             </v-tab>
             <v-tab-item value="gilbertApplication">
-                <v-card>
-                    <v-card-text>
-                        <v-row>
-                            <v-col cols="12">
-                                <h3>Filters</h3>
-                                <GilbertApplicationCafFileFilter
-                                    :selectedCafFile="selectedCafFile"
-                                    v-model="advanceSearchModel"
-                                    :gilbertApplications="gilbertApplications"
-                                    :isSearchEmpty="advanceSearchModel.isSearchEmpty()"
-                                    @updatePageOnFilterChange="updatePageOnFilterChange"
-                                    @updateDates="updateDates">
-                                </GilbertApplicationCafFileFilter>
-                            </v-col>
-                            <v-col cols="12">
-                                <GilbertApplicationCafFileTable
-                                    v-model="selectedCafFile"
-                                    :gilbertApplications="gilbertApplications"
-                                    :totalItems="totalItems"
-                                    :pages="pages"
-                                    @reloadDataTable="reloadDataTable"
-                                    @selectRowCafFiles="selectRowCafFiles"
-                                >
-                                </GilbertApplicationCafFileTable>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
+                <v-tabs v-model="activeInnerTab" background-color="transparent" class="pa-4" slider-size="0">
+                    <!--  Utility Application start-->
+                    <v-tab href="#utilityGilbertApplication" class="custom-inner-tab" :active-class="'inner-tab--active'">
+                        <v-icon color="yellow" :disabled="isUtilityActive">mdi-lightning-bolt</v-icon>
+                        <v-icon left color="red" :disabled="isUtilityActive">mdi-fire</v-icon>
+                        Elec & gas
+                    </v-tab>
+                    <v-tab-item value="utilityGilbertApplication">
+                        <v-card>
+                            <v-card-text>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <h3>Filters</h3>
+                                        <GilbertApplicationCafFileFilter
+                                            :selectedCafFile="selectedCafFile"
+                                            v-model="advanceSearchModel"
+                                            :gilbertApplications="gilbertApplications"
+                                            :isSearchEmpty="advanceSearchModel.isSearchEmpty()"
+                                            @updatePageOnFilterChange="updatePageOnFilterChange"
+                                            @updateDates="updateDates">
+                                        </GilbertApplicationCafFileFilter>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <GilbertApplicationCafFileTable
+                                            v-model="selectedCafFile"
+                                            :gilbertApplications="gilbertApplications"
+                                            :totalItems="totalItems"
+                                            :pages="pages"
+                                            @reloadDataTable="reloadDataTable"
+                                            @selectRowCafFiles="selectRowCafFiles"
+                                        >
+                                        </GilbertApplicationCafFileTable>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
+                    </v-tab-item>
+                    <!--  utility Application end-->
+
+                    <!--  NBN  Application start-->
+                    <v-tab href="#nbnGilbertApplication" class="custom-inner-tab" :active-class="'inner-tab--active'">
+                        <v-icon left>mdi-wifi</v-icon>
+                        NBN
+                    </v-tab>
+                    <v-tab-item value="nbnGilbertApplication">
+                        <v-card>
+                            <v-card-text>
+                                <GilbertNbnFilterWrapper
+                                    filterFor="nbn"
+                                />
+                            </v-card-text>
+                        </v-card>
+                    </v-tab-item>
+                    <!--  NBN  Application end-->
+                </v-tabs>
             </v-tab-item>
             <!--  Gilbert Application end-->
 
-            <!--  Utility Application start-->
-            <v-tab href="#utilityGilbertApplication">
-                <v-icon >mdi-flash</v-icon>
-                <v-icon left>mdi-fire</v-icon>
-                Utility Applications
-            </v-tab>
-            <v-tab-item value="utilityGilbertApplication">
-                <v-card>
-                    <v-card-text>
-                        <GilbertFilterWrapper
-                            filterFor="utility"
-                        />
-                    </v-card-text>
-                </v-card>
-            </v-tab-item>
-            <!--  utility Application end-->
-
-            <!--  NBN  Application start-->
-            <v-tab href="#nbnGilbertApplication">
-                <v-icon left>mdi-wifi</v-icon>
-                NBN Applications
-            </v-tab>
-            <v-tab-item value="nbnGilbertApplication">
-                <v-card>
-                    <v-card-text>
-                        <GilbertNbnFilterWrapper
-                            filterFor="nbn"
-                        />
-                    </v-card-text>
-                </v-card>
-            </v-tab-item>
-            <!--  NBN  Application end-->
         </v-tabs>
 
     </v-container>
@@ -118,6 +113,7 @@ export default {
             selectedCaf: [],
             selectedCafFile: [],
             tab: null,
+            inner_tab : null,
             cafFiles: [],
 
             sort_search_meta: null,
@@ -147,6 +143,17 @@ export default {
             get() {
                 return this.$route.query.tab;
             }
+        },
+        activeInnerTab : {
+            set(inner_tab) {
+                this.$router.replace({ query: { ...this.$route.query, inner_tab }})
+            },
+            get() {
+                return this.$route.query.inner_tab;
+            }
+        },
+        isUtilityActive(){
+            return this.activeInnerTab !== 'utilityGilbertApplication'
         }
     },
 
@@ -315,13 +322,26 @@ export default {
 </script>
 
 <style scoped>
-.v-tab {
+
+.custom-inner-tab{
+    border: 1px solid gray;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-right: 15px;
+    margin-bottom: 15px;
+}
+
+.inner-tab--active{
+    background-color: #DDE2FF !important;
+}
+
+.custom-outer-tab {
     background-color: #e6e5e5 !important;
     border-radius: 16px 16px 0px 0px;
     text-transform: capitalize;
     font-weight: bold;
 }
-.v-tab--active{
+.custom-outer-tab--active{
     margin-top: -17px;
     padding-top: 8px;
     border-radius: 50% 50% 0 0 !important;
@@ -334,8 +354,8 @@ export default {
     background-color: #F2F3F4 !important;
 }
 
-.theme--light.v-tabs .v-tab--active:hover::before, .theme--light.v-tabs .v-tab--active::before{
-    border-radius: 50% 50% 0px 0px ;
-}
+/*.theme--light.v-tabs .v-tab--active:hover::before, .theme--light.v-tabs .v-tab--active::before{*/
+/*    border-radius: 50% 50% 0px 0px ;*/
+/*}*/
 </style>
 
