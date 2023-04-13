@@ -87,7 +87,6 @@ export default {
     border-radius: 32px;
     flex-basis: 250px;
     opacity: 0.4;
-    font-family: "Ubuntu";
 }
 
 .plan-title-header {
@@ -95,7 +94,6 @@ export default {
     color: white;
     padding: 20px 10px;
     border-radius: 32px 32px 0 0;
-    font-family: "Arial";
 }
 
 .internet-plan.active {
