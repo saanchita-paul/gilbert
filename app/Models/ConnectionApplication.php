@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
 use OurProperty\Models\OurProperty;
-use phpDocumentor\Reflection\Utils;
 use PropertyMe\PropertyMeLead;
 use Carbon\Carbon;
 
@@ -660,7 +659,6 @@ class ConnectionApplication extends Model
             ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agent_name,
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agent_name,
             ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agent_name,
-            ConnectionApplication::SOURCE_T_APP => $this->createdBy?->first_name . ' ' . $this->createdBy?->last_name,
             ConnectionApplication::SOURCE_MRI =>
                 $this->createdBy ? $this->createdBy->first_name . ' ' . $this->createdBy->last_name :
                 $this->mriApplication?->mriProperty?->mriAgents()?->first()?->agent_name,
@@ -764,6 +762,11 @@ class ConnectionApplication extends Model
         }
 
         return '';
+    }
+
+    public function internetServiceInfo(): HasOne
+    {
+        return $this->hasOne(InternetServiceInfo::class);
     }
 
     /**

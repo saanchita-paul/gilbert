@@ -108,7 +108,7 @@ import ApplicationUnlockConfirmModal from "@scripts/components/crm/modals/Applic
 import SendToChatbotConfirmModal from "@scripts/components/crm/modals/SendToChatbotConfirmModal";
 import {echo} from '@scripts/services/LaravelEchoService';
 import GBGService from "@scripts/services/GBGService";
-
+import InternetService from "@scripts/modules/internet/services/InternetService";
 
 export default {
     //todo shift afterHourFlag, nextBusinessDay, getElectricityDistributor to powerService
@@ -132,7 +132,6 @@ export default {
         ApplicationUnlockConfirmModal,
         SendToChatbotConfirmModal
     },
-
     data() {
         return {
             afterHourEffectedField: ['moving_date', 'plan_type'],
@@ -207,7 +206,6 @@ export default {
         isLocked() {
             return this.chatbotData.chatbot_id !== null && !this.chatbotData.is_locked;
         },
-
     },
     methods: {
         async getElectricityDistributor() {
@@ -237,7 +235,6 @@ export default {
         cancelClose() {
             this.closeLead = false;
         },
-
         async sucessSaveClose(closeReason) {
             try {
                 await LeadApplicationService.closeApplicationWithReason(this.leadId, closeReason);
@@ -299,19 +296,14 @@ export default {
         async submitConnection(submitType) {
             let v = await this.validateLead();
             let isProperAddress = await this.isProperAddress();
-
             if (!isProperAddress) Store.commit('setInvalidAddress', true);
-
             if (!v || !isProperAddress) return;
-
             if (!this.lead.person_details.email_manually_verified_by) {
                 await this.gbgEmailValidate();
             }
-
             if (this.isInvalidEmail) {
                 return;
             }
-
             let assignedHoodUser = await this.getAssignedHoodUser();
             if (!assignedHoodUser) {
                 this.assignedToDialog = true;
@@ -343,9 +335,7 @@ export default {
             return await LeadApplicationService.getAssignedHoodUser(this.leadId);
         },
         isWaterUnavailable($submitType, $state, $tenantType) {
-
             const rightState = ['vic', 'victoria'].includes($state?.toLowerCase());
-
             if ($submitType === 'water' && !rightState) {
                 this.preventSubmissionMessage = 'Water is not available outside Victoria';
                 return true;
@@ -356,7 +346,6 @@ export default {
             }
             return false;
         },
-
         async gbgEmailValidate() {
             this.isInvalidEmail = false;
             try {
@@ -367,7 +356,6 @@ export default {
             }
             return this.isInvalidEmail;
         },
-
         closePreventSubmissionModal() {
             this.preventSubmissionFlag = false;
         },
@@ -375,19 +363,19 @@ export default {
             this.showSubmitModal = false;
         },
         async validateLead() {
-            return (await this.$refs.submit_lead.validate()) && (await this.$refs.service_form.validate())
+            let v1 = await this.$refs.submit_lead.validate();
+            let v2 = await this.$refs.service_form.validate();
+            return v1 && v2
         },
         async confirmSubmitLead() {
             this.showSubmitModal = false;
             let payload = null;
             if (this.lead.property_details === undefined) {
                 payload = {...this.lead};
-
             } else {
                 if (this.lead?.indentification?.medicare_expire_date) {
                     delete this.lead.indentification.medicare_expire_date;
                 }
-
                 payload = {
                     ...this.lead.property_details,
                     ...this.lead.person_details,
@@ -408,10 +396,8 @@ export default {
             this.leadSummary.street_address = address.street_address
             this.leadSummary.city = address.city
             this.leadSummary.is_billing_same = address.is_billing_same
-
             this.leadSummary.billing_address_text = address.billing_address_text
             this.leadSummary.billing_street_address = address.billing_street_address
-
             this.leadSummary.postcode = address.postcode
             this.leadSummary.state = address.state
             this.leadSummary.street_number = address.street_number
@@ -430,38 +416,30 @@ export default {
             this.leadSummary.mirn = response.mirn;
             this.leadSummary.loading_address_info = response.loading_address_info;
             this.nmiMernFlag = response.loading_address_info;
-
             await this.getElectricityDistributor();
             await this.loadNextBusinessDay();
 
             this.loadLaravelEcho();
 
         },
-
         async updateDraft(field, value, isDate, identification, isManualChangeFlag) {
             if (isNull(value)) return;
-
             this.isInvalidEmail = false;
-
             if (isDate) {
                 if (field == 'dob' && dayjs(value, 'DD/MM/YYYY').isSame(this.leadSummary.dob)) {
                     return;
                 }
-
                 if (field == 'moving_date' && dayjs(value, 'DD/MM/YYYY').isSame(this.leadSummary.moving_date)) {
                     return;
                 }
-
                 if (field == 'expire_date' && dayjs(value, 'DD/MM/YYYY').isSame(this.leadSummary.identification.expire_date)) {
                     return;
                 }
             }
             const res = await LeadApplicationService.saveSoleField(field, value, this.leadId, isDate, identification, false);
-
             // Is embedded change
             this.leadSummary.embedded_nmi = res.data.data.embedded_nmi;
             this.leadSummary.loading_address_info = res.data.data.loading_address_info;
-
             let [day, month, year] = [];
             if (isDate) {
                 [day, month, year] = value.split('/');
@@ -477,7 +455,6 @@ export default {
                     this.leadSummary.identification.state = '';
                     this.leadSummary.identification.country = '';
                 }
-
                 this.leadSummary.identification[field] = value;
                 return;
             }
@@ -538,8 +515,6 @@ export default {
         cancelDuplicateLead() {
             this.duplicateLead = false;
         },
-
-
         // async updateEmail(field, value) {
         //     await LeadApplicationService.saveEmailField(field, value, this.leadId);
         // },
@@ -551,29 +526,23 @@ export default {
             this.isChatBotApplication = false;
             this.showUnlockConfirmModal = true;
         },
-
         async unlockApp() {
             const res = await LeadApplicationService.lockOrUnlockApp(this.leadId, {is_locked: false});
             console.log(res);
-
             if (res.success) {
                 this.showUnlockConfirmModal = false;
                 await this.getIsLocked();
             }
         },
-
         async lockApp() {
             const res = await LeadApplicationService.sendToChatBot(this.leadId);
-
             if (res.success) {
                 this.sentToChabotConfirmModal = false;
                 await this.getIsLocked();
             }
         },
-
         async getIsLocked() {
             const res = await LeadApplicationService.isSentToChatbot(this.leadId);
-
             this.chatbotData = res;
             this.isChatBotApplication = res.chatbot_id && res.is_locked;
         },
@@ -649,26 +618,28 @@ export default {
         }
         this.$eventBus.$on("validate", validateEvent);
         this.$eventBus.$on("busUtilitySubmit", busUtilitySubmitEvent);
-
         this.$once("hook:beforeDestroy", () => {
             this.$eventBus.$off("validate", validateEvent);
         });
-
         this.$once("hook:beforeDestroy", () => {
             this.$eventBus.$off("busUtilitySubmit", busUtilitySubmitEvent);
         });
-
         await this.loadPlanNoteAndLead();
         await this.loadNextBusinessDay();
         // await this.updateMernNmi();
         // this.nmiMernFlag = false;
-
         this.$eventBus.$on("lock_app_auto_assign", async () => {
             await this.lockApp();
         });
 
         this.loadLaravelEcho();
+        // return validate value
+        this.$eventBus.$on("nbn_submit_validate", async () => {
+            let v = await this.validateLead();
+            InternetService.setIsValidForm(v);
+        });
     },
+
     destroyed() {
         if (this.laravelEcho) {
             this.laravelEcho.disconnect();
@@ -677,7 +648,4 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-</style>
 

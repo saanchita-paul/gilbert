@@ -1,5 +1,4 @@
 import DayJs from "dayjs";
-import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import {isNull, sortBy} from "lodash-es";
 import {street_type} from "@scripts/data/constants/StreetType";
 
@@ -83,8 +82,11 @@ export default class ApplicationSummary {
     embedded_nmi = null;
     embedded_mirn = null;
 
-    constructor(
-        {
+    // Internet service info
+    internet_service_info = null;
+
+
+    constructor({
             id = null,
             title = '',
             first_name = '',
@@ -181,9 +183,11 @@ export default class ApplicationSummary {
             embedded_nmi = null,
             embedded_mirn = null,
             loading_address_info = false,
-        }
-    ) {
 
+            // Internet service info
+            internet_service_info = null,
+        } = {})
+    {
         this.id = id;
         this.applicant_name = (title == null ? '' : title) + ' ' + first_name + ' ' + (isNull(middle_name) ? '' : middle_name) + ' ' + last_name;
         this.first_name = first_name;
@@ -287,6 +291,9 @@ export default class ApplicationSummary {
         this.embedded_nmi = embedded_nmi;
         this.embedded_mirn = embedded_mirn;
         this.loading_address_info = loading_address_info;
+
+        // Internet service info
+        this.internet_service_info = internet_service_info;
     }
 
 
