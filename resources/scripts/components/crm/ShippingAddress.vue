@@ -413,21 +413,29 @@ export default {
     methods: {
         getInitData() {
             if (this.shippingDetails.is_same) {
-                this.shippingDetails.unit_number = this.serviceAddress.unit_number;
-                this.shippingDetails.street_number = this.serviceAddress.street_number;
-                this.shippingDetails.street_name_only = this.serviceAddress.street_name_only;
-                this.shippingDetails.street_name = this.serviceAddress.street_name;
-                this.shippingDetails.street_type = this.serviceAddress.street_type;
-                this.shippingDetails.street_address = this.serviceAddress.street_address;
-                this.shippingDetails.state = this.serviceAddress.state;
-                this.shippingDetails.postcode = this.serviceAddress.postcode;
-                this.shippingDetails.city = this.serviceAddress.city;
-                this.shippingDetails.country = this.serviceAddress.country;
-                this.shippingDetails.address_text = this.serviceAddress.address_text;
+                this.makeItSameAddress();
             }
+        },
+
+        makeItSameAddress() {
+            this.shippingDetails.unit_number = this.serviceAddress.unit_number;
+            this.shippingDetails.street_number = this.serviceAddress.street_number;
+            this.shippingDetails.street_name_only = this.serviceAddress.street_name_only;
+            this.shippingDetails.street_name = this.serviceAddress.street_name;
+            this.shippingDetails.street_type = this.serviceAddress.street_type;
+            this.shippingDetails.street_address = this.serviceAddress.street_address;
+            this.shippingDetails.state = this.serviceAddress.state;
+            this.shippingDetails.postcode = this.serviceAddress.postcode;
+            this.shippingDetails.city = this.serviceAddress.city;
+            this.shippingDetails.country = this.serviceAddress.country;
+            this.shippingDetails.address_text = this.serviceAddress.address_text;
         },
         shippingAddress() {
             this.shippingDetails.is_same = !this.shippingDetails.is_same;
+
+            if (this.shippingDetails.is_same) {
+                this.makeItSameAddress();
+            }
         },
         selectAddress() {
             this.showSearchFields = true;
