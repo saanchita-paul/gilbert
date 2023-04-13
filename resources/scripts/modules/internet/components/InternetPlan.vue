@@ -8,25 +8,44 @@
                     max-width="30"
                     :src="plan.logo"
                 ></v-img>
-                <h3>{{ plan.provider }}</h3>
+                <h3 class="font-24">{{ plan.provider }}</h3>
             </div>
         </div>
 
-        <div class="pa-4">
+        <div class="pa-4 font-16">
             <p class="mb-0 text-internet">{{ plan.display_name }}</p>
             <p class="text-internet">{{ plan.mbps }}</p>
             <p class="black--text font-weight-bold">{{ '$' + plan.price + '/month' }}</p>
         </div>
 
         <div class="view-plan">
-            <v-btn block rounded color="primary"
-                   v-if="plan.name === selectedPlan" class="font-weight-bold">
+            <v-btn
+                block
+                outlined
+                color="primary"
+                :href="plan.details_url"
+                target="_blank"
+                class="font-weight-bold border-radius-14 border-1 font-16"
+            >
+                View Plan
+            </v-btn>
+        </div>
+
+        <div class="view-plan">
+            <v-btn
+                v-if="plan.name === selectedPlan"
+                block
+                color="primary"
+                class="font-weight-bold border-radius-14 font-16"
+            >
                 Plan Selected!
             </v-btn>
-
-            <v-btn block outlined rounded :href="plan.details_url" target="_blank"
-                   style="border: 1px solid #85639A !important;" v-else>
-                View Plan
+            <v-btn
+                v-else
+                block
+                class="font-weight-bold border-radius-14 border-1 font-16"
+            >
+                Select Plan
             </v-btn>
         </div>
     </div>
@@ -67,7 +86,8 @@ export default {
     text-align: left;
     border-radius: 32px;
     flex-basis: 250px;
-    opacity: 0.3;
+    opacity: 0.4;
+    font-family: "Ubuntu";
 }
 
 .plan-title-header {
@@ -75,6 +95,7 @@ export default {
     color: white;
     padding: 20px 10px;
     border-radius: 32px 32px 0 0;
+    font-family: "Arial";
 }
 
 .internet-plan.active {
@@ -94,5 +115,21 @@ export default {
 .text-internet {
     color: #85639A;
     font-weight: 700;
+}
+
+.border-radius-14 {
+    border-radius: 14px !important;
+}
+
+.border-1 {
+    border: 1px solid #85639A !important;
+}
+
+.font-24 {
+    font-size: 24px;
+}
+
+.font-16 {
+    font-size: 16px;
 }
 </style>
