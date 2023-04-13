@@ -87,10 +87,10 @@
          },
          async fetchApplications() {
              let data = ''
-             if(this.$route.query.tab === 'nbnGilbertApplication'){
+             if(this.$route.query.inner_tab === 'nbnGilbertApplication'){
                  data = await ApplicationCafFileService.getGilbertNBNApplicationData({...this.sorts_search_meta, ...{page: this.pages}}, this.advanceSearchModelFilter);
              }else{
-                 data = await ApplicationCafFileService.getGilbertApplicationData({...this.sorts_search_meta, ...{page: this.pages}}, this.advanceSearchModelFilter);
+                 // data = await ApplicationCafFileService.getGilbertApplicationData({...this.sorts_search_meta, ...{page: this.pages}}, this.advanceSearchModelFilter);
              }
 
              this.applications = data.data;

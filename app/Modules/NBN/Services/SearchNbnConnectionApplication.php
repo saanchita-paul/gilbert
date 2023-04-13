@@ -391,7 +391,8 @@ class SearchNbnConnectionApplication
     {
         if ($this->application_service_type) {
             $this->builder = $this->builder
-//                ->where('status', ConnectionApplication::STATUS_SUBMITTED)
+                ->whereNotNull('assigned_to')
+                ->where('status', '!=', ConnectionApplication::STATUS_UNASSIGNED)
                 ->whereHas('connectionServices', function (Builder $query) {
                 $query->where('service_type', 'internet')
                     ->where('status', ConnectionService::STATUS_SUBMITTED);

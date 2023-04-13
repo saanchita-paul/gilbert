@@ -81,25 +81,25 @@ class NBNCafGenerationService
                     'Business Name' => '',
                     'Business ABN' => null,
                     'Account Password' => $app->internetServiceInfo->otp,
-                    'Driver’s Licence Number' => $app->identification?->card_number,
+                    'Driving Licence Number' => $app->identification?->card_number,
                     'State of Issue' => $app->identification?->state,
                     'Date of Birth' => $this->generateDate($app->dob),
                     'Preferred Connection Date' => $this->generateDate($app->moving_date),
                     'Plan Variant' => ucfirst($app->internetServiceInfo->goodtelPlan->type),
-                    'Utility Bill Plan Name' => $this->generateUtilityBillPlan($app->internetServiceInfo->goodtelPlan->display_name),
+                    'Utility Bill Plan Name' => $this->generateUtilityBill($app->internetServiceInfo->goodtelPlan->display_name),
                     'Phone calls Y/N' => $this->generateReadableAnswer($app->internetServiceInfo->is_need_home_phone),
                     'Phone Number to Transfer' => $app->internetServiceInfo->home_phone_number,
                     'Name of Current Provider' => $app->internetServiceInfo->current_provider,
                     'Account Number of Current Provider' => $app->internetServiceInfo->account_number,
                     'BYO Modem Y/N' => $this->isBYOModem($app->internetServiceInfo->modem_type),
                     'Modem Type' => InternetServiceInfo::MODEM_MAPPER[$app->internetServiceInfo->modem_type],
-                    // 'Amount Paid' => '',
+                    'Amount Paid' => '',
                     'Agreed to Policies' => 'Y',
                     'Back to Base  Alarm Y/N' => $this->generateReadableAnswer($app->internetServiceInfo->is_back_to_base),
                     'Medical Alarm Y/N' => $this->generateReadableAnswer($app->internetServiceInfo->is_security_alarm),
                     'Selected Charity' => InternetServiceInfo::CHARITY_MAPPER[$app->internetServiceInfo->charity],
-                    /*'Stripe PaymentId' => '',
-                    'Stripe CustomerId' => ''*/
+                    'Stripe PaymentId' => '',
+                    'Stripe CustomerId' => ''
                 ];
                 $selectedId[] = $app->id;
             } catch (\Exception $exception) {
@@ -120,7 +120,7 @@ class NBNCafGenerationService
 
     private function generateBillingAddress($app): string
     {
-        $unit = $app->billing_unit_number ? 'U'.$app->billing_unit_number : '';
+        $unit = "U".$app->billing_unit_number;
         return "{$unit} {$app->billing_street_number} {$app->billing_street_name_only}";
     }
 
@@ -145,7 +145,7 @@ class NBNCafGenerationService
         return 'N';
     }
 
-    private function generateUtilityBillPlan($plan): string
+    private function generateUtilityBill($plan): string
     {
         $plan = strtolower($plan);
         return ConnectionService::NBN_UTILITY_BILL_PLANS[$plan];
