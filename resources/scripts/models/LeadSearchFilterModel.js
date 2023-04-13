@@ -37,7 +37,7 @@ class LeadSearchFilterModel {
 
     isSearchEmpty() {
         return isEmpty(this.tenant_name) &&
-            isEmpty(this.source) &&
+            !this.source && this.source != '' &&
             isEmpty(this.phone) &&
             isEmpty(this.address) &&
             isEmpty(this.tenancy_type) &&

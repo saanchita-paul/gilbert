@@ -18,16 +18,14 @@ class Authentication
      */
     public function handle(Request $request, Closure $next): mixed
     {
-
         try {
-            $apiKeyInHeader = trim( $request->header('Authorization') );
-            $token = explode(" ",$apiKeyInHeader)[1] ??  "";
-            $isTokenValid =  JwtAuthService::checkAccessToken($token);
-
-            if($isTokenValid) {
+            $apiKeyInHeader = trim($request->header('Authorization'));
+            $token = explode(" ", $apiKeyInHeader)[1] ??  "";
+            $tokenUsername =  JwtAuthService::checkAccessToken($token);
+            if ($tokenUsername) {
+                $request->request->add(['username' => $tokenUsername]);
                 return $next($request);
-            }
-            else {
+            } else {
                 throw new Exception("API key is not matched", 1);
             }
         } catch (\Throwable $th) {

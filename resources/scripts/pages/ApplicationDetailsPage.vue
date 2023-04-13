@@ -106,6 +106,7 @@ import DuplicateLeadModal from "@scripts/components/crm/modals/DuplicateLeadModa
 import ApplicationUnlockModal from "@scripts/components/crm/modals/ApplicationUnlockModal";
 import ApplicationUnlockConfirmModal from "@scripts/components/crm/modals/ApplicationUnlockConfirmModal";
 import SendToChatbotConfirmModal from "@scripts/components/crm/modals/SendToChatbotConfirmModal";
+import {echo} from '@scripts/services/LaravelEchoService';
 import GBGService from "@scripts/services/GBGService";
 
 
@@ -179,6 +180,7 @@ export default {
                 chatbot_id: null,
                 is_locked: false,
             },
+            laravelEcho: null,
             isInvalidEmail: false
         }
     },
@@ -426,10 +428,14 @@ export default {
             this.leadSummary.nmi = response.nmi;
             this.leadSummary.embedded_nmi = response.embedded_nmi;
             this.leadSummary.mirn = response.mirn;
+            this.leadSummary.loading_address_info = response.loading_address_info;
             this.nmiMernFlag = response.loading_address_info;
 
             await this.getElectricityDistributor();
             await this.loadNextBusinessDay();
+
+            this.loadLaravelEcho();
+
         },
 
         async updateDraft(field, value, isDate, identification, isManualChangeFlag) {
@@ -477,20 +483,32 @@ export default {
             }
             this.leadSummary[field] = value;
             await this.updateAfterHourFlagMovingDate(field, value)
+
+            this.onNMIUpdateManually(field);
         },
         async updateAfterHourFlagMovingDate(field, value) {
             if (field === 'moving_date' || field === 'service_interests') {
                 await this.getElectricityDistributor();
             }
         },
-        async updateMernNmi() {
+        onNMIUpdateManually(field) {
+            if (field === 'nmi') {
+                if (this.laravelEcho) {
+                    this.laravelEcho.disconnect();
+                    this.laravelEcho = null;
+                }
+                this.laravelEcho = echo();
+                this.listenEmbeddedNetworkEvent();
+            }
+        },
+        /*async updateMernNmi() {
             if (this.leadSummary.nmi == null && this.leadSummary.mirn == null) {
                 const nmiMern = await LeadApplicationService.getNmiMern(this.leadId);
                 this.leadSummary.nmi = nmiMern.nmi;
                 this.leadSummary.mirn = nmiMern.mirn;
                 this.leadSummary.embedded_nmi = nmiMern.embedded_nmi;
             }
-        },
+        },*/
         closeAssignedToEmptyModal() {
             this.assignedToDialog = false;
         },
@@ -563,20 +581,52 @@ export default {
             this.sentToChabotConfirmModal = false;
         },
         listenMirnNmiEvent() {
-            this.$echo.channel(`fetchMirnNmi.${this.leadSummary.id}`)
+            console.log('listenMirnNmiEvent');
+            const echo = this.laravelEcho;
+            echo.channel(`fetchMirnNmi.${this.leadSummary.id}`)
                 .listen('FetchMirnNmiEvent', async (res) => {
+                    console.log('FetchMirnNmiEvent', res);
                     this.nmiMernFlag = res.loading_address_info;
+                    this.leadSummary.loading_address_info = res.loading_address_info;
                     await this.loadPlanNoteAndLead();
+                    this.disconnectLaravelEcho();
                 });
         },
         listenEmbeddedNetworkEvent() {
-            this.$echo.channel(`fetchEmbeddedNetwork.${this.leadSummary.id}`)
+            const echo = this.laravelEcho;
+            echo.channel(`fetchEmbeddedNetwork.${this.leadSummary.id}`)
                 .listen('FetchEmbeddedNetworkEvent', async (res) => {
                     console.log('FetchEmbeddedNetworkEvent', res);
                     this.nmiMernFlag = res.loading_address_info;
+                    this.leadSummary.loading_address_info = res.loading_address_info;
+                    this.leadSummary.embedded_nmi = res.embedded_nmi;
                     await this.loadPlanNoteAndLead();
+                    this.disconnectLaravelEcho();
                 });
-        }
+        },
+        loadLaravelEcho() {
+            console.log('loadLaravelEcho');
+            if (!this.leadSummary.loading_address_info && parseInt(this.leadSummary.embedded_nmi) !== 2) return;
+
+            this.disconnectLaravelEcho();
+
+            this.laravelEcho = echo();
+            console.log('loadLaravelEcho', this.laravelEcho);
+
+            if (this.leadSummary.loading_address_info) {
+                this.listenMirnNmiEvent();
+            }
+
+            if (parseInt(this.leadSummary.embedded_nmi) === 2) {
+                this.listenEmbeddedNetworkEvent();
+            }
+        },
+        disconnectLaravelEcho() {
+            if (this.laravelEcho && (!this.leadSummary.loading_address_info && parseInt(this.leadSummary.embedded_nmi) !== 2)) {
+                this.laravelEcho.disconnect();
+                this.laravelEcho = null;
+            }
+        },
     },
     watch: {
         powerPlan: {
@@ -617,8 +667,13 @@ export default {
             await this.lockApp();
         });
 
-        this.listenMirnNmiEvent();
-        this.listenEmbeddedNetworkEvent();
+        this.loadLaravelEcho();
+    },
+    destroyed() {
+        if (this.laravelEcho) {
+            this.laravelEcho.disconnect();
+            this.laravelEcho = null;
+        }
     }
 };
 </script>

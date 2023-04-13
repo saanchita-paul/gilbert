@@ -552,7 +552,7 @@
             <v-text-field
               @input="updateLeads"
               v-model="property_details.nmi"
-              @blur="saveDraft('nmi', property_details.nmi)"
+              @change="saveDraft('nmi', property_details.nmi)"
               outlined
               dense
               hide-details="auto"
@@ -568,20 +568,20 @@
               </template>
             </v-text-field>
           </ValidationProvider>
-<!--            <span class="mt-2" v-if="isEmbeddedNMI == 2">-->
-<!--                <span><small>Checking Embedded..</small></span>-->
-<!--                <v-progress-linear-->
-<!--                    class="primary-color"-->
-<!--                    indeterminate-->
-<!--                    height="6"-->
-<!--                ></v-progress-linear>-->
-<!--            </span>-->
-<!--            <span class="error&#45;&#45;text" v-if="isEmbeddedNMI == 1">-->
-<!--                  <v-icon color="error" class="mt-4">-->
-<!--                      info-->
-<!--                  </v-icon>-->
-<!--                  <small v-html="embeddedText"></small>-->
-<!--            </span>-->
+            <span class="mt-2" v-if="isEmbeddedNMI == 2">
+                <span><small>Checking Embedded..</small></span>
+                <v-progress-linear
+                    class="primary-color"
+                    indeterminate
+                    height="6"
+                ></v-progress-linear>
+            </span>
+            <span class="error--text" v-if="isEmbeddedNMI == 1">
+                  <v-icon color="error" class="mt-4">
+                      info
+                  </v-icon>
+                  <small v-html="embeddedText"></small>
+            </span>
         </div>
       </div>
 
@@ -595,7 +595,7 @@
                     <v-text-field
                         @input="updateLeads"
                         v-model="property_details.nmi"
-                        @blur="saveDraft('nmi', property_details.nmi)"
+                        @change="saveDraft('nmi', property_details.nmi)"
                         outlined
                         dense
                         hide-details="auto"
@@ -611,20 +611,20 @@
                         </template>
                     </v-text-field>
                 </ValidationProvider>
-<!--                <span class="mt-2" v-if="isEmbeddedNMI == 2">-->
-<!--                    <span><small>Checking Embedded..</small></span>-->
-<!--                    <v-progress-linear-->
-<!--                        class="primary-color"-->
-<!--                        indeterminate-->
-<!--                        height="6"-->
-<!--                    ></v-progress-linear>-->
-<!--                </span>-->
-<!--                <span class="error&#45;&#45;text" v-if="isEmbeddedNMI == 1">-->
-<!--                      <v-icon color="error" class="mt-4">-->
-<!--                          info-->
-<!--                      </v-icon>-->
-<!--                      <small v-html="embeddedText"></small>-->
-<!--                </span>-->
+                <span class="mt-2" v-if="isEmbeddedNMI == 2">
+                    <span><small>Checking Embedded..</small></span>
+                    <v-progress-linear
+                        class="primary-color"
+                        indeterminate
+                        height="6"
+                    ></v-progress-linear>
+                </span>
+                <span class="error--text" v-if="isEmbeddedNMI == 1">
+                      <v-icon color="error" class="mt-4">
+                          info
+                      </v-icon>
+                      <small v-html="embeddedText"></small>
+                </span>
             </div>
         </div>
 
@@ -681,7 +681,7 @@
                     <v-text-field
                         @input="updateLeads"
                         v-model="property_details.mirn"
-                        @blur="saveDraft('mirn', property_details.mirn)"
+                        @change="saveDraft('mirn', property_details.mirn)"
                         outlined
                         dense
                         hide-details="auto"
@@ -2027,7 +2027,7 @@ export default {
             return this.person_details.email_manually_verified_by;
         },
         isEmbeddedNMI() {
-            return this.lead.embedded_nmi;
+            return parseInt(this.lead.embedded_nmi);
         },
         isEmbeddedMIRN() {
             return this.lead.embedded_mirn;

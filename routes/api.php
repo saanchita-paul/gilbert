@@ -27,6 +27,7 @@ use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\GilbertLeadAPIController;
 use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
 use App\Http\Controllers\ApplicationEventController;
+use App\Http\Controllers\SourceFilterController;
 use App\Http\Controllers\Agency\MriOfficeController;
 use MRI\Controllers\TestMriController;
 
@@ -174,8 +175,6 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_GET_LEAD_METRICS);
     Route::get('/applications-metrics-count', [ApplicationController::class, 'getApplicationMetricsCount'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_METRICS);
-    Route::get('/applications/{id}/nmi-mern', [ApplicationController::class, 'getNmiMern'])
-        ->middleware('permission:' . RolePermissionService::CAN_GET_NMI_MERN);
     Route::get('/secondary-contact/{id}', [ApplicationController::class, 'getAuthorizedPerson'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_AUTHORIZED_PERSON);
     Route::post('/secondary-contact', [ApplicationController::class, 'updateAuthorizedPerson'])
@@ -235,6 +234,10 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      * api for powershop payment
      */
     Route::post('/powershop/payment', [PaymentInfoController::class, 'updateCost']);
+    /**
+     * Source filter list
+     */
+    Route::get('/sources', [SourceFilterController::class, 'index']);
 
 });
 
@@ -417,3 +420,5 @@ Route::get('/test', function() {
 //    ApplicationFromGilbertJob::dispatch(3);
 
 });
+
+Route::get('/generate-nmi-report', [\App\Http\Controllers\SettingsController::class, 'generateAddressReport']);

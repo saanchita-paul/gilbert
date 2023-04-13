@@ -22,6 +22,7 @@ class TAppMapper
         $phoneType = strtolower($phoneType);
         return match ($phoneType) {
             'mobile' => 1,
+            'international',
             'international mobile',
             'international mobile number',
             'international phone number' => 3,
