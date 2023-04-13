@@ -148,6 +148,45 @@ class SearchConnectionApplication
         return $this->builder->paginate($this->perPage);
     }
 
+    public function getNBN(User $user): LengthAwarePaginator
+    {
+        $this->builder = ConnectionApplication::query()
+            ->with('connectionServices.reasons')
+            ->with('SugerLead')
+            ->with('assignedTo')
+            ->with('submittedByUser')
+            ->with('powershopPaymentInfo')
+            ->with('office')
+            ->with('authorizedPerson')
+            ->with('createdBy')
+            ->with('identification')
+            ->with('submittedByUser');
+
+
+        $this
+            ->applyFilterLeadType($user)
+            ->applyFilterUserOffice($user)
+            // ->applyFilterCreatedBy($user)
+            ->applyFilterSource()
+//            ->applyFilterOfficeId()
+//            ->applyFilterForFoxie()
+//            ->applyFilterTenancyType()
+//            ->applyFilterTriage()
+            ->applyFilterAppId()
+//            ->applyFilterMovingDate()
+//            ->applyFilterAgentId()
+//            ->applyFilterTenantEmail()
+//            ->applyDuplicateFilter()
+            ->applyDateRangeFilter()
+            ->applyFilterByService()
+            ->applySearch();
+
+        $this->builder = $this->applySorting($this->builder);
+
+        return $this->builder->paginate($this->perPage);
+    }
+
+
     public function getApplicationForAgency(User $user): LengthAwarePaginator
     {
         $this->builder = ConnectionApplication::query()

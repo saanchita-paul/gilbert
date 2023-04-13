@@ -231,6 +231,7 @@
                                                       :error-messages="errors[0]"
                                                       @blur="updateInternetServiceInfo"
                                                       :disabled="isServiceEditable"
+                                                      @change="changeCharityHandler"
                                             >
                                             </v-select>
                                         </ValidationProvider>
@@ -282,8 +283,8 @@
 
                             <div class="crm-text-field">
                                 <v-btn outlined class="outlined-btn" @click="sendGoodtelPaymentLink"
-                                       :loading="paymentBtnLoading" :disabled="paymentLinkSent || isServiceEditable">
-                                    Send payment link
+                                       :loading="paymentBtnLoading" :disabled="disablePaymentLinkSendButton">
+                                    {{ paymentLinkSent ? 'Payment Link Sent' : 'Send payment link' }}
                                     <v-icon class="ml-4">mdi-email</v-icon>
                                 </v-btn>
                                 <div>
@@ -302,7 +303,7 @@
                             <div class="crm-text-field">
                                 <div class="field-label">
                                     <v-btn outlined class="mr-2 outlined-btn"
-                                           @click="copyToClipBoardGoodtelPaymentLink">
+                                           @click="copyToClipBoardGoodtelPaymentLink" :disabled="disablePaymentLinkCopyButton">
                                         Copy Link
                                         <v-icon class="ml-4">mdi-content-copy</v-icon>
                                     </v-btn>
@@ -460,7 +461,13 @@ export default {
         },
         isShowForm() {
             return this.plans && this.plans.length > 0 && this.selectedProvider && this.selectedPlan;
-        }
+        },
+        disablePaymentLinkCopyButton() {
+            return !this.paymentLink;
+        },
+        disablePaymentLinkSendButton() {
+            return this.paymentLinkSent || this.isServiceEditable;
+        },
     },
     async mounted() {
         this.leadSummary = await this.loadApplicationSummary;
@@ -469,7 +476,6 @@ export default {
         await this.onSelectProvider(this.selectedProvider ?? null);
         this.setActivePlan(this.selectedPlan ?? null);
         this.$eventBus.$on("nbn_submitted", async () => {
-            console.log("nbn_submitted");
             await this.confirmSubmit();
             this.$eventBus.$off("nbn_submitted");
         });
@@ -501,24 +507,25 @@ export default {
                 });
                 console.log('initPaymentLink', plan);
                 if (this.internetServiceInfo.modem_type === 'standard' || this.internetServiceInfo.modem_type === 'upgraded') {
-                    console.log('p1', this.internetServiceInfo.modem_type)
                     this.paymentLink = plan.payment_links.find(dt => {
                         return dt.modem_type === this.internetServiceInfo.modem_type;
                     }).payment_link;
                 } else {
-                    console.log('p2', this.internetServiceInfo.modem_type)
                     this.paymentLink = plan.payment_links.find(dt => {
                         return dt.modem_type === 'none';
                     }).payment_link;
                 }
             }
-
-            console.log(this.paymentLink)
         },
         paymentLinkChangeHandler() {
+            this.paymentLinkSent = false;
             this.initPaymentLink();
         },
+        changeCharityHandler() {
+            this.paymentLinkSent = false;
+        },
         async selectPlan(plan) {
+            this.paymentLinkSent = false;
             this.selectedPlan = plan.name;
             const formData = {
                 provider_name: this.selectedProvider,
@@ -582,6 +589,11 @@ export default {
             }
         },
         async sendGoodtelPaymentLink() {
+            if (!this.internetServiceInfo.modem_type || !this.internetServiceInfo.charity) {
+                await this.$eventBus.$emit('nbn_submit_validate');
+                return false;
+            }
+
             this.paymentBtnLoading = true;
             const res = await InternetService.sendGoodtelPaymentLink(this.leadSummary.id);
             if (res.data.success) {

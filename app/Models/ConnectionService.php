@@ -106,6 +106,13 @@ class ConnectionService extends Model
         'total_plan_plus_12' => self::ENERGY_AUSTRALIA_TOTAL_PLUS_12_PLAN,
     ];
 
+    public const NBN_UTILITY_BILL_PLANS = [
+        'casual' => '',
+        'family' => '',
+        'superfast' => 'GT - NBN100 - Superfast - 2',
+        'blazing' => 'GT - NBN250 - Blazing – 2'
+    ];
+
     public const SERVICE_TYPES = [
         self::TYPE_ELECTRICITY,
         self::TYPE_GAS,

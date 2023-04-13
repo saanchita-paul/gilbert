@@ -122,15 +122,15 @@
                 </div>
                 <div class="item">
                     <p class="item-title"> Selected Phone Plan</p>
-                    <p class="item-value">{{ application.internet_service_info.home_phone_plan.toUpperCase() }}</p>
+                    <p class="item-value" v-if="isExistingLandline">{{ application.internet_service_info.home_phone_plan.toUpperCase() }}</p>
                 </div>
                 <div class="item">
                     <p class="item-title"> Phone Number to Transfer</p>
-                    <p class="item-value">{{ application.internet_service_info.home_phone_number }}</p>
+                    <p class="item-value" v-if="isExistingLandline">{{ application.internet_service_info.home_phone_number }}</p>
                 </div>
                 <div class="item">
                     <p class="item-title"> Current Provider</p>
-                    <p class="item-value">{{ application.internet_service_info.current_provider }}</p>
+                    <p class="item-value" v-if="isExistingLandline">{{ application.internet_service_info.current_provider }}</p>
                 </div>
                 <div class="item">
                     <p class="item-title"> Back to Base Alarm</p>
@@ -162,7 +162,11 @@ export default {
             charityMapper: InternetServiceConstant.CHARITY_MAP,
         };
     },
-    computed: {},
+    computed: {
+        isExistingLandline(){
+            return !!this.application.internet_service_info.is_existing_landline
+        }
+    },
     watch: {},
     async mounted() {
     },

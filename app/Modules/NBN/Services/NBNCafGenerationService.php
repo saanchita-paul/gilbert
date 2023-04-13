@@ -3,6 +3,8 @@
 namespace App\Modules\NBN\Services;
 
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
+use App\Models\GoodtelPlanPaymentLink;
 use App\Models\InternetServiceInfo;
 use Box\Spout\Common\Exception\InvalidArgumentException;
 use Box\Spout\Common\Exception\IOException;
@@ -17,7 +19,8 @@ class NBNCafGenerationService
 
     private array $applicationIdList;
     private $applicationList;
-    private array $mappedApplicationList;
+    private array $mappedApplicationList = [];
+    private $mapsModem = [];
 
 
     public function __construct(array $applicationIdList)
@@ -60,7 +63,7 @@ class NBNCafGenerationService
                     'Last Name' => $app->last_name,
                     'Email Address' => $app->email,
                     'Mobile Number' => $app->phone,
-                    'Phone Mobile' => $app->homephone,
+                    'Phone Number' => $app->homephone,
                     'Sales Agent' => 'Hood',
                     'Connection Address 1' => $this->generateConnectionAddress($app),
                     'Connection Address 2' => $app->street_type,
@@ -83,31 +86,33 @@ class NBNCafGenerationService
                     'Driving Licence Number' => $app->identification?->card_number,
                     'State of Issue' => $app->identification?->state,
                     'Date of Birth' => $this->generateDate($app->dob),
-                    'Preferred Connection Date' => $this->generateDate($app->connectionServices[3]->connection_date),
-                    'Plan Variant' => $app->internetServiceInfo->goodtelPlan->type,
-                    'Utility Bill Plan Name' => $app->internetServiceInfo->goodtelPlan->display_name . ' ' . $app->internetServiceInfo->goodtelPlan->mbps,
+                    'Preferred Connection Date' => $this->generateDate($app->moving_date),
+                    'Plan Variant' => ucfirst($app->internetServiceInfo->goodtelPlan->type),
+                    'Utility Bill Plan Name' => $app->internetServiceInfo->goodtelPlan->caf_plan_name,
                     'Phone calls Y/N' => $this->generateReadableAnswer($app->internetServiceInfo->is_need_home_phone),
                     'Phone Number to Transfer' => $app->internetServiceInfo->home_phone_number,
                     'Name of Current Provider' => $app->internetServiceInfo->current_provider,
                     'Account Number of Current Provider' => $app->internetServiceInfo->account_number,
                     'BYO Modem Y/N' => $this->isBYOModem($app->internetServiceInfo->modem_type),
-                    'Modem Type' => InternetServiceInfo::MODEM_MAPPER[$app->internetServiceInfo->modem_type],
-                    // 'Amount Paid' => '',
+                    'Modem Type' => $this->mapModem($app->internetServiceInfo->modem_type),
+                    'Amount Paid' => '',
                     'Agreed to Policies' => 'Y',
                     'Back to Base  Alarm Y/N' => $this->generateReadableAnswer($app->internetServiceInfo->is_back_to_base),
                     'Medical Alarm Y/N' => $this->generateReadableAnswer($app->internetServiceInfo->is_security_alarm),
                     'Selected Charity' => InternetServiceInfo::CHARITY_MAPPER[$app->internetServiceInfo->charity],
-                    /*'Stripe PaymentId' => '',
-                    'Stripe CustomerId' => ''*/
+                    'Stripe PaymentId' => '',
+                    'Stripe CustomerId' => ''
                 ];
-                $selectedId[]                  = $app->id;
+                $selectedId[] = $app->id;
             } catch (\Exception $exception) {
+                dd($exception);
                 Log::error($exception->getMessage());
                 info('Data failed to export due to', [$exception->getMessage()]);
 
             }
 
         }
+//        dd($this->mappedApplicationList);
         InternetServiceInfo::whereIn('connection_application_id', $selectedId)
             ->update(['is_caf_generated' => true]);
     }
@@ -119,7 +124,8 @@ class NBNCafGenerationService
 
     private function generateBillingAddress($app): string
     {
-        return "{$app->billing_unit_number} {$app->billing_street_number} {$app->billing_street_name}";
+        $unit = "U" . $app->billing_unit_number;
+        return "{$unit} {$app->billing_street_number} {$app->billing_street_name_only}";
     }
 
     private function generateShippingAddress($app): string
@@ -141,6 +147,29 @@ class NBNCafGenerationService
     {
         if ($modem_type === 'byo') return 'Y';
         return 'N';
+    }
+
+    private function generateUtilityBill($plan): string
+    {
+        $plan = strtolower($plan);
+        return ConnectionService::NBN_UTILITY_BILL_PLANS[$plan];
+    }
+
+    private function mapModem(?string $type): ?string
+    {
+        if(empty($this->mapsModem))
+        {
+            $modems = GoodtelPlanPaymentLink::query()
+                ->selectRaw("distinct(modem_type), modem_text")
+                ->get()
+                ->toArray();
+
+            foreach ($modems as $modem) {
+                $this->mapsModem[$modem['modem_type']] = $modem['modem_text'];
+            }
+        }
+
+        return $this->mapsModem[$type] ?? null;
     }
 
 

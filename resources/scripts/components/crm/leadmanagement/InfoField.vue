@@ -1719,7 +1719,7 @@ export default {
             return this.property_details.is_billing_same ? "Same as service address" : this.property_details.billing_address_text;
         },
         shippingAddressMsg() {
-            return this.internetServiceInfo.is_shipping_same ? "Same as service address" : this.internetServiceInfo.address_text;
+            return this.internetServiceInfo.is_shipping_same ? "Same as service address" : this.internetServiceInfo?.address?.address_text;
         },
         tenancyTypeMapper() {
             return tenancyTypeMapper;

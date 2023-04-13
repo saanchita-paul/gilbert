@@ -145,7 +145,7 @@ export default {
         generateGilbertAppCafFIle() {
             let leadIds = this.selectedCafFile.map(item => item.id);
             let selectedIds = leadIds.join();
-            if(this.$route.query.tab === 'nbnGilbertApplication'){
+            if(this.$route.query.inner_tab === 'nbnGilbertApplication'){
                 let response = ApplicationCafFileService.generateNBNCafFIle(selectedIds);
             }else{
                 let response = ApplicationCafFileService.generateGilbertCafFIle(selectedIds);
