@@ -3,6 +3,7 @@
 namespace App\Modules\NBN\Services;
 
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
 use App\Models\InternetServiceInfo;
 use Box\Spout\Common\Exception\InvalidArgumentException;
 use Box\Spout\Common\Exception\IOException;
@@ -60,7 +61,7 @@ class NBNCafGenerationService
                     'Last Name' => $app->last_name,
                     'Email Address' => $app->email,
                     'Mobile Number' => $app->phone,
-                    'Phone Mobile' => $app->homephone,
+                    'Phone Number' => $app->homephone,
                     'Sales Agent' => 'Hood',
                     'Connection Address 1' => $this->generateConnectionAddress($app),
                     'Connection Address 2' => $app->street_type,
@@ -80,12 +81,12 @@ class NBNCafGenerationService
                     'Business Name' => '',
                     'Business ABN' => null,
                     'Account Password' => $app->internetServiceInfo->otp,
-                    'Driving Licence Number' => $app->identification?->card_number,
+                    'Driver’s Licence Number' => $app->identification?->card_number,
                     'State of Issue' => $app->identification?->state,
                     'Date of Birth' => $this->generateDate($app->dob),
-                    'Preferred Connection Date' => $this->generateDate($app->connectionServices[3]->connection_date),
-                    'Plan Variant' => $app->internetServiceInfo->goodtelPlan->type,
-                    'Utility Bill Plan Name' => $app->internetServiceInfo->goodtelPlan->display_name . ' ' . $app->internetServiceInfo->goodtelPlan->mbps,
+                    'Preferred Connection Date' => $this->generateDate($app->moving_date),
+                    'Plan Variant' => ucfirst($app->internetServiceInfo->goodtelPlan->type),
+                    'Utility Bill Plan Name' => $this->generateUtilityBillPlan($app->internetServiceInfo->goodtelPlan->display_name),
                     'Phone calls Y/N' => $this->generateReadableAnswer($app->internetServiceInfo->is_need_home_phone),
                     'Phone Number to Transfer' => $app->internetServiceInfo->home_phone_number,
                     'Name of Current Provider' => $app->internetServiceInfo->current_provider,
@@ -100,7 +101,7 @@ class NBNCafGenerationService
                     /*'Stripe PaymentId' => '',
                     'Stripe CustomerId' => ''*/
                 ];
-                $selectedId[]                  = $app->id;
+                $selectedId[] = $app->id;
             } catch (\Exception $exception) {
                 Log::error($exception->getMessage());
                 info('Data failed to export due to', [$exception->getMessage()]);
@@ -119,7 +120,8 @@ class NBNCafGenerationService
 
     private function generateBillingAddress($app): string
     {
-        return "{$app->billing_unit_number} {$app->billing_street_number} {$app->billing_street_name}";
+        $unit = $app->billing_unit_number ? 'U'.$app->billing_unit_number : '';
+        return "{$unit} {$app->billing_street_number} {$app->billing_street_name_only}";
     }
 
     private function generateShippingAddress($app): string
@@ -141,6 +143,12 @@ class NBNCafGenerationService
     {
         if ($modem_type === 'byo') return 'Y';
         return 'N';
+    }
+
+    private function generateUtilityBillPlan($plan): string
+    {
+        $plan = strtolower($plan);
+        return ConnectionService::NBN_UTILITY_BILL_PLANS[$plan];
     }
 
 
