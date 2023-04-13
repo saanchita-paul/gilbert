@@ -107,8 +107,8 @@ class ConnectionService extends Model
     ];
 
     public const NBN_UTILITY_BILL_PLANS = [
-        'casual' => 'GT - NBN25 - Casual – 2',
-        'family' => 'GT - NBN50 - Family – 2',
+        'casual' => '',
+        'family' => '',
         'superfast' => 'GT - NBN100 - Superfast - 2',
         'blazing' => 'GT - NBN250 - Blazing – 2'
     ];

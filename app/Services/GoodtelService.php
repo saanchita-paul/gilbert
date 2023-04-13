@@ -54,7 +54,8 @@ class GoodtelService
                         'price' => $plan['price'],
                         'details_url' => $plan['details_url'],
                         'mbps' => $plan['mbps'],
-                        'is_active' => true
+                        'is_active' => true,
+                        'caf_plan_name' => $plan['caf_plan_name']
                     ]
                 );
 
