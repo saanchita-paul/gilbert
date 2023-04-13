@@ -4,13 +4,41 @@ namespace ExternalLead\Http\Requests;
 
 use App\Models\ConnectionApplication;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\ExternalSource;
 use Illuminate\Validation\Rule;
 use App\Services\Utility\StateMapService;
+use ExternalLead\Services\SaveRawData;
 use App\Models\ConnectionApplicationSecondaryACC as AuthorizedPerson;
+use ExternalLead\Models\ExternalLeadApiLog;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\ValidationException;
 
 class ValidateCreateLeadRequest extends FormRequest
 {
+    private const TOLOWERCASE = [
+        'primary_account.title',
+        'primary_account.phone_type',
+        'primary_account.identification.type',
+        'primary_account.identification.medicare_card_color',
+        'secondary_account.title',
+        'secondary_account.permission_type',
+        'secondary_account.identification.type',
+        'secondary_account.identification.medicare_card_color',
+        'connection_details.tenancy_type',
+        'connection_details.property_type',
+        'utility_services'
+    ];
+
+    private const TOUPPERCASE = [
+        'primary_account.identification.state',
+        'secondary_account.identification.state',
+        'property_address.state',
+        'property_address.country',
+        'billing_address.state'
+    ];
+
+    private ExternalLeadApiLog $dump;
+
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -29,10 +57,6 @@ class ValidateCreateLeadRequest extends FormRequest
      */
     public function rules()
     {
-        $request = request()->all();
-        $username = $request['username'];
-        $selectedSource = ExternalSource::where('email', $username)->firstOrFail();
-
         return $this->getRules();
     }
 
@@ -66,8 +90,17 @@ class ValidateCreateLeadRequest extends FormRequest
 
     private function getRules(): array
     {
+        $dump = $this->dump;
         return [
-            'lead_reference' => 'required|string|unique:t_app,lead_id',
+            'lead_reference' => [
+                'required',
+                'string',
+                Rule::unique('external_lead_api_logs', 'lead_id')
+                    ->where(static function ($query) use ($dump) {
+                        return $query->whereNotNull('connection_application_id')
+                                    ->where('external_source_id', $dump->external_source_id);
+                    }),
+            ],
             'primary_account.title' => ['required', Rule::in(['mr', 'ms', 'mrs', 'miss', 'dr'])],
             'primary_account.first_name' => 'required|string',
             'primary_account.middle_name' => 'nullable|string',
@@ -75,33 +108,33 @@ class ValidateCreateLeadRequest extends FormRequest
             'primary_account.email' => 'required|email',
             'primary_account.dob' => 'required|date_format:Y-m-d',
             'primary_account.phone_type' => ['required', Rule::in(['mobile', 'homephone', 'international_mobile'])],
-            'primary_account.phone_number' => 'required_if:primary_account.phone_type,mobile,international_mobile', // TODO: handle homephone
+            'primary_account.phone_number' => 'required|numeric',
 
-            'utility_services' => 'required|array',
+            'utility_services' => 'array',
             'utility_services.*' =>  Rule::in("gas", 'power', 'water', 'internet'),
 
             'primary_account.identification.type' => ['required', Rule::in(['medicare', 'passport', 'driver_license'])],
-            'primary_account.identification.number' => 'required',
+            'primary_account.identification.number' => 'required|alpha_dash',
             'primary_account.identification.state' => ['required_if:primary_account.identification.type,driver_license', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
-            'primary_account.identification.country' => 'required_if:primary_account.identification.type,passport',
-            'primary_account.identification.medicare_card_color' => 'required_if:primary_account.identification.type,medicare',
-            'primary_account.identification.medicare_reference_number' => 'required_if:primary_account.identification.type,medicare',
+            'primary_account.identification.country' => 'required_if:primary_account.identification.type,passport|string',
+            'primary_account.identification.medicare_card_color' => ['required_if:primary_account.identification.type,medicare', Rule::in(['yellow', 'green', 'blue'])],
+            'primary_account.identification.medicare_reference_number' => 'required_if:primary_account.identification.type,medicare|numeric',
             'primary_account.identification.expire_date' => 'required|date_format:Y-m-d',
 
             'secondary_account.title' => ['required_with:secondary_account', Rule::in(['mr', 'ms', 'mrs', 'miss', 'dr'])],
-            'secondary_account.first_name' => 'required_with:secondary_account',
-            'secondary_account.last_name' => 'required_with:secondary_account',
-            'secondary_account.email' => 'required_with:secondary_account',
+            'secondary_account.first_name' => 'required_with:secondary_account|string',
+            'secondary_account.last_name' => 'required_with:secondary_account|string',
+            'secondary_account.email' => 'required_with:secondary_account|string',
             'secondary_account.dob' => 'required_with:secondary_account|date_format:Y-m-d',
-            'secondary_account.phone_number' => 'required_with:secondary_account',
+            'secondary_account.phone_number' => 'required_with:secondary_account|numeric',
             'secondary_account.permission_type' => ['required_with:secondary_account', Rule::in(array_keys(AuthorizedPerson::ROLE_TYPE_MAPPER))],
 
             'secondary_account.identification.type' => ['required_with:secondary_account.identification', Rule::in(['medicare', 'passport', 'driver_license'])],
-            'secondary_account.identification.number' => 'required_with:secondary_account.identification',
+            'secondary_account.identification.number' => 'required_with:secondary_account.identification|alpha_dash',
             'secondary_account.identification.state' => ['required_if:secondary_account.identification.type,driver_license', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
-            'secondary_account.identification.country' => 'required_if:secondary_account.identification.type,passport',
-            'secondary_account.identification.medicare_card_color' => 'required_if:secondary_account.identification.type,medicare',
-            'secondary_account.identification.medicare_reference_number' => 'required_if:secondary_account.identification.type,medicare',
+            'secondary_account.identification.country' => 'required_if:secondary_account.identification.type,passport|string',
+            'secondary_account.identification.medicare_card_color' => ['required_if:secondary_account.identification.type,medicare', Rule::in(['yellow', 'green', 'blue'])],
+            'secondary_account.identification.medicare_reference_number' => 'required_if:secondary_account.identification.type,medicare|numeric',
             'secondary_account.identification.expire_date' => 'required_with:secondary_account.identification|date_format:Y-m-d',
 
             'connection_details.tenancy_type' => ['required', Rule::in(['renter', 'home_owner'])],
@@ -115,33 +148,78 @@ class ValidateCreateLeadRequest extends FormRequest
             "connection_details.nmi" => "nullable|string",
             "connection_details.mirn" => "nullable|string",
 
-            'property_address.unit_number' => 'nullable',
-            'property_address.street_number' => 'required',
-            'property_address.street_name' => 'required',
-            'property_address.street_type' => 'required',
-            'property_address.city' => 'required_without:property_address.suburb',
-            'property_address.suburb' => 'required_without:property_address.city',
-            'property_address.postcode' => 'required',
+            'property_address.unit_number' => 'nullable|alpha_dash',
+            'property_address.street_number' => 'required|alpha_dash',
+            'property_address.street_name' => 'required|string',
+            'property_address.street_type' => 'required|string',
+            'property_address.city' => 'required_without:property_address.suburb|string',
+            'property_address.suburb' => 'required_without:property_address.city|string',
+            'property_address.postcode' => 'required|alpha_dash',
             'property_address.state' => ['required', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
             'property_address.country' => ['required', Rule::in(['AUS'])],
 
-            'billing_address.unit_number' => 'nullable',
-            'billing_address.street_number' => 'required_with:billing_address',
-            'billing_address.street_name' => 'required_with:billing_address',
-            'billing_address.street_type' => 'required_with:billing_address',
-            'billing_address.city' => Rule::requiredIf(function () {
+            'billing_address.unit_number' => 'nullable|alpha_dash',
+            'billing_address.street_number' => 'required_with:billing_address|alpha_dash',
+            'billing_address.street_name' => 'required_with:billing_address|string',
+            'billing_address.street_type' => 'required_with:billing_address|string',
+            'billing_address.city' => [Rule::requiredIf(function () {
                 return request()->exists('billing_address') && !request()->exists('billing_address.suburb');
-            }),
-            'billing_address.suburb' => Rule::requiredIf(function () {
+            }), 'string'],
+            'billing_address.suburb' => [Rule::requiredIf(function () {
                 return request()->exists('billing_address') && !request()->exists('billing_address.city');
-            }),
-            'billing_address.postcode' => 'required_with:billing_address',
+            }), 'string'],
+            'billing_address.postcode' => 'required_with:billing_address|alpha_dash',
             'billing_address.state' => ['required_with:billing_address', Rule::in(array_keys(StateMapService::SHORT_TO_FULL))],
             // billing address country?
 
             'agency.agent_email' => 'required|email',
-            'agency.name' => 'nullable|string',
-            'agency.office_name' => 'nullable|string',
+            'agency.agency_name' => 'required|string',
+            'agency.office_name' => 'required|string',
         ];
+    }
+
+    protected function prepareForValidation()
+    {
+        $requestData = $this->all();
+        $dumpId = $requestData['dump_id'];
+        $this->dump = ExternalLeadApiLog::find($dumpId);
+        info('External Lead: Raw Request Data', $requestData);
+        $this->changeCase($requestData, 'strtolower', self::TOLOWERCASE);
+        $this->changeCase($requestData, 'strtoupper', self::TOUPPERCASE);
+        $this->replace($requestData);
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $this->dump->exception_log = $validator->errors()->toJson();
+        $this->dump->save();
+        $response = response()->json([
+            'status' => 'fail',
+            'message' => 'Validation failed',
+            'errors' => $validator->errors(),
+            'transaction_id' => $this->dump->id
+         ], 422);
+        throw (new ValidationException($validator, $response))
+            ->errorBag($this->errorBag)
+            ->redirectTo($this->getRedirectUrl());
+    }
+
+    private function changeCase(&$requestData, string $type, array $fields)
+    {
+        foreach ($fields as $field) {
+            $keys = explode('.', $field);
+            $ref = &$requestData;
+            $skip = false;
+            while ($key = array_shift($keys)) {
+                if (!isset($ref[$key])) {
+                    $skip = true;
+                    break;
+                }
+                $ref = &$ref[$key];
+            }
+            if (!$skip && !empty($ref)) {
+                $ref = is_array($ref) ? array_map($type, $ref) : $type((string)$ref);
+            }
+        }
     }
 }

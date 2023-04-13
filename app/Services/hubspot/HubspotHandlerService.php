@@ -20,7 +20,6 @@ class HubspotHandlerService
             $hubspotContactService = new HubspotContactService($this->application->id);
             if (empty($this->application->hubspot_contact_id)) {
                 $getContactByEmailData = $hubspotContactService->getContactByEmail($this->application->email);
-
                 if ($getContactByEmailData['exists'] === true) {
                     $responseData = $getContactByEmailData['body'];
                     $hubspotId = $responseData['vid'];

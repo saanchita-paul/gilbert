@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -105,6 +106,13 @@ class ConnectionService extends Model
         'total_plan_plus_12' => self::ENERGY_AUSTRALIA_TOTAL_PLUS_12_PLAN,
     ];
 
+    public const NBN_UTILITY_BILL_PLANS = [
+        'casual' => '',
+        'family' => '',
+        'superfast' => 'GT - NBN100 - Superfast - 2',
+        'blazing' => 'GT - NBN250 - Blazing – 2'
+    ];
+
     public const SERVICE_TYPES = [
         self::TYPE_ELECTRICITY,
         self::TYPE_GAS,
@@ -136,6 +144,11 @@ class ConnectionService extends Model
     public function connectionApplication()
     {
         return $this->belongsTo(ConnectionApplication::class);
+    }
+
+    public function internetServiceInfo(): HasOne
+    {
+        return $this->hasOne(InternetServiceInfo::class);
     }
 
     public function reasons()

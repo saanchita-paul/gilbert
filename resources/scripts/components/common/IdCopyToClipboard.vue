@@ -33,11 +33,16 @@ export default {
   },
   methods: {
     copyToClipboard() {
-      navigator.clipboard.writeText(this.applicationId);
-      this.showSnackbar = true;
-      setTimeout(() => {
-        this.showSnackbar = false;
-      }, 3000);
+        const el = document.createElement("textarea");
+        el.value = this.applicationId;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand("copy");
+        document.body.removeChild(el);
+        this.showSnackbar = true;
+        setTimeout(() => {
+            this.showSnackbar = false;
+        }, 2000);
     },
   },
 };

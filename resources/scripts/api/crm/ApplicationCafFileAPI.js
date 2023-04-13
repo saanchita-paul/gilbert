@@ -63,9 +63,38 @@ export default {
         };
     },
 
+    getNBNApplicationCafFileData: async (sort_search_meta, params) => {
+        const data = await axios.get('/api/nbn/applications',{params:{...sort_search_meta, ...params}});
+
+        console.log(data.data)
+
+        return {
+            data: GilbertApplicationCafFileMapper.mapNbnApplicationList(data.data),
+
+            pagination: new Pagination({
+                current_page: data.data.meta ? data.data.meta.current_page : 1,
+                per_page: data.data.meta ? data.data.meta.per_page : 0,
+                total: data.data.meta ? data.data.meta.total : 0
+            })
+        };
+    },
+
     generateGilbertCafFIle: async (params) => {
         try{
             const url = `/api/gilbert/generate-caf?ids=`+ params;
+
+            window.open(
+                url,
+                '_blank'
+            );
+        } catch (e) {
+            console.log(e);
+        }
+    },
+
+    generateNBNCafFIle: async (params) => {
+        try{
+            const url = `/api/nbn/generate-caf?ids=`+ params;
 
             window.open(
                 url,

@@ -12,6 +12,8 @@ import Store from "@scripts/store";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import {isNull} from "lodash-es";
 import DuplicateLeadService from "@scripts/services/crm/DuplicateLeadService";
+import InternetServiceInfoMapper from "@scripts/data/InternetServiceInfoMapper";
+import InternetService from "@scripts/modules/internet/services/InternetService";
 
 export default {
     loadMetrics: data => LeadApplicationAPI.getMetrics(data),
@@ -46,7 +48,15 @@ export default {
             src,
             params
         ),
-    loadUserLead: id => LeadApplicationAPI.getUserLead(id),
+    loadUserLead: async id => {
+        const data = await LeadApplicationAPI.getUserLead(id);
+        Store.commit('leadSummaryStore/setLeadSummary', data);
+        Store.commit('internetServiceInfoStore/setInternetServiceInfo', InternetServiceInfoMapper.mapData(data.internet_service_info));
+        return data;
+    },
+    loadApplicationSummary() {
+        return Store.getters['leadSummaryStore/getApplicationSummary'];
+    },
     closeApplication: id => LeadApplicationAPI.closeApplication(id),
     sendToChatBot: id => LeadApplicationAPI.sendToChatBot(id),
     isSentToChatbot: id => LeadApplicationAPI.getIsSentToChatbot(id),
@@ -123,6 +133,11 @@ export default {
                 ? UtilityStoreService.getPowerStatus()
                 : UtilityStoreService.getGasStatus();
         return STATUSES_FOR_ENERGY_SUBMIT.includes(status);
+    },
+
+    canSubmitInternet: () => {
+        let status = InternetService.getInternetStatus();
+        return status && STATUSES_FOR_ENERGY_SUBMIT.includes(status);
     },
 
     /**

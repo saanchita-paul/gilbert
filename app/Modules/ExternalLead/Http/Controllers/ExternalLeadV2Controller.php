@@ -13,6 +13,8 @@ use ExternalLead\Services\AuthService;
 use ExternalLead\Services\CreateLeadService;
 use ExternalLead\Services\CreateExternalSourceService;
 use App\Models\Office;
+use Exception;
+use ExternalLead\Models\ExternalLeadApiLog;
 
 class ExternalLeadV2Controller extends Controller
 {
@@ -23,14 +25,14 @@ class ExternalLeadV2Controller extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function getAccessToken(Request $request): JsonResponse {
+    public function getAccessToken(Request $request): JsonResponse
+    {
         try {
             $authService = new AuthService();
             $result = $authService->generateAccessToken($request->toArray());
             return response()->json($result, 200);
         } catch (\Exception $exception) {
-            \Log::error("Error in ExternalLeadV2Controller, getAccessToken method", ['message' => $exception->getMessage()]);
-            \Log::error($exception->getTraceAsString());
+            $this->logException(__FUNCTION__, $exception);
             $response =  [
                 'status' => 'failed',
                 'message' => "email and password does not match"
@@ -43,7 +45,6 @@ class ExternalLeadV2Controller extends Controller
     {
     //    return $request->toArray();
         try {
-            Log::info('** Create External Leads Request Body', [$request->toArray()]);
             $externalSource = ExternalSource::where('email', $request->username ?? '')->firstOrFail();
             $service = new CreateLeadService();
             $newLead = $service->create($externalSource, $request->all());
@@ -59,23 +60,43 @@ class ExternalLeadV2Controller extends Controller
                 $code = 201;
             }
             return response($response, $code);
-        } catch (\Exception $ex) {
-            \Log::error("Hood lead can not be stored");
-            \Log::error($ex->getMessage());
-            \Log::error($ex->getTraceAsString());
-            $response = [
-                "status" => "failed",
-                "message" => $ex->getMessage()
+        } catch (\Exception $exception) {
+            $exceptionArray = $this->logException(__FUNCTION__, $exception);
+            $responseArray = [
+                "status" => "fail",
+                "message" => 'An error has occured. Please contact Hood for support'
             ];
-            return response($response, 500);
+            $dump = ExternalLeadApiLog::find($request->input('dump_id'));
+            if ($dump) {
+                $dump->exception_log = json_encode($exceptionArray);
+                $dump->save();
+                $responseArray['transaction_id'] = $dump->id;
+            }
+            return response($responseArray, 500);
         }
     }
 
     public function createSource(ValidateCreateSourceRequest $request)
     {
-        $service = new CreateExternalSourceService();
-        $newSource = $service->save($request->all());
+        try {
+            $service = new CreateExternalSourceService();
+            $newSource = $service->save($request->all());
+            return response(['external_source_id' => $newSource->id], 200);
+        } catch (\Exception $exception) {
+            $exceptionArray = $this->logException(__FUNCTION__, $exception);
+            return response($exceptionArray, 500);
+        }
+    }
 
-        return response(['external_source_id' => $newSource->id], 200);
+    private function logException(string $functionName, \Exception $exception)
+    {
+        $message = $exception->getMessage();
+        $trace = $exception->getTraceAsString();
+        $exceptionArray = [
+            'message' => $message,
+            'trace' => $trace
+        ];
+        \Log::error(sprintf("%s:%s failed (refer context)", get_class($this), $functionName), $exceptionArray);
+        return $exceptionArray;
     }
 }

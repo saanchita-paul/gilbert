@@ -5,7 +5,7 @@ use ExternalLead\Http\Controllers\ExternalLeadV2Controller;
 Route::namespace('ExternalLead')->group(function () {
     Route::post('/token', [ExternalLeadV2Controller::class, 'getAccessToken']);
     Route::group(['middleware' => ['external.lead']], function () {
-        Route::post('/leads', [ExternalLeadV2Controller::class, 'createLead']);
+        Route::middleware('external.lead.log')->post('/leads', [ExternalLeadV2Controller::class, 'createLead']);
     });
     Route::post('/sources', [ExternalLeadV2Controller::class, 'createSource']);
 });

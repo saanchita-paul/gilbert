@@ -4,7 +4,6 @@ namespace App\Services\Application;
 
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
-use App\Models\ConnectionService;
 use App\Models\User;
 use App\Modules\Reporting\Services\SetDateRage;
 use App\Services\FullTextSearch\FullTextQueryInterface;
@@ -70,6 +69,8 @@ class SearchConnectionApplication
 
     private ?string $provider = null;
 
+    private ?string $application_service_type = null;
+
     /**
      * @param array $request
      */
@@ -101,6 +102,7 @@ class SearchConnectionApplication
 
         $this->dateStart = !empty($request['start_date']) ? $request['start_date'] : null;
         $this->dateEnd = !empty($request['end_date']) ? $request['end_date'] : null;
+        $this->application_service_type = !empty($request['application_service_type']) ? $request['application_service_type'] : null;
     }
 
     /**
@@ -138,12 +140,52 @@ class SearchConnectionApplication
             ->applyDuplicateFilter()
             ->applyAssigneeFilter()
             ->applyDateRangeFilter()
+            ->applyFilterByService()
             ->applySearch();
 
         $this->builder = $this->applySorting($this->builder);
 
         return $this->builder->paginate($this->perPage);
     }
+
+    public function getNBN(User $user): LengthAwarePaginator
+    {
+        $this->builder = ConnectionApplication::query()
+            ->with('connectionServices.reasons')
+            ->with('SugerLead')
+            ->with('assignedTo')
+            ->with('submittedByUser')
+            ->with('powershopPaymentInfo')
+            ->with('office')
+            ->with('authorizedPerson')
+            ->with('createdBy')
+            ->with('identification')
+            ->with('submittedByUser');
+
+
+        $this
+            ->applyFilterLeadType($user)
+            ->applyFilterUserOffice($user)
+            // ->applyFilterCreatedBy($user)
+            ->applyFilterSource()
+//            ->applyFilterOfficeId()
+//            ->applyFilterForFoxie()
+//            ->applyFilterTenancyType()
+//            ->applyFilterTriage()
+            ->applyFilterAppId()
+//            ->applyFilterMovingDate()
+//            ->applyFilterAgentId()
+//            ->applyFilterTenantEmail()
+//            ->applyDuplicateFilter()
+            ->applyDateRangeFilter()
+            ->applyFilterByService()
+            ->applySearch();
+
+        $this->builder = $this->applySorting($this->builder);
+
+        return $this->builder->paginate($this->perPage);
+    }
+
 
     public function getApplicationForAgency(User $user): LengthAwarePaginator
     {
@@ -414,5 +456,15 @@ class SearchConnectionApplication
             $this->builder = $this->builder->where('assigned_to', $this->assignee);
         }
         return $this;
+    }
+
+    private function applyFilterByService(): static {
+        if ($this->application_service_type) {
+            $this->builder = $this->builder->whereHas('connectionServices', function (Builder $query){
+                $query->whereIn('service_type', ['power', 'gas']);
+            });
+        }
+        return $this;
+
     }
 }

@@ -7,10 +7,12 @@ use App\Http\Controllers\Agency\ApplicationCafController;
 use App\Http\Controllers\Agency\ApplicationController;
 use App\Http\Controllers\Agency\DuplicationApplicationController;
 use App\Http\Controllers\Agency\HoodUserController;
+use App\Http\Controllers\Agency\NbnController;
 use App\Http\Controllers\Agency\NoteController;
 use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ReaExtractsReportController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\GoodtelController;
 use App\Http\Controllers\UserInvitationController;
 use App\Models\ConnectionApplication;
 use Powershop\Http\Controllers\PowerShopController;
@@ -26,6 +28,7 @@ use PropertyMe\services\FetchContacts;
 use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\GilbertLeadAPIController;
 use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
+use App\Modules\NBN\Http\Controllers\NBNController as NBNController2;
 use App\Http\Controllers\ApplicationEventController;
 use App\Http\Controllers\SourceFilterController;
 use App\Http\Controllers\Agency\MriOfficeController;
@@ -150,6 +153,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_CLOSE_APPLICATION);
     Route::put('/applications/{applicationId}/update-address', [ApplicationController::class, 'updateAddress'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_ADDRESS);
+
     Route::post('/applications/{applicationId}/draft', [ApplicationController::class, 'saveDraft'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
     Route::post('/applications/{applicationId}/save-email', [ApplicationController::class, 'saveEmail'])
@@ -162,10 +166,6 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/applications/{applicationId}/duplicate', [DuplicationApplicationController::class, 'getDuplicateLeads'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 
-
-
-
-    //todo: make a  separate controller for notes
     Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_NOTES);
     Route::post('/applications/{id}/notes', [NoteController::class, 'createConnectionNotes'])
@@ -199,19 +199,33 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/rea-extract/report', [ReaExtractsReportController::class, 'getReaReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 
+    // NBN Routes
+    Route::put(
+        '/applications/{applicationId}/update-internet-service-info',
+        [NbnController::class, 'updateInternetServiceInfo']
+    )->middleware('permission:' . RolePermissionService::CAN_UPDATE_ADDRESS);
+    Route::put(
+        '/applications/{applicationId}/update-nbn-provider',
+        [NbnController::class, 'updateNbnProvider']
+    )->middleware('permission:' . RolePermissionService::CAN_UPDATE_SERVICE_PROVIDERS);
+    Route::post(
+        '/applications/{applicationId}/nbn-submit',
+        [NbnController::class, 'submitNbn']
+    )->middleware('permission:' . RolePermissionService::CAN_UPDATE_SERVICE_PROVIDERS);
+
     /***
      * Send to chatbot
      */
     Route::get('/applications/{id}/send-to-chatbot', [SendApplicationToChatbotController::class, 'sendApplication']);
     Route::get('/applications/{id}/is-sent-to-chatbot', [ApplicationController::class, 'isSentToChatBot']);
 
+
     // Lock/unlock application routes
     Route::post('/applications/{id}/lock-or-unlock', [ApplicationController::class, 'lockUnlockApp']);
 
-     /***
+    /***
      * Application closing reasons route
      */
-    // application closing reasons list
     Route::get('/app-close-reasons', [AppCloseReasonController::class, 'index']);
     // application closing reasons create
     Route::post('/app-close-reasons', [AppCloseReasonController::class, 'create']);
@@ -238,6 +252,12 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      * Source filter list
      */
     Route::get('/sources', [SourceFilterController::class, 'index']);
+
+
+    /**
+     * api for goodtel payment
+     */
+    Route::post('/goodtel/{id}/payment', [GoodtelController::class, 'sendPaymentLink']);
 
 });
 
@@ -294,6 +314,12 @@ Route::get('/gilbert/generate-caf', [ApplicationCafController::class, "generateG
 Route::post('/powershop/payment/invite', [PaymentInfoController::class, 'inviteCustomer']);
 
 
+/*
+ * NBN
+ */
+Route::get('/nbn/applications', [NBNController2::class, 'getNBNApplications']);
+Route::get('/nbn/generate-caf', [NBNController2::class, 'generateNbnCaf']);
+
 /**
  * api's for email validation
  */
@@ -305,10 +331,16 @@ Route::get('/applications/{id}/email-manually-verified', [ApplicationController:
  */
 Route::post('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syncProperty']);
 
+
 /**
  * application events
  */
 Route::post('/application-events', [ApplicationEventController::class, 'saveEvent']);
+
+// GoodTel routes
+Route::get('goodtel/plans', [GoodtelController::class, 'getPlans']);
+Route::get('goodtel/modems', [GoodtelController::class, 'getModems']);
+Route::post('goodtel/plans', [GoodtelController::class, 'create']);
 
 /**
  * MRI
@@ -357,13 +389,9 @@ Route::get('/applications/{applicationId}/{submitType}/same-day-connection', [Po
 // });
 
 
-
-
-
-
 Route::get('/kaka', function () {
     $m = new \App\Services\Address\AddressModel(connection_application_id: 2);
-    $s= new \App\Services\Address\GBGServices($m);
+    $s = new \App\Services\Address\GBGServices($m);
     dd($s->findAddressByText());
 
 });
@@ -390,12 +418,12 @@ Route::get('powers-api', function () {
 //});
 
 
-Route::get('/nmi-mirn', function() {
+Route::get('/nmi-mirn', function () {
 //    dd('hello');
     $app = ConnectionApplication::firstOrFail();
     $app->first_name = 'helllllo';
     $app->updateOrFail();
-    info('testing' , [$app]);
+    info('testing', [$app]);
 //    return true;
 //    $app = ConnectionApplication::where('id', 1)->firstOrFail();
 //    $app->update([
@@ -404,7 +432,7 @@ Route::get('/nmi-mirn', function() {
 
 });
 
-Route::get('/test', function() {
+Route::get('/test', function () {
 //    dd('hello');
     $service = \App\Models\ConnectionService::where('id', 12)->firstOrFail();
     $service->update([

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Agency;
 
+use App\Http\Resources\InternetServiceInfoResource;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\User;
@@ -150,6 +151,9 @@ class ApplicationResource extends JsonResource
             'is_embedded' => $this->is_embedded,
             'loading_address_info' => $this->loading_address_info,
             'embedded_nmi' => $this->embedded_nmi, // embedded network for
+
+            // Internet service info
+            'internet_service_info' => new InternetServiceInfoResource($this->internetServiceInfo),
         ];
     }
 
