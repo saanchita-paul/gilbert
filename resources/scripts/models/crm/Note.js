@@ -13,6 +13,7 @@ export default class Note {
     user_role = null;
     leads = null;
     plans = null;
+    additional_data = {}
 
     constructor(
         {
@@ -24,7 +25,8 @@ export default class Note {
             created_at = null,
             user_role = null,
             leads = null,
-            plans = null
+            plans = null,
+            additional_data = {},
         }
     ) {
         this.id = id;
@@ -36,6 +38,7 @@ export default class Note {
         this.title = this.mapTitle(type,title, this.user_role);
         this.leads = leads;
         this.plans = plans
+        this.additional_data = additional_data
     }
 
     mapType(type)

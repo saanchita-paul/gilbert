@@ -224,7 +224,10 @@ class ApplicationService
         }
 
         // Create application note
-        $this->createAppNoteForAssignUser($app, $hoodProfile);
+        ApplicationNoteService::createChatbotAssingNote(
+            $app->id,
+            $hoodProfile->first_name . ' ' . $hoodProfile->last_name
+        );
 
         GilbertToChatbotJob::dispatch($app->id);
     }
@@ -708,17 +711,4 @@ class ApplicationService
 
         return $email_manually_verified_by;
     }
-
-    public function createAppNoteForAssignUser(ConnectionApplication $connectionApplication, HoodProfile $hoodProfile)
-    {
-        $note['connection_application_id'] = $connectionApplication->id;
-        $note['created_by'] = 1;
-        $note['user_role'] = 'hood_admin';
-        $note['type'] = 'assign_user';
-        $note['title'] = 'Assigned to ' . $hoodProfile->first_name . ' ' . $hoodProfile->last_name;
-        $note['text'] = Carbon::parse($connectionApplication->assigned_at)->toDateTimeLocalString() . '.000000Z';
-        Log::info('CreateAppNoteForAssignUser: ', $note);
-        return ApplicationNote::create($note);
-    }
-
 }
