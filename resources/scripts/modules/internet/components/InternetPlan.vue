@@ -15,7 +15,7 @@
         <div class="pa-4 font-16">
             <p class="mb-0 text-internet">{{ plan.display_name }}</p>
             <p class="text-internet">{{ plan.mbps }}</p>
-            <p class="black--text font-weight-bold">{{ '$' + plan.price + '/month' }}</p>
+            <p class="black--text font-weight-bold mb-0">{{ '$' + plan.price + '/month' }}</p>
         </div>
 
         <div class="view-plan">
@@ -35,8 +35,8 @@
             <v-btn
                 v-if="plan.name === selectedPlan"
                 block
-                color="primary"
-                class="font-weight-bold border-radius-14 font-16"
+                color="#85639A"
+                class="font-weight-bold border-radius-14 font-16 white--text"
             >
                 Plan Selected!
             </v-btn>
@@ -81,28 +81,28 @@ export default {
 
 <style scoped>
 .internet-plan {
-    border: 1px solid #85639A;
+    border: 2px solid #85639A;
     margin-right: 10px;
     text-align: left;
-    border-radius: 32px;
+    border-radius: 30px;
     flex-basis: 250px;
-    opacity: 0.4;
+    opacity: 0.5;
 }
 
 .plan-title-header {
     background-color: #85639A;
     color: white;
-    padding: 20px 10px;
-    border-radius: 32px 32px 0 0;
+    padding: 10px;
+    border-radius: 26px 26px 0 0;
 }
 
 .internet-plan.active {
-    opacity: .9;
+    opacity: 1;
     box-shadow: 0 3px 3px -2px rgba(0, 0, 0, .2), 0 3px 4px 0 rgba(0, 0, 0, .14), 0 1px 8px 0 rgba(0, 0, 0, .12) !important;
 }
 
 .selected {
-    opacity: .9;
+    opacity: 1;
 }
 
 .view-plan {

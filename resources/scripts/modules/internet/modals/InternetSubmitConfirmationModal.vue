@@ -153,7 +153,7 @@
                             <v-row>
                                 <v-col cols="12">
                                     <h4>NBN Plan Selected</h4>
-                                    <div class="internet-plan selected">
+                                    <div class="internet-plan">
 
                                         <div class="plan-title-header">
                                             <div class="d-flex align-center">
@@ -168,14 +168,19 @@
 
                                         <div class="pa-4">
                                             <p class="mb-0 text-internet">{{ activePlan.display_name }}</p>
-                                            <p class="text-internet">{{ activePlan.mbps }}</p>
-                                            <p class="black--text font-weight-bold">
+                                            <p class="text-internet mb-3">{{ activePlan.mbps }}</p>
+                                            <p class="black--text font-weight-bold mb-0">
                                                 {{ '$' + activePlan.price + '/month' }}
                                             </p>
                                         </div>
 
                                         <div class="view-plan">
-                                            <v-btn block rounded>
+                                            <v-btn
+                                                block
+                                                color="#85639A"
+                                                class="font-weight-bold white--text"
+                                                style="border-radius: 16px !important;"
+                                            >
                                                 Plan Selected!
                                             </v-btn>
                                         </div>
@@ -267,12 +272,26 @@
 
                 <v-card-actions>
                     <v-col cols="6">
-                        <v-btn large block @click="backToEdit">
+                        <v-btn
+                            large
+                            block
+                            elevation="0"
+                            @click="backToEdit"
+                            style="border-radius: 16px !important;"
+                        >
                             Back to Edit
                         </v-btn>
                     </v-col>
                     <v-col cols="6">
-                        <v-btn large block color="primary" @click="confirmSubmit">
+                        <v-btn
+                            large
+                            block
+                            elevation="5"
+                            color="#542E89"
+                            class="white--text"
+                            @click="confirmSubmit"
+                            style="border-radius: 16px !important;"
+                        >
                             Confirm & Submit
                         </v-btn>
                     </v-col>
@@ -370,25 +389,22 @@ export default {
 }
 
 .internet-plan {
-    border: 1px solid #85639A;
+    border: 2px solid #85639A;
     text-align: left;
-    border-radius: 32px;
+    border-radius: 30px;
     width: 50%;
+    box-shadow: 0 6px 24px 0 #00000052 !important;
 }
 
 .plan-title-header {
     background-color: #85639A;
     color: white;
-    padding: 20px 10px;
-    border-radius: 32px 32px 0 0;
-}
-
-.selected {
-    opacity: .9;
+    padding: 10px;
+    border-radius: 26px 26px 0 0;
 }
 
 .view-plan {
-    padding: 0 15px;
+    padding: 0 10px;
     margin-bottom: 10px
 }
 
