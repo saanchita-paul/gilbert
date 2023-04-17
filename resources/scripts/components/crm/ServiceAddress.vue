@@ -617,7 +617,8 @@ export default {
           let v = await this.$refs.edit_address.validate();
           if (v) {
               // console.log()
-              this.$emit('saveAddress', this.propertyDetails);
+              this.$emit('saveAddress', {... this.propertyDetails});
+
               this.$eventBus.$emit("address_updated", this.propertyDetails);
               Store.commit('setInvalidAddress', false);
           }
