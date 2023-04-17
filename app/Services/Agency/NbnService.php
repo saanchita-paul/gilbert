@@ -6,8 +6,10 @@ use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\GoodtelPlan;
+use App\Models\GoodtelPlanPaymentLink;
 use App\Models\InternetServiceInfo;
 use Carbon\Carbon;
+use App\Models\ExternalSource;
 
 class NbnService
 {
@@ -142,15 +144,16 @@ class NbnService
             'connection_details' => json_encode([
                 "utility_type" => "Internet",
                 "applicant_name" => $connectionService->connectionApplication->first_name . ' ' . $connectionService->connectionApplication->last_name,
-                "connection_address" => $connectionService->internetServiceInfo->address_text,
+                "connection_address" => $connectionService->connectionApplication->address_text,
                 "connection_date" => Carbon::parse($connectionService->connectionApplication->moving_date)
                         ->toDateTimeLocalString() . '.000000Z',
-                "lead_source" => "Hood",
+                "lead_source" => ucfirst($this->getLeadSource($connectionService->connectionApplication->source)),
                 "agency" => $connectionService->connectionApplication->getAgencyName(),
                 "agent_name" => $connectionService->connectionApplication->getAgentName(),
                 "supplier_name" => "Goodtel",
                 "plan_name" => $connectionService->internetServiceInfo->goodtelPlan->getPlanName(),
                 "initial_payment_amount" => $connectionService->internetServiceInfo->goodtelPlan->price,
+                "modem_price" => $this->getModemPrice($connectionService->internetServiceInfo),
                 "modem_type" => $connectionService->internetServiceInfo->getModemType(),
                 "phone_calls" => $connectionService->internetServiceInfo->getPhoneCall(),
                 "medical_security" => $connectionService->internetServiceInfo->getMedicalAlarm(),
@@ -163,5 +166,18 @@ class NbnService
         ];
 
         return ApplicationNote::create($data);
+    }
+
+    public function getModemPrice($internetInfo)
+    {
+        return (GoodtelPlanPaymentLink::query()
+            ->select('id', 'modem_price')
+            ->where(['goodtel_plan_id' => $internetInfo->goodtel_plan_id, 'modem_type' => $internetInfo->modem_type])
+            ->first())?->modem_price;
+    }
+
+    private function getLeadSource($src)
+    {
+        return ExternalSource::intToStr($src) ?? '';
     }
 }
