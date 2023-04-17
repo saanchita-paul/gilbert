@@ -9,6 +9,7 @@ use App\Models\GoodtelPlan;
 use App\Models\GoodtelPlanPaymentLink;
 use App\Models\InternetServiceInfo;
 use Carbon\Carbon;
+use App\Models\ExternalSource;
 
 class NbnService
 {
@@ -146,7 +147,7 @@ class NbnService
                 "connection_address" => $connectionService->connectionApplication->address_text,
                 "connection_date" => Carbon::parse($connectionService->connectionApplication->moving_date)
                         ->toDateTimeLocalString() . '.000000Z',
-                "lead_source" => "Hood",
+                "lead_source" => ucfirst($this->getLeadSource($connectionService->connectionApplication->source)),
                 "agency" => $connectionService->connectionApplication->getAgencyName(),
                 "agent_name" => $connectionService->connectionApplication->getAgentName(),
                 "supplier_name" => "Goodtel",
@@ -175,5 +176,10 @@ class NbnService
             ->first())?->modem_text;
         preg_match('/\$(\d+)/', $modemText, $matches);
         return $matches ? $matches[1] : 0;
+    }
+
+    private function getLeadSource($src)
+    {
+        return ExternalSource::intToStr($src) ?? '';
     }
 }
