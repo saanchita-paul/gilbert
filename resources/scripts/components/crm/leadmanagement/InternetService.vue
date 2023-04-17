@@ -364,6 +364,7 @@
             @backToEdit="backToEdit"
             :leadSummary="leadSummary"
             :activePlan="activePlan"
+            :modemTypes="modemTypesItems"
         ></InternetSubmitConfirmationModal>
 
         <AssignedToUserEmptyModal v-if="assignedToDialog" :dialog="assignedToDialog"
