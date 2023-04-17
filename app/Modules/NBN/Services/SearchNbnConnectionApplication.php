@@ -10,6 +10,7 @@ use App\Modules\Reporting\Services\SetDateRage;
 use App\Services\Application\ApplicationStatusFilterMapper;
 use App\Services\FullTextSearch\FullTextQueryInterface;
 use App\Services\FullTextSearch\FullTextSearchInterface;
+use App\Services\TimeZoneService;
 use App\Traits\Agency\Sortable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -372,12 +373,16 @@ class SearchNbnConnectionApplication
 
     private function applyDateRangeFilter(): static
     {
+
         if ($this->dateStart && $this->dateEnd) {
-            $this->dateStart = Carbon::parse($this->dateStart)->toDateTimeString();
-            $this->dateEnd = Carbon::parse($this->dateEnd)
+            $this->dateStart = Carbon::parse($this->dateStart, TimeZoneService::getTimeZoneInt())
+                ->tz(config('app.timezone'))
+                ->toDateTimeString();
+            $this->dateEnd = Carbon::parse($this->dateEnd, TimeZoneService::getTimeZoneInt())
                 ->addHours(23)
                 ->addMinutes(59)
                 ->addSeconds(59)
+                ->tz(config('app.timezone'))
                 ->toDateTimeString();
 
             $this->builder = $this->builder
@@ -395,14 +400,7 @@ class SearchNbnConnectionApplication
                 ->where('status', '!=', ConnectionApplication::STATUS_UNASSIGNED)
                 ->whereHas('connectionServices', function (Builder $query) {
                 $query->where('service_type', 'internet')
-                    ->whereIn('status', [
-                        ConnectionService::STATUS_SUBMITTED,
-                        ConnectionService::STATUS_ENERGY_SUBMIT,
-                        ConnectionService::STATUS_REJECTED,
-                        ConnectionService::STATUS_CANT_CONNECT,
-                        ConnectionService::STATUS_ACCEPTED,
-                        ConnectionService::AC_MANUAL_PROCESSING
-                    ]);
+                    ->whereNotNull('submitted_at');
             });
 
         }

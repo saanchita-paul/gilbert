@@ -5,6 +5,7 @@ namespace App\Modules\NBN\Services;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\GoodtelPlanPaymentLink;
+use App\Models\Identification;
 use App\Models\InternetServiceInfo;
 use Box\Spout\Common\Exception\InvalidArgumentException;
 use Box\Spout\Common\Exception\IOException;
@@ -83,7 +84,7 @@ class NBNCafGenerationService
                     'Business Name' => '',
                     'Business ABN' => null,
                     'Account Password' => $app->internetServiceInfo->otp,
-                    'Driving Licence Number' => $app->identification?->card_number,
+                    'Driving Licence Number' => $this->parseDrivingID($app->identification),
                     'State of Issue' => $app->identification?->state,
                     'Date of Birth' => $this->generateDate($app->dob),
                     'Preferred Connection Date' => $this->generateDate($app->moving_date),
@@ -170,6 +171,15 @@ class NBNCafGenerationService
         }
 
         return $this->mapsModem[$type] ?? null;
+    }
+
+    private function parseDrivingID($identification) : ?string
+    {
+        if($identification?->type === Identification::TYPE_DRIVING_LICENCE)
+        {
+            return $identification?->card_number;
+        }
+        return "";
     }
 
 
