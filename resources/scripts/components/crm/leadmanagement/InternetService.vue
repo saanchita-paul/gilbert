@@ -285,7 +285,7 @@
                                 <v-btn outlined class="outlined-btn" @click="sendGoodtelPaymentLink"
                                        :loading="paymentBtnLoading" :disabled="disablePaymentLinkSendButton">
                                     {{ paymentLinkSent ? 'Payment Link Sent' : 'Send payment link' }}
-                                    <v-icon class="ml-4">mdi-email</v-icon>
+                                    <v-icon class="ml-4">{{ paymentLinkSent ? 'mdi-check' : 'mdi-email' }}</v-icon>
                                 </v-btn>
                                 <div>
                                     <transition name="fade">
@@ -364,6 +364,7 @@
             @backToEdit="backToEdit"
             :leadSummary="leadSummary"
             :activePlan="activePlan"
+            :modemTypes="modemTypesItems"
         ></InternetSubmitConfirmationModal>
 
         <AssignedToUserEmptyModal v-if="assignedToDialog" :dialog="assignedToDialog"
