@@ -395,7 +395,14 @@ class SearchNbnConnectionApplication
                 ->where('status', '!=', ConnectionApplication::STATUS_UNASSIGNED)
                 ->whereHas('connectionServices', function (Builder $query) {
                 $query->where('service_type', 'internet')
-                    ->where('status', ConnectionService::STATUS_SUBMITTED);
+                    ->whereIn('status', [
+                        ConnectionService::STATUS_SUBMITTED,
+                        ConnectionService::STATUS_ENERGY_SUBMIT,
+                        ConnectionService::STATUS_REJECTED,
+                        ConnectionService::STATUS_CANT_CONNECT,
+                        ConnectionService::STATUS_ACCEPTED,
+                        ConnectionService::AC_MANUAL_PROCESSING
+                    ]);
             });
 
         }
