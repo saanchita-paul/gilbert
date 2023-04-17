@@ -68,6 +68,7 @@ class GoodtelService
                         ],
                         [
                             'modem_text' => $paymentLink['modem_text'],
+                            'modem_price' => $paymentLink['modem_price'],
                             'payment_link' => $paymentLink['payment_link'],
                             'is_active' => true
                         ]
