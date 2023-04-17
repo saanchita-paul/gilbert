@@ -24,10 +24,6 @@ class CreateGoodtelPlanPaymentLinksTable extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
-
-        Artisan::call('db:seed', [
-            '--class' => GoodtelPlanSeeder::class,
-        ]);
     }
 
     /**
