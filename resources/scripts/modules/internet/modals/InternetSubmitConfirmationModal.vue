@@ -7,7 +7,10 @@
         >
             <v-card>
                 <v-toolbar dark color="primary">
-                    <v-toolbar-title>Confirm NBN Submission</v-toolbar-title>
+                    <v-toolbar-title class="font-weight-bold">
+                        <v-icon class="mr-1">mdi-wifi</v-icon>
+                        Confirm NBN Submission
+                    </v-toolbar-title>
                 </v-toolbar>
                 <v-card-text>
                     <div class="d-flex justify-space-between">
@@ -113,7 +116,7 @@
                                             <span>Modem Type</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>{{ modemMapper[internetServiceInfo.modem_type] }}</span>
+                                            <span>{{ getModemType }}</span>
                                         </div>
                                     </div>
 
@@ -153,7 +156,7 @@
                             <v-row>
                                 <v-col cols="12">
                                     <h4>NBN Plan Selected</h4>
-                                    <div class="internet-plan selected">
+                                    <div class="internet-plan">
 
                                         <div class="plan-title-header">
                                             <div class="d-flex align-center">
@@ -168,14 +171,19 @@
 
                                         <div class="pa-4">
                                             <p class="mb-0 text-internet">{{ activePlan.display_name }}</p>
-                                            <p class="text-internet">{{ activePlan.mbps }}</p>
-                                            <p class="black--text font-weight-bold">
+                                            <p class="text-internet mb-3">{{ activePlan.mbps }}</p>
+                                            <p class="black--text font-weight-bold mb-0">
                                                 {{ '$' + activePlan.price + '/month' }}
                                             </p>
                                         </div>
 
                                         <div class="view-plan">
-                                            <v-btn block rounded>
+                                            <v-btn
+                                                block
+                                                color="#85639A"
+                                                class="font-weight-bold white--text"
+                                                style="border-radius: 16px !important;"
+                                            >
                                                 Plan Selected!
                                             </v-btn>
                                         </div>
@@ -189,13 +197,14 @@
                                         </div>
                                         <div class="text-field d-flex justify-end">
                                             <v-switch inset class="mt-0 p-0"
+                                                      disabled
                                                       v-model="internetServiceInfo.is_need_home_phone"
                                                       @change="isNeedPhonePlanHandler">
                                             </v-switch>
                                         </div>
                                     </div>
 
-                                    <div class="crm-text-field" v-if="internetServiceInfo.is_need_home_phone && internetServiceInfo.home_phone_plan">
+                                    <div class="crm-text-field" v-if="isShowHomePhonePlan">
                                         <div class="field-label">
                                             <span>Selected Phone Plan</span>
                                         </div>
@@ -204,7 +213,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="crm-text-field" v-if="internetServiceInfo.is_need_home_phone && internetServiceInfo.home_phone_number">
+                                    <div class="crm-text-field" v-if="isShowSection && internetServiceInfo.home_phone_number">
                                         <div class="field-label">
                                             <span>Homephone #</span>
                                         </div>
@@ -213,7 +222,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="crm-text-field" v-if="internetServiceInfo.is_need_home_phone && internetServiceInfo.current_provider">
+                                    <div class="crm-text-field" v-if="isShowSection && internetServiceInfo.current_provider">
                                         <div class="field-label">
                                             <span>Current Provider</span>
                                         </div>
@@ -222,12 +231,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="crm-text-field">
+                                    <div class="crm-text-field" v-if="isShowSection && internetServiceInfo.account_number">
                                         <div class="field-label">
                                             <span>Account Number</span>
                                         </div>
                                         <div class="text-field">
-                                            <span>{{ leadSummary.applicant_name }}</span>
+                                            <span>{{ internetServiceInfo.account_number }}</span>
                                         </div>
                                     </div>
 
@@ -237,6 +246,7 @@
                                         </div>
                                         <div class="text-field d-flex justify-end">
                                             <v-switch inset class="mt-0 p-0"
+                                                      disabled
                                                       v-model="internetServiceInfo.is_back_to_base"
                                                       @change="updateInternetServiceInfo">
                                             </v-switch>
@@ -249,6 +259,7 @@
                                         </div>
                                         <div class="text-field d-flex justify-end">
                                             <v-switch inset class="mt-0 p-0"
+                                                      disabled
                                                       v-model="internetServiceInfo.is_security_alarm"
                                                       @change="updateInternetServiceInfo">
                                             </v-switch>
@@ -267,12 +278,26 @@
 
                 <v-card-actions>
                     <v-col cols="6">
-                        <v-btn large block @click="backToEdit">
+                        <v-btn
+                            large
+                            block
+                            elevation="0"
+                            @click="backToEdit"
+                            style="border-radius: 16px !important;"
+                        >
                             Back to Edit
                         </v-btn>
                     </v-col>
                     <v-col cols="6">
-                        <v-btn large block color="primary" @click="confirmSubmit">
+                        <v-btn
+                            large
+                            block
+                            elevation="5"
+                            color="#542E89"
+                            class="white--text"
+                            @click="confirmSubmit"
+                            style="border-radius: 16px !important;"
+                        >
                             Confirm & Submit
                         </v-btn>
                     </v-col>
@@ -298,12 +323,14 @@ export default {
         },
         activePlan: {
             required: true
+        },
+        modemTypes: {
+            required: true
         }
     },
     data() {
         return {
             leadSummary: new ApplicationSummary(),
-            modemMapper: InternetServiceConstant.MODEM_TYPE_MAP,
             charityMapper: InternetServiceConstant.CHARITY_MAP,
         };
     },
@@ -322,6 +349,15 @@ export default {
                 return await InternetService.updateInternetServiceInfo(value, this.leadSummary.id);
             }
         },
+        isShowHomePhonePlan() {
+            return this.internetServiceInfo.is_need_home_phone && this.internetServiceInfo.home_phone_plan;
+        },
+        isShowSection() {
+            return this.internetServiceInfo.is_need_home_phone && this.internetServiceInfo.is_existing_landline;
+        },
+        getModemType() {
+            return this.modemTypes.find(item => item.value === this.internetServiceInfo.modem_type)?.text;
+        }
     },
     async mounted() {
         this.leadSummary = await this.loadApplicationSummary;
@@ -370,25 +406,22 @@ export default {
 }
 
 .internet-plan {
-    border: 1px solid #85639A;
+    border: 2px solid #85639A;
     text-align: left;
-    border-radius: 32px;
+    border-radius: 30px;
     width: 50%;
+    box-shadow: 0 6px 24px 0 #00000052 !important;
 }
 
 .plan-title-header {
     background-color: #85639A;
     color: white;
-    padding: 20px 10px;
-    border-radius: 32px 32px 0 0;
-}
-
-.selected {
-    opacity: .9;
+    padding: 10px;
+    border-radius: 26px 26px 0 0;
 }
 
 .view-plan {
-    padding: 0 15px;
+    padding: 0 10px;
     margin-bottom: 10px
 }
 
