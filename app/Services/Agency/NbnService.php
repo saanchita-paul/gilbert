@@ -6,6 +6,7 @@ use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\GoodtelPlan;
+use App\Models\GoodtelPlanPaymentLink;
 use App\Models\InternetServiceInfo;
 use Carbon\Carbon;
 
@@ -142,7 +143,7 @@ class NbnService
             'connection_details' => json_encode([
                 "utility_type" => "Internet",
                 "applicant_name" => $connectionService->connectionApplication->first_name . ' ' . $connectionService->connectionApplication->last_name,
-                "connection_address" => $connectionService->internetServiceInfo->address_text,
+                "connection_address" => $connectionService->connectionApplication->address_text,
                 "connection_date" => Carbon::parse($connectionService->connectionApplication->moving_date)
                         ->toDateTimeLocalString() . '.000000Z',
                 "lead_source" => "Hood",
@@ -151,6 +152,7 @@ class NbnService
                 "supplier_name" => "Goodtel",
                 "plan_name" => $connectionService->internetServiceInfo->goodtelPlan->getPlanName(),
                 "initial_payment_amount" => $connectionService->internetServiceInfo->goodtelPlan->price,
+                "modem_price" => (int)$this->getModemPrice($connectionService->internetServiceInfo),
                 "modem_type" => $connectionService->internetServiceInfo->getModemType(),
                 "phone_calls" => $connectionService->internetServiceInfo->getPhoneCall(),
                 "medical_security" => $connectionService->internetServiceInfo->getMedicalAlarm(),
@@ -163,5 +165,15 @@ class NbnService
         ];
 
         return ApplicationNote::create($data);
+    }
+
+    public function getModemPrice($internetInfo)
+    {
+        $modemText = (GoodtelPlanPaymentLink::query()
+            ->select('id', 'modem_text')
+            ->where(['goodtel_plan_id' => $internetInfo->goodtel_plan_id, 'modem_type' => $internetInfo->modem_type])
+            ->first())?->modem_text;
+        preg_match('/\$(\d+)/', $modemText, $matches);
+        return $matches ? $matches[1] : 0;
     }
 }
