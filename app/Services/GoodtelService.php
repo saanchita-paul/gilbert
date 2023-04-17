@@ -116,11 +116,19 @@ class GoodtelService
                 new InternetPaymentLinkMail([
                     'customer_name' => $internetServiceInfo->connectionApplication->first_name,
                     'payment_url' => $paymentLink->payment_link,
-                    'charity' => InternetServiceInfo::CHARITY_MAPPER[$internetServiceInfo->charity] ?? null
+                    'charity' => InternetServiceInfo::CHARITY_MAPPER[$internetServiceInfo->charity] ?? null,
+                    'service_address' => $internetServiceInfo->connectionApplication->address_text ?? null,
+                    'plan_name' => $internetServiceInfo->goodtelPlan->getPlanName() ?? null,
+                    'modem_type' => $this->getModemType($internetServiceInfo->modem_type)
                 ])
             );
         } catch (\Exception $e) {
             throw $e;
         }
+    }
+
+    private function getModemType($modemType)
+    {
+        return strtolower($modemType) === 'none' ? 'BYO' : ucfirst($modemType) ?? null;
     }
 }
