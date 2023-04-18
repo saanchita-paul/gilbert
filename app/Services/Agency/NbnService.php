@@ -197,10 +197,12 @@ class NbnService
                 'city',
                 'postcode',
                 'state',
+                'address_text'
             ])
             ->where('id', $appId)
             ->firstOrFail();
-
-        $app->internetServiceInfo()->update(NbnService::mapAddressFromApplication($app));
+        InternetServiceInfo::query()
+            ->where('connection_application_id', $appId)
+            ->update(NbnService::mapAddressFromApplication($app));
     }
 }

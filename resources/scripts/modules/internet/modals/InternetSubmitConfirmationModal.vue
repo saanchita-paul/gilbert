@@ -339,15 +339,11 @@ export default {
             return DayJs(this.leadSummary.date_of_birth).format("DD/MM/YYYY");
         },
         loadApplicationSummary() {
+            // return ;
             return LeadApplicationService.loadApplicationSummary();
         },
-        internetServiceInfo: {
-            get() {
-                return InternetService.loadInternetServiceInfo();
-            },
-            async set(value) {
-                return await InternetService.updateInternetServiceInfo(value, this.leadSummary.id);
-            }
+        internetServiceInfo() {
+            return InternetService.loadInternetServiceInfo();
         },
         isShowHomePhonePlan() {
             return this.internetServiceInfo.is_need_home_phone && this.internetServiceInfo.home_phone_plan;
@@ -361,7 +357,7 @@ export default {
     },
     async mounted() {
         this.leadSummary = await this.loadApplicationSummary;
-        this.internetServiceInfo = await this.internetServiceInfo;
+        // this.internetServiceInfo = await this.internetServiceInfo;
     },
     methods: {
         backToEdit() {
@@ -371,9 +367,10 @@ export default {
             this.$eventBus.$emit("nbn_submitted");
         },
         updateInternetServiceInfo() {
-            ({internetServiceInfo: this.internetServiceInfo} = this);
+            // ({internetServiceInfo: this.internetServiceInfo} = this);
         },
         isNeedPhonePlanHandler() {
+            return;
             if (!this.internetServiceInfo.is_need_home_phone) {
                 this.internetServiceInfo.home_phone_provider = null;
                 this.internetServiceInfo.home_phone_plan = null;

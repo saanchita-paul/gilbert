@@ -175,11 +175,12 @@ class ApplicationService
 
         };
 
+
+        $existingApplication->save();
+
         if ($existingApplication->internetServiceInfo && $existingApplication->internetServiceInfo->is_shipping_same) {
             NbnService::updateFromApplicationAddress($applicationId);
         }
-
-        $existingApplication->save();
 
         return $existingApplication;
     }
