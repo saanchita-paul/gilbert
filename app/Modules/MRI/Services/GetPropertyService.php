@@ -33,9 +33,15 @@ class GetPropertyService
      */
     public HandleExceptionService $exceptionHandler;
 
+    /**
+     * @var LogService
+     */
+    public LogService $logService;
+
     public function __construct()
     {
         $this->exceptionHandler = new HandleExceptionService(self::class);
+        $this->logService = new LogService();
     }
 
     private function setToken(string $token)
@@ -65,12 +71,14 @@ class GetPropertyService
             $token = $office->key;
             $this->setToken($token);
 
+            $headers = [
+                'content-type' => 'application/json',
+                'accept' => 'application/json',
+                'authorization' => 'Bearer ' . $this->accessToken
+            ];
+
             $client = new Client([
-                'headers' => [
-                    'content-type' => 'application/json',
-                    'accept' => 'application/json',
-                    'authorization' => 'Bearer ' . $this->accessToken
-                ],
+                'headers' => $headers,
             ]);
 
             $mriApps = MriApplication::doesntHave('mriProperty')->where('mri_office_id', $office->id)->get();
@@ -83,13 +91,17 @@ class GetPropertyService
                     }
 
                     $this->setURL($app->property);
+                    $this->logService->create(get_class($this), $this->url, [
+                        'request_header' => json_encode($headers)
+                    ]);
                     $response = $client->request('GET', $this->url);
-
+                    $this->logService->update($response);
                     $data = json_decode($response->getBody()->getContents(), true);
 
                     $savedPropertyId = $this->saveProperty($app->id, $data);
                     $savedPropertyIds[] = $savedPropertyId;
                 } catch (RequestException $e) {
+                    $this->logService->update($e->getResponse());
                     $this->exceptionHandler->addException($e, ['mri_app_id' => $app->id]);
                 } catch (\Exception $e) {
                     $this->exceptionHandler->addException($e, ['mri_app_id' => $app->id]);
@@ -133,6 +145,7 @@ class GetPropertyService
                 $mriProperty = new MriProperty();
                 $mriProperty->mri_application_id = $mri_app_id;
             }
+            $mriProperty->mri_log_id = $this->logService->getLogId();
             $mriProperty->street_number = $property['address']['street_number'];
             $mriProperty->address_line_1 = $property['address']['address_line_1'];
             $mriProperty->address_line_2 = $property['address']['address_line_2'];

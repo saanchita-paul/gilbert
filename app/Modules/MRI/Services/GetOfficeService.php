@@ -8,6 +8,8 @@ use Illuminate\Support\Carbon;
 use GuzzleHttp\Exception\RequestException;
 use MRI\Mail\NotifyNewOfficeMail;
 use Illuminate\Support\Facades\Mail;
+use MRI\Services\LogService;
+use GuzzleHttp\Client;
 
 class GetOfficeService
 {
@@ -16,9 +18,15 @@ class GetOfficeService
      */
     public HandleExceptionService $exceptionHandler;
 
+    /**
+     * @var LogService
+     */
+    public LogService $logService;
+
     public function __construct()
     {
         $this->exceptionHandler = new HandleExceptionService(self::class);
+        $this->logService = new LogService();
     }
 
     public function getUnregisteredOffices(): array
@@ -35,14 +43,24 @@ class GetOfficeService
     {
         $url = $this->getURL();
         $subKey = empty(config('mri.subscription_key')) ? '574800735b3b4effa9d8ef84d57d345f' : config('mri.subscription_key');
-
-        $response = Http::withHeaders([
+        $headers = [
             "Accept" => "application/json",
             "Content-Type" => "application/json",
             "Ocp-Apim-Subscription-Key" => $subKey
-        ])->get($url);
+        ];
 
-        return json_decode($response->body(), true);
+        $this->logService->create(get_class($this), $url, ['request_header' => json_encode($headers)]);
+
+        $client = new Client([
+            'headers' => $headers
+        ]);
+        $response = $client->request("GET", $url);
+
+        $this->logService->update($response);
+
+        $data = json_decode($response->getBody()->getContents(), true);
+
+        return $data;
     }
 
     /**
@@ -69,6 +87,7 @@ class GetOfficeService
                 $this->notifyNewOffices($savedOfficeNames);
             }
         } catch (RequestException $e) {
+            $this->logService->update($e->getResponse());
             $this->exceptionHandler->addException($e);
         } catch (\Exception $e) {
             $this->exceptionHandler->addException($e);
@@ -102,7 +121,8 @@ class GetOfficeService
                     'application_id' => !empty(config('mri.app_id')) ? config('mri.app_id') : 'f89d9246-4e4a-437f-a6ba-1940282b097d',
                     'key' => $mriOffice['key'],
                     'company_name' => $mriOffice['company_name'],
-                    'activation_date' => $this->formatDate($mriOffice['activation_date'])
+                    'activation_date' => $this->formatDate($mriOffice['activation_date']),
+                    'mri_log_id' => $this->logService->getLogId()
                 ];
                 $newOffice = MriOffice::query()->create($mriOfficeDetails);
                 $updatedMriOfficeNames[] = $newOffice->company_name;
