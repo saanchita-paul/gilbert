@@ -16,7 +16,7 @@ trait SetDateRage
             ->addHours(23)
             ->addMinutes(59)
             ->addSeconds(59)
-            ->setTimezone(0)->toDateTimeString();
+            ->setTimezone(config('app.timezone'))->toDateTimeString();
     }
 
     private function setDateRangeNoTz(string $start, string $end)
