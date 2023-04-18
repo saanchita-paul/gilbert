@@ -57,8 +57,11 @@ class SearchConnectionApplication
     private $tenantEmail;
     private ?string $startDate = null;
     private ?string $endDate = null;
-    private bool $isDuplicate;
 
+    private ?string $movingStartDate = null;
+    private ?string $movingEndDate = null;
+
+    private bool $isDuplicate;
     /**
      * @var string|null
      */
@@ -89,7 +92,7 @@ class SearchConnectionApplication
         $this->duplication_group_id = !empty($request['duplication_group_id']) ? $request['duplication_group_id'] : null;
         $this->assignee = !empty($request['assignee']) ? $request['assignee'] : null;
 
-        !empty($request['moving_date']) && $this->setDateRangeNoTz($request['moving_date'], $request['moving_date']);
+        !empty($request['moving_date']) && $this->setMovingDateRange($request['moving_date'], $request['moving_date']);
 
         if (empty($request['sort_by'])) {
             $this->setSortBy('created_at', 'true');
@@ -247,10 +250,10 @@ class SearchConnectionApplication
 
     private function applyFilterMovingDate(): static
     {
-        if ($this->startDate && $this->endDate) {
+        if ($this->movingStartDate && $this->movingEndDate) {
             $this->builder = $this->builder
-                ->where('moving_date', '>=', $this->startDate)
-                ->where('moving_date', '<=', $this->endDate);
+                ->where('moving_date', '>=', $this->movingStartDate)
+                ->where('moving_date', '<=', $this->movingEndDate);
         }
         return $this;
     }
