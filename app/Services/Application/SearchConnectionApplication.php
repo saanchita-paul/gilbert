@@ -423,8 +423,8 @@ class SearchConnectionApplication
         if ($this->startDate && $this->endDate) {
 
             $this->builder = $this->builder
-                ->where('created_at', '>=', $this->endDate)
-                ->where('created_at', '<=', $this->startDate);
+                ->where('created_at', '>=', $this->startDate)
+                ->where('created_at', '<=', $this->endDate);
         }
         return $this;
     }
