@@ -121,11 +121,10 @@ class ApplicationController extends Controller
                 return $this->sendUnauthorizedResponse();
             }
 
-            $application->load(['connectionServices.reasons', 'internetServiceInfo']);
-
             // Update or create internet service info
             $nbnService = new NbnService();
             $nbnService->initInternetServiceInfo($application);
+            $application->load(['connectionServices.reasons', 'internetServiceInfo']);
 
             return new ApplicationResource($application, TSACallHistory::getByAppID($application->id));
 
