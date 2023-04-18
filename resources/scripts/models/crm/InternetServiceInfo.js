@@ -67,7 +67,7 @@ export default class InternetServiceInfo {
         this.account_number = account_number;
         this.home_phone_provider = home_phone_provider;
         this.home_phone_plan = home_phone_plan;
-        this.is_shipping_same = is_shipping_same === 1;
+        this.is_shipping_same = is_shipping_same;
         this.address = address;
         this.connection_service = connection_service;
     }

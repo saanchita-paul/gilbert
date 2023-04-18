@@ -574,6 +574,11 @@ export default {
             this.$router.push('/applications');
         },
         updateInternetServiceInfo() {
+            if(!this.internetServiceInfo.is_existing_landline) {
+                this.internetServiceInfo.home_phone_number = null;
+                this.internetServiceInfo.current_provider = null;
+                this.internetServiceInfo.account_number = null;
+            }
             ({internetServiceInfo: this.internetServiceInfo} = this);
         },
         isNeedPhonePlanHandler() {
