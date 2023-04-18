@@ -53,15 +53,32 @@
                                 <td style="padding:0 0 20px 0;color:#252830;">
                                     <h1 style="font-size:24px;margin:0 0 20px 0;font-family:'Ubuntu', Arial, sans-serif;font-weight:700;line-height:31px">
                                         Hey {{$name}},</h1>
-                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu', Arial, sans-serif;font-weight:400;">
+                                    <table style="margin:0 0 12px 0;">
+                                        <tr>
+                                            <td style="width:35%; font-weight:700; font-size:14px; font-family:'Ubuntu', Arial, sans-serif">Service Address</td>
+                                            <td style="width:65%; font-size:14px; font-family:'Ubuntu', Arial, sans-serif">{{ $service_address }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width:35%; font-weight:700; font-size:14px; font-family:'Ubuntu', Arial, sans-serif">Your Plan</td>
+                                            <td style="width:65%; font-size:14px; font-family:'Ubuntu', Arial, sans-serif">{{ $plan_name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width:35%; font-weight:700; font-size:14px; font-family:'Ubuntu', Arial, sans-serif">Modem Type</td>
+                                            <td style="width:65%; font-size:14px; font-family:'Ubuntu', Arial, sans-serif">{{ $modem_type }}</td>
+                                        </tr>
+                                    </table>
+                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu', Arial, sans-serif;font-weight:400;color:#252830;">
                                         Thank you for choosing Goodtel NBN with HOOD! As we mentioned, please click on
                                         the link below to make the payment for your first month’s Goodtel nbn service
                                         plus any modem if you requested one.
                                     </p>
 
-                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu', Arial, sans-serif;font-weight:400;">
-                                        We can’t thank you enough for making the switch to Goodtel and and selecting {{$charity}}. We look forward
-                                        to doing some good with you soon.
+                                    <p style="margin:0 0 12px 0;font-size:14px;line-height:18px;font-family:'Ubuntu', Arial, sans-serif;font-weight:400;color:#252830;">
+                                        We can’t thank you enough for making the switch to Goodtel and supporting {{ $charity }}.
+                                    </p>
+
+                                    <p style="margin:0 0 6px 0;font-size:14px;line-height:18px;font-family:'Ubuntu', Arial, sans-serif;font-weight:400;color:#252830;">
+                                        Click on the link below to continue!
                                     </p>
                                 </td>
                             </tr>

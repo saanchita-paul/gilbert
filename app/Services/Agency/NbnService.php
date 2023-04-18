@@ -142,7 +142,7 @@ class NbnService
                 "supplier_name" => "Goodtel",
                 "plan_name" => $connectionService->internetServiceInfo->goodtelPlan->getPlanName(),
                 "initial_payment_amount" => $connectionService->internetServiceInfo->goodtelPlan->price,
-                "modem_price" => (int)$this->getModemPrice($connectionService->internetServiceInfo),
+                "modem_price" => $this->getModemPrice($connectionService->internetServiceInfo),
                 "modem_type" => $connectionService->internetServiceInfo->getModemType(),
                 "phone_calls" => $connectionService->internetServiceInfo->getPhoneCall(),
                 "medical_security" => $connectionService->internetServiceInfo->getMedicalAlarm(),
@@ -159,12 +159,10 @@ class NbnService
 
     public function getModemPrice($internetInfo)
     {
-        $modemText = (GoodtelPlanPaymentLink::query()
-            ->select('id', 'modem_text')
+        return (GoodtelPlanPaymentLink::query()
+            ->select('id', 'modem_price')
             ->where(['goodtel_plan_id' => $internetInfo->goodtel_plan_id, 'modem_type' => $internetInfo->modem_type])
-            ->first())?->modem_text;
-        preg_match('/\$(\d+)/', $modemText, $matches);
-        return $matches ? $matches[1] : 0;
+            ->first())?->modem_price;
     }
 
     public static function mapAddressFromApplication(ConnectionApplication $application): array

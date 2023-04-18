@@ -38,7 +38,10 @@ class InternetPaymentLinkMail extends Mailable implements ShouldQueue
         return $this->view('email.internet-payment-link-mail', [
             'name' => $name,
             'paymentUrl' => $paymentUrl,
-            'charity' => $this->data['charity']
+            'charity' => $this->data['charity'],
+            'service_address' => $this->data['service_address'],
+            'plan_name' => $this->data['plan_name'],
+            'modem_type' => $this->data['modem_type']
         ]);
     }
 }
