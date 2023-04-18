@@ -146,7 +146,7 @@ class NBNCafGenerationService
 
     private function isBYOModem($modem_type): string
     {
-        if ($modem_type === 'byo') return 'Y';
+        if ($modem_type === 'none') return 'Y';
         return 'N';
     }
 
