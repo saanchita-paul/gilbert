@@ -46,9 +46,8 @@ class NBNController extends Controller
         /** @var User $user */
         $user = auth()->user();
         try {
-            $data = $request->toArray();
-            $service = new SearchNbnConnectionApplication($data);
-            return ApplicationResource::collection($service->get($user));
+            $service = new SearchConnectionApplication($request->toArray());
+            return ApplicationResource::collection($service->getNBN($user));
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

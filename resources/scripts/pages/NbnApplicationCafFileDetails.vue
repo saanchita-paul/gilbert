@@ -85,7 +85,7 @@
 
                 <div class="item">
                     <p class="item-title">Modem Type</p>
-                    <p class="item-value">{{ modemMapper[application.internet_service_info.modem_type] }}</p>
+                    <p class="item-value">{{ getModemType+' Modem' }}</p>
                 </div>
                 <div class="item">
                     <p class="item-title">Charity</p>
@@ -120,17 +120,17 @@
                     <p class="item-title"> Home Phone</p>
                     <p class="item-value">{{ application.internet_service_info.is_need_home_phone ? 'Y' : 'N' }}</p>
                 </div>
-                <div class="item">
+                <div class="item" v-if="isExistingLandline">
                     <p class="item-title"> Selected Phone Plan</p>
-                    <p class="item-value" v-if="isExistingLandline">{{ application.internet_service_info.home_phone_plan.toUpperCase() }}</p>
+                    <p class="item-value" >{{ application.internet_service_info.home_phone_plan.toUpperCase() }}</p>
                 </div>
-                <div class="item">
+                <div class="item" v-if="isExistingLandline">
                     <p class="item-title"> Phone Number to Transfer</p>
-                    <p class="item-value" v-if="isExistingLandline">{{ application.internet_service_info.home_phone_number }}</p>
+                    <p class="item-value" >{{ application.internet_service_info.home_phone_number }}</p>
                 </div>
-                <div class="item">
+                <div class="item" v-if="isExistingLandline">
                     <p class="item-title"> Current Provider</p>
-                    <p class="item-value" v-if="isExistingLandline">{{ application.internet_service_info.current_provider }}</p>
+                    <p class="item-value" >{{ application.internet_service_info.current_provider }}</p>
                 </div>
                 <div class="item">
                     <p class="item-title"> Back to Base Alarm</p>
@@ -165,6 +165,11 @@ export default {
     computed: {
         isExistingLandline(){
             return !!this.application.internet_service_info.is_existing_landline
+        },
+        getModemType(){
+            return this.application.internet_service_info.modem_type.toLowerCase() === 'none'
+                ? 'BYO'
+                : this.application.internet_service_info.modem_type.charAt(0).toUpperCase() + this.application.internet_service_info.modem_type.slice(1)
         }
     },
     watch: {},
