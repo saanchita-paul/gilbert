@@ -59,9 +59,6 @@ class SearchConnectionApplication
     private ?string $endDate = null;
     private bool $isDuplicate;
 
-    private ?string $dateStart = null;
-    private ?string $dateEnd = null;
-
     /**
      * @var string|null
      */
@@ -100,8 +97,10 @@ class SearchConnectionApplication
             $this->setSortBy(optional($request)['sort_by'], optional($request)['is_descending']);
         }
 
-        $this->dateStart = !empty($request['start_date']) ? $request['start_date'] : null;
-        $this->dateEnd = !empty($request['end_date']) ? $request['end_date'] : null;
+        if ( !empty($request['start_date']) && !empty($request['end_date'])) {
+            $this->setDateRange($request['start_date'], $request['end_date']);
+        }
+
         $this->application_service_type = !empty($request['application_service_type']) ? $request['application_service_type'] : null;
     }
 
@@ -166,17 +165,8 @@ class SearchConnectionApplication
         $this
             ->applyFilterLeadType($user)
             ->applyFilterUserOffice($user)
-            // ->applyFilterCreatedBy($user)
             ->applyFilterSource()
-//            ->applyFilterOfficeId()
-//            ->applyFilterForFoxie()
-//            ->applyFilterTenancyType()
-//            ->applyFilterTriage()
             ->applyFilterAppId()
-//            ->applyFilterMovingDate()
-//            ->applyFilterAgentId()
-//            ->applyFilterTenantEmail()
-//            ->applyDuplicateFilter()
             ->applyDateRangeFilter()
             ->applyFilterByService()
             ->applySearch();
@@ -430,13 +420,7 @@ class SearchConnectionApplication
 
     private function applyDateRangeFilter(): static
     {
-        if ($this->dateStart && $this->dateEnd) {
-            $this->dateStart = Carbon::parse($this->dateStart)->toDateTimeString();
-            $this->dateEnd = Carbon::parse($this->dateEnd)
-                ->addHours(23)
-                ->addMinutes(59)
-                ->addSeconds(59)
-                ->toDateTimeString();
+        if ($this->startDate && $this->endDate) {
 
             $this->builder = $this->builder
                 ->where('created_at', '>=', $this->dateStart)
