@@ -214,11 +214,14 @@ export default {
         },
         async loadPlanNoteAndLead() {
             this.notes = await LeadApplicationService.loadNote(this.leadId);
+            await  this.loadAppDetails();
+            this.planNoteFlag = true;
+            this.nmiMernFlag = this.leadSummary.loading_address_info;
+        },
+        async loadAppDetails() {
             this.leadSummary = await LeadApplicationService.loadUserLead(this.leadId);
             this.lead = this.leadSummary;
             this.services = this.leadSummary?.service_interests;
-            this.planNoteFlag = true;
-            this.nmiMernFlag = this.leadSummary.loading_address_info;
             UtilityStoreService.setUtilityDetails(this.leadSummary.connection_services);
         },
         updateNote() {
@@ -545,7 +548,12 @@ export default {
                     this.nmiMernFlag = res.loading_address_info;
                     await this.loadPlanNoteAndLead();
                 });
-        }
+        },
+        listenLeadDataReloadEvent() {
+            this.$eventBus.$on("reload-app-details", () => {
+                this.loadAppDetails();
+            })
+        },
     },
     watch: {
         powerPlan: {
@@ -589,6 +597,8 @@ export default {
             let v = await this.validateLead();
             InternetService.setIsValidForm(v);
         });
+
+        this.listenLeadDataReloadEvent()
     }
 };
 </script>
