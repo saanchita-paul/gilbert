@@ -1386,7 +1386,7 @@ import ServiceAddress from "@scripts/components/crm/ServiceAddress";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import DayJs from "dayjs";
 import dayJs, * as dayjs from "dayjs";
-import {isNull} from "lodash-es";
+import {cloneDeep, isNull} from "lodash-es";
 import AuthorizedPersonForm from "@scripts/components/crm/leadmanagement/AuthorizedPersonForm";
 import SPECIAL_NUMBER from "@scripts/data/constants/SPECIAL_NUMBER";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
@@ -1456,7 +1456,7 @@ export default {
             colorDD: ApplicationSummaryConstantService.getColorDD(),
             specialNumberDD: SPECIAL_NUMBER,
             identification: new Identification(),
-            property_details: new PropertyDetails(),
+                    property_details: new PropertyDetails(),
             person_details: new PersonDetails(),
             internetServiceInfo: new InternetServiceInfo(),
             dob: null,
@@ -1503,6 +1503,7 @@ export default {
         async updateInternetServiceInfo() {
             await InternetService.updateInternetServiceInfo(this.internetServiceInfo, this.lead.id);
             this.closeShippingAddress();
+            this.$eventBus.$emit('reload-app-details')
         },
 
         updateLeads() {
@@ -1814,7 +1815,9 @@ export default {
             },
             deep: true,
         },
-
+        loadInternetServiceInfo(n, o) {
+            this.internetServiceInfo = cloneDeep(n)
+        },
 
         dob() {
             this.person_details.dob = new DayJs(this.dob).format("DD/MM/YYYY");
@@ -1946,7 +1949,7 @@ export default {
         this.manuallyVerified = await LeadApplicationService.isEmailManuallyVerified(this.lead.id);
         this.person_details.email_manually_verified_by = this.manuallyVerified;
 
-        this.internetServiceInfo = await this.loadInternetServiceInfo;
+        this.internetServiceInfo = cloneDeep((await this.loadInternetServiceInfo))
     },
 };
 </script>

@@ -120,7 +120,11 @@ class ApplicationService
 
     public function updateAddress(array $address, int $applicationId)
     {
-        $existingApplication = ConnectionApplication::find($applicationId);
+        $existingApplication = ConnectionApplication::query()
+            ->with('internetServiceInfo')
+            ->where('id', $applicationId)
+            ->firstOrFail()
+        ;
         $existingApplication->address_text = $address['address_text'];
         $existingApplication->street_address = $address['street_address'];
         $existingApplication->street_name = $address['street_name'];
@@ -170,6 +174,10 @@ class ApplicationService
             $existingApplication->billing_address_unit = $address['unit_number'] ?: null;
 
         };
+
+        if ($existingApplication->internetServiceInfo && $existingApplication->internetServiceInfo->is_shipping_same) {
+            NbnService::updateFromApplicationAddress($applicationId);
+        }
 
         $existingApplication->save();
 

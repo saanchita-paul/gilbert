@@ -113,21 +113,11 @@ class NbnService
             $plan = GoodtelPlan::where('is_active', true)
                 ->where('name', $application->plan_type)->first();
 
-            $application->internetServiceInfo()->create([
+            $application->internetServiceInfo()->create(array_merge(NbnService::mapAddressFromApplication($application), [
                 'connection_application_id' => $application->id,
                 'connection_service_id' => $connectionService->id ?? null,
                 'goodtel_plan_id' => $plan->id ?? null,
-                'is_shipping_same' => true,
-                'unit_number' => $application->unit_number,
-                'street_number' => $application->street_number,
-                'street_name_only' => $application->street_name_only,
-                'address_text' => $application->address_text,
-                'street_address' => $application->street_address,
-                'street_type' => $application->street_type,
-                'city' => $application->city,
-                'postcode' => $application->postcode,
-                'state' => $application->state,
-            ]);
+            ]));
         }
 
         return $application->refresh();
@@ -179,5 +169,38 @@ class NbnService
     private function getLeadSource($src)
     {
         return ExternalSource::intToStr($src) ?? '';
+    }
+    public static function mapAddressFromApplication(ConnectionApplication $application): array
+    {
+        return [
+            'is_shipping_same' => true,
+            'unit_number' => $application->unit_number,
+            'street_number' => $application->street_number,
+            'street_name_only' => $application->street_name_only,
+            'address_text' => $application->address_text,
+            'street_address' => $application->street_address,
+            'street_type' => $application->street_type,
+            'city' => $application->city,
+            'postcode' => $application->postcode,
+            'state' => $application->state,
+        ];
+    }
+
+    public static function updateFromApplicationAddress(int $appId): void
+    {
+        $app = ConnectionApplication::query()
+            ->select([
+                'unit_number',
+                'street_number',
+                'street_name_only',
+                'street_type',
+                'city',
+                'postcode',
+                'state',
+            ])
+            ->where('id', $appId)
+            ->firstOrFail();
+
+        $app->internetServiceInfo()->update(NbnService::mapAddressFromApplication($app));
     }
 }
