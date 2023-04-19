@@ -12,6 +12,7 @@ use App\Traits\Agency\Sortable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+
 use function optional;
 use function resolve;
 
@@ -87,7 +88,7 @@ class SearchConnectionApplication
         $this->appId = !empty($request['app_id']) ? $request['app_id'] : null;
         $this->agentId = !empty($request['agent_id']) ? $request['agent_id'] : null;
         $this->tenantEmail = !empty($request['tenant_email']) ? $request['tenant_email'] : null;
-        $this->provider = !empty($request['provider_name']) ?  $request['provider_name'] : null;
+        $this->provider = !empty($request['provider_name']) ? $request['provider_name'] : null;
         $this->isDuplicate = !empty($request['is_duplicate']) ? (bool)$request['is_duplicate'] : false;
         $this->duplication_group_id = !empty($request['duplication_group_id']) ? $request['duplication_group_id'] : null;
         $this->assignee = !empty($request['assignee']) ? $request['assignee'] : null;
@@ -100,7 +101,7 @@ class SearchConnectionApplication
             $this->setSortBy(optional($request)['sort_by'], optional($request)['is_descending']);
         }
 
-        if ( !empty($request['start_date']) && !empty($request['end_date'])) {
+        if (!empty($request['start_date']) && !empty($request['end_date'])) {
             $this->setDateRange($request['start_date'], $request['end_date']);
         }
 
@@ -172,6 +173,8 @@ class SearchConnectionApplication
             ->applyFilterAppId()
             ->applyDateRangeFilter()
             ->applyFilterByService()
+            ->applyFilterAssignedOnly()
+            ->applyFilterSubmittedInternet()
             ->applySearch();
 
         $this->builder = $this->applySorting($this->builder);
@@ -236,7 +239,6 @@ class SearchConnectionApplication
             $this->builder = $this->builder->where('source', $this->source);
         }
         return $this;
-
     }
 
     private function applyFilterAppId(): static
@@ -245,7 +247,6 @@ class SearchConnectionApplication
             $this->builder = $this->builder->where('id', $this->appId);
         }
         return $this;
-
     }
 
     private function applyFilterMovingDate(): static
@@ -273,7 +274,6 @@ class SearchConnectionApplication
             $this->builder = $this->builder->where('created_by', $this->agentId);
         }
         return $this;
-
     }
 
     /**
@@ -359,7 +359,10 @@ class SearchConnectionApplication
         $query = resolve(FullTextQueryInterface::class);
 
         if (!empty($filters['tenant_name'])) {
-            $this->searchQueries[] = $query->createNew(text: $filters['tenant_name'], index: 'first_name, middle_name, last_name');
+            $this->searchQueries[] = $query->createNew(
+                text: $filters['tenant_name'],
+                index: 'first_name, middle_name, last_name'
+            );
         }
         if (!empty($filters['phone'])) {
             $this->searchQueries[] = $query->createNew(text: $filters['phone'], index: 'phone,homephone');
@@ -382,7 +385,10 @@ class SearchConnectionApplication
             }),
             null => $this->builder->where(function (Builder $builder) {
                 $builder->doesntHave('SugerLead')
-                    ->orWhereHas("SugerLead", fn(Builder $id) => $id->whereNull('compare_connect_id')->orWhere('compare_connect_id', 'N/A'));
+                    ->orWhereHas(
+                        "SugerLead",
+                        fn(Builder $id) => $id->whereNull('compare_connect_id')->orWhere('compare_connect_id', 'N/A')
+                    );
             }),
             default => $this->builder
         };
@@ -403,7 +409,8 @@ class SearchConnectionApplication
         return $this;
     }
 
-    private function mapProviderList($providers){
+    private function mapProviderList($providers)
+    {
         return explode(",", $providers);
     }
 
@@ -424,7 +431,6 @@ class SearchConnectionApplication
     private function applyDateRangeFilter(): static
     {
         if ($this->startDate && $this->endDate) {
-
             $this->builder = $this->builder
                 ->where('created_at', '>=', $this->startDate)
                 ->where('created_at', '<=', $this->endDate);
@@ -445,13 +451,32 @@ class SearchConnectionApplication
         return $this;
     }
 
-    private function applyFilterByService(): static {
+    private function applyFilterByService(): static
+    {
         if ($this->application_service_type) {
-            $this->builder = $this->builder->whereHas('connectionServices', function (Builder $query){
+            $this->builder = $this->builder->whereHas('connectionServices', function (Builder $query) {
                 $query->whereIn('service_type', ['power', 'gas']);
             });
         }
         return $this;
+    }
 
+    private function applyFilterAssignedOnly(): static
+    {
+        $this->builder = $this->builder->whereNotNull('assigned_to');
+
+        return $this;
+    }
+
+    private function applyFilterSubmittedInternet(): static
+    {
+        $this->builder = $this->builder
+            ->where('status', '!=', ConnectionApplication::STATUS_UNASSIGNED)
+            ->whereHas('connectionServices', function (Builder $query) {
+                $query->where('service_type', 'internet')
+                    ->whereNotNull('submitted_at');
+            });
+
+        return $this;
     }
 }
