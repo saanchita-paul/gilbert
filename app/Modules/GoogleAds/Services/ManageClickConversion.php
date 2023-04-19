@@ -4,6 +4,7 @@ namespace GoogleAds\Services;
 
 use App\Models\ClickConversion;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  *
@@ -47,7 +48,11 @@ class ManageClickConversion
             ->whereNotNull('gcl_id')
             ->whereNotNull('conversion_date')
             ->whereNull('uploaded_at')
-            ->select(['conversion_date', 'gcl_id'])
+            ->where(function (Builder $query) {
+                $query->where('should_skip', false)
+                    ->orWhereNull('should_skip');
+            })
+            ->select(['id', 'conversion_date', 'gcl_id'])
             ->get()
             ->toArray();
     }
@@ -60,6 +65,9 @@ class ManageClickConversion
     {
         ClickConversion::query()
             ->whereIn('gcl_id', $gclIds)
-            ->update(['uploaded_at' => now()]);
+            ->update([
+                'uploaded_at' => now(),
+                'status' => ClickConversion::STATUS_UPLOADED
+            ]);
     }
 }

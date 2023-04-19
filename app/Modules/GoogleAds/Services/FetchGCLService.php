@@ -33,6 +33,7 @@ class FetchGCLService
         (new static())->fetchConnectionApplications()->fetchGclId();
 
     }
+
     private function getClient(): PendingRequest
     {
         return Http::withHeaders(['Authorization' => config('hub_spot.oauth_token')]);
@@ -50,6 +51,8 @@ class FetchGCLService
             })
             ->where('source', ConnectionApplication::SOURCE_HOOD_LEAD)
             ->whereNotNull('hubspot_contact_id')
+            ->whereDate('created_at', '>=', Carbon::now()->subWeek()->startOfWeek())
+            ->orderBy('id', 'desc')
             ->get();
 
         return $this;

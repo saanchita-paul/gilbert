@@ -75,6 +75,8 @@ class Kernel extends ConsoleKernel
 
         $this->runMri($schedule);
 
+        $this->runGoogleAdsConversion($schedule);
+
         /**
          * For Horizon metrics dashboard
          */
@@ -102,6 +104,11 @@ class Kernel extends ConsoleKernel
         $schedule->command('mri:fetch_agent')->hourlyAt(10);
         $schedule->command('mri:fetch_tenancies')->everyFifteenMinutes();
         // $schedule->command('send-email-mri-office')->twiceDaily();
+    }
+
+    private function runGoogleAdsConversion(Schedule $schedule)
+    {
+        $schedule->command('google:adds:click:upload')->dailyAt("1:00");
     }
 
     /**

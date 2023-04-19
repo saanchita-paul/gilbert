@@ -24,9 +24,19 @@ class ClickConversion extends Model
     public const IS_UPLOADED_CLICK_FALSE = 0;
     public const IS_UPLOADED_CLICK_TRUE = 1;
 
+    public const STATUS_FETCHED = 'fetched';
+    public const STATUS_FETCH_FAILED = 'fetch_failed';
+    public const STATUS_UPLOADED = 'uploaded';
+    public const STATUS_UPLOAD_FAILED = 'upload_failed';
+
     public const GENERATED_FROM_CREATION_FALSE = 0;
 
-    public function connectionApplication(): BelongsTo {
+    protected $casts = [
+        'should_skip' => 'boolean'
+    ];
+
+    public function connectionApplication(): BelongsTo
+    {
         return $this->belongsTo(ConnectionApplication::class);
     }
 }

@@ -7,15 +7,24 @@ use Google\Ads\GoogleAds\Util\V13\ResourceNames;
 use Google\Ads\GoogleAds\V13\Services\ClickConversion as ClickConversionCore;
 use Log;
 use Illuminate\Support\Carbon;
+use Google\Ads\GoogleAds\Util\V13\GoogleAdsErrors;
+use Google\Ads\GoogleAds\Util\V13\PartialFailures;
+use App\Models\ClickConversion;
 
 class UploadClickConversionAPI extends BaseGoogleConversionService
 {
 
     private array $clickConversions = [];
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->conversionActionID = config('google_ads.conversion_action_ids.click');
+    }
 
     public function setClickConversions(array $clicks): static
     {
+        info("UploadClickConversionAPI: setting clicks (refer context)", $clicks);
         $this->clickConversions = $clicks;
 
         return $this;
@@ -63,6 +72,10 @@ class UploadClickConversionAPI extends BaseGoogleConversionService
             if ($response->hasPartialFailureError()) {
                 $mgs = "Partial failures occurred: {$response->getPartialFailureError()->getMessage()}";
                 Log::error($mgs);
+                $successfulGclIds = $this->printResults($response);
+                if (!empty($successfulGclIds)) {
+                    return $successfulGclIds;
+                }
                 throw new Exception($mgs);
             } else {
                 // Prints the result if exists.
@@ -83,10 +96,56 @@ class UploadClickConversionAPI extends BaseGoogleConversionService
     {
         $gclIds = [];
         foreach ($response->getResults() as $result) {
+            info("Uploaded click conversion", [
+                'conversion_date_time' => $result->getConversionDateTime(),
+                'gclid' => $result->getGclid(),
+                'action' => $result->getConversionAction(),
+            ]);
+
             $gclIds[] = $result->getGclid();
         }
 
         return $gclIds;
+    }
+
+    private function printResults($response)
+    {
+        // Finds the failed operations by looping through the results.
+        $successfulGclIds = [];
+        $operationIndex = 0;
+        foreach ($response->getResults() as $result) {
+            /** @var AdGroup $result */
+            if (PartialFailures::isPartialFailure($result)) {
+                // the current iteration failed
+                $errors = GoogleAdsErrors::fromStatus(
+                    $operationIndex,
+                    $response->getPartialFailureError()
+                );
+                $errorList = [];
+                foreach ($errors as $error) {
+                    info('operation failed', [
+                        'index' => $operationIndex,
+                        'message' => $error->getMessage()
+                    ]);
+                    $errorList[] = $error->getMessage();
+                }
+                $clickConversion = ClickConversion::find($this->clickConversions[$operationIndex]['id'] ?? 0);
+
+                if ($clickConversion && !empty($errorList)) {
+                    $clickConversion->reason = json_encode($errorList);
+                    $clickConversion->status = ClickConversion::STATUS_UPLOAD_FAILED;
+                    $clickConversion->save();
+                }
+            } else {
+                // the current iteration is successfully submitted to Google Ads
+                $gclId = $this->clickConversions[$operationIndex]['gcl_id'] ?? null;
+                if (!empty($gclId)) {
+                    $successfulGclIds[] = $gclId;
+                }
+            }
+            $operationIndex++;
+        }
+        return $successfulGclIds;
     }
 
     private function formatDate(string $date): string

@@ -24,6 +24,8 @@ use App\Listeners\Agency\CreateHubSpotContact;
 use App\Listeners\Agency\UpdateHubSpotContact;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use App\Observers\ConnectionServiceObserver;
+use App\Models\ConnectionService;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -87,5 +89,6 @@ class EventServiceProvider extends ServiceProvider
     {
         ConnectionApplication::observe(ConnectionApplicationObserver::class);
         Identification::observe(IdentificationObserver::class);
+        ConnectionService::observe(ConnectionServiceObserver::class);
     }
 }
