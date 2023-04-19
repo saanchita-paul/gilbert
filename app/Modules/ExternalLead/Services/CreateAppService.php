@@ -121,7 +121,7 @@ class CreateAppService
         if (empty($data['billing_address'])) {
             $app->is_billing_same = true;
         } else {
-            $app->billing_street_type = $data['billing_address']['street_type'] ?? null;
+            $app->billing_street_type = StreetTypeMapper::getShortForm(($data['billing_address']['street_type'] ?? null));
             $app->billing_unit_number = $data['billing_address']['unit_number'] ?? null;
             $app->billing_street_number = $data['billing_address']['street_number'] ?? null;
             $app->billing_street_name = $data['billing_address']['street_name'] ?? null;
