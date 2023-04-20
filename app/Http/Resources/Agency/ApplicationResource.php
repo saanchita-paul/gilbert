@@ -194,6 +194,7 @@ class ApplicationResource extends JsonResource
                         $svc->status = ConnectionService::STATUS_UNASSIGNED;
                     }
                     $svc->statusText = ConnectionService::STATUS_MAPPING[$svc->status];
+                    $svc->reasons = $svc->reasons->toArray();
                     $newService[] = $svc;
                 }
                 return $newService;
