@@ -43,10 +43,10 @@ class ManageCallConversion
             ->whereNotNull('caller_id')
             ->where('status', CallConversion::STATUS_FETCHED)
             ->whereNull('uploaded_at')
-            ->select(['conversion_date', 'caller_id', 'call_start_at'])
+            ->select(['id', 'conversion_date', 'caller_id', 'call_start_at'])
             ->get()
             ->toArray();
-        dump($this->calls);
+        // dump($this->calls);
     }
 
     private function updateUploadedAt(array $gclIds): void

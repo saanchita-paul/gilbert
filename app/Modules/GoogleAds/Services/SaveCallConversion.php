@@ -39,7 +39,7 @@ class SaveCallConversion
 
         $this->savedFetchFailed();
 
-        info("genesys data", ['phones' => $phones, 'response' => $conversions, 'failed' => $this->phoneMap]);
+        info("genesys data", ['phones' => $phones, 'failed' => $this->phoneMap]);
 
     }
 
@@ -71,10 +71,11 @@ class SaveCallConversion
                     $conv->whereNull('call_start_at');
                 })->orWhereDoesntHave('callConversion');
             })
+            ->whereDate('created_at', '>=', Carbon::now()->subWeek()->startOfWeek())
             ->select(['id', 'phone'])
             ->orderBy('id', 'desc')
 //            ->whereIn('id', [43463])
-            ->limit(50) #todo: update here
+            // ->limit(50) #todo: update here
             ->get()
             ->toArray();
     }
@@ -86,36 +87,47 @@ class SaveCallConversion
      */
     private function mapData(array $data): array
     {
-        if (!array_key_exists('conversations', $data)) {
-            return [];
-        }
+        // if (!array_key_exists('conversations', $data)) {
+        //     return [];
+        // }
 
         $return = [];
 
-        $conversations = $data['conversations'];
+        foreach ($data as $response) {
+            $conversations = $response['conversations'] ?? [];
 
-        foreach ($conversations as $conv) {
-            try {
-                if (!$session = $conv['participants'][0]['sessions'][0] ?? null) {
-                    throw new \Exception("Session not found: conv ID: {$conv['conversationId']}");
-                }
-                $ani = $session['ani'] ?? null;
-                if (isset($this->phoneMap[$ani])) {
-                    $return[] = [
-                        'caller_id' => $this->phoneMap[$ani]['phone'],
-                        'call_start_at' => $conv['conversationStart'] ? Carbon::parse($conv['conversationStart']) : null,
-                        'call_end_at' => $conv['conversationEnd'] ? Carbon::parse($conv['conversationEnd']) : null,
-                        'connection_application_id' => $this->phoneMap[$ani]['id'],
-                        'status' => CallConversion::STATUS_FETCHED,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
+            foreach ($conversations as $conv) {
+                try {
+                    if (!$session = $conv['participants'][0]['sessions'][0] ?? null) {
+                        throw new \Exception("Session not found: conv ID: {$conv['conversationId']}");
+                    }
+                    $ani = $session['ani'] ?? null;
+                    if (
+                        !empty($ani) &&
+                        (
+                            empty($return[$ani]) ||
+                            empty($return[$ani]['call_start_at']) ||
+                            (!empty($conv['conversationStart']) && Carbon::parse($conv['conversationStart'])->lt($return[$ani]['call_start_at']))
+                        )
+                    ) {
+                        $return[$ani] = [
+                            'caller_id' => $this->phoneMap[$ani]['phone'],
+                            'call_start_at' => $conv['conversationStart'] ? Carbon::parse($conv['conversationStart']) : null,
+                            'call_end_at' => $conv['conversationEnd'] ? Carbon::parse($conv['conversationEnd']) : null,
+                            'connection_application_id' => $this->phoneMap[$ani]['id'],
+                            'status' => CallConversion::STATUS_FETCHED,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
 
-                    unset($this->phoneMap[$ani]);
+                        if (isset($this->phoneMap[$ani])) {
+                            unset($this->phoneMap[$ani]);
+                        }
+                    }
+                } catch (\Exception $e) {
+                    \Log::error('GetConversationDetailService.formatResponseData: ' . $e->getMessage());
+                    continue;
                 }
-            } catch (\Exception $e) {
-                \Log::error('GetConversationDetailService.formatResponseData: ' . $e->getMessage());
-                continue;
             }
         }
 
