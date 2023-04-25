@@ -268,7 +268,7 @@ class CAFGenerationService
      * @param $app
      * @return string
      */
-    private function getExpiryDate($app)
+    private function    getExpiryDate($app)
     {
         return date('d-M', strtotime($app->identification?->expire_date));
     }

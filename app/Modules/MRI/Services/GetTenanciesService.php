@@ -105,8 +105,8 @@ class GetTenanciesService
 
     public function run()
     {
+        $mriOffices = (new GetOfficeService())->getMriOffices(true, $this->officeId ?? null);
         try {
-            $mriOffices = (new GetOfficeService())->getMriOffices(true, $this->officeId ?? null);
             foreach ($mriOffices as $office) {
                 $token = $office->key;
                 $apiData = $this->runAPI($token);

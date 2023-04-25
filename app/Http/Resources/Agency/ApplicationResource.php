@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Agency;
 
+use App\Http\Resources\InternetServiceInfoResource;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\User;
@@ -146,9 +147,13 @@ class ApplicationResource extends JsonResource
             'email_manually_verified_by' => $this->email_manually_verified_by,
             'is_generated_caf' => $this->is_generated_caf,
             'chatbot_id' => $this->chatbot_id,
+            // embedded network
             'is_embedded' => $this->is_embedded,
             'loading_address_info' => $this->loading_address_info,
-            'embedded_nmi' => $this->embedded_nmi,
+            'embedded_nmi' => $this->embedded_nmi, // embedded network for
+
+            // Internet service info
+            'internet_service_info' => new InternetServiceInfoResource($this->internetServiceInfo),
         ];
     }
 
@@ -189,6 +194,7 @@ class ApplicationResource extends JsonResource
                         $svc->status = ConnectionService::STATUS_UNASSIGNED;
                     }
                     $svc->statusText = ConnectionService::STATUS_MAPPING[$svc->status];
+                    $svc->reasons = $svc->reasons->toArray();
                     $newService[] = $svc;
                 }
                 return $newService;

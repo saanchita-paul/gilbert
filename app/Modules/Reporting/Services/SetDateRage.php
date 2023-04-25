@@ -16,14 +16,14 @@ trait SetDateRage
             ->addHours(23)
             ->addMinutes(59)
             ->addSeconds(59)
-            ->setTimezone(0)->toDateTimeString();
+            ->setTimezone(config('app.timezone'))->toDateTimeString();
     }
 
-    private function setDateRangeNoTz(string $start, string $end)
+    private function setMovingDateRange(string $start, string $end)
     {
 
-        $this->startDate = Carbon::parse($start)->toDateTimeString();
-        $this->endDate = Carbon::parse($end)
+        $this->movingStartDate = Carbon::parse($start)->toDateTimeString();
+        $this->movingEndDate = Carbon::parse($end)
             ->addHours(23)
             ->addMinutes(59)
             ->addSeconds(59)

@@ -7,7 +7,7 @@ use App\Events\NotifyAgentAfterLeadCreation;
 use App\Listeners\Agency\CreatePlanNoteListener;
 use App\Listeners\ConnectionApplicationClosedOrEscalatedListener;
 use App\Listeners\GetAddressInfoAndAutoAssign;
-use App\Listeners\FetchAdditionalInfoAddressListener;
+use App\Listeners\InternetServiceInfoCreateListener;
 use App\Listeners\NotifyAgentAfterLeadCreationListener;
 use App\Listeners\Agency\EnergySubmitListener;
 use App\Models\ConnectionApplication;
@@ -53,6 +53,7 @@ class EventServiceProvider extends ServiceProvider
         CreateApplicationEvent::class => [
             GetAddressInfoAndAutoAssign::class,
             CreateHubSpotContact::class,
+            InternetServiceInfoCreateListener::class,
         ],
         NotifyAgentAfterLeadCreation::class => [
             NotifyAgentAfterLeadCreationListener::class,

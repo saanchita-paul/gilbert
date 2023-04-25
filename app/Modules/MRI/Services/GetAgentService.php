@@ -11,6 +11,7 @@ use App\Models\MriAgent;
 use App\Models\MriOffice;
 use Illuminate\Support\Carbon;
 use App\Models\MriProperty;
+use MRI\Services\LogService;
 
 class GetAgentService
 {
@@ -40,6 +41,11 @@ class GetAgentService
     public HandleExceptionService $exceptionHandler;
 
     /**
+     * @var LogService
+     */
+    public LogService $logService;
+
+    /**
      * DEFAULT GET ALL DATA WITHOUT AFTER DATE
      */
     public function __construct()
@@ -47,6 +53,7 @@ class GetAgentService
         $this->setURL();
         // $this->setAfterDate(Carbon::now()->format('Y-m-d'));
         $this->exceptionHandler = new HandleExceptionService(self::class);
+        $this->logService = new LogService();
     }
 
     public function setAfterDate(string $date)
@@ -77,8 +84,8 @@ class GetAgentService
 
     public function run()
     {
+        $mriOffices = (new GetOfficeService())->getMriOffices(true, $this->officeId ?? null);
         try {
-            $mriOffices = (new GetOfficeService())->getMriOffices(true, $this->officeId ?? null);
             foreach ($mriOffices as $office) {
                 $token = $office->key;
                 $response = $this->fetch($token);
@@ -86,6 +93,7 @@ class GetAgentService
                 $this->saveAgent($office->id, $data);
             }
         } catch (RequestException $e) {
+            $this->logService->update($e->getResponse());
             $this->exceptionHandler->addException($e);
         } catch (\Exception $e) {
             $this->exceptionHandler->addException($e);
@@ -120,7 +128,14 @@ class GetAgentService
             'query' => $query
         ];
 
-        return $client->request('GET', $this->url, $options);
+        $this->logService->create(get_class($this), $this->url, [
+            'request_header' => json_encode($headers),
+            'request_query' => json_encode($query)
+        ]);
+        $response = $client->request('GET', $this->url, $options);
+        $this->logService->update($response);
+
+        return $response;
     }
 
     /**
@@ -145,6 +160,7 @@ class GetAgentService
             try {
                 $mriAgent = new MriAgent();
 
+                $mriAgent->mri_log_id = $this->logService->getLogId();
                 $mriAgent->agent_id = $agentData['id'];
                 $mriAgent->first_name = $agentData['first_name'];
                 $mriAgent->last_name = $agentData['last_name'];

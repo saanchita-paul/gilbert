@@ -3,6 +3,7 @@ import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
 import OfficeMapper from "@scripts/api/mappers/crm/OfficeMapper";
 import SecondaryContactMapper from "@scripts/api/mappers/crm/SecondaryContactMapper";
+import ApplicationSummary from "@scripts/models/crm/ApplicationSummary";
 
 const data = [
     {
@@ -277,10 +278,8 @@ export default {
 
     async getUserLead(id) {
         try {
-            const data = await axios.get('/api/applications/' + id);
-            const response = ApplicationMapper.mapApplicationSummary(data.data.data);
-            return response;
-
+            const data = (await axios.get('/api/applications/' + id)).data.data;
+            return new ApplicationSummary(data);
         } catch (error) {
             return error.data;
         }
@@ -388,7 +387,6 @@ export default {
 
     async updateAddress(address, leadId) {
         try {
-            console.log(address);
             const response = await axios.put('/api/applications/' + leadId + '/update-address', {address});
             return ApplicationMapper.mapApplication(response.data.data);
         } catch (error) {
@@ -454,16 +452,6 @@ export default {
         await axios.post('/api/applications/' + leadId + '/draft', payload);
     },
 
-
-    async getNmiMern(id) {
-        try {
-            const data = await axios.get('/api/applications/' + id + '/nmi-mern');
-            return data.data.data;
-
-        } catch (error) {
-            return error.data;
-        }
-    },
 
     async loadAuthorizedPerson(id) {
         try {

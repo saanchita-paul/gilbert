@@ -12,6 +12,7 @@ class CafFileSearchFilterModel {
                     provider_name,
                     app_type,
                     status,
+                    application_service_type,
                 } = {}) {
         this.name = name;
         this.address = address;
@@ -23,6 +24,7 @@ class CafFileSearchFilterModel {
         this.provider_name = provider_name;
         this.app_type = app_type;
         this.status = status;
+        this.application_service_type = application_service_type;
     }
 
     isSearchEmpty() {

@@ -33,7 +33,7 @@
                         </span>
                     </p>
                     <p class="py-0 my-0 text-center active-power-subtitle"
-                        :class="{ dangerText: isWaterFailed }"
+                       :class="{ dangerText: isWaterFailed }"
                     >
                         {{ getWaterStatus }}
                     </p>
@@ -44,7 +44,7 @@
                     <div>
                         <p class="pt-1 pb-1 mb-0 services service-title">
                             <span class="ml-1">
-                                <v-icon color="red">mdi-wifi</v-icon>Internet
+                                <v-icon color="purple">mdi-wifi</v-icon> NBN
                             </span>
                         </p>
                         <p class="py-0 my-0 text-center active-power-subtitle"
@@ -138,7 +138,14 @@ export default {
             return status.text;
         },
         getInternetStatus() {
-            return 'Connected';
+            const status = LeadApplicationService.mapStatus(
+                LeadApplicationService.getServiceObj(
+                    this.leadSummary.connection_services,
+                    "internet"
+                )?.status
+            );
+            status.text === "Failed" ? (this.isWaterFailed = true) : (this.isWaterFailed = false);
+            return status.text;
         },
     },
     methods: {
@@ -161,13 +168,16 @@ export default {
     text-transform: capitalize !important;
     width: 190px !important;
 }
+
 .service-title {
     font-size: 16px;
     font-weight: bold;
 }
+
 .dangerText {
     color: red;
 }
+
 .p-24 {
     padding: 24px !important;
 }

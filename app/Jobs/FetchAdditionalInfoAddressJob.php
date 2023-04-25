@@ -31,9 +31,10 @@ class FetchAdditionalInfoAddressJob implements ShouldQueue
      * Execute the job.
      *
      * @return void
+     * @throws \Exception
      */
     public function handle()
     {
-        MirnNmiService::dispatchAllService($this->applicationId);
+        MirnNmiService::dispatchAllService($this->applicationId, true);
     }
 }

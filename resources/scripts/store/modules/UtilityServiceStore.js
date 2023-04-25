@@ -31,6 +31,9 @@ export default {
         },
         gasPlan: state => {
             return state.gasPlan;
+        },
+        internetStatus: state => {
+            return state.internetStatus;
         }
     },
     mutations: {
@@ -48,6 +51,9 @@ export default {
         },
         setGasStatus(state, status) {
             state.gasStatus = status;
+        },
+        setInternetStatus(state, status) {
+            state.internetStatus = status;
         },
         setGasProvider(state, provider) {
             state.gasProvider = provider;

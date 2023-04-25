@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
 use OurProperty\Models\OurProperty;
-use phpDocumentor\Reflection\Utils;
 use PropertyMe\PropertyMeLead;
 use Carbon\Carbon;
 
@@ -65,12 +64,16 @@ use Carbon\Carbon;
  * @property int|null $has_life_support
  * @property int|null $has_solar
  * @property string|null $nmi
+ * @property string|null $nmi_score
  * @property string|null $mirn
+ * @property string|null $mirn_score
  * @property string|null $family_violance
  * @property int|null $supplier
  * @property int|null $plan_type
  * @property int|null $status
  * @property int|null $is_embedded
+ * @property int|null $embedded_nmi
+ * @property int|null $suggested_nmi
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Agency $agency
@@ -248,8 +251,9 @@ class ConnectionApplication extends Model
         'nmi_score',
         'suggested_nmi',
         'assigned_at',
+        'external_source_id',
         'life_support_equipment_id',
-        'medical_reason'
+        'medical_reason',
     ];
 
 
@@ -328,6 +332,7 @@ class ConnectionApplication extends Model
     public const SOURCE_HOOD_LEAD = 10;
     public const SOURCE_T_APP = 11;
     public const SOURCE_MRI = 12;
+    public const SOURCE_HUTLY = 13;
 
     public const EMAIL_BILLING_EMAIL = 1;
     public const EMAIL_BILLING_PAPER = 2;
@@ -343,6 +348,7 @@ class ConnectionApplication extends Model
 
     public const PHONE_TYPE_MOBILE = 1;
     public const PHONE_TYPE_HOMEPHONE = 2;
+    public const PHONE_TYPE_INTERNATION_MOBILE = 2;
 
     public const LEAD_SUBMIT_TYPE_ENERGY = 'energy';
     public const LEAD_SUBMIT_TYPE_POWER = 'power';
@@ -378,6 +384,7 @@ class ConnectionApplication extends Model
         'hood_ai' => self::SOURCE_HOOD_LEAD,
         't_app' => self::SOURCE_T_APP,
         'mri' => self::SOURCE_MRI,
+        'hutly' => self::SOURCE_HUTLY,
     ];
 
     public const PLAN_TYPE_MAPPER = [
@@ -598,6 +605,14 @@ class ConnectionApplication extends Model
     }
 
     /**
+     * @return BelongsTo
+     */
+    public function externalSource()
+    {
+        return $this->belongsTo(ExternalSource::class);
+    }
+
+    /**
      * saving fast connect customer ref
      *
      * @param $ref
@@ -612,6 +627,13 @@ class ConnectionApplication extends Model
 
     public function getAgencyName()
     {
+        if (!empty($this->external_source_id)) {
+            if ($this->office) {
+                return $this->office?->agency?->name ?? '';
+            }
+            return $this->externalSource?->defaultOffice?->agency?->name ?? '';
+        }
+
         return match ($this->source) {
             ConnectionApplication::SOURCE_HOOD,
             ConnectionApplication::SOURCE_PROPERTY_ME => $this->office?->name,
@@ -626,6 +648,10 @@ class ConnectionApplication extends Model
 
     public function getAgentName()
     {
+        if (!empty($this->external_source_id)) {
+            return $this->createdBy?->full_name ?? '';
+        }
+
         return match ($this->source) {
             ConnectionApplication::SOURCE_HOOD,
             ConnectionApplication::SOURCE_PROPERTY_ME, ConnectionApplication::SOURCE_T_APP =>
@@ -633,7 +659,6 @@ class ConnectionApplication extends Model
             ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agent_name,
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agent_name,
             ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agent_name,
-            ConnectionApplication::SOURCE_T_APP => $this->createdBy?->first_name . ' ' . $this->createdBy?->last_name,
             ConnectionApplication::SOURCE_MRI =>
                 $this->createdBy ? $this->createdBy->first_name . ' ' . $this->createdBy->last_name :
                 $this->mriApplication?->mriProperty?->mriAgents()?->first()?->agent_name,
@@ -717,6 +742,15 @@ class ConnectionApplication extends Model
         }
     }
 
+    public function getSourceNameAttribute()
+    {
+        if (!empty($this->external_source_id)) {
+            return $this->externalSource?->name ?? '';
+        }
+
+        return self::SOURCE_NAME_MAPPING[$this->source];
+    }
+
     public function getSalesReferenceIdAttribute()
     {
         $ref = ConnectionService::where('connection_application_id', $this->id)
@@ -728,6 +762,11 @@ class ConnectionApplication extends Model
         }
 
         return '';
+    }
+
+    public function internetServiceInfo(): HasOne
+    {
+        return $this->hasOne(InternetServiceInfo::class);
     }
 
     /**

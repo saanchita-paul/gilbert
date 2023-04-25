@@ -31,7 +31,8 @@ class SubmittedLeadNote
            'application_name' => $this->existLead?->first_name . ' ' . $this->existLead?->last_name ,
            'moving_date' => $this->existLead?->moving_date,
            'is_contacted' => $this->existLead && $provider_name === 'EA'? ($this->existLead->is_contacted ? 'Yes': 'No') : 'N/A',
-           'source' => ConnectionApplication::SOURCE_NAME_MAPPING[$this->existLead?->source],
+        //    'source' => ConnectionApplication::SOURCE_NAME_MAPPING[$this->existLead?->source],
+           'source' => $this->existLead?->source_name,
            'agency' => $this->existLead->getAgencyName(),
            'agent_name' => $this->existLead?->getAgentName(),
            'nmi' => $this->existLead?->nmi,
@@ -46,6 +47,10 @@ class SubmittedLeadNote
            'application_id' => $this->existLead?->id,
            'ea_go_neutral' => $this->existLead && $provider_name === 'EA'? $this->existLead->ea_go_neutral : 'N/A',
         ];
+
+        if ($this->existLead) {
+            $leadData['source'] = $this->existLead->source_name;
+        }
 
         if ($provider_name == 'Powershop' && in_array($submittedService, ['Elec & Gas'])){
             $sameDayService = new SameDayConnectionService($this->existLead->id, $this->getSubmitType($submittedService));

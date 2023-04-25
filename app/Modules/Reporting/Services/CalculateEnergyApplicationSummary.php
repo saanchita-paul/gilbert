@@ -3,6 +3,7 @@
 namespace App\Modules\Reporting\Services;
 
 use App\Models\ConnectionApplication;
+use App\Models\ExternalSource;
 
 /**
  *
@@ -24,6 +25,8 @@ class CalculateEnergyApplicationSummary
         "mri" => 0,
     ];
 
+    private array $sourceMap;
+
     /**
      * @var array|\int[][]
      */
@@ -38,10 +41,13 @@ class CalculateEnergyApplicationSummary
         "escalated" => self::LEAD_BREAKDOWN,
     ];
 
+
     /**
      * @param array $applicationData
      */
-    public function __construct(private array $applicationData) {
+    public function __construct(private array $applicationData)
+    {
+        $this->init();
         $this->mapStatuses()->mapConversions();
     }
 
@@ -104,7 +110,7 @@ class CalculateEnergyApplicationSummary
         $this->applicationSummary[$statusKey]["total"] += $item['total'];
         $this->applicationSummary["all"]["total"] += $item['total'];
 
-        $sourceAsString = $this->mapSourceToString($item['source']);
+        $sourceAsString = $this->sourceMap[(string) $item['source']] ?? null;
         if ($sourceAsString) {
             $this->applicationSummary[$statusKey][$sourceAsString] += $item['total'];
             $this->applicationSummary["all"][$sourceAsString] += $item['total'];
@@ -112,29 +118,7 @@ class CalculateEnergyApplicationSummary
     }
 
     /**
-     * Mapping source key
-     *
-     * @param int|null $source
-     *
-     * @return string|null
-     */
-    private function mapSourceToString(?int $source): ?string
-    {
-        return match ($source) {
-            ConnectionApplication::SOURCE_FOXIE => 'foxie',
-            ConnectionApplication::SOURCE_HOOD => 'hood',
-            ConnectionApplication::SOURCE_IGNITE => 'ignite',
-            ConnectionApplication::SOURCE_OUR_PROPERTY => 'our_property',
-            ConnectionApplication::SOURCE_PROPERTY_ME => 'property_me',
-            10 => 'hood_ai', #todo: replace with proper constant
-            ConnectionApplication::SOURCE_T_APP => 't_app',
-            ConnectionApplication::SOURCE_MRI => 'mri',
-            default => null,
-        };
-    }
-
-    /**
-     * Calculation conversation rate breakdown
+     * Calculation conversion rate breakdown
      *
      * @return $this
      */
@@ -165,5 +149,42 @@ class CalculateEnergyApplicationSummary
                 2
             );
         }
+    }
+
+
+    /**
+     * initializing some variables
+     *
+     *
+     * @return void
+     */
+    private function init(): void
+    {
+        $sources = ExternalSource::fromCache();
+
+        $this->sourceMap = $sources
+            ->mapWithKeys(fn($source) => [$source->source_id => $source->source_type])
+            ->toArray();
+
+        $breakdown = $sources
+            ->mapWithKeys(fn($source) => [$source->source_type => 0])
+            ->toArray();
+        $breakdown['total'] = 0;
+
+        $sourceDisplayName = $sources
+            ->mapWithKeys(fn($source) => [$source->source_type => $source->name])
+            ->toArray();
+
+        $this->applicationSummary = [
+            "all" => $breakdown,
+            "unassigned" => $breakdown,
+            "assigned" => $breakdown,
+            "submitted" => $breakdown,
+            "conversation_rate" => $breakdown,
+            "consent_pending" => $breakdown,
+            "closed" => $breakdown,
+            "escalated" => $breakdown,
+            "source_display_name" => $sourceDisplayName,
+        ];
     }
 }

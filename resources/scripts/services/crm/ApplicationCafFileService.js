@@ -1,5 +1,4 @@
 import ApplicationCafFileAPI from "@scripts/api/crm/ApplicationCafFileAPI";
-import Store from '@scripts/store/index';
 
 export default {
     getApplicationCafFileData: (sort_search_meta, params) => ApplicationCafFileAPI.getApplicationCafFileData(sort_search_meta, params),
@@ -11,13 +10,14 @@ export default {
         })
         return filteredService?.enable_caf_file;
     },
-    getGilbertApplicationData: (sort_search_meta, params) => ApplicationCafFileAPI.getGilbertApplicationData(sort_search_meta, params),
+    getGilbertApplicationData: (sort_search_meta, params) =>ApplicationCafFileAPI.getGilbertApplicationData(sort_search_meta, params),
+    getGilbertNBNApplicationData: (sort_search_meta, params) =>  ApplicationCafFileAPI.getNBNApplicationCafFileData(sort_search_meta, params),
     generateGilbertCafFIle: (data) => ApplicationCafFileAPI.generateGilbertCafFIle(data),
-
+    generateNBNCafFIle: (data) => ApplicationCafFileAPI.generateNBNCafFIle(data),
     getChatbotApplication : async (sort_search_meta, params) => {
         const data = await ApplicationCafFileAPI.getApplicationCafFileData(sort_search_meta, params);
         // Store.commit('setchatbotApplications', data.data);
         return data;
-    }
+    },
 
 }

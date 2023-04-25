@@ -4,7 +4,6 @@ namespace App\Services\Application;
 
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
-use App\Models\ConnectionService;
 use App\Models\User;
 use App\Modules\Reporting\Services\SetDateRage;
 use App\Services\FullTextSearch\FullTextQueryInterface;
@@ -13,6 +12,7 @@ use App\Traits\Agency\Sortable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+
 use function optional;
 use function resolve;
 
@@ -58,17 +58,19 @@ class SearchConnectionApplication
     private $tenantEmail;
     private ?string $startDate = null;
     private ?string $endDate = null;
+
+    private ?string $movingStartDate = null;
+    private ?string $movingEndDate = null;
+
     private bool $isDuplicate;
-
-    private ?string $dateStart = null;
-    private ?string $dateEnd = null;
-
     /**
      * @var string|null
      */
     private $duplication_group_id;
 
     private ?string $provider = null;
+
+    private ?string $application_service_type = null;
 
     /**
      * @param array $request
@@ -79,19 +81,19 @@ class SearchConnectionApplication
 
         $this->perPage = empty($request['per_page']) ? null : (int)$request['per_page'];
         $this->leadType = optional($request)['active_lead_type'];
-        $this->source = !empty($request['source']) ? (ConnectionApplication::SOURCE_MAPPING[$request['source']] ?? null) : null;
+        $this->source = isset($request['source']) ? (int)$request['source'] : null;
         $this->tenancyType = !empty($request['tenancy_type']) ? ConnectionApplication::TENANCY_MAPPING[$request['tenancy_type']] ?? null : null;
         $this->triage = !empty($request['triage']) ? ConnectionApplication::TRIAGE_MAPPING[$request['triage']] ?? null : null;
         $this->officeId = !empty($request['office_id']) ? $request['office_id'] : null;
         $this->appId = !empty($request['app_id']) ? $request['app_id'] : null;
         $this->agentId = !empty($request['agent_id']) ? $request['agent_id'] : null;
         $this->tenantEmail = !empty($request['tenant_email']) ? $request['tenant_email'] : null;
-        $this->provider = !empty($request['provider_name']) ?  $request['provider_name'] : null;
+        $this->provider = !empty($request['provider_name']) ? $request['provider_name'] : null;
         $this->isDuplicate = !empty($request['is_duplicate']) ? (bool)$request['is_duplicate'] : false;
         $this->duplication_group_id = !empty($request['duplication_group_id']) ? $request['duplication_group_id'] : null;
         $this->assignee = !empty($request['assignee']) ? $request['assignee'] : null;
 
-        !empty($request['moving_date']) && $this->setDateRangeNoTz($request['moving_date'], $request['moving_date']);
+        !empty($request['moving_date']) && $this->setMovingDateRange($request['moving_date'], $request['moving_date']);
 
         if (empty($request['sort_by'])) {
             $this->setSortBy('created_at', 'true');
@@ -99,8 +101,11 @@ class SearchConnectionApplication
             $this->setSortBy(optional($request)['sort_by'], optional($request)['is_descending']);
         }
 
-        $this->dateStart = !empty($request['start_date']) ? $request['start_date'] : null;
-        $this->dateEnd = !empty($request['end_date']) ? $request['end_date'] : null;
+        if (!empty($request['start_date']) && !empty($request['end_date'])) {
+            $this->setDateRange($request['start_date'], $request['end_date']);
+        }
+
+        $this->application_service_type = !empty($request['application_service_type']) ? $request['application_service_type'] : null;
     }
 
     /**
@@ -138,12 +143,45 @@ class SearchConnectionApplication
             ->applyDuplicateFilter()
             ->applyAssigneeFilter()
             ->applyDateRangeFilter()
+            ->applyFilterByService()
             ->applySearch();
 
         $this->builder = $this->applySorting($this->builder);
 
         return $this->builder->paginate($this->perPage);
     }
+
+    public function getNBN(User $user): LengthAwarePaginator
+    {
+        $this->builder = ConnectionApplication::query()
+            ->with('connectionServices.reasons')
+            ->with('SugerLead')
+            ->with('assignedTo')
+            ->with('submittedByUser')
+            ->with('powershopPaymentInfo')
+            ->with('office')
+            ->with('authorizedPerson')
+            ->with('createdBy')
+            ->with('identification')
+            ->with('submittedByUser');
+
+
+        $this
+            ->applyFilterLeadType($user)
+            ->applyFilterUserOffice($user)
+            ->applyFilterSource()
+            ->applyFilterAppId()
+            ->applyDateRangeFilter()
+            ->applyFilterByService()
+            ->applyFilterAssignedOnly()
+            ->applyFilterSubmittedInternet()
+            ->applySearch();
+
+        $this->builder = $this->applySorting($this->builder);
+
+        return $this->builder->paginate($this->perPage);
+    }
+
 
     public function getApplicationForAgency(User $user): LengthAwarePaginator
     {
@@ -201,7 +239,6 @@ class SearchConnectionApplication
             $this->builder = $this->builder->where('source', $this->source);
         }
         return $this;
-
     }
 
     private function applyFilterAppId(): static
@@ -210,15 +247,14 @@ class SearchConnectionApplication
             $this->builder = $this->builder->where('id', $this->appId);
         }
         return $this;
-
     }
 
     private function applyFilterMovingDate(): static
     {
-        if ($this->startDate && $this->endDate) {
+        if ($this->movingStartDate && $this->movingEndDate) {
             $this->builder = $this->builder
-                ->where('moving_date', '>=', $this->startDate)
-                ->where('moving_date', '<=', $this->endDate);
+                ->where('moving_date', '>=', $this->movingStartDate)
+                ->where('moving_date', '<=', $this->movingEndDate);
         }
         return $this;
     }
@@ -238,7 +274,6 @@ class SearchConnectionApplication
             $this->builder = $this->builder->where('created_by', $this->agentId);
         }
         return $this;
-
     }
 
     /**
@@ -324,7 +359,10 @@ class SearchConnectionApplication
         $query = resolve(FullTextQueryInterface::class);
 
         if (!empty($filters['tenant_name'])) {
-            $this->searchQueries[] = $query->createNew(text: $filters['tenant_name'], index: 'first_name, middle_name, last_name');
+            $this->searchQueries[] = $query->createNew(
+                text: $filters['tenant_name'],
+                index: 'first_name, middle_name, last_name'
+            );
         }
         if (!empty($filters['phone'])) {
             $this->searchQueries[] = $query->createNew(text: $filters['phone'], index: 'phone,homephone');
@@ -347,7 +385,10 @@ class SearchConnectionApplication
             }),
             null => $this->builder->where(function (Builder $builder) {
                 $builder->doesntHave('SugerLead')
-                    ->orWhereHas("SugerLead", fn(Builder $id) => $id->whereNull('compare_connect_id')->orWhere('compare_connect_id', 'N/A'));
+                    ->orWhereHas(
+                        "SugerLead",
+                        fn(Builder $id) => $id->whereNull('compare_connect_id')->orWhere('compare_connect_id', 'N/A')
+                    );
             }),
             default => $this->builder
         };
@@ -368,7 +409,8 @@ class SearchConnectionApplication
         return $this;
     }
 
-    private function mapProviderList($providers){
+    private function mapProviderList($providers)
+    {
         return explode(",", $providers);
     }
 
@@ -388,17 +430,10 @@ class SearchConnectionApplication
 
     private function applyDateRangeFilter(): static
     {
-        if ($this->dateStart && $this->dateEnd) {
-            $this->dateStart = Carbon::parse($this->dateStart)->toDateTimeString();
-            $this->dateEnd = Carbon::parse($this->dateEnd)
-                ->addHours(23)
-                ->addMinutes(59)
-                ->addSeconds(59)
-                ->toDateTimeString();
-
+        if ($this->startDate && $this->endDate) {
             $this->builder = $this->builder
-                ->where('created_at', '>=', $this->dateStart)
-                ->where('created_at', '<=', $this->dateEnd);
+                ->where('created_at', '>=', $this->startDate)
+                ->where('created_at', '<=', $this->endDate);
         }
         return $this;
     }
@@ -413,6 +448,35 @@ class SearchConnectionApplication
         if ($this->assignee) {
             $this->builder = $this->builder->where('assigned_to', $this->assignee);
         }
+        return $this;
+    }
+
+    private function applyFilterByService(): static
+    {
+        if ($this->application_service_type) {
+            $this->builder = $this->builder->whereHas('connectionServices', function (Builder $query) {
+                $query->whereIn('service_type', ['power', 'gas']);
+            });
+        }
+        return $this;
+    }
+
+    private function applyFilterAssignedOnly(): static
+    {
+        $this->builder = $this->builder->whereNotNull('assigned_to');
+
+        return $this;
+    }
+
+    private function applyFilterSubmittedInternet(): static
+    {
+        $this->builder = $this->builder
+            ->where('status', '!=', ConnectionApplication::STATUS_UNASSIGNED)
+            ->whereHas('connectionServices', function (Builder $query) {
+                $query->where('service_type', 'internet')
+                    ->whereNotNull('submitted_at');
+            });
+
         return $this;
     }
 }

@@ -17,6 +17,7 @@ use Rap2hpoutre\FastExcel\FastExcel;
 use App\Models\ConnectionApplication;
 use Illuminate\Database\Query\Builder;
 use App\Services\Utility\GilbertStatusMapper;
+use App\Models\ExternalSource;
 
 class ExportEnergySubmissionReport
 {
@@ -290,8 +291,7 @@ class ExportEnergySubmissionReport
 
     private function getLeadSrc(?int $src): string
     {
-        $res = array_search($src, ConnectionApplication::SOURCE_MAPPING);
-        return $res ?: "Unknown";
+        return ExternalSource::intToStr($src);
     }
 
     private function getTenancyType($type): string
