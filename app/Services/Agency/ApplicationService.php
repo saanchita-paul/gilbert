@@ -2,11 +2,9 @@
 
 namespace App\Services\Agency;
 
-use App\Jobs\FetchAdditionalInfoAddressJob;
 use App\Jobs\FetchEmbeddedNetworkJob;
 use App\Jobs\GilbertToChatbotJob;
 use App\Jobs\UpdateHubspotContactJob;
-use App\Models\AgentProfile;
 use App\Models\AppCloseReason;
 use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
@@ -16,10 +14,8 @@ use App\Models\Hazard;
 use App\Models\HoodProfile;
 use App\Models\Identification;
 use App\Models\Office;
-use App\Models\PowershopPaymentInfo;
 use App\Models\User;
 use App\Services\RolePermission;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use TSA\Services\TsaSendAppliationService;
@@ -124,7 +120,11 @@ class ApplicationService
 
     public function updateAddress(array $address, int $applicationId)
     {
-        $existingApplication = ConnectionApplication::find($applicationId);
+        $existingApplication = ConnectionApplication::query()
+            ->with('internetServiceInfo')
+            ->where('id', $applicationId)
+            ->firstOrFail()
+        ;
         $existingApplication->address_text = $address['address_text'];
         $existingApplication->street_address = $address['street_address'];
         $existingApplication->street_name = $address['street_name'];
@@ -171,11 +171,16 @@ class ApplicationService
             $existingApplication->billing_street_number = empty($address['street_address']) ? null : $address['street_number'];
             $existingApplication->billing_city = empty($address['city']) ? null : $address['city'];
             $existingApplication->billing_postcode = empty($address['postcode']) ? null : $address['postcode'];
-            $existingApplication->billing_address_unit = $address['unit_number'] ? $address['unit_number'] : null;
+            $existingApplication->billing_address_unit = $address['unit_number'] ?: null;
 
         };
 
+
         $existingApplication->save();
+
+        if ($existingApplication->internetServiceInfo && $existingApplication->internetServiceInfo->is_shipping_same) {
+            NbnService::updateFromApplicationAddress($applicationId);
+        }
 
         return $existingApplication;
     }

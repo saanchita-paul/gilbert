@@ -18,4 +18,9 @@ class MriNote extends Model
     {
         return $this->belongsTo(MriApplication::class);
     }
+
+    public function mriLog()
+    {
+        return $this->belongsTo(MriLog::class);
+    }
 }

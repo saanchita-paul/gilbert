@@ -255,18 +255,33 @@ export default {
         }
 
         return {
-            source_all: new DashboardSourceModel(response.application_summary.all),
-            source_assigned: new DashboardSourceModel(response.application_summary.assigned),
-            source_closed: new DashboardSourceModel(response.application_summary.closed),
-            source_consent_pending: new DashboardSourceModel(response.application_summary.consent_pending),
-            source_conversation_rate: new DashboardSourceModel(response.application_summary.conversation_rate),
-            source_submitted: new DashboardSourceModel(response.application_summary.submitted),
-            source_unassigned: new DashboardSourceModel(response.application_summary.unassigned),
-            source_escalated: new DashboardSourceModel(response.application_summary.escalated),
+            source_all: response.application_summary.all,
+            source_assigned: response.application_summary.assigned,
+            source_closed: response.application_summary.closed,
+            source_consent_pending: response.application_summary.consent_pending,
+            source_conversation_rate: response.application_summary.conversation_rate,
+            source_submitted: response.application_summary.submitted,
+            source_unassigned: response.application_summary.unassigned,
+            source_escalated: response.application_summary.escalated,
             submitted: getSubmittedData(response.successful_submission, response.waiting_for_connection, response.ac_manual_processing),
             connected: getConnectedData(response.connected, response.successful_submission, response.rejected),
             rejected: getRejectedData(response.rejected, response.declined),
+            source_display_name: response.application_summary.source_display_name,
         };
+
+        // return {
+        //     source_all: new DashboardSourceModel(response.application_summary.all),
+        //     source_assigned: new DashboardSourceModel(response.application_summary.assigned),
+        //     source_closed: new DashboardSourceModel(response.application_summary.closed),
+        //     source_consent_pending: new DashboardSourceModel(response.application_summary.consent_pending),
+        //     source_conversation_rate: new DashboardSourceModel(response.application_summary.conversation_rate),
+        //     source_submitted: new DashboardSourceModel(response.application_summary.submitted),
+        //     source_unassigned: new DashboardSourceModel(response.application_summary.unassigned),
+        //     source_escalated: new DashboardSourceModel(response.application_summary.escalated),
+        //     submitted: getSubmittedData(response.successful_submission, response.waiting_for_connection, response.ac_manual_processing),
+        //     connected: getConnectedData(response.connected, response.successful_submission, response.rejected),
+        //     rejected: getRejectedData(response.rejected, response.declined),
+        // };
     },
 
 }

@@ -43,4 +43,9 @@ class MriApplication extends Model
     {
         return MriApplicationFactory::new();
     }
+
+    public function mriLog()
+    {
+        return $this->belongsTo(MriLog::class);
+    }
 }

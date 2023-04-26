@@ -20,6 +20,7 @@ use App\Models\User;
 use App\Services\Address\EmbeddedNetworkService;
 use App\Services\Agency\ApplicationService;
 use App\Services\Agency\MirnNmiService;
+use App\Services\Agency\NbnService;
 use App\Services\Agency\WaterAutoSubmitService;
 use App\Services\Application\ApplicationLockUnlockService;
 use App\Services\Application\ApplicationsMetricsService;
@@ -120,7 +121,10 @@ class ApplicationController extends Controller
                 return $this->sendUnauthorizedResponse();
             }
 
-            $application->load(['connectionServices.reasons']);
+            // Update or create internet service info
+            $nbnService = new NbnService();
+            $nbnService->initInternetServiceInfo($application);
+            $application->load(['connectionServices.reasons', 'internetServiceInfo']);
 
             return new ApplicationResource($application, TSACallHistory::getByAppID($application->id));
 
@@ -334,20 +338,6 @@ class ApplicationController extends Controller
             $res = $service->updateSoleField($request->toArray(), $id);
             return response()->json(['success' => true, 'data' => $res]);
 
-        } catch (\Exception $exception) {
-            return $this->sendErrorResponse($exception);
-        }
-    }
-
-    public function getNmiMern(Request $request, $id)
-    {
-        try {
-            $service = new FastConnectService();
-            $res = $service->authenticate()->searchAddress([], true, $id);
-            $res2 = MirnNmiService::fetchNmiIsEmbedded(null, true, $id);
-            $res = array_merge($res, $res2);
-
-            return response()->json(['success' => true, 'data' => $res]);
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

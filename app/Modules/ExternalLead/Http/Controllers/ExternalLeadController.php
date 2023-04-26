@@ -20,14 +20,13 @@ class ExternalLeadController extends Controller
      */
     public function getAccessToken(Request $request) : JsonResponse {
         try {
-
             $tAppService = new TAppServices();
             $result =  $tAppService->generateAccessToken($request->toArray());
             return  response()->json($result , 200);
 
         } catch (\Exception $exception) {
 
-            \Log::error( "Error in OurPropertyController, getAccessToken method" , [ 'message' => $exception->getMessage()]);
+            \Log::error("Error in ExternalLeadController, getAccessToken method", [ 'message' => $exception->getMessage()]);
             \Log::error($exception->getTraceAsString());
             $response =  [
                 'status' => 'failed',
@@ -41,8 +40,7 @@ class ExternalLeadController extends Controller
     public function createLeads(Request $request)
     {
         try {
-
-            Log::info('** TAPP Request Body',[$request->toArray()]);
+            Log::info('** Create External Leads Request Body', [$request->toArray()]);
             $service = new TAppServices();
             $tApp = $service->create($request);
             $response = [

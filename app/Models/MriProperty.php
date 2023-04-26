@@ -24,4 +24,9 @@ class MriProperty extends Model
     {
         return MriPropertyFactory::new();
     }
+
+    public function mriLog()
+    {
+        return $this->belongsTo(MriLog::class);
+    }
 }

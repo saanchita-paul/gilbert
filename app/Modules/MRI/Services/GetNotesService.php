@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use App\Models\MriApplication;
 use App\Models\MriNote;
 use Illuminate\Database\Eloquent\Builder;
+use MRI\Services\LogService;
 
 class GetNotesService
 {
@@ -39,10 +40,16 @@ class GetNotesService
      */
     public HandleExceptionService $exceptionHandler;
 
+    /**
+     * @var LogService
+     */
+    public LogService $logService;
+
     public function __construct()
     {
         $this->setURL();
         $this->exceptionHandler = new HandleExceptionService(self::class);
+        $this->logService = new LogService();
     }
 
     public function setAfterDate(string $date)
@@ -74,12 +81,14 @@ class GetNotesService
     {
         $this->setToken($token);
 
+        $headers = [
+            'content-type' => 'application/json',
+            'accept' => 'application/json',
+            'authorization' => 'Bearer ' . $this->accessToken
+        ];
+
         $client = new Client([
-            'headers' => [
-                'content-type' => 'application/json',
-                'accept' => 'application/json',
-                'authorization' => 'Bearer ' . $this->accessToken
-            ],
+            'headers' => $headers,
         ]);
 
         $query = [
@@ -94,7 +103,11 @@ class GetNotesService
             'query' => $query
         ];
 
+        $this->logService->create(get_class($this), $this->url, [
+            'request_query' => json_encode($query)
+        ]);
         $response = $client->request('GET', $this->url, $options);
+        $this->logService->update($response);
 
         $data = json_decode($response->getBody()->getContents(), true);
 
@@ -117,6 +130,7 @@ class GetNotesService
                 $this->saveNotes($mriApp, $notesData);
             }
         } catch (RequestException $e) {
+            $this->logService->update($e->getResponse());
             $this->exceptionHandler->addException($e);
         } catch (\Exception $e) {
             $this->exceptionHandler->addException($e);
@@ -138,6 +152,7 @@ class GetNotesService
         foreach ($notesData as $note) {
             try {
                 $newMriNote = new MriNote();
+                $newMriNote->mri_log_id = $this->logService->getLogId();
                 $newMriNote->mri_application_id = $mriApp->id;
                 $newMriNote->note_id = $note['note_id'];
                 $newMriNote->description = $note['description'];

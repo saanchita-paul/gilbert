@@ -40,6 +40,7 @@
                             ></v-text-field>
                         </div>
 
+
                         <div
                             style="display: flex; align-items: center">
                             <v-btn
@@ -52,6 +53,8 @@
                                 Reset
                             </v-btn>
                         </div>
+
+
                     </div>
                 </v-col>
                 <v-col cols="2">
@@ -142,7 +145,11 @@ export default {
         generateGilbertAppCafFIle() {
             let leadIds = this.selectedCafFile.map(item => item.id);
             let selectedIds = leadIds.join();
-            let response = ApplicationCafFileService.generateGilbertCafFIle(selectedIds);
+            if(this.$route.query.inner_tab === 'nbnGilbertApplication'){
+                let response = ApplicationCafFileService.generateNBNCafFIle(selectedIds);
+            }else{
+                let response = ApplicationCafFileService.generateGilbertCafFIle(selectedIds);
+            }
         }
 
     },

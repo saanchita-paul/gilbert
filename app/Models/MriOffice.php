@@ -50,4 +50,9 @@ class MriOffice extends Model
     {
         return MriOfficeFactory::new();
     }
+
+    public function mriLog()
+    {
+        return $this->belongsTo(MriLog::class);
+    }
 }

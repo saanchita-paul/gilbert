@@ -16,21 +16,10 @@ class BaseOriginAPI
      * @var string|null $accessToken
      */
     private ?string $basicAuth = null;
-    private ?string $accessToken = null;
-    private $cookiejar = null;
 
     protected function __construct()
     {
         $this->basicAuth = AuthService::getBasicAuth();
-    }
-
-    protected function getAccessToken()
-    {
-        if (empty($this->accessToken)) {
-            $array = AuthService::getXCSRFToken();
-            $this->accessToken = $array['token'];
-            $this->cookiejar = $array['cookies'];
-        }
     }
 
     /**
@@ -78,13 +67,13 @@ class BaseOriginAPI
         } catch (\Illuminate\Http\Client\RequestException $exception) {
             $statusCode = $exception->response->status();
             $responseJson = $exception->response->json();
-            $errorCode = $responseJson['error'] ? $responseJson['error']['code'] : '';
-            $errorMessage = $responseJson['error'] ? $responseJson['error']['message']['value'] : $exception->response->body();
+            $errorCode = $responseJson['error']['code'] ?? 'ORIGIN_ERROR';
+            $errorMessage = $responseJson['error']['message']['value'] ?? $exception->response->body();
 
             if ($statusCode == 400) {
-                throw new \Exception(sprintf('Origin GET:%s - FAILED [%s](%s)', $methodName, $errorCode, $errorMessage), self::CODE_REJECT);
+                throw new \Exception(sprintf('Origin GET:%s - FAILED WITH STATUS CODE %s [%s](%s)', $methodName, $statusCode, $errorCode, $errorMessage), self::CODE_REJECT);
             } else {
-                throw new \Exception(sprintf('Origin GET:%s - FAILED (%s)', $methodName, $errorMessage));
+                throw new \Exception(sprintf('Origin GET:%s - FAILED STATUS CODE %s (%s)', $methodName, $statusCode, $errorMessage));
             }
         } catch (Exception $exception) {
             throw new \Exception(sprintf('Origin GET:%s - FAILED (%s)', $methodName, $exception->getMessage()));
@@ -108,15 +97,12 @@ class BaseOriginAPI
     {
         Log::info(sprintf('Origin POST:%s - Attempting with request data:', $methodName), $body);
 
-        $this->getAccessToken();
         $options = [
             'headers' => [
-                "X-CSRF-Token" => $this->accessToken,
                 "Authorization" => $this->basicAuth,
                 "Accept" => "application/json",
                 "Content-Type" => "application/json",
-            ],
-            'cookies' => $this->cookiejar
+            ]
         ];
 
         if (!$isSkipLog) {

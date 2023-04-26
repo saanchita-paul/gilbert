@@ -103,4 +103,14 @@ class AgentProfile extends Model
     {
         return $this->hasMany(ConnectionApplication::class, 'assigned_to');
     }
+
+    /**
+     * Get the user's full name.
+     *
+     * @return string
+     */
+    public function getFullNameAttribute()
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
 }
