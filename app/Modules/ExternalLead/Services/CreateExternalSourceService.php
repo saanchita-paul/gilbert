@@ -43,7 +43,6 @@ class CreateExternalSourceService
                 $sourceNameDisplay,
                 $logo
             );
-            Cache::forget(ExternalSource::CACHE_KEY_EXTERNAL_SOURCE);
             return $externalSource;
         } catch (\Exception $e) {
             if (!empty($this->agency->id)) {
