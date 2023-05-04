@@ -86,4 +86,32 @@ class ExternalSource extends Model
                 ->get();
         });
     }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::initCacheCleaner();
+    }
+
+    /**
+     * Clear the cache when after model change, delete or create
+     *
+     * @return void
+     */
+    private static function initCacheCleaner(): void
+    {
+        $callback = function(ExternalSource $source) {
+            Cache::deleteMultiple([
+                self::CACHE_KEY_EXTERNAL_SOURCE,
+                self::CACHE_KEY_INT_TO_STR,
+                self::CACHE_KEY_STR_TO_INT
+            ]);
+        };
+
+
+        self::created($callback);
+        self::updated($callback);
+        self::deleted($callback);
+    }
 }

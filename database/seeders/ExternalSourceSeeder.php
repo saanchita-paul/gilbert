@@ -126,9 +126,8 @@ class ExternalSourceSeeder extends Seeder
             ],
         ];
 
-        ExternalSource::query()->truncate();
         foreach ($sources as $source) {
-            ExternalSource::query()->create($source);
+            ExternalSource::query()->updateOrCreate(['source_type' => $source['source_type']], $source);
         }
     }
 }
