@@ -787,4 +787,13 @@ class ConnectionApplication extends Model
         )->withTimestamps();
     }
 
+    public function clickConversion(): HasOne
+    {
+        return $this->hasOne(ClickConversion::class, 'connection_application_id');
+    }
+
+    public function callConversion(): HasOne
+    {
+        return $this->hasOne(CallConversion::class, 'connection_application_id');
+    }
 }

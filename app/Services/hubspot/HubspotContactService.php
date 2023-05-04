@@ -62,7 +62,7 @@ class HubspotContactService
 
         if (empty($body['vid'])) {
             Log::error($response->body());
-            throw new \Exception("[HubspotContactService] failed to create contact", ["response" => $response->body()]);
+            throw new \Exception("[HubspotContactService] failed to create contact");
         }
 
         $this->application->update(['hubspot_contact_id' => $body['vid']]);

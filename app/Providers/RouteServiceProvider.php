@@ -88,6 +88,10 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace)
                 ->group(base_path('routes/setting.php'));
 
+            Route::middleware([])
+                ->prefix('google-ads')
+                ->group(base_path('app/Modules/GoogleAds/route.php'));
+
             /**
              * HoodLead module
              */
