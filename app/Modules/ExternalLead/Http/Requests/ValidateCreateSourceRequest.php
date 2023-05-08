@@ -27,9 +27,9 @@ class ValidateCreateSourceRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'email', Rule::notIn(ExternalSource::pluck('email')->toArray())],
+            'email' => ['required', 'email', Rule::unique('external_sources')],
             'password' => 'required',
-            'source_type' => ['required', Rule::notIn(ExternalSource::pluck('source_type')->toArray())],
+            'source_type' => ['required', Rule::unique('external_sources')],
             'logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
