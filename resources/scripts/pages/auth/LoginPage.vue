@@ -1,7 +1,7 @@
 <template>
     <v-app>
-        <div fluid class="loginpage">
-            <v-container fluid>
+        <div  class="loginpage">
+            <v-container >
                 <div class="login-section">
 
                     <v-card class="hood-card py-5">
